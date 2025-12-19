@@ -1,0 +1,32 @@
+# Logs
+*.log
+*.log.*
+gaming-pc-setup.log
+gaming-pc-setup-enhanced.log
+extreme-privacy.log
+
+# Registry backups
+*.reg
+*.backup
+
+# Windows temp files
+*.tmp
+Thumbs.db
+desktop.ini
+
+# PowerShell compiled files
+*.exe
+
+# Test files
+test-*.ps1
+temp-*.ps1
+
+# User-specific files
+user-config.ps1
+local-settings.ps1
+
+# Backup files
+*.bak
+*~
+*.swp
+*.swo
