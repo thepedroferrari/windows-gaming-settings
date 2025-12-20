@@ -18,8 +18,10 @@ Restart-Computer
 # 3. Optional: Maximum privacy
 .\extreme-privacy.ps1
 
-# 4. Before gaming (CRITICAL!)
-.\timer-tool.ps1 -GameProcess "yourgame"
+# 4. Before gaming: Run timer tool (fixes micro-stutters)
+.\timer-tool.ps1
+# Keep it running while gaming, press Ctrl+C when done
+# Optional: .\timer-tool.ps1 -GameProcess "dota2" to auto-exit when game closes
 ```
 
 ## ✨ Features
@@ -44,7 +46,7 @@ Restart-Computer
 
 ### Core Scripts
 - **gaming-pc-setup.ps1** - Main optimization script ⭐
-- **timer-tool.ps1** - Runtime timer resolution tool (CRITICAL)
+- **timer-tool.ps1** - Sets 0.5ms timer resolution (eliminates micro-stutters)
 - **extreme-privacy.ps1** - Optional privacy hardening
 
 ### Key Optimizations
@@ -111,13 +113,17 @@ cd windows-gaming-optimizer
 .\extreme-privacy.ps1
 ```
 
-### Before Gaming (CRITICAL)
+### Before Gaming: Timer Tool
 ```powershell
-# Replace "cs2" with your game process name
-.\timer-tool.ps1 -GameProcess "cs2"
+# Simple: Run and keep it open while gaming
+.\timer-tool.ps1
 
-# Keep running during gameplay!
+# Optional: Auto-exit when game closes (find process name in Task Manager)
+.\timer-tool.ps1 -GameProcess "dota2"
 ```
+
+**What it does:** Sets Windows timer to 0.5ms (from 15.6ms default) for smooth frame pacing.
+**Learn more:** Run `Get-Help .\timer-tool.ps1 -Full` for detailed explanation.
 
 ## 🛡️ Safety Features
 
@@ -129,10 +135,10 @@ cd windows-gaming-optimizer
 
 ## ⚠️ Important Notes
 
-### MUST DO:
-1. **Reboot after running main script** (HPET/MSI Mode require reboot)
-2. **Run timer-tool.ps1 before EVERY gaming session**
-3. **Keep timer tool running during gameplay**
+### Important Steps:
+1. **Reboot after running main script** - Required for HPET/MSI Mode changes to take effect
+2. **Run timer-tool.ps1 before gaming** - Eliminates micro-stutters by setting 0.5ms timer resolution
+3. **Keep timer tool running during gameplay** - Press Ctrl+C when done gaming
 
 ### AMD X3D Users:
 - Script auto-detects and optimizes
@@ -213,4 +219,4 @@ Special optimizations for:
 
 ---
 
-**⚠️ REMEMBER:** Run `.\timer-tool.ps1` before EVERY gaming session! This is the #1 fix for micro-stutters.
+**💡 Tip:** For best results, run `.\timer-tool.ps1` before gaming to eliminate micro-stutters caused by Windows' default 15.6ms timer resolution.
