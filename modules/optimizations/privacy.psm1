@@ -23,7 +23,7 @@
 
     CRITICAL: SmartScreen and Windows Update are NEVER disabled (security surface).
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_1_LOW (default), TIER_2_MED (moderate), TIER_3_HIGH (aggressive)
     Reversible: Yes (via Undo-PrivacyOptimizations)
 #>

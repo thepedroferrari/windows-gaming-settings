@@ -2,18 +2,16 @@
 
 <#
 .SYNOPSIS
-    Gaming PC Setup v2.0 - Modular Windows Optimization Script
+    Gaming PC Setup - Modular Windows Optimization Script
 .DESCRIPTION
     Evidence-based Windows optimizations for gaming performance, organized into
     modular components with full reversibility.
 
-    BREAKING CHANGES from v1:
-    - AMD X3D: CPPC now ENABLED (was disabled) - required for AMD 3D V-Cache optimizer
-    - Core Parking: Now ENABLED by default (was disabled) - X3D benefits from C-states
-    - HPET: Now OPT-IN (was always disabled) - limited benefit on Win11
-    - Page File: 4GB for 32GB+ RAM, 8GB for 16GB RAM (was 4GB for all)
-
-    See MIGRATION-NOTES.md for full breaking changes documentation.
+    Behavior notes:
+    - AMD X3D: CPPC enabled (required for AMD 3D V-Cache optimizer)
+    - Core Parking: Enabled by default (X3D benefits from C-states)
+    - HPET: Opt-in only (limited benefit on Win11)
+    - Page File: 4GB for 32GB+ RAM, 8GB for 16GB RAM
 .PARAMETER DryRun
     Preview optimizations without applying changes
 .PARAMETER ConfigFile
@@ -21,7 +19,7 @@
 .PARAMETER Profile
     Load pre-made profile (competitive, balanced, privacy-focused)
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Date: 2025-12-20
     Repository: https://github.com/thepedroferrari/gaming-pc-setup
 #>
@@ -41,7 +39,7 @@ if (-not $ScriptRoot) {
 }
 
 Write-Host ""
-Write-Host "=== Gaming PC Setup v2.0 (Modular) ===" -ForegroundColor Cyan
+Write-Host "=== Gaming PC Setup (Modular) ===" -ForegroundColor Cyan
 Write-Host "Evidence-based Windows optimizations for gaming" -ForegroundColor Yellow
 Write-Host ""
 
@@ -83,7 +81,7 @@ Write-Host ""
 $logPath = Join-Path $ScriptRoot "gaming-pc-setup.log"
 Initialize-Logger -LogPath $logPath -ClearExisting $true
 
-Write-Log "=== Gaming PC Setup v2.0 Started ===" "SUCCESS"
+Write-Log "=== Gaming PC Setup Started ===" "SUCCESS"
 Write-Log "Script root: $ScriptRoot" "INFO"
 Write-Log "Dry run: $DryRun" "INFO"
 
@@ -304,7 +302,7 @@ if (-not $DryRun) {
 
     $checklistContent = @"
 ================================================================================
-    GAMING PC SETUP v2.0 - POST-INSTALLATION CHECKLIST
+    GAMING PC SETUP - POST-INSTALLATION CHECKLIST
 ================================================================================
 
 Completed: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
@@ -432,8 +430,7 @@ Logitech G HUB / Razer Synapse / Corsair iCUE:
 BIOS Settings (CRITICAL):
 ------------------------
 [X] CPPC (Collaborative Processor Performance Control): ENABLED or AUTO/DRIVER
-    - DO NOT DISABLE (v1 incorrectly disabled this)
-    - Required for AMD 3D V-Cache Performance Optimizer to work
+    - DO NOT DISABLE (required for AMD 3D V-Cache Performance Optimizer)
 
 [X] CPPC Preferred Cores: AUTO or DRIVER
 
@@ -589,7 +586,7 @@ if (-not $DryRun) {
     Write-Host "  INFO:    $($summary.Info)" -ForegroundColor Gray
     Write-Host ""
 
-    Write-Log "=== Gaming PC Setup v2.0 Complete ===" "SUCCESS"
+    Write-Log "=== Gaming PC Setup Complete ===" "SUCCESS"
     Write-Log "Summary: $($summary.Success) success, $($summary.Error) errors, $($summary.Info) info" "SUCCESS"
 } else {
     Write-Host "DRY RUN complete. No changes were applied." -ForegroundColor Yellow

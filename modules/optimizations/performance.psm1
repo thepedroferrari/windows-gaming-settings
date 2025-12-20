@@ -11,7 +11,7 @@
     - HPET: Now OPT-IN only (was: always disabled) - PRD says limited benefit on Win11
     - Core Parking: Now ENABLED by default (was: disabled) - PRD says X3D benefits from C-states
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_1_LOW
     Reversible: Yes (via Undo-PerformanceOptimizations)
 #>

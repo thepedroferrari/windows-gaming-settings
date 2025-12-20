@@ -12,7 +12,7 @@
     HAGS (Hardware Accelerated GPU Scheduling) can improve or hurt performance
     depending on the game and GPU. Always benchmark before enabling.
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_1_LOW
     Reversible: Yes (via Undo-GPUOptimizations)
 #>

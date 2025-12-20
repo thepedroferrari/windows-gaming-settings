@@ -15,7 +15,7 @@
     - HeteroPolicy: NOW REMOVED (was set to 0, interferes with scheduler)
     - Game Bar: Detection kept enabled, overlays disabled only (was completely disabled)
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_1_LOW
     Reversible: Yes (via Undo-X3DOptimizations)
 #>

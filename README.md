@@ -6,30 +6,25 @@ Comprehensive PowerShell scripts to eliminate micro-stutters, improve 1% lows, a
 [![Windows 11](https://img.shields.io/badge/Windows-11-blue.svg)](https://www.microsoft.com/windows/windows-11)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-green.svg)](https://github.com/PowerShell/PowerShell)
 
-## 🚨 Version 2.0 - Breaking Changes
+## ✅ Overview
 
-**Major Refactor:** v2.0 introduces modular architecture with evidence-based optimizations and **critical fixes**:
+**Modular architecture:** Organizes optimizations into modules with reversible changes and clear logging.
 
-### Breaking Changes:
-- **AMD X3D CPPC**: Now **ENABLED** (was disabled) - Required for AMD 3D V-Cache optimizer
-- **Core Parking**: Now **ENABLED** by default (was disabled) - X3D CPUs benefit from C-states
-- **HPET**: Now **opt-in only** (was always disabled) - Limited benefit on Win11
-- **Page File**: 4GB for 32GB+ RAM, **8GB for 16GB RAM** (was 4GB for all)
-- **Min Processor State**: Now 5-10% (was forced 100%) - Better thermal/boost behavior
+### Defaults & Behavior:
+- **AMD X3D CPPC**: Enabled (required for AMD 3D V-Cache optimizer)
+- **Core Parking**: Enabled by default (X3D CPUs benefit from C-states)
+- **HPET**: Opt-in only (limited benefit on Win11)
+- **Page File**: 4GB for 32GB+ RAM, 8GB for 16GB RAM
+- **Min Processor State**: 5-10% (better thermal/boost behavior)
 
-### Why These Changes?
-Extensive research (see plan.PRD.toml) showed the old approach broke AMD's 3D V-Cache thread steering and prevented thermal headroom for boost clocks. V2 follows AMD's documented best practices.
-
-### Migration Path:
-- **Old script users**: Simply run `gaming-pc-setup-v2.ps1` - it will overwrite old settings
-- **Existing optimizations**: Fully reversible via `Undo-*` functions in each module
-- **Timer tool**: Still standalone (timer-tool.ps1) - no changes needed
+### Why these defaults?
+Aligned with AMD documentation and Windows 11 behavior; prioritize stability and measurable gains.
 
 ## 🎯 Quick Start
 
 ```powershell
-# 1. Run v2 modular setup script (recommended)
-.\gaming-pc-setup-v2.ps1
+# 1. Run setup script (recommended)
+.\gaming-pc-setup.ps1
 
 # 2. Reboot
 Restart-Computer
@@ -38,9 +33,6 @@ Restart-Computer
 .\timer-tool.ps1
 # Keep it running while gaming, press Ctrl+C when done
 # Optional: .\timer-tool.ps1 -GameProcess "dota2" to auto-exit when game closes
-
-# Legacy v1 script (DEPRECATED - DO NOT USE, breaks AMD X3D CPPC)
-# .\gaming-pc-setup-v1-DEPRECATED.ps1
 ```
 
 ## ✨ Features
@@ -64,25 +56,24 @@ Restart-Computer
 ## 🚀 What's Included
 
 ### Core Scripts
-- **gaming-pc-setup-v2.ps1** - Main optimization script (modular, evidence-based) ⭐ **RECOMMENDED**
+- **gaming-pc-setup.ps1** - Main optimization script (modular, evidence-based) ⭐ **RECOMMENDED**
 - **timer-tool.ps1** - Sets 0.5ms timer resolution (eliminates micro-stutters)
 - **extreme-privacy.ps1** - Optional privacy hardening
-- **gaming-pc-setup-v1-DEPRECATED.ps1** - Legacy v1 script (deprecated, breaks AMD X3D)
 
 ### Key Optimizations
 ✅ Timer resolution to 0.5ms (Windows defaults to 15.6ms)
-✅ HPET disabled (major stutter source)
+✅ HPET opt-in disable (validate first)
 ✅ MSI Mode for GPU/network (reduces DPC latency)
-✅ CPU core parking disabled
+✅ Core parking enabled by default (X3D-friendly)
 ✅ Memory compression smart disable (32GB+ systems)
 ✅ Network optimizations (Nagle's algorithm, RSS enabled)
 ✅ NVIDIA/AMD GPU optimizations
 ✅ 14+ telemetry/tracking blocks
 ✅ AMD Ryzen X3D specific tweaks (auto-detected)
 
-## 🔧 AMD Ryzen 7900X3D Specific (v2.0 FIXES)
+## 🔧 AMD Ryzen X3D Notes
 
-**BREAKING CHANGE:** v2.0 **enables** CPPC (v1 incorrectly disabled it)
+**CPPC must be enabled** for AMD 3D V-Cache Performance Optimizer.
 
 **Auto-detected optimizations:**
 - ✅ **CPPC Enabled** (required for AMD 3D V-Cache Performance Optimizer)
@@ -117,22 +108,19 @@ See [DRIVER-LINKS.md](DRIVER-LINKS.md) for driver downloads and BIOS settings.
 git clone https://github.com/yourusername/windows-gaming-optimizer.git
 cd windows-gaming-optimizer
 
-# Run as Administrator (use v2!)
-.\gaming-pc-setup-v2.ps1
+# Run as Administrator
+.\gaming-pc-setup.ps1
 ```
 
 ## 🎮 Usage
 
 ### Basic Setup
 ```powershell
-# Basic (recommended - v2 modular script)
-.\gaming-pc-setup-v2.ps1
+# Basic (recommended)
+.\gaming-pc-setup.ps1
 
 # Maximum privacy (after main script)
 .\extreme-privacy.ps1
-
-# Legacy v1 (DEPRECATED - breaks AMD X3D CPPC)
-# .\gaming-pc-setup-v1-DEPRECATED.ps1
 ```
 
 ### Before Gaming: Timer Tool

@@ -17,7 +17,7 @@
     - PCIe Link State Power Management disabled
     - Hibernation disabled
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_1_LOW
     Reversible: Yes (via Undo-PowerOptimizations)
 #>

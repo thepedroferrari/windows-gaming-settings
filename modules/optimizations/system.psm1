@@ -16,7 +16,7 @@
 
     Note: PRD recommends system-managed, but user prefers fixed sizing for control.
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_2_MED (page file changes can affect stability)
     Reversible: Yes (via Undo-SystemOptimizations)
 #>

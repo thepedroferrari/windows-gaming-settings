@@ -16,7 +16,7 @@
     User decisions:
     - Python/Zed/qBittorrent: Keep for now (future web: optional)
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_1_LOW
     Reversible: Partial (can uninstall via winget)
 #>

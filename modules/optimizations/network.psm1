@@ -23,7 +23,7 @@
     - Removed NetworkThrottlingIndex (folklore, no evidence)
     - DNS: User choice, with note that it doesn't affect ping
 .NOTES
-    Author: Gaming PC Setup v2.0
+    Author: @thepedroferrari
     Risk Level: TIER_1_LOW
     Reversible: Yes (via Undo-NetworkOptimizations)
 #>
