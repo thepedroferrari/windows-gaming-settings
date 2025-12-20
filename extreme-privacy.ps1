@@ -138,12 +138,19 @@ Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSe
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Value "Deny" -Type "String"
 #endregion
 
-#region Camera & Microphone Privacy
-Write-Log "=== Hardening Camera & Microphone Privacy ==="
+#region Camera Privacy (Microphone kept enabled for gaming voice chat)
+Write-Log "=== Hardening Camera Privacy ==="
+# Block camera access (privacy concern, not needed for most gaming)
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessCamera" -Value 2
-Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessMicrophone" -Value 2
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam" -Name "Value" -Value "Deny" -Type "String"
-Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" -Name "Value" -Value "Deny" -Type "String"
+
+# NOTE: Microphone is NOT blocked because it's essential for gaming voice chat
+# (Discord, in-game voice, etc.). If you want to block microphone for maximum privacy,
+# uncomment the lines below:
+# Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessMicrophone" -Value 2
+# Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" -Name "Value" -Value "Deny" -Type "String"
+
+Write-Log "Camera blocked | Microphone enabled for gaming voice chat" "SUCCESS"
 #endregion
 
 #region Disable Biometrics
