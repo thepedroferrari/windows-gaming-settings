@@ -30,7 +30,14 @@ function Write-Log {
     param([string]$Message, [string]$Level = "INFO")
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $logMessage = "[$timestamp] [$Level] $Message"
-    Add-Content -Path $script:LogPath -Value $logMessage
+
+    # Try to write to log file (handle file locks gracefully)
+    try {
+        Add-Content -Path $script:LogPath -Value $logMessage -ErrorAction Stop
+    } catch {
+        # If log file is locked, just skip writing to file (still show on console)
+    }
+
     Write-Host $logMessage -ForegroundColor $(if ($Level -eq "ERROR") { "Red" } elseif ($Level -eq "SUCCESS") { "Green" } else { "White" })
 }
 
@@ -277,83 +284,184 @@ Set-RegistryValue -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Value 0
 Write-Log "=== Advanced Hosts File Telemetry Blocking ==="
 try {
     $hostsFile = "$env:SystemRoot\System32\drivers\etc\hosts"
-    $backupPath = "$hostsFile.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
-    Copy-Item $hostsFile $backupPath -Force
-    Write-Log "Backed up hosts file to: $backupPath" "SUCCESS"
 
-    $telemetryDomains = @(
-        # Microsoft Telemetry
-        "vortex.data.microsoft.com",
-        "vortex-win.data.microsoft.com",
-        "telecommand.telemetry.microsoft.com",
-        "telecommand.telemetry.microsoft.com.nsatc.net",
-        "oca.telemetry.microsoft.com",
-        "oca.telemetry.microsoft.com.nsatc.net",
-        "sqm.telemetry.microsoft.com",
-        "sqm.telemetry.microsoft.com.nsatc.net",
-        "watson.telemetry.microsoft.com",
-        "watson.telemetry.microsoft.com.nsatc.net",
-        "redir.metaservices.microsoft.com",
-        "choice.microsoft.com",
-        "choice.microsoft.com.nsatc.net",
-        "df.telemetry.microsoft.com",
-        "reports.wes.df.telemetry.microsoft.com",
-        "wes.df.telemetry.microsoft.com",
-        "services.wes.df.telemetry.microsoft.com",
-        "sqm.df.telemetry.microsoft.com",
-        "telemetry.microsoft.com",
-        "telemetry.appex.bing.net",
-        "telemetry.urs.microsoft.com",
-        "telemetry.appex.bing.net:443",
-        "settings-sandbox.data.microsoft.com",
-        "vortex-sandbox.data.microsoft.com",
-        "survey.watson.microsoft.com",
-        "watson.live.com",
-        "watson.microsoft.com",
-        "statsfe2.ws.microsoft.com",
-        "corpext.msitadfs.glbdns2.microsoft.com",
-        "compatexchange.cloudapp.net",
-        "cs1.wpc.v0cdn.net",
-        "a-0001.a-msedge.net",
-        "statsfe2.update.microsoft.com.akadns.net",
-        "sls.update.microsoft.com.akadns.net",
-        "fe2.update.microsoft.com.akadns.net",
-        "diagnostics.support.microsoft.com",
-        "corp.sts.microsoft.com",
-        "statsfe1.ws.microsoft.com",
-        "pre.footprintpredict.com",
-        "i1.services.social.microsoft.com",
-        "i1.services.social.microsoft.com.nsatc.net",
-        "feedback.windows.com",
-        "feedback.microsoft-hohm.com",
-        "feedback.search.microsoft.com",
-        # Windows Update (for complete blocking)
-        "fe3.delivery.dsp.mp.microsoft.com.nsatc.net",
-        "tlu.dl.delivery.mp.microsoft.com",
-        # Microsoft Advertising
-        "ads.msn.com",
-        "ads1.msn.com",
-        "ads2.msn.com",
-        "bingads.microsoft.com",
-        "rad.msn.com",
-        "flex.msn.com"
-    )
+    # AGGRESSIVE FIX FOR X-LITE: Take ownership and force permissions
+    Write-Log "Taking ownership of hosts file (required for X-Lite builds)..."
 
-    $hostsContent = Get-Content $hostsFile
-    $newEntries = @()
+    # Take ownership using takeown.exe
+    $takeownResult = takeown.exe /F $hostsFile /A 2>&1
+    if ($LASTEXITCODE -eq 0) {
+        Write-Log "Successfully took ownership of hosts file" "SUCCESS"
+    } else {
+        Write-Log "Takeown result: $takeownResult" "ERROR"
+    }
 
-    foreach ($domain in $telemetryDomains) {
-        $entry = "0.0.0.0 $domain"
-        if ($hostsContent -notcontains $entry) {
-            $newEntries += $entry
+    # Grant full permissions using icacls
+    $icaclsResult = icacls.exe $hostsFile /grant "Administrators:F" 2>&1
+    if ($LASTEXITCODE -eq 0) {
+        Write-Log "Successfully granted full permissions to Administrators" "SUCCESS"
+    } else {
+        Write-Log "Icacls result: $icaclsResult" "ERROR"
+    }
+
+    # Additional permission for current user
+    $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+    icacls.exe $hostsFile /grant "${currentUser}:F" 2>&1 | Out-Null
+
+    # Stop DNS Client service to unlock hosts file
+    Write-Log "Stopping DNS Client service to unlock hosts file..."
+    $dnsService = Get-Service -Name "Dnscache" -ErrorAction SilentlyContinue
+    $dnsWasRunning = $false
+
+    if ($dnsService) {
+        if ($dnsService.Status -eq "Running") {
+            try {
+                # Try using sc.exe as alternative (works better on X-Lite builds)
+                $stopResult = sc.exe stop "Dnscache" 2>&1
+                if ($LASTEXITCODE -eq 0) {
+                    $dnsWasRunning = $true
+                    Write-Log "DNS Client service stopped" "SUCCESS"
+                    Start-Sleep -Seconds 3
+                } else {
+                    Write-Log "DNS Client service could not be stopped (X-Lite build restrictions)" "ERROR"
+                    Write-Log "Continuing with ownership/permissions changes..." "SUCCESS"
+                }
+            } catch {
+                Write-Log "DNS Client service stop failed: $_" "ERROR"
+                Write-Log "Continuing with ownership/permissions changes..." "SUCCESS"
+            }
+        } else {
+            Write-Log "DNS Client service is not running" "SUCCESS"
+        }
+    } else {
+        Write-Log "DNS Client service not found (disabled on X-Lite builds)" "SUCCESS"
+    }
+
+    try {
+        # Backup hosts file (with force to override locks)
+        $backupPath = "$hostsFile.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+
+        # Use [System.IO.File] for more control over locked files
+        $hostsBytes = [System.IO.File]::ReadAllBytes($hostsFile)
+        [System.IO.File]::WriteAllBytes($backupPath, $hostsBytes)
+        Write-Log "Backed up hosts file to: $backupPath" "SUCCESS"
+
+        $telemetryDomains = @(
+            # Microsoft Telemetry
+            "vortex.data.microsoft.com",
+            "vortex-win.data.microsoft.com",
+            "telecommand.telemetry.microsoft.com",
+            "telecommand.telemetry.microsoft.com.nsatc.net",
+            "oca.telemetry.microsoft.com",
+            "oca.telemetry.microsoft.com.nsatc.net",
+            "sqm.telemetry.microsoft.com",
+            "sqm.telemetry.microsoft.com.nsatc.net",
+            "watson.telemetry.microsoft.com",
+            "watson.telemetry.microsoft.com.nsatc.net",
+            "redir.metaservices.microsoft.com",
+            "choice.microsoft.com",
+            "choice.microsoft.com.nsatc.net",
+            "df.telemetry.microsoft.com",
+            "reports.wes.df.telemetry.microsoft.com",
+            "wes.df.telemetry.microsoft.com",
+            "services.wes.df.telemetry.microsoft.com",
+            "sqm.df.telemetry.microsoft.com",
+            "telemetry.microsoft.com",
+            "telemetry.appex.bing.net",
+            "telemetry.urs.microsoft.com",
+            "telemetry.appex.bing.net:443",
+            "settings-sandbox.data.microsoft.com",
+            "vortex-sandbox.data.microsoft.com",
+            "survey.watson.microsoft.com",
+            "watson.live.com",
+            "watson.microsoft.com",
+            "statsfe2.ws.microsoft.com",
+            "corpext.msitadfs.glbdns2.microsoft.com",
+            "compatexchange.cloudapp.net",
+            "cs1.wpc.v0cdn.net",
+            "a-0001.a-msedge.net",
+            "statsfe2.update.microsoft.com.akadns.net",
+            "sls.update.microsoft.com.akadns.net",
+            "fe2.update.microsoft.com.akadns.net",
+            "diagnostics.support.microsoft.com",
+            "corp.sts.microsoft.com",
+            "statsfe1.ws.microsoft.com",
+            "pre.footprintpredict.com",
+            "i1.services.social.microsoft.com",
+            "i1.services.social.microsoft.com.nsatc.net",
+            "feedback.windows.com",
+            "feedback.microsoft-hohm.com",
+            "feedback.search.microsoft.com",
+            # Windows Update (for complete blocking)
+            "fe3.delivery.dsp.mp.microsoft.com.nsatc.net",
+            "tlu.dl.delivery.mp.microsoft.com",
+            # Microsoft Advertising
+            "ads.msn.com",
+            "ads1.msn.com",
+            "ads2.msn.com",
+            "bingads.microsoft.com",
+            "rad.msn.com",
+            "flex.msn.com"
+        )
+
+        # Read hosts file content using more robust method
+        $hostsContentRaw = [System.IO.File]::ReadAllText($hostsFile)
+        $hostsContent = $hostsContentRaw -split "`r?`n"
+        $newEntries = @()
+
+        foreach ($domain in $telemetryDomains) {
+            $entry = "0.0.0.0 $domain"
+            if ($hostsContent -notcontains $entry) {
+                $newEntries += $entry
+            }
+        }
+
+        if ($newEntries.Count -gt 0) {
+            # Build new content
+            $newContent = $hostsContentRaw
+            if (-not $hostsContentRaw.EndsWith("`n")) {
+                $newContent += "`r`n"
+            }
+            $newContent += "`r`n# Extreme Privacy - Microsoft Telemetry Blocking ($(Get-Date -Format 'yyyy-MM-dd'))`r`n"
+            $newContent += ($newEntries -join "`r`n")
+            $newContent += "`r`n"
+
+            # Write using [System.IO.File] for better lock handling
+            $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+            [System.IO.File]::WriteAllText($hostsFile, $newContent, $utf8NoBom)
+
+            Write-Log "Added $($newEntries.Count) telemetry domains to hosts file" "SUCCESS"
+        } else {
+            Write-Log "All telemetry domains already blocked in hosts file" "SUCCESS"
+        }
+
+    } finally {
+        # Always restart DNS Client service
+        if ($dnsWasRunning) {
+            try {
+                # Try sc.exe first (better for X-Lite builds)
+                $startResult = sc.exe start "Dnscache" 2>&1
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Log "DNS Client service restarted" "SUCCESS"
+                } else {
+                    # Fallback to PowerShell cmdlet
+                    Start-Service -Name "Dnscache" -ErrorAction SilentlyContinue
+                    Write-Log "DNS Client service restarted" "SUCCESS"
+                }
+            } catch {
+                Write-Log "DNS Client service could not be restarted (may require manual restart)" "ERROR"
+            }
+
+            # Flush DNS cache to apply changes
+            try {
+                ipconfig /flushdns | Out-Null
+                Write-Log "DNS cache flushed" "SUCCESS"
+            } catch {
+                Write-Log "Could not flush DNS cache" "ERROR"
+            }
         }
     }
 
-    if ($newEntries.Count -gt 0) {
-        Add-Content -Path $hostsFile -Value "`n# Extreme Privacy - Microsoft Telemetry Blocking"
-        Add-Content -Path $hostsFile -Value $newEntries
-        Write-Log "Added $($newEntries.Count) telemetry domains to hosts file" "SUCCESS"
-    }
 } catch {
     Write-Log "Error modifying hosts file: $_" "ERROR"
 }

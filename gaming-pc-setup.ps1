@@ -38,7 +38,14 @@ function Write-Log {
     param([string]$Message, [string]$Level = "INFO")
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $logMessage = "[$timestamp] [$Level] $Message"
-    Add-Content -Path $script:LogPath -Value $logMessage
+
+    # Try to write to log file (handle file locks gracefully)
+    try {
+        Add-Content -Path $script:LogPath -Value $logMessage -ErrorAction Stop
+    } catch {
+        # If log file is locked, just skip writing to file (still show on console)
+    }
+
     Write-Host $logMessage -ForegroundColor $(if ($Level -eq "ERROR") { "Red" } elseif ($Level -eq "SUCCESS") { "Green" } else { "White" })
 }
 
@@ -308,9 +315,10 @@ function Install-Software {
         @{Id = "Brave.Brave"; Name = "Brave Browser" },
         @{Id = "Spotify.Spotify"; Name = "Spotify" },
         @{Id = "qBittorrent.qBittorrent"; Name = "qBittorrent" },
-        @{Id = "Python.Python.3.13"; Name = "Python 3.13" },
-        @{Id = "zed-industries.zed"; Name = "Zed Editor" },
-        @{Id = "Signify.PhilipsHue"; Name = "Philips Hue Sync" }
+        @{Id = "Python.Python.3.14"; Name = "Python 3.14" },
+        @{Id = "ZedIndustries.Zed"; Name = "Zed Editor" },
+        @{Id = "Philips.HueSync"; Name = "Philips Hue Sync" },
+        @{Id = "Logitech.GHUB"; Name = "Logitech G HUB" }
     )
     
     $installed = 0
@@ -326,13 +334,13 @@ function Install-Software {
                 break
             }
             
-            $result = winget install --id $package.Id --accept-package-agreements --accept-source-agreements --silent 2>&1
+            $result = winget install --id $package.Id --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
             if ($LASTEXITCODE -eq 0) {
                 Write-Log "Installed: $($package.Name)" "SUCCESS"
                 $installed++
             } else {
                 # Check if it's already installed
-                $installedCheck = winget list --id $package.Id --accept-source-agreements 2>&1
+                $installedCheck = winget list --id $package.Id --source winget --accept-source-agreements 2>&1
                 if ($LASTEXITCODE -eq 0 -and $installedCheck -match $package.Id) {
                     Write-Log "Already installed: $($package.Name)" "SUCCESS"
                     $installed++
@@ -362,7 +370,7 @@ function Install-Software {
     Write-Log "  6. Enable 'Download' → 'Very High'" "WARNING"
     Write-Log ""
     Write-Log "QBITTORRENT SEARCH (OPTIONAL):" "WARNING"
-    Write-Log "  - Python 3.13 has been installed for qBittorrent search plugins" "WARNING"
+    Write-Log "  - Python 3.14 has been installed for qBittorrent search plugins" "WARNING"
     Write-Log "  - In qBittorrent: View → Search Engine → Install plugins" "WARNING"
     Write-Log ""
     Write-Log "PHILIPS HUE SYNC:" "WARNING"
@@ -1106,7 +1114,7 @@ try {
         @{ Name = "Game Launch Options"; Function = { Create-GameConfigs }; Weight = 5 }
     )
     
-    $totalWeight = ($sections | Measure-Object -Property Weight -Sum).Sum
+    $totalWeight = 0; foreach ($s in $sections) { $totalWeight += $s.Weight }
     $currentWeight = 0
     
     foreach ($section in $sections) {
@@ -1134,3 +1142,4 @@ try {
     exit 1
 }
 #endregion
+

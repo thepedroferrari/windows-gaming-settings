@@ -1,4 +1,4 @@
-#Requires -RunAsAdministrator
+﻿#Requires -RunAsAdministrator
 
 <#
 .SYNOPSIS
@@ -44,7 +44,14 @@ function Write-Log {
     param([string]$Message, [string]$Level = "INFO")
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $logMessage = "[$timestamp] [$Level] $Message"
-    Add-Content -Path $script:LogPath -Value $logMessage
+
+    # Try to write to log file (handle file locks gracefully)
+    try {
+        Add-Content -Path $script:LogPath -Value $logMessage -ErrorAction Stop
+    } catch {
+        # If log file is locked, just skip writing to file (still show on console)
+    }
+
     Write-Host $logMessage -ForegroundColor $(if ($Level -eq "ERROR") { "Red" } elseif ($Level -eq "SUCCESS") { "Green" } else { "White" })
 }
 
@@ -318,9 +325,10 @@ function Install-Software {
         @{Id = "Brave.Brave"; Name = "Brave Browser" },
         @{Id = "Spotify.Spotify"; Name = "Spotify" },
         @{Id = "qBittorrent.qBittorrent"; Name = "qBittorrent" },
-        @{Id = "Python.Python.3.13"; Name = "Python 3.13" },
-        @{Id = "zed-industries.zed"; Name = "Zed Editor" },
-        @{Id = "Signify.PhilipsHue"; Name = "Philips Hue Sync" }
+        @{Id = "Python.Python.3.14"; Name = "Python 3.14" },
+        @{Id = "ZedIndustries.Zed"; Name = "Zed Editor" },
+        @{Id = "Philips.HueSync"; Name = "Philips Hue Sync" },
+        @{Id = "Logitech.GHUB"; Name = "Logitech G HUB" }
     )
 
     $installed = 0
@@ -336,13 +344,13 @@ function Install-Software {
                 break
             }
 
-            $result = winget install --id $package.Id --accept-package-agreements --accept-source-agreements --silent 2>&1
+            $result = winget install --id $package.Id --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
             if ($LASTEXITCODE -eq 0) {
                 Write-Log "Installed: $($package.Name)" "SUCCESS"
                 $installed++
             } else {
                 # Check if it's already installed
-                $installedCheck = winget list --id $package.Id --accept-source-agreements 2>&1
+                $installedCheck = winget list --id $package.Id --source winget --accept-source-agreements 2>&1
                 if ($LASTEXITCODE -eq 0 -and $installedCheck -match $package.Id) {
                     Write-Log "Already installed: $($package.Name)" "SUCCESS"
                     $installed++
@@ -358,28 +366,7 @@ function Install-Software {
     }
 
     Write-Log "Software installation complete: $installed installed, $failed failed/skipped" "SUCCESS"
-
-    # Post-installation reminders
-    Write-Log ""
-    Write-Log "=== IMPORTANT POST-INSTALLATION STEPS ===" "WARNING"
-    Write-Log ""
-    Write-Log "SPOTIFY CONFIGURATION:" "WARNING"
-    Write-Log "  1. Open Spotify → Settings (Ctrl+,)" "WARNING"
-    Write-Log "  2. Scroll to 'Startup and window behaviour'" "WARNING"
-    Write-Log "  3. DISABLE 'Open Spotify automatically after you log into the computer'" "WARNING"
-    Write-Log "  4. Scroll to 'Audio Quality'" "WARNING"
-    Write-Log "  5. Set 'Streaming quality' to 'Very High'" "WARNING"
-    Write-Log "  6. Enable 'Download' → 'Very High'" "WARNING"
-    Write-Log ""
-    Write-Log "QBITTORRENT SEARCH (OPTIONAL):" "WARNING"
-    Write-Log "  - Python 3.13 has been installed for qBittorrent search plugins" "WARNING"
-    Write-Log "  - In qBittorrent: View → Search Engine → Install plugins" "WARNING"
-    Write-Log ""
-    Write-Log "PHILIPS HUE SYNC:" "WARNING"
-    Write-Log "  - Great for ambient gaming lighting!" "WARNING"
-    Write-Log "  - Can cause DPC latency - close if you experience stutters" "WARNING"
-    Write-Log "  - Or use game-mode.ps1 which closes it automatically" "WARNING"
-    Write-Log ""
+    Write-Log "Post-installation configuration steps saved to POST-SETUP-CHECKLIST.txt" "SUCCESS"
 }
 #endregion
 
@@ -884,8 +871,67 @@ function Remove-Telemetry {
 
 #region Game Launch Options
 function Create-GameConfigs {
-    Write-Log "=== Game Launch Options ==="
+    Write-Log "=== Game Launch Options & Installed Games Scan ==="
 
+    # Scan multiple Steam library locations
+    $steamPaths = @(
+        "${env:ProgramFiles(x86)}\Steam\steamapps\common",
+        "D:\SteamLibrary\steamapps\common",
+        "C:\SteamLibrary\steamapps\common"
+    )
+
+    # Game optimization database
+    $gameOptimizations = @{
+        "PUBG" = @{ LaunchOptions = "-malloc=system -USEALLAVAILABLECORES -sm4"; Priority = "HIGH" }
+        "Call of Duty HQ" = @{ LaunchOptions = "-high -threads 8"; Priority = "HIGH" }
+        "Marvel Rivals" = @{ LaunchOptions = "-high -dx11"; Priority = "HIGH" }
+        "Battlefield" = @{ LaunchOptions = "-high -threads 8 -novid"; Priority = "HIGH" }
+        "Deadlock" = @{ LaunchOptions = "-high -threads 8 -novid -console +fps_max 0"; Priority = "HIGH" }
+        "Aim Lab" = @{ LaunchOptions = "-high -refresh 165"; Priority = "HIGH" }
+        "Cyberpunk" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "Satisfactory" = @{ LaunchOptions = "-dx12 -high"; Priority = "MEDIUM" }
+        "Pacific Drive" = @{ LaunchOptions = "-dx12 -high"; Priority = "MEDIUM" }
+        "Need for Speed" = @{ LaunchOptions = "-high -novid"; Priority = "MEDIUM" }
+        "Dragon Ball" = @{ LaunchOptions = "-high -dx11"; Priority = "MEDIUM" }
+        "Trepang2" = @{ LaunchOptions = "-high -dx11"; Priority = "MEDIUM" }
+        "Death Stranding" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "No Man" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "Age of Empires" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "Age of Mythology" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "Last Epoch" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "Everspace" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "The Long Dark" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "Ace Combat" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+        "Final Fantasy" = @{ LaunchOptions = "-high"; Priority = "MEDIUM" }
+    }
+
+    # Scan for installed games
+    $installedGames = @()
+    foreach ($steamPath in $steamPaths) {
+        if (Test-Path $steamPath) {
+            Write-Log "Scanning: $steamPath" "SUCCESS"
+            $folders = Get-ChildItem -Path $steamPath -Directory -ErrorAction SilentlyContinue
+            foreach ($folder in $folders) {
+                foreach ($gameName in $gameOptimizations.Keys) {
+                    if ($folder.Name -like "*$gameName*") {
+                        $installedGames += @{
+                            Name = $folder.Name
+                            OptimizationKey = $gameName
+                            Path = $folder.FullName
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    # Log found games
+    if ($installedGames.Count -gt 0) {
+        Write-Log "Found $($installedGames.Count) installed games with optimization recommendations" "SUCCESS"
+        Write-Log "Launch options will be listed in POST-SETUP-CHECKLIST.txt" "SUCCESS"
+    }
+
+    # CS2/Dota 2 autoexec creation (original functionality)
     $steamPath = "${env:ProgramFiles(x86)}\Steam\steamapps\common"
     $configs = @{
         "CS2" = @{
@@ -969,6 +1015,10 @@ con_enable 1
     }
 
     Write-Log "Game config creation complete: $created configs created" "SUCCESS"
+    if ($created -gt 0) {
+        Write-Log "Autoexec configs created - launch options must be set manually in Steam" "SUCCESS"
+        Write-Log "See POST-SETUP-CHECKLIST.txt for instructions" "SUCCESS"
+    }
 }
 #endregion
 
@@ -979,17 +1029,36 @@ function Fix-Stutters {
     try {
         # Disable HPET (High Precision Event Timer) - major stutter cause
         Write-Log "Disabling HPET (High Precision Event Timer)..."
-        bcdedit /set useplatformclock false 2>&1 | Out-Null
-        bcdedit /set disabledynamictick yes 2>&1 | Out-Null
-        Write-Log "HPET disabled. Requires reboot to take effect." "SUCCESS"
+
+        try {
+            $result = bcdedit /set useplatformclock false 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Log "Disabled useplatformclock" "SUCCESS"
+            }
+        } catch {
+            Write-Log "Could not disable useplatformclock (may not be supported)" "ERROR"
+        }
+
+        try {
+            $result = bcdedit /set disabledynamictick yes 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Log "Disabled dynamic tick" "SUCCESS"
+            }
+        } catch {
+            Write-Log "Could not disable disabledynamictick (may not be supported)" "ERROR"
+        }
+
+        Write-Log "HPET configuration complete. Requires reboot." "SUCCESS"
 
         # ENHANCED: Aggressive optimizations if enabled
         if ($EnableAggressiveOptimizations) {
             Write-Log "AGGRESSIVE: Disabling Spectre/Meltdown mitigations (SECURITY RISK!)" "SUCCESS"
-            bcdedit /set hypervisorlaunchtype off 2>&1 | Out-Null
-            bcdedit /set isolatedcontext No 2>&1 | Out-Null
-            bcdedit /set tscsyncpolicy Enhanced 2>&1 | Out-Null
-            bcdedit /set x2apicpolicy Enable 2>&1 | Out-Null
+
+            try { bcdedit /set hypervisorlaunchtype off 2>&1 | Out-Null } catch { }
+            try { bcdedit /set isolatedcontext No 2>&1 | Out-Null } catch { }
+            try { bcdedit /set tscsyncpolicy Enhanced 2>&1 | Out-Null } catch { }
+            try { bcdedit /set x2apicpolicy Enable 2>&1 | Out-Null } catch { }
+
             Write-Log "Spectre/Meltdown mitigations disabled (5-15% FPS boost, SECURITY RISK)" "SUCCESS"
         }
 
@@ -1266,46 +1335,142 @@ function Set-HostsFileBlocking {
     try {
         $hostsFile = "$env:SystemRoot\System32\drivers\etc\hosts"
 
-        # Backup hosts file
-        $backupPath = "$hostsFile.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
-        Copy-Item $hostsFile $backupPath -Force
-        Write-Log "Backed up hosts file to: $backupPath" "SUCCESS"
+        # AGGRESSIVE FIX FOR X-LITE: Take ownership and force permissions
+        Write-Log "Taking ownership of hosts file (required for X-Lite builds)..."
 
-        $telemetryDomains = @(
-            "vortex.data.microsoft.com",
-            "vortex-win.data.microsoft.com",
-            "telemetry.microsoft.com",
-            "telemetry.urs.microsoft.com",
-            "telemetry.appex.bing.net",
-            "watson.telemetry.microsoft.com",
-            "watson.ppe.telemetry.microsoft.com",
-            "oca.telemetry.microsoft.com",
-            "statsfe2.ws.microsoft.com",
-            "corpext.msitadfs.glbdns2.microsoft.com",
-            "compatexchange.cloudapp.net",
-            "cs1.wpc.v0cdn.net",
-            "a-0001.a-msedge.net",
-            "feedback.windows.com",
-            "feedback.microsoft-hohm.com",
-            "feedback.search.microsoft.com"
-        )
-
-        $hostsContent = Get-Content $hostsFile
-        $newEntries = @()
-
-        foreach ($domain in $telemetryDomains) {
-            $entry = "0.0.0.0 $domain"
-            if ($hostsContent -notcontains $entry) {
-                $newEntries += $entry
-            }
+        # Take ownership using takeown.exe
+        $takeownResult = takeown.exe /F $hostsFile /A 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Log "Successfully took ownership of hosts file" "SUCCESS"
+        } else {
+            Write-Log "Takeown result: $takeownResult" "ERROR"
         }
 
-        if ($newEntries.Count -gt 0) {
-            Add-Content -Path $hostsFile -Value "`n# Gaming PC Setup - Microsoft Telemetry Blocking"
-            Add-Content -Path $hostsFile -Value $newEntries
-            Write-Log "Added $($newEntries.Count) telemetry domains to hosts file" "SUCCESS"
+        # Grant full permissions using icacls
+        $icaclsResult = icacls.exe $hostsFile /grant "Administrators:F" 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Log "Successfully granted full permissions to Administrators" "SUCCESS"
         } else {
-            Write-Log "All telemetry domains already blocked in hosts file" "SUCCESS"
+            Write-Log "Icacls result: $icaclsResult" "ERROR"
+        }
+
+        # Additional permission for current user
+        $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+        icacls.exe $hostsFile /grant "${currentUser}:F" 2>&1 | Out-Null
+
+        # Stop DNS Client service to unlock hosts file
+        Write-Log "Stopping DNS Client service to unlock hosts file..."
+        $dnsService = Get-Service -Name "Dnscache" -ErrorAction SilentlyContinue
+        $dnsWasRunning = $false
+
+        if ($dnsService) {
+            if ($dnsService.Status -eq "Running") {
+                try {
+                    # Try using sc.exe as alternative (works better on X-Lite builds)
+                    $stopResult = sc.exe stop "Dnscache" 2>&1
+                    if ($LASTEXITCODE -eq 0) {
+                        $dnsWasRunning = $true
+                        Write-Log "DNS Client service stopped" "SUCCESS"
+                        Start-Sleep -Seconds 3
+                    } else {
+                        Write-Log "DNS Client service could not be stopped (X-Lite build restrictions)" "ERROR"
+                        Write-Log "Continuing with ownership/permissions changes..." "SUCCESS"
+                    }
+                } catch {
+                    Write-Log "DNS Client service stop failed: $_" "ERROR"
+                    Write-Log "Continuing with ownership/permissions changes..." "SUCCESS"
+                }
+            } else {
+                Write-Log "DNS Client service is not running" "SUCCESS"
+            }
+        } else {
+            Write-Log "DNS Client service not found (disabled on X-Lite builds)" "SUCCESS"
+        }
+
+        try {
+            # Backup hosts file (with force to override locks)
+            $backupPath = "$hostsFile.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+
+            # Use [System.IO.File] for more control over locked files
+            $hostsBytes = [System.IO.File]::ReadAllBytes($hostsFile)
+            [System.IO.File]::WriteAllBytes($backupPath, $hostsBytes)
+            Write-Log "Backed up hosts file to: $backupPath" "SUCCESS"
+
+            $telemetryDomains = @(
+                "vortex.data.microsoft.com",
+                "vortex-win.data.microsoft.com",
+                "telemetry.microsoft.com",
+                "telemetry.urs.microsoft.com",
+                "telemetry.appex.bing.net",
+                "watson.telemetry.microsoft.com",
+                "watson.ppe.telemetry.microsoft.com",
+                "oca.telemetry.microsoft.com",
+                "statsfe2.ws.microsoft.com",
+                "corpext.msitadfs.glbdns2.microsoft.com",
+                "compatexchange.cloudapp.net",
+                "cs1.wpc.v0cdn.net",
+                "a-0001.a-msedge.net",
+                "feedback.windows.com",
+                "feedback.microsoft-hohm.com",
+                "feedback.search.microsoft.com"
+            )
+
+            # Read hosts file content using more robust method
+            $hostsContentRaw = [System.IO.File]::ReadAllText($hostsFile)
+            $hostsContent = $hostsContentRaw -split "`r?`n"
+            $newEntries = @()
+
+            foreach ($domain in $telemetryDomains) {
+                $entry = "0.0.0.0 $domain"
+                if ($hostsContent -notcontains $entry) {
+                    $newEntries += $entry
+                }
+            }
+
+            if ($newEntries.Count -gt 0) {
+                # Build new content
+                $newContent = $hostsContentRaw
+                if (-not $hostsContentRaw.EndsWith("`n")) {
+                    $newContent += "`r`n"
+                }
+                $newContent += "`r`n# Gaming PC Setup - Microsoft Telemetry Blocking ($(Get-Date -Format 'yyyy-MM-dd'))`r`n"
+                $newContent += ($newEntries -join "`r`n")
+                $newContent += "`r`n"
+
+                # Write using [System.IO.File] for better lock handling
+                $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+                [System.IO.File]::WriteAllText($hostsFile, $newContent, $utf8NoBom)
+
+                Write-Log "Added $($newEntries.Count) telemetry domains to hosts file" "SUCCESS"
+            } else {
+                Write-Log "All telemetry domains already blocked in hosts file" "SUCCESS"
+            }
+
+        } finally {
+            # Always restart DNS Client service
+            if ($dnsWasRunning) {
+                try {
+                    # Try sc.exe first (better for X-Lite builds)
+                    $startResult = sc.exe start "Dnscache" 2>&1
+                    if ($LASTEXITCODE -eq 0) {
+                        Write-Log "DNS Client service restarted" "SUCCESS"
+                    } else {
+                        # Fallback to PowerShell cmdlet
+                        Start-Service -Name "Dnscache" -ErrorAction SilentlyContinue
+                        Write-Log "DNS Client service restarted" "SUCCESS"
+                    }
+                } catch {
+                    Write-Log "DNS Client service could not be restarted (may require manual restart)" "ERROR"
+                }
+
+                # Flush DNS cache to apply changes
+                try {
+                    ipconfig /flushdns | Out-Null
+                    Write-Log "DNS cache flushed" "SUCCESS"
+                } catch {
+                    Write-Log "Could not flush DNS cache" "ERROR"
+                }
+            }
         }
 
     } catch {
@@ -1351,6 +1516,72 @@ function Optimize-PageFile {
 }
 #endregion
 
+#region ENHANCED: Cloudflare DNS Configuration
+function Set-CloudflareDNS {
+    Write-Log "=== Cloudflare DNS Configuration (Low Latency Gaming) ==="
+
+    if (-not $SkipConfirmations) {
+        $dnsConfirm = Read-Host "Configure Cloudflare DNS (1.1.1.1) for lower latency? (Y/N)"
+        if ($dnsConfirm -ne "Y") {
+            Write-Log "Skipped Cloudflare DNS configuration" "SUCCESS"
+            return
+        }
+    }
+
+    try {
+        # Auto-detect active network adapter
+        $adapter = Get-NetAdapter | Where-Object { $_.Status -eq "Up" -and ($_.InterfaceDescription -like "*Ethernet*" -or $_.InterfaceDescription -like "*Wi-Fi*") } | Select-Object -First 1
+
+        if (-not $adapter) {
+            Write-Log "No active network adapter found" "ERROR"
+            return
+        }
+
+        Write-Log "Configuring Cloudflare DNS for adapter: $($adapter.Name)" "SUCCESS"
+
+        # Set IPv4 DNS servers (Cloudflare)
+        Set-DnsClientServerAddress -InterfaceIndex $adapter.InterfaceIndex -ServerAddresses ("1.1.1.1", "1.0.0.1") -ErrorAction Stop
+        Write-Log "IPv4 DNS set to Cloudflare: 1.1.1.1, 1.0.0.1" "SUCCESS"
+
+        # Set IPv6 DNS servers (Cloudflare) if IPv6 is enabled
+        try {
+            $ipv6Enabled = (Get-NetAdapterBinding -InterfaceAlias $adapter.Name -ComponentID ms_tcpip6 -ErrorAction SilentlyContinue).Enabled
+            if ($ipv6Enabled) {
+                Set-DnsClientServerAddress -InterfaceIndex $adapter.InterfaceIndex -ServerAddresses ("2606:4700:4700::1111", "2606:4700:4700::1001") -ErrorAction Stop
+                Write-Log "IPv6 DNS set to Cloudflare: 2606:4700:4700::1111, 2606:4700:4700::1001" "SUCCESS"
+            }
+        } catch {
+            Write-Log "IPv6 not enabled or could not configure IPv6 DNS" "SUCCESS"
+        }
+
+        # Flush DNS cache
+        ipconfig /flushdns | Out-Null
+        Write-Log "DNS cache flushed" "SUCCESS"
+
+        # Register DNS
+        ipconfig /registerdns | Out-Null
+        Write-Log "DNS registered" "SUCCESS"
+
+        # Test DNS resolution
+        Write-Log "Testing DNS resolution..."
+        try {
+            $testResult = Resolve-DnsName -Name "google.com" -Server "1.1.1.1" -ErrorAction Stop -QuickTimeout
+            if ($testResult) {
+                Write-Log "DNS resolution test successful via Cloudflare" "SUCCESS"
+            }
+        } catch {
+            Write-Log "DNS resolution test failed (network may need a moment to update)" "ERROR"
+        }
+
+        Write-Log "Cloudflare DNS configuration complete" "SUCCESS"
+        Write-Log "Benefits: Lower latency, faster DNS lookups, better privacy" "SUCCESS"
+
+    } catch {
+        Write-Log "Error configuring Cloudflare DNS: $_" "ERROR"
+    }
+}
+#endregion
+
 #region Main Execution
 try {
     Write-Host "`n=== Gaming PC Setup Script ENHANCED ===" -ForegroundColor Cyan
@@ -1374,6 +1605,7 @@ try {
         @{ Name = "Power Plan Configuration"; Function = { Set-PowerPlan }; Weight = 5 },
         @{ Name = "Process Priority Tweaks"; Function = { Set-ProcessPriorityTweaks }; Weight = 5 },
         @{ Name = "Network Optimization"; Function = { Optimize-Network }; Weight = 10 },
+        @{ Name = "Cloudflare DNS Configuration"; Function = { Set-CloudflareDNS }; Weight = 3 },
         @{ Name = "QoS Configuration"; Function = { Set-QoSConfiguration }; Weight = 5 },
         @{ Name = "Stutter Fixes & Frame Time Optimization"; Function = { Fix-Stutters }; Weight = 20 },
         @{ Name = "Service Management"; Function = { Disable-Services }; Weight = 10 },
@@ -1386,7 +1618,7 @@ try {
         @{ Name = "Page File Optimization"; Function = { Optimize-PageFile }; Weight = 2 }
     )
 
-    $totalWeight = ($sections | Measure-Object -Property Weight -Sum).Sum
+    $totalWeight = 0; foreach ($s in $sections) { $totalWeight += $s.Weight }
     $currentWeight = 0
 
     foreach ($section in $sections) {
@@ -1406,17 +1638,295 @@ try {
     $duration = (Get-Date) - $script:StartTime
     Write-Log "=== Script Completed Successfully ===" "SUCCESS"
     Write-Log "Total execution time: $($duration.ToString('mm\:ss'))" "SUCCESS"
-    Write-Host "`n=== SETUP COMPLETE! ===" -ForegroundColor Green
-    Write-Host "`nIMPORTANT NEXT STEPS:" -ForegroundColor Yellow
-    Write-Host "1. REBOOT your computer for all changes to take effect" -ForegroundColor White
-    Write-Host "2. Before gaming, run: .\timer-tool.ps1 -GameProcess `"gamename`"" -ForegroundColor White
-    Write-Host "3. Keep timer tool running during gameplay (CRITICAL for micro-stutters)" -ForegroundColor White
-    Write-Host "4. If stutters persist, run: .\diagnose-stutters.ps1`n" -ForegroundColor White
+
+    # Build post-setup checklist
+    $steamPaths = @(
+        "${env:ProgramFiles(x86)}\Steam\steamapps\common",
+        "D:\SteamLibrary\steamapps\common",
+        "C:\SteamLibrary\steamapps\common"
+    )
+
+    $gameOptimizations = @{
+        "PUBG" = "-malloc=system -USEALLAVAILABLECORES -sm4"
+        "Call of Duty HQ" = "-high -threads 8"
+        "Marvel Rivals" = "-high -dx11"
+        "Battlefield" = "-high -threads 8 -novid"
+        "Deadlock" = "-high -threads 8 -novid -console +fps_max 0"
+        "Aim Lab" = "-high -refresh 165"
+        "Cyberpunk" = "-high"
+        "Satisfactory" = "-dx12 -high"
+        "Pacific Drive" = "-dx12 -high"
+        "Need for Speed" = "-high -novid"
+        "CS2" = "-high -threads 8 -novid -tickrate 128 +fps_max 0"
+        "Counter-Strike" = "-high -threads 8 -novid -tickrate 128 +fps_max 0"
+        "Dota 2" = "-high -threads 8 -novid -console"
+        "dota 2 beta" = "-high -threads 8 -novid -console"
+    }
+
+    # Detect installed games for summary stats
+    $detectedGames = @()
+    foreach ($steamPath in $steamPaths) {
+        if (Test-Path $steamPath) {
+            $folders = Get-ChildItem -Path $steamPath -Directory -ErrorAction SilentlyContinue
+            foreach ($folder in $folders) {
+                foreach ($gameName in $gameOptimizations.Keys) {
+                    if ($folder.Name -like "*$gameName*") {
+                        $detectedGames += $gameName
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    # Create comprehensive checklist file
+    $checklistContent = @"
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                    🎮 POST-SETUP CHECKLIST - ACTION REQUIRED! 🎮              ║
+║                                                                              ║
+║              Complete these steps to finish your gaming setup                ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Generated: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+Script: gaming-pc-setup-enhanced.ps1
+
+════════════════════════════════════════════════════════════════════════════════
+ ⚠️  STEP 1: REBOOT YOUR COMPUTER (REQUIRED!)
+════════════════════════════════════════════════════════════════════════════════
+
+  [ ] Restart Windows now to apply all optimizations (DO THIS FIRST!)
+
+════════════════════════════════════════════════════════════════════════════════
+ 🎯 STEP 2: STEAM LAUNCH OPTIONS (30 seconds per game)
+════════════════════════════════════════════════════════════════════════════════
+
+  HOW TO: Steam → Library → Right-click game → Properties → Launch Options
+
+"@
+
+    # Sort games alphabetically and display in compact format
+    $sortedGames = $gameOptimizations.GetEnumerator() | Sort-Object Key
+    foreach ($game in $sortedGames) {
+        $installed = if ($detectedGames -contains $game.Key) { "✓" } else { " " }
+        $checklistContent += "  [$installed] $($game.Key): $($game.Value)`n"
+    }
+
+    $checklistContent += "`n  💡 Games with ✓ are installed | Copy/paste options into Steam`n`n"
+
+    # Spotify configuration
+    if ($script:WingetAvailable) {
+        $checklistContent += @"
+════════════════════════════════════════════════════════════════════════════════
+ 🎵 STEP 3: CONFIGURE SPOTIFY (2 MINUTES)
+════════════════════════════════════════════════════════════════════════════════
+
+  Open Spotify → Settings (Ctrl+,):
+
+  [ ] Scroll to "Startup and window behaviour"
+      • DISABLE "Open Spotify automatically after you log into the computer"
+        (Saves resources for gaming!)
+
+  [ ] Scroll to "Audio Quality"
+      • Set "Streaming quality" → Very High
+      • Set "Download quality" → Very High
+        (You deserve better audio quality!)
+
+
+"@
+    }
+
+    # DNS verification
+    $checklistContent += @"
+════════════════════════════════════════════════════════════════════════════════
+ 🌐 STEP 4: VERIFY DNS CONFIGURATION (30 SECONDS)
+════════════════════════════════════════════════════════════════════════════════
+
+  Open PowerShell or CMD and run:
+
+  [ ] nslookup google.com
+
+      Expected output should show: 1.1.1.1 (Cloudflare DNS)
+      ✓ If you see 1.1.1.1 → DNS is working!
+      ✗ If not → DNS may need manual configuration
+
+
+"@
+
+    # NVIDIA settings
+    $checklistContent += @"
+════════════════════════════════════════════════════════════════════════════════
+ 🎮 STEP 5: NVIDIA CONTROL PANEL SETTINGS (5 MINUTES)
+════════════════════════════════════════════════════════════════════════════════
+
+  Open NVIDIA Control Panel (right-click desktop):
+
+  [ ] Manage 3D Settings → Global Settings:
+      • Power management mode → Prefer maximum performance
+      • Low latency mode → Ultra
+      • Vertical sync → Off (or Fast if you have G-Sync)
+      • Texture filtering - Quality → High performance
+      • Threaded optimization → On
+
+  💡 These settings drastically improve frame times and reduce input lag!
+
+
+"@
+
+    # Optional/Advanced steps
+    $checklistContent += @"
+════════════════════════════════════════════════════════════════════════════════
+ 🔧 OPTIONAL STEPS (When You Have Time)
+════════════════════════════════════════════════════════════════════════════════
+
+  [ ] qBittorrent Search Plugins (OPTIONAL)
+      • Python 3.14 was installed for search plugin support
+      • In qBittorrent: View → Search Engine → Install plugins
+      • Search for: The Pirate Bay, 1337x, RARBG plugins
+
+  [ ] Philips Hue Sync (if installed)
+      • Great for ambient gaming lighting!
+      • ⚠️  Can cause DPC latency → Close if you get stutters
+      • Or use game-mode.ps1 to auto-close it before gaming
+
+  [ ] DTS Audio Setup (Samsung Q990D)
+      • Settings → System → Sound → Spatial audio
+      • Configure DTS:X settings
+      • Install Samsung audio drivers if needed
+
+  [ ] Windows Graphics Settings (Per-Game Tweaks)
+      • Settings → System → Display → Graphics settings
+      • Add each game EXE manually
+      • Set to "High performance"
+      • Enable/disable "Hardware-accelerated GPU scheduling" per preference
+
+
+"@
+
+    # Performance verification
+    $checklistContent += @"
+════════════════════════════════════════════════════════════════════════════════
+ 📊 STEP 6: VERIFY PERFORMANCE IMPROVEMENTS (AFTER REBOOT)
+════════════════════════════════════════════════════════════════════════════════
+
+  After rebooting, test your games:
+
+  [ ] Check FPS improvements (should see 5-20% boost)
+  [ ] Monitor frame times (should be more consistent - less stutters)
+  [ ] Test input latency (should feel more responsive)
+  [ ] Run LatencyMon to verify DPC latency is low (<500μs is good)
+
+  💡 Keep this checklist and mark items as done!
+
+
+"@
+
+    # Warnings
+    if ($EnableAggressiveOptimizations) {
+        $checklistContent += @"
+════════════════════════════════════════════════════════════════════════════════
+ ⚠️  SECURITY WARNING
+════════════════════════════════════════════════════════════════════════════════
+
+  Aggressive optimizations were enabled:
+  • Spectre/Meltdown mitigations DISABLED
+  • 5-15% FPS boost at the cost of security
+
+  [ ] Be cautious with untrusted software
+  [ ] Don't use this PC for sensitive banking/work
+  [ ] Consider re-enabling if you need better security
+
+
+"@
+    }
+
+    # Footer
+    $checklistContent += @"
+════════════════════════════════════════════════════════════════════════════════
+ 📝 NOTES & TIPS
+════════════════════════════════════════════════════════════════════════════════
+
+  • REBOOT IS MANDATORY - Do it first!
+  • Steam launch options take 30 sec per game - do it while fresh!
+  • Keep this file open and check off items as you complete them
+  • Games with ✓ are already installed on your system
+  • Questions? Check the log file: $script:LogPath
+
+  🎯 Priority order: Reboot → Steam → Spotify → NVIDIA → Everything else
+
+════════════════════════════════════════════════════════════════════════════════
+
+Happy gaming! Your setup is now optimized for maximum performance. 🚀
+
+"@
+
+    # Save checklist to file
+    try {
+        $checklistPath = ".\POST-SETUP-CHECKLIST.txt"
+        Set-Content -Path $checklistPath -Value $checklistContent -Encoding UTF8
+        Write-Log "Post-setup checklist saved to: $checklistPath" "SUCCESS"
+
+        # Auto-open the checklist in Notepad
+        try {
+            Start-Process "notepad.exe" -ArgumentList $checklistPath -ErrorAction SilentlyContinue
+            Write-Log "Opened checklist in Notepad" "SUCCESS"
+        } catch {
+            Write-Log "Could not auto-open checklist (open it manually)" "ERROR"
+        }
+    } catch {
+        Write-Log "Could not save checklist file: $_" "ERROR"
+    }
+
+    # Display condensed version on screen
+    Write-Host ""
+    Write-Host "╔══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Green
+    Write-Host "║                                                                              ║" -ForegroundColor Green
+    Write-Host "║                    🎮 SETUP COMPLETE - ACTION REQUIRED! 🎮                    ║" -ForegroundColor Green
+    Write-Host "║                                                                              ║" -ForegroundColor Green
+    Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "  🚨 IMPORTANT: Checklist opened in Notepad!" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  POST-SETUP-CHECKLIST.txt contains all the steps you need." -ForegroundColor Yellow
+    Write-Host "  → $(Resolve-Path '.\POST-SETUP-CHECKLIST.txt')" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "  ⚡ QUICK SUMMARY (DO IN THIS ORDER):" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  [ ] 1. READ THE CHECKLIST FILE (already open in Notepad)" -ForegroundColor White
+    Write-Host "         (Keep it open so you don't lose track!)" -ForegroundColor Gray
+    Write-Host ""
+
+    Write-Host "  [ ] 2. SET STEAM LAUNCH OPTIONS" -ForegroundColor White
+    $installedCount = $detectedGames.Count
+    $totalCount = $gameOptimizations.Count
+    if ($installedCount -gt 0) {
+        Write-Host "         Found $installedCount/$totalCount games | All $totalCount games listed in checklist" -ForegroundColor Gray
+    } else {
+        Write-Host "         All $totalCount supported games listed in checklist for reference" -ForegroundColor Gray
+    }
+    Write-Host ""
+
+    Write-Host "  [ ] 3. CONFIGURE SPOTIFY (disable autostart, set quality)" -ForegroundColor White
+    Write-Host "         Settings → Startup behaviour + Audio Quality" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "  [ ] 4. NVIDIA CONTROL PANEL (max performance, low latency)" -ForegroundColor White
+    Write-Host "         Right-click desktop → NVIDIA Control Panel" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "  [ ] 5. REBOOT YOUR COMPUTER (DO THIS LAST!)" -ForegroundColor Yellow
+    Write-Host "         (Rebooting closes this window - do other steps first)" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "  💡 TIP: Open the checklist file NOW, then do the other steps!" -ForegroundColor Cyan
+    Write-Host ""
 
     if ($EnableAggressiveOptimizations) {
-        Write-Host "NOTE: Spectre/Meltdown mitigations have been disabled for performance." -ForegroundColor Red
-        Write-Host "This improves FPS but reduces security. Be cautious with untrusted software.`n" -ForegroundColor Red
+        Write-Host "  ⚠️  WARNING: Spectre/Meltdown mitigations disabled" -ForegroundColor Red
+        Write-Host "     5-15% FPS boost, but reduced security" -ForegroundColor Red
+        Write-Host ""
     }
+
+    Write-Host "════════════════════════════════════════════════════════════════════════════════" -ForegroundColor Gray
+    Write-Host ""
 
 } catch {
     Write-Log "Fatal error: $_" "ERROR"
@@ -1424,3 +1934,4 @@ try {
     exit 1
 }
 #endregion
+
