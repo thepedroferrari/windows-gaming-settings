@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Browser window with Microsoft Edge wave -->
+  <rect x="6" y="10" width="36" height="28" rx="3" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <path d="M6 18 L42 18" stroke="currentColor" stroke-width="2.5"/>
+  <circle cx="12" cy="14" r="1.5" fill="currentColor"/>
+  <circle cx="17" cy="14" r="1.5" fill="currentColor"/>
+  <circle cx="22" cy="14" r="1.5" fill="currentColor"/>
+  <!-- Wave/surf icon -->
+  <path d="M14 26 Q18 22 24 26 Q30 30 36 26" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M14 32 Q20 28 24 32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- NVIDIA eye-like logo with sparkle -->
+  <path d="M8 24 Q12 12 24 12 Q36 12 40 24 Q36 36 24 36 Q12 36 8 24 Z" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="2.5"/>
+  <circle cx="24" cy="24" r="6" fill="currentColor"/>
+  <!-- Sparkle/clean indicator -->
+  <path d="M38 10 L40 14 L44 12 L42 16 L46 18 L42 20 L44 24 L40 22 L38 26 L36 22 L32 24 L34 20 L30 18 L34 16 L32 12 L36 14 Z" fill="currentColor" opacity="0.6"/>
+</svg>

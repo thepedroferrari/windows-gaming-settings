@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Speaker/trumpet with volume waves -->
+  <path d="M12 18 L12 30 L20 30 L32 40 L32 8 L20 18 Z" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Sound waves -->
+  <path d="M38 16 Q42 20 42 24 Q42 28 38 32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M36 20 Q38 22 38 24 Q38 26 36 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- CPU benchmark with cinema clapper -->
+  <rect x="8" y="16" width="32" height="20" rx="2" stroke="currentColor" stroke-width="2.5" fill="currentColor" opacity="0.2"/>
+  <!-- Clapper stripes -->
+  <rect x="8" y="10" width="32" height="6" rx="2 2 0 0" fill="currentColor" opacity="0.4" stroke="currentColor" stroke-width="2.5"/>
+  <path d="M12 10 L12 16" stroke="currentColor" stroke-width="2"/>
+  <path d="M20 10 L20 16" stroke="currentColor" stroke-width="2"/>
+  <path d="M28 10 L28 16" stroke="currentColor" stroke-width="2"/>
+  <path d="M36 10 L36 16" stroke="currentColor" stroke-width="2"/>
+  <!-- R23/R24 text hint -->
+  <text x="24" y="28" font-family="monospace" font-size="10" font-weight="bold" fill="currentColor" text-anchor="middle">R24</text>
+  <!-- CPU indicator -->
+  <rect x="16" y="32" width="4" height="6" rx="1" fill="currentColor" opacity="0.5"/>
+  <rect x="22" y="30" width="4" height="8" rx="1" fill="currentColor" opacity="0.7"/>
+  <rect x="28" y="28" width="4" height="10" rx="1" fill="currentColor" opacity="0.9"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Signal waves with RGB colors -->
+  <path d="M24 24 L24 40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- RGB signal arcs -->
+  <path d="M16 20 Q12 24 16 28" stroke="#ff4444" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M10 16 Q4 24 10 32" stroke="#44ff44" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M6 12 Q-2 24 6 36" stroke="#4444ff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M32 20 Q36 24 32 28" stroke="#ff4444" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M38 16 Q44 24 38 32" stroke="#44ff44" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M42 12 Q50 24 42 36" stroke="#4444ff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <circle cx="24" cy="24" r="4" fill="currentColor"/>
+</svg>

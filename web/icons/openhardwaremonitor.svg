@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Open chip icon -->
+  <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <rect x="16" y="16" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.2"/>
+  <!-- Open padlock -->
+  <path d="M28 20 C28 18 26 16 24 16 C22 16 20 18 20 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="20" y="22" width="8" height="6" rx="1" fill="currentColor" opacity="0.6"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- RGB color wheel -->
+  <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <!-- RGB segments -->
+  <path d="M24 8 A16 16 0 0 1 37.9 18" stroke="#ff4444" stroke-width="4" fill="none" opacity="0.7"/>
+  <path d="M37.9 18 A16 16 0 0 1 37.9 30" stroke="#44ff44" stroke-width="4" fill="none" opacity="0.7"/>
+  <path d="M37.9 30 A16 16 0 0 1 24 40" stroke="#4444ff" stroke-width="4" fill="none" opacity="0.7"/>
+  <path d="M24 40 A16 16 0 0 1 10.1 30" stroke="#ffff44" stroke-width="4" fill="none" opacity="0.7"/>
+  <path d="M10.1 30 A16 16 0 0 1 10.1 18" stroke="#ff44ff" stroke-width="4" fill="none" opacity="0.7"/>
+  <path d="M10.1 18 A16 16 0 0 1 24 8" stroke="#44ffff" stroke-width="4" fill="none" opacity="0.7"/>
+  <!-- Center circle -->
+  <circle cx="24" cy="24" r="6" fill="currentColor"/>
+</svg>

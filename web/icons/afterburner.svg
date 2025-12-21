@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Gauge/speedometer representing overclocking -->
+  <path d="M8 32 Q8 16 24 16 Q40 16 40 32" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="24" cy="32" r="3" fill="currentColor"/>
+  <!-- Needle pointing up-right (overclocked) -->
+  <path d="M24 32 L34 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Tick marks -->
+  <path d="M10 32 L12 28" stroke="currentColor" stroke-width="2"/>
+  <path d="M16 22 L18 20" stroke="currentColor" stroke-width="2"/>
+  <path d="M24 16 L24 18" stroke="currentColor" stroke-width="2"/>
+  <path d="M32 22 L30 20" stroke="currentColor" stroke-width="2"/>
+  <path d="M38 32 L36 28" stroke="currentColor" stroke-width="2"/>
+  <!-- Flame accent -->
+  <path d="M24 6 Q28 2 26 8 Q24 6 26 12" fill="currentColor" opacity="0.5"/>
+</svg>

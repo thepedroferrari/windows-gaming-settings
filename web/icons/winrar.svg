@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Stacked books/files representing archive compression -->
+  <path d="M8 14 L8 42 L32 42 L32 14 Z" fill="currentColor" opacity="0.3" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M12 10 L12 38 L36 38 L36 10 Z" fill="currentColor" opacity="0.5" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M16 6 L16 34 L40 34 L40 6 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- RAR text suggestion -->
+  <text x="24" y="22" font-family="monospace" font-size="10" font-weight="bold" fill="currentColor" text-anchor="middle">RAR</text>
+</svg>

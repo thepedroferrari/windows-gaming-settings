@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Camera with flame representing Flameshot -->
+  <rect x="8" y="14" width="32" height="24" rx="4" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <circle cx="24" cy="26" r="7" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <circle cx="24" cy="26" r="3" fill="currentColor"/>
+  <rect x="18" y="10" width="12" height="4" rx="2" fill="currentColor"/>
+  <circle cx="36" cy="20" r="2" fill="currentColor"/>
+  <!-- Flame accent -->
+  <path d="M38 10 Q40 6 38 2 Q36 4 38 8 Z" fill="currentColor" opacity="0.6"/>
+</svg>

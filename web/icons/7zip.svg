@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Folder with zipper representing 7-Zip -->
+  <path d="M6 12 L6 40 C6 41.1 6.9 42 8 42 L40 42 C41.1 42 42 41.1 42 40 L42 16 C42 14.9 41.1 14 40 14 L20 14 L16 10 L8 10 C6.9 10 6 10.9 6 12 Z" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Number 7 -->
+  <text x="24" y="32" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="currentColor" text-anchor="middle">7z</text>
+</svg>

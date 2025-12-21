@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Computer chip with info symbol -->
+  <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <rect x="16" y="16" width="16" height="16" rx="2" fill="currentColor" opacity="0.3"/>
+  <!-- Chip pins -->
+  <path d="M4 14 L8 14" stroke="currentColor" stroke-width="2"/>
+  <path d="M4 20 L8 20" stroke="currentColor" stroke-width="2"/>
+  <path d="M4 26 L8 26" stroke="currentColor" stroke-width="2"/>
+  <path d="M4 34 L8 34" stroke="currentColor" stroke-width="2"/>
+  <path d="M40 14 L44 14" stroke="currentColor" stroke-width="2"/>
+  <path d="M40 20 L44 20" stroke="currentColor" stroke-width="2"/>
+  <path d="M40 26 L44 26" stroke="currentColor" stroke-width="2"/>
+  <path d="M40 34 L44 34" stroke="currentColor" stroke-width="2"/>
+  <!-- Info 'i' -->
+  <circle cx="24" cy="21" r="1.5" fill="currentColor"/>
+  <path d="M24 25 L24 31" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
