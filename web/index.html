@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RigTune — Windows Gaming Optimizer</title>
-    <meta name="description" content="One script. Zero bloat. All performance. Generate a personalized Windows optimization script for your gaming rig.">
+    <title>RockTune — A Loadout Builder for Windows Gaming</title>
+    <meta name="description" content="Generate a personalized PowerShell script to tune Windows for gaming: debloat, reduce telemetry, install essentials, and apply optional performance upgrades.">
     <meta name="author" content="Pedro Ferrari">
     <meta name="theme-color" content="#050507">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,15 +17,15 @@
     <div class="cursor-glow" aria-hidden="true"></div>
 
     <header>
-        <h1>RigTune</h1>
-        <p class="tagline">One script. Zero bloat. All performance.</p>
+        <h1>RockTune</h1>
+        <p class="tagline">Choose your battle. Forge your build.</p>
     </header>
 
     <main>
-        <!-- Step 1: Hardware Profile -->
+        <!-- Step 1: Core -->
         <section id="hardware" class="step">
-            <h2><span class="step-num">1</span> Hardware Profile</h2>
-            <p class="step-desc">Select your hardware to enable the right optimizations</p>
+            <h2><span class="step-num">1</span> Core</h2>
+            <p class="step-desc">Select your hardware to enable the right upgrades</p>
 
             <div class="presets">
                 <button type="button" class="preset-btn" data-preset="competitive">
@@ -132,9 +132,9 @@
             </fieldset>
         </section>
 
-        <!-- Step 2: Optimizations -->
+        <!-- Step 2: Upgrades -->
         <section id="optimizations" class="step">
-            <h2><span class="step-num">2</span> Optimizations</h2>
+            <h2><span class="step-num">2</span> Upgrades</h2>
             <p class="step-desc">Safe options enabled by default — hover for details</p>
 
             <fieldset class="tier-safe-field">
@@ -199,7 +199,7 @@
             </fieldset>
 
             <fieldset class="tier-caution-field">
-                <legend><span class="tier tier-caution">Caution</span> Advanced</legend>
+                <legend><span class="tier tier-caution">Caution</span> Experimental</legend>
                 <label>
                     <input type="checkbox" name="opt" value="msi_mode">
                     <span class="label-text">MSI Mode GPU</span>
@@ -237,10 +237,10 @@
             </fieldset>
         </section>
 
-        <!-- Step 3: Software -->
+        <!-- Step 3: Arsenal -->
         <section id="software" class="step">
             <h2>
-                <span class="step-num">3</span> Software
+                <span class="step-num">3</span> Arsenal
                 <span id="software-counter" class="selection-counter">4 selected</span>
             </h2>
             <p class="step-desc">All packages installed via <abbr title="Windows Package Manager">winget</abbr></p>
@@ -280,29 +280,29 @@
             </div>
         </section>
 
-        <!-- Step 4: Generate -->
+        <!-- Step 4: Forge Script -->
         <section id="generate" class="step">
-            <h2><span class="step-num">4</span> Generate &amp; Download</h2>
-            <p class="step-desc">Your personalized script is ready</p>
+            <h2><span class="step-num">4</span> Forge Script</h2>
+            <p class="step-desc">Your personalized loadout is ready</p>
 
             <div id="summary" class="summary">
                 <div class="summary-item">
                     <div id="summary-hardware" class="summary-value">X3D + NVIDIA</div>
-                    <div class="summary-label">Hardware</div>
+                    <div class="summary-label">Core</div>
                 </div>
                 <div class="summary-item">
                     <div id="summary-opts" class="summary-value">12</div>
-                    <div class="summary-label">Optimizations</div>
+                    <div class="summary-label">Upgrades</div>
                 </div>
                 <div class="summary-item">
                     <div id="summary-software" class="summary-value">4</div>
-                    <div class="summary-label">Packages</div>
+                    <div class="summary-label">Arsenal</div>
                 </div>
             </div>
 
             <button type="button" id="download-btn" class="download-btn">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download <code>rigtune-setup.ps1</code>
+                Forge <code>rocktune-setup.ps1</code>
             </button>
 
             <p class="instructions">
