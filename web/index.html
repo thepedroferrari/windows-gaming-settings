@@ -13,8 +13,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Skip link for keyboard navigation -->
+    <a href="#software" class="skip-link">Skip to software selection</a>
+
     <!-- Cursor glow effect -->
     <div class="cursor-glow" aria-hidden="true"></div>
+
+    <!-- Screen reader announcements -->
+    <div aria-live="polite" aria-atomic="true" class="sr-only" id="sr-announce"></div>
 
     <header>
         <h1>RockTune</h1>
@@ -182,10 +188,10 @@
                     <span class="label-text">Cloudflare DNS</span>
                     <span class="label-hint">1.1.1.1 — faster lookups</span>
                 </label>
-                <label>
-                    <input type="checkbox" name="opt" value="nagle" checked>
+                <label title="TCP-only setting. Most modern games use UDP, so this has minimal effect.">
+                    <input type="checkbox" name="opt" value="nagle">
                     <span class="label-text">Disable Nagle</span>
-                    <span class="label-hint">Lower network latency</span>
+                    <span class="label-hint">TCP games only (legacy)</span>
                 </label>
             </fieldset>
 
@@ -214,6 +220,11 @@
                     <input type="checkbox" name="opt" value="game_bar">
                     <span class="label-text">Disable Game Bar</span>
                     <span class="label-hint">Keeps detection for X3D</span>
+                </label>
+                <label title="Hardware Accelerated GPU Scheduling - may improve or hurt performance depending on game">
+                    <input type="checkbox" name="opt" value="hags">
+                    <span class="label-text">Enable HAGS</span>
+                    <span class="label-hint">GPU scheduling (test first)</span>
                 </label>
             </fieldset>
 
@@ -298,6 +309,18 @@
                     <div id="summary-software" class="summary-value">4</div>
                     <div class="summary-label">Arsenal</div>
                 </div>
+            </div>
+
+            <div class="profile-actions">
+                <button type="button" id="save-profile-btn" class="btn-secondary" title="Save your current configuration to a JSON file">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save Profile
+                </button>
+                <label class="btn-secondary" title="Load a previously saved configuration">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/></svg>
+                    Load Profile
+                    <input type="file" accept=".json" id="load-profile-input" style="display:none">
+                </label>
             </div>
 
             <button type="button" id="download-btn" class="download-btn">

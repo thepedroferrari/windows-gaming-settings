@@ -5,7 +5,7 @@
     Software installation module using winget and software catalog
 .DESCRIPTION
     Installs gaming-related software using winget package manager.
-    Reads package definitions from data/software-catalog.json.
+    Reads package definitions from web/catalog.json (single source of truth).
 
     Features:
     - Hardware-conditional peripheral software (Logitech, Razer, Corsair)
@@ -111,7 +111,7 @@ function Install-Winget {
 #>
 function Get-SoftwareCatalog {
     try {
-        $catalogPath = Join-Path $PSScriptRoot "..\..\data\software-catalog.json"
+        $catalogPath = Join-Path $PSScriptRoot "..\..\web\catalog.json"
 
         if (-not (Test-Path $catalogPath)) {
             Write-Log "Software catalog not found: $catalogPath" "ERROR"
@@ -217,15 +217,15 @@ function Install-PackageFromCatalog {
         Write-Log "Installing $($Package.name)..." "INFO"
 
         # Run winget install
-        $result = winget install --id $Package.winget_id --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
+        $result = winget install --id $Package.id --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
 
         if ($LASTEXITCODE -eq 0) {
             Write-Log "Installed: $($Package.name)" "SUCCESS"
             return $true
         } else {
             # Check if it's already installed
-            $installedCheck = winget list --id $Package.winget_id --source winget --accept-source-agreements 2>&1
-            if ($LASTEXITCODE -eq 0 -and $installedCheck -match $Package.winget_id) {
+            $installedCheck = winget list --id $Package.id --source winget --accept-source-agreements 2>&1
+            if ($LASTEXITCODE -eq 0 -and $installedCheck -match $Package.id) {
                 Write-Log "Already installed: $($Package.name)" "SUCCESS"
                 return $true
             } else {

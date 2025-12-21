@@ -168,6 +168,13 @@
         card.dataset.category = pkg.category;
         card.style.animationDelay = delay + 'ms';
 
+        // Accessibility: make card keyboard navigable
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'checkbox');
+        const isSelected = pkg.selected || state.selectedSoftware.has(key);
+        card.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+        card.setAttribute('aria-label', `${pkg.name}: ${pkg.desc || pkg.category}`);
+
         if (pkg.selected) {
             card.classList.add('selected');
         }
@@ -177,11 +184,14 @@
         const fallbackIcon = CATEGORY_ICONS[pkg.category] || CATEGORY_ICONS.default;
 
         if (pkg.icon) {
-            // Check if it's a local SVG file
+            // Check if it's a local SVG file - use sprite for better performance
             if (pkg.icon.endsWith('.svg') || pkg.icon.startsWith('icons/')) {
-                logoHtml = `<img src="${pkg.icon}" alt="${pkg.name} icon" loading="lazy" class="local-icon" onerror="this.style.display='none'; this.parentElement.innerHTML='${pkg.emoji || fallbackIcon}';">`;
+                // Extract icon ID from path (e.g., "icons/hwinfo.svg" -> "hwinfo")
+                const iconId = pkg.icon.replace('icons/', '').replace('.svg', '');
+                // Use SVG sprite (single HTTP request for all local icons)
+                logoHtml = `<svg class="sprite-icon" role="img" aria-label="${pkg.name} icon"><use href="icons/sprite.svg#${iconId}"></use></svg>`;
             } else {
-                // Use Simple Icons CDN
+                // Use Simple Icons CDN for brand logos
                 logoHtml = `<img src="${SIMPLE_ICONS_CDN}/${pkg.icon}/white" alt="${pkg.name} logo" loading="lazy" data-category="${pkg.category}" onerror="this.style.display='none'; this.parentElement.innerHTML='${pkg.emoji || fallbackIcon}';">`;
             }
         } else if (pkg.emoji) {
@@ -214,6 +224,14 @@
         card.addEventListener('click', (e) => {
             toggleSoftware(key, card);
             createRipple(e, card);
+        });
+
+        // Keyboard handler for accessibility
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSoftware(key, card);
+            }
         });
 
         // Magnetic hover
@@ -255,10 +273,12 @@
         if (isSelected) {
             state.selectedSoftware.delete(key);
             card.classList.remove('selected');
+            card.setAttribute('aria-checked', 'false');
             if (actionBtn) actionBtn.textContent = 'Click to add';
         } else {
             state.selectedSoftware.add(key);
             card.classList.add('selected');
+            card.setAttribute('aria-checked', 'true');
             if (actionBtn) actionBtn.textContent = '✓ Selected';
         }
 
@@ -313,11 +333,15 @@
         const input = document.getElementById('software-search');
         if (!input) return;
 
+        // Debounce for screen reader announcements
+        let announceTimeout;
+
         input.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
             const cards = document.querySelectorAll('.software-card');
             const activeFilter = document.querySelector('.filter.active')?.dataset.filter || '*';
 
+            let visibleCount = 0;
             cards.forEach(card => {
                 const key = card.dataset.key;
                 const pkg = state.software[key];
@@ -329,9 +353,20 @@
                     pkg.category.toLowerCase().includes(query);
 
                 const matchesFilter = activeFilter === '*' || card.dataset.category === activeFilter;
+                const isVisible = matchesSearch && matchesFilter;
 
-                card.classList.toggle('hidden', !(matchesSearch && matchesFilter));
+                card.classList.toggle('hidden', !isVisible);
+                if (isVisible) visibleCount++;
             });
+
+            // Announce results for screen readers (debounced)
+            clearTimeout(announceTimeout);
+            announceTimeout = setTimeout(() => {
+                const announcer = document.getElementById('sr-announce');
+                if (announcer) {
+                    announcer.textContent = `${visibleCount} package${visibleCount !== 1 ? 's' : ''} found`;
+                }
+            }, 500);
         });
     }
 
@@ -503,13 +538,63 @@ pause
     function generateOptCode(opts, hw) {
         const code = [];
 
+        // =====================================================================
+        // ALWAYS INCLUDED: Core gaming optimizations (no checkbox needed)
+        // =====================================================================
+
+        // Scheduler optimization (Win32PrioritySeparation + IRQ8Priority)
+        code.push(`
+# Scheduler optimization for gaming
+Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" "Win32PrioritySeparation" 26
+Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" "IRQ8Priority" 1
+Write-OK "Windows scheduler optimized for gaming"`);
+
+        // MMCSS Gaming Tweaks (GPU Priority, Scheduling Category)
+        code.push(`
+# MMCSS (Multimedia Class Scheduler) gaming priority
+\$mmcss = "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games"
+if (!(Test-Path \$mmcss)) { New-Item -Path \$mmcss -Force | Out-Null }
+Set-Reg \$mmcss "GPU Priority" 8
+Set-Reg \$mmcss "Priority" 6
+Set-Reg \$mmcss "Scheduling Category" "High" "String"
+Set-Reg \$mmcss "SFIO Priority" "High" "String"
+Write-OK "MMCSS gaming priority configured"`);
+
+        // Windows Game Mode
+        code.push(`
+# Windows Game Mode
+Set-Reg "HKCU:\\Software\\Microsoft\\GameBar" "AllowAutoGameMode" 1
+Set-Reg "HKCU:\\Software\\Microsoft\\GameBar" "AutoGameModeEnabled" 1
+Write-OK "Windows Game Mode enabled"`);
+
+        // Min Processor State (thermal headroom for boost)
+        const minState = hw.cpu === 'amd_x3d' ? 5 : 10;
+        code.push(`
+# Min processor state (thermal headroom for higher boost clocks)
+powercfg /setacvalueindex SCHEME_CURRENT 54533251-82be-4824-96c1-47b60b740d00 bc5038f7-23e0-4960-96da-33abaf5935ed ${minState}
+powercfg /setactive SCHEME_CURRENT
+Write-OK "Min processor state: ${minState}% (thermal headroom)"`);
+
+        // Timer Resolution registry hints
+        code.push(`
+# Timer resolution registry hints
+Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel" "GlobalTimerResolutionRequests" 1
+Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" "SystemResponsiveness" 0
+Write-OK "Timer resolution hints configured"`);
+
+        // =====================================================================
+        // OPTIONAL: Checkbox-based optimizations
+        // =====================================================================
+
         if (opts.includes('pagefile')) code.push(`
 $ramGB = [math]::Round((gcim Win32_PhysicalMemory | Measure -Property Capacity -Sum).Sum / 1GB)
 $sz = if ($ramGB -ge 32) { 4096 } else { 8192 }
 try { $cs = gcim Win32_ComputerSystem; $cs | scim -Property @{AutomaticManagedPagefile=$false}; Write-OK "PageFile \${sz}MB" } catch { Write-Fail "PageFile" }`);
 
         if (opts.includes('fastboot')) code.push(`
-if (Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power" "HiberbootEnabled" 0) { Write-OK "Fast Startup disabled" }`);
+Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power" "HiberbootEnabled" 0
+powercfg /hibernate off 2>&1 | Out-Null
+Write-OK "Fast Startup & Hibernation disabled"`);
 
         if (opts.includes('power_plan')) code.push(`
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2>$null; Write-OK "High Performance plan"`);
@@ -523,8 +608,13 @@ powercfg /setacvalueindex SCHEME_CURRENT 501a4d13-42af-4429-9fd1-a8218c268e20 ee
         if (opts.includes('dns')) code.push(`
 Get-NetAdapter | ? {$_.Status -eq "Up"} | % { Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ServerAddresses ("1.1.1.1","1.0.0.1") }; Write-OK "DNS 1.1.1.1"`);
 
+        // NOTE: Nagle/TCP tweaks are folklore - most games use UDP, not TCP
+        // Keeping for users who specifically want it, but adding info message
         if (opts.includes('nagle')) code.push(`
-gci "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" | % { Set-Reg $_.PSPath "TcpAckFrequency" 1; Set-Reg $_.PSPath "TCPNoDelay" 1 }; Write-OK "Nagle disabled"`);
+# TCP Nagle disable (NOTE: Only affects TCP games - most modern games use UDP)
+gci "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" | % { Set-Reg \$_.PSPath "TcpAckFrequency" 1; Set-Reg \$_.PSPath "TCPNoDelay" 1 }
+Write-OK "Nagle disabled (TCP only)"
+Write-Host "  [INFO] Most games use UDP - this mainly helps older TCP-based games" -ForegroundColor Gray`);
 
         if (opts.includes('msi_mode')) code.push(`
 Get-PnpDevice -Class Display | ? {$_.Status -eq "OK"} | % { $p = "HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\$($_.InstanceId -replace '\\\\','\\\\')\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties"; if (Test-Path $p) { Set-Reg $p "MSISupported" 1 } }; Write-OK "MSI Mode (reboot needed)"`);
@@ -532,20 +622,84 @@ Get-PnpDevice -Class Display | ? {$_.Status -eq "OK"} | % { $p = "HKLM:\\SYSTEM\
         if (opts.includes('game_bar')) code.push(`
 Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" "AppCaptureEnabled" 0; Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" "GameDVR_Enabled" 0; Write-OK "Game Bar overlays disabled"`);
 
+        // AMD X3D complete implementation
         if (hw.cpu === 'amd_x3d') code.push(`
-Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power" "CppcEnable" 1; Write-OK "AMD X3D CPPC enabled"`);
+# AMD X3D Optimization (CPPC + scheduler hints)
+Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power" "CppcEnable" 1
+Remove-ItemProperty -Path "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power" -Name "HeteroPolicy" -EA SilentlyContinue
+# Game Bar: keep detection (required for X3D optimizer), disable overlays only
+Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" "AppCaptureEnabled" 0
+Set-Reg "HKCU:\\Software\\Microsoft\\GameBar" "ShowStartupPanel" 0
+Write-OK "AMD X3D: CPPC enabled, HeteroPolicy removed, Game Bar overlays off"
+Write-Host "  [INFO] Install AMD Chipset Drivers for 3D V-Cache optimizer" -ForegroundColor Yellow
+Write-Host "  Download: https://www.amd.com/en/support" -ForegroundColor Cyan`);
+
+        // NVIDIA telemetry disable (GPU-conditional)
+        if (hw.gpu === 'nvidia') code.push(`
+# NVIDIA telemetry tasks disable
+\$nvTasks = Get-ScheduledTask | Where-Object { \$_.TaskName -like "NvTmRep*" -or \$_.TaskName -like "NvDriverUpdateCheck*" } -EA SilentlyContinue
+if (\$nvTasks) { \$nvTasks | Disable-ScheduledTask -EA SilentlyContinue | Out-Null; Write-OK "NVIDIA telemetry tasks disabled" }
+else { Write-Host "  [INFO] No NVIDIA telemetry tasks found" -ForegroundColor Gray }`);
+
+        // HAGS (Hardware Accelerated GPU Scheduling) - opt-in
+        if (opts.includes('hags')) code.push(`
+# HAGS (Hardware Accelerated GPU Scheduling)
+Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers" "HwSchMode" 2
+Write-OK "HAGS enabled (reboot required)"
+Write-Host "  [INFO] Test game performance - HAGS benefits vary by game/GPU" -ForegroundColor Yellow`);
 
         if (opts.includes('privacy_tier1')) code.push(`
-Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" "Enabled" 0; Write-OK "Privacy Tier 1"`);
+# Privacy Tier 1: Safe settings (ads, activity history, spotlight)
+Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" "Enabled" 0
+Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo" "DisabledByGroupPolicy" 1
+Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" "PublishUserActivities" 0
+Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" "UploadUserActivities" 0
+Set-Reg "HKCU:\\Software\\Microsoft\\Siuf\\Rules" "NumberOfSIUFInPeriod" 0
+Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "RotatingLockScreenEnabled" 0
+Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection" "AllowTelemetry" 1
+Write-OK "Privacy Tier 1 (ads, activity, spotlight disabled)"`);
 
         if (opts.includes('privacy_tier2')) code.push(`
-Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "AllowTelemetry" 1; Write-OK "Privacy Tier 2"`);
+# Privacy Tier 2: Disable tracking services
+Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "AllowTelemetry" 1
+Stop-Service DiagTrack -Force -EA SilentlyContinue; Set-Service DiagTrack -StartupType Disabled -EA SilentlyContinue
+Stop-Service dmwappushservice -Force -EA SilentlyContinue; Set-Service dmwappushservice -StartupType Disabled -EA SilentlyContinue
+Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting" "Disabled" 1
+Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config" "DODownloadMode" 0
+Write-OK "Privacy Tier 2 (tracking services disabled)"
+Write-Host "  [WARN] May affect Windows diagnostics" -ForegroundColor Yellow`);
 
         if (opts.includes('privacy_tier3')) code.push(`
 Write-Host "  [WARN] Privacy Tier 3 - May break Store/Xbox" -ForegroundColor Yellow
 Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "AllowTelemetry" 0
 Stop-Service DiagTrack -Force -EA SilentlyContinue; Set-Service DiagTrack -StartupType Disabled -EA SilentlyContinue
 Write-OK "Privacy Tier 3"`);
+
+        // Timer Resolution (P0 critical fix)
+        if (opts.includes('timer')) code.push(`
+# Timer Resolution (0.5ms for smooth frame pacing - CRITICAL for micro-stutters)
+Add-Type @"
+using System; using System.Runtime.InteropServices;
+public class TimerRes { [DllImport("ntdll.dll")] public static extern uint NtSetTimerResolution(uint Res, bool Set, out uint Cur); }
+"@
+\$cur = [uint32]0; [TimerRes]::NtSetTimerResolution(5000, \$true, [ref]\$cur) | Out-Null
+Write-OK "Timer resolution set to 0.5ms"
+Write-Host "  [INFO] Keep this window open during gameplay for best results" -ForegroundColor Yellow`);
+
+        // Audio Enhancements (P0 critical fix)
+        if (opts.includes('audio_enhancements')) code.push(`
+# Disable audio enhancements and system sounds
+Set-ItemProperty -Path "HKCU:\\AppEvents\\Schemes" -Name "(Default)" -Value ".None" -EA SilentlyContinue
+Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Audio" "DisableSysSounds" 1
+Write-OK "Audio enhancements disabled, system sounds off"`);
+
+        // HPET Disable (P0 critical fix)
+        if (opts.includes('hpet')) code.push(`
+# Disable HPET (results vary - benchmark before/after)
+bcdedit /set useplatformclock false 2>&1 | Out-Null
+bcdedit /set disabledynamictick yes 2>&1 | Out-Null
+Write-OK "HPET disabled (reboot required)"
+Write-Host "  [WARN] Test before/after with benchmarks - results vary by system" -ForegroundColor Yellow`);
 
         return code.join('\n');
     }
@@ -560,11 +714,168 @@ Write-OK "Privacy Tier 3"`);
         URL.revokeObjectURL(url);
     }
 
+    // =========================================================================
+    // SCRIPT VALIDATION
+    // =========================================================================
+
+    function validateScript(script) {
+        const issues = [];
+
+        // Required: Admin header
+        if (!script.includes('#Requires -RunAsAdministrator')) {
+            issues.push({ severity: 'error', msg: 'Missing #Requires -RunAsAdministrator' });
+        }
+
+        // Detect generation bugs
+        if (script.includes('undefined')) {
+            issues.push({ severity: 'error', msg: 'Script contains "undefined" - generation bug' });
+        }
+
+        if (script.includes('${') && !script.includes('${sz}') && !script.includes('${minState}')) {
+            // Check for unresolved template variables (but allow valid PS variable syntax)
+            const templateMatches = script.match(/\$\{[^}]+\}/g) || [];
+            const invalidTemplates = templateMatches.filter(t => !t.includes('sz') && !t.includes('minState'));
+            if (invalidTemplates.length > 0) {
+                issues.push({ severity: 'error', msg: 'Unresolved template variables found' });
+            }
+        }
+
+        // Check script has content
+        const hasOptimizations = script.includes('Set-Reg') || script.includes('powercfg') || script.includes('bcdedit');
+        const hasSoftware = script.includes('winget install');
+        if (!hasOptimizations && !hasSoftware) {
+            issues.push({ severity: 'warning', msg: 'Script has no optimizations or software selected' });
+        }
+
+        // Check for empty package list
+        if (script.includes('$pkgs = @()')) {
+            issues.push({ severity: 'warning', msg: 'No software packages selected' });
+        }
+
+        return {
+            valid: !issues.some(i => i.severity === 'error'),
+            issues
+        };
+    }
+
     function setupDownload() {
         document.getElementById('download-btn')?.addEventListener('click', () => {
             const script = generateScript();
+
+            // Validate script before download
+            const validation = validateScript(script);
+            if (!validation.valid) {
+                const errorMsgs = validation.issues
+                    .filter(i => i.severity === 'error')
+                    .map(i => '• ' + i.msg)
+                    .join('\n');
+                if (!confirm('Script validation failed:\n\n' + errorMsgs + '\n\nDownload anyway?')) {
+                    return;
+                }
+            }
+
             const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             downloadFile(script, `rocktune-setup-${date}.ps1`);
+        });
+    }
+
+    // =========================================================================
+    // PROFILE SAVE/LOAD
+    // =========================================================================
+
+    function getHardwareProfile() {
+        return {
+            cpu: document.querySelector('input[name="cpu"]:checked')?.value || 'intel',
+            gpu: document.querySelector('input[name="gpu"]:checked')?.value || 'nvidia',
+            peripherals: Array.from(document.querySelectorAll('input[name="peripheral"]:checked')).map(el => el.value)
+        };
+    }
+
+    function getSelectedOptimizations() {
+        return Array.from(document.querySelectorAll('input[name="opt"]:checked')).map(el => el.value);
+    }
+
+    function saveProfile() {
+        const profile = {
+            version: '1.0',
+            created: new Date().toISOString(),
+            hardware: getHardwareProfile(),
+            optimizations: getSelectedOptimizations(),
+            software: Array.from(state.selectedSoftware)
+        };
+
+        const json = JSON.stringify(profile, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rocktune-profile-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function loadProfile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const profile = JSON.parse(e.target.result);
+
+                if (!profile.version) {
+                    throw new Error('Invalid profile format');
+                }
+
+                // Apply hardware settings
+                if (profile.hardware?.cpu) {
+                    const cpuInput = document.querySelector(`input[name="cpu"][value="${profile.hardware.cpu}"]`);
+                    if (cpuInput) cpuInput.checked = true;
+                }
+                if (profile.hardware?.gpu) {
+                    const gpuInput = document.querySelector(`input[name="gpu"][value="${profile.hardware.gpu}"]`);
+                    if (gpuInput) gpuInput.checked = true;
+                }
+                if (profile.hardware?.peripherals) {
+                    document.querySelectorAll('input[name="peripheral"]').forEach(el => {
+                        el.checked = profile.hardware.peripherals.includes(el.value);
+                    });
+                }
+
+                // Apply optimizations
+                if (profile.optimizations) {
+                    document.querySelectorAll('input[name="opt"]').forEach(el => {
+                        el.checked = profile.optimizations.includes(el.value);
+                    });
+                }
+
+                // Apply software selections
+                if (profile.software) {
+                    state.selectedSoftware.clear();
+                    profile.software.forEach(key => {
+                        if (state.software[key]) {
+                            state.selectedSoftware.add(key);
+                        }
+                    });
+                    renderSoftwareGrid();
+                }
+
+                updateSummary();
+                alert(`Profile loaded: ${profile.software?.length || 0} packages, ${profile.optimizations?.length || 0} optimizations`);
+
+            } catch (err) {
+                alert('Failed to load profile: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function setupProfileActions() {
+        document.getElementById('save-profile-btn')?.addEventListener('click', saveProfile);
+
+        document.getElementById('load-profile-input')?.addEventListener('change', (e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                loadProfile(file);
+                e.target.value = ''; // Reset for next load
+            }
         });
     }
 
@@ -599,6 +910,7 @@ Write-OK "Privacy Tier 3"`);
         setupPresets();
         setupFormListeners();
         setupDownload();
+        setupProfileActions();
         updateSummary();
     }
 
