@@ -1,0 +1,101 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  validate-web:
+    name: Validate Web Application
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate catalog.json
+        run: |
+          echo "Validating catalog.json schema..."
+          cat web/catalog.json | jq empty
+          echo "✓ catalog.json is valid JSON"
+
+      - name: Check for duplicate package IDs
+        run: |
+          echo "Checking for duplicate package IDs..."
+          duplicates=$(cat web/catalog.json | jq -r 'to_entries | .[].value.id' | sort | uniq -d)
+          if [ -n "$duplicates" ]; then
+            echo "❌ Duplicate package IDs found:"
+            echo "$duplicates"
+            exit 1
+          fi
+          echo "✓ No duplicate package IDs"
+
+      - name: Validate package ID format
+        run: |
+          echo "Checking package ID format..."
+          invalid=$(cat web/catalog.json | jq -r 'to_entries | .[].value.id | select(test("^[a-zA-Z0-9._-]+$") | not)')
+          if [ -n "$invalid" ]; then
+            echo "❌ Invalid package IDs (must be alphanumeric with dots/hyphens):"
+            echo "$invalid"
+            exit 1
+          fi
+          echo "✓ All package IDs are valid"
+
+      - name: Check HTML structure
+        run: |
+          echo "Checking HTML files..."
+          for file in web/*.html; do
+            if ! grep -q "<!DOCTYPE html>" "$file"; then
+              echo "❌ $file missing DOCTYPE"
+              exit 1
+            fi
+          done
+          echo "✓ HTML files have valid structure"
+
+  validate-powershell:
+    name: Validate PowerShell Modules
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check PowerShell syntax
+        shell: pwsh
+        run: |
+          $errors = @()
+          Get-ChildItem -Path . -Filter *.ps1 -Recurse | ForEach-Object {
+            $tokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$parseErrors)
+            if ($parseErrors) {
+              $errors += "$($_.Name): $($parseErrors | ForEach-Object { $_.Message })"
+            }
+          }
+          Get-ChildItem -Path . -Filter *.psm1 -Recurse | ForEach-Object {
+            $tokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$parseErrors)
+            if ($parseErrors) {
+              $errors += "$($_.Name): $($parseErrors | ForEach-Object { $_.Message })"
+            }
+          }
+          if ($errors.Count -gt 0) {
+            Write-Host "❌ PowerShell syntax errors found:" -ForegroundColor Red
+            $errors | ForEach-Object { Write-Host "  $_" }
+            exit 1
+          }
+          Write-Host "✓ All PowerShell files have valid syntax" -ForegroundColor Green
+
+      - name: Test module imports
+        shell: pwsh
+        run: |
+          $modules = Get-ChildItem -Path modules -Filter *.psm1 -Recurse
+          foreach ($mod in $modules) {
+            try {
+              Import-Module $mod.FullName -Force -ErrorAction Stop
+              Write-Host "✓ $($mod.Name)" -ForegroundColor Green
+            } catch {
+              Write-Host "❌ $($mod.Name): $_" -ForegroundColor Red
+              exit 1
+            }
+          }
+
