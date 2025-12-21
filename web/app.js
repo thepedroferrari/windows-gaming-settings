@@ -1,6 +1,6 @@
 /**
- * Gaming PC Setup - Codrops Edition
- * Full interactive experience with Mary Lou-inspired effects
+ * RockTune — A Loadout Builder for Windows Gaming
+ * Generate personalized PowerShell scripts to tune Windows for gaming
  */
 
 (function () {
@@ -451,10 +451,12 @@
         return `#Requires -RunAsAdministrator
 <#
 .SYNOPSIS
-    Gaming PC Setup - Generated ${timestamp}
+    RockTune — Loadout generated ${timestamp}
 .DESCRIPTION
-    Hardware: ${hw.cpu} + ${hw.gpu}
+    Core: ${hw.cpu} + ${hw.gpu}
     Source: https://github.com/thepedroferrari/windows-gaming-settings
+
+    Windows is the arena. RockTune is the upgrade bay.
 #>
 
 $Config = @'
@@ -475,17 +477,17 @@ function Set-Reg {
 }
 
 Clear-Host
-Write-Host ""; Write-Host "  GAMING PC SETUP" -ForegroundColor Magenta; Write-Host "  ===============" -ForegroundColor Magenta; Write-Host ""
+Write-Host ""; Write-Host "  ROCKTUNE LOADOUT" -ForegroundColor Magenta; Write-Host "  ================" -ForegroundColor Magenta; Write-Host ""
 
 $cpu = (Get-CimInstance Win32_Processor).Name
 $gpu = (Get-CimInstance Win32_VideoController | ? {$_.Status -eq "OK"} | Select -First 1).Name
 $ram = [math]::Round((Get-CimInstance Win32_PhysicalMemory | Measure -Property Capacity -Sum).Sum / 1GB)
 Write-Host "  CPU: $cpu" -ForegroundColor White; Write-Host "  GPU: $gpu" -ForegroundColor White; Write-Host "  RAM: \${ram}GB" -ForegroundColor White
 
-Write-Step "Optimizations"
+Write-Step "Upgrades"
 ${generateOptCode(opts, hw)}
 
-Write-Step "Software (winget)"
+Write-Step "Arsenal (winget)"
 $pkgs = @(${packages.map(p => `"${p}"`).join(', ')})
 foreach ($p in $pkgs) {
     Write-Host "  Installing $p..." -NoNewline
@@ -493,7 +495,7 @@ foreach ($p in $pkgs) {
     if ($?) { Write-OK "" } else { Write-Fail "" }
 }
 
-Write-Host ""; Write-Host "  COMPLETE! Reboot recommended." -ForegroundColor Green; Write-Host ""
+Write-Host ""; Write-Host "  LOADOUT FORGED! Reboot recommended." -ForegroundColor Green; Write-Host ""
 pause
 `;
     }
@@ -562,7 +564,7 @@ Write-OK "Privacy Tier 3"`);
         document.getElementById('download-btn')?.addEventListener('click', () => {
             const script = generateScript();
             const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-            downloadFile(script, `rigtune-setup-${date}.ps1`);
+            downloadFile(script, `rocktune-setup-${date}.ps1`);
         });
     }
 
