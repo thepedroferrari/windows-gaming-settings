@@ -175,10 +175,17 @@
         // Build logo HTML
         let logoHtml;
         const fallbackIcon = CATEGORY_ICONS[pkg.category] || CATEGORY_ICONS.default;
+
         if (pkg.icon) {
-            logoHtml = `<img src="${SIMPLE_ICONS_CDN}/${pkg.icon}/white" alt="${pkg.name}" loading="lazy" data-category="${pkg.category}">`;
+            // Check if it's a local SVG file
+            if (pkg.icon.endsWith('.svg') || pkg.icon.startsWith('icons/')) {
+                logoHtml = `<img src="${pkg.icon}" alt="${pkg.name} icon" loading="lazy" class="local-icon" onerror="this.style.display='none'; this.parentElement.innerHTML='${pkg.emoji || fallbackIcon}';">`;
+            } else {
+                // Use Simple Icons CDN
+                logoHtml = `<img src="${SIMPLE_ICONS_CDN}/${pkg.icon}/white" alt="${pkg.name} logo" loading="lazy" data-category="${pkg.category}" onerror="this.style.display='none'; this.parentElement.innerHTML='${pkg.emoji || fallbackIcon}';">`;
+            }
         } else if (pkg.emoji) {
-            logoHtml = `<span class="emoji-icon">${pkg.emoji}</span>`;
+            logoHtml = `<span class="emoji-icon" role="img" aria-label="${pkg.name} icon">${pkg.emoji}</span>`;
         } else {
             logoHtml = fallbackIcon;
         }
