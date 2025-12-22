@@ -85,14 +85,25 @@ export const PERIPHERAL_TYPES = {
   RAZER: 'razer',
   CORSAIR: 'corsair',
   STEELSERIES: 'steelseries',
+  ASUS: 'asus',
+  WOOTING: 'wooting',
 } as const satisfies Record<string, string>
 
 export type PeripheralType = (typeof PERIPHERAL_TYPES)[keyof typeof PERIPHERAL_TYPES]
+
+export const MONITOR_SOFTWARE_TYPES = {
+  DELL: 'dell',
+  LG: 'lg',
+  HP: 'hp',
+} as const satisfies Record<string, string>
+
+export type MonitorSoftwareType = (typeof MONITOR_SOFTWARE_TYPES)[keyof typeof MONITOR_SOFTWARE_TYPES]
 
 export interface HardwareProfile {
   readonly cpu: CpuType
   readonly gpu: GpuType
   readonly peripherals: readonly PeripheralType[]
+  readonly monitorSoftware: readonly MonitorSoftwareType[]
 }
 
 // Type guards for hardware
@@ -107,6 +118,13 @@ export function isGpuType(value: unknown): value is GpuType {
 export function isPeripheralType(value: unknown): value is PeripheralType {
   return (
     typeof value === 'string' && Object.values(PERIPHERAL_TYPES).includes(value as PeripheralType)
+  )
+}
+
+export function isMonitorSoftwareType(value: unknown): value is MonitorSoftwareType {
+  return (
+    typeof value === 'string' &&
+    Object.values(MONITOR_SOFTWARE_TYPES).includes(value as MonitorSoftwareType)
   )
 }
 
