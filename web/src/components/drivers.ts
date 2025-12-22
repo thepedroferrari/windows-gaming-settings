@@ -62,3 +62,4 @@ export function setupDriverLinks(): void {
   // Initial update
   updateDriverCards()
 }
+
