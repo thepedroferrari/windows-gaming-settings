@@ -1,8 +1,9 @@
 import { store } from '../state'
-import type { HardwareProfile, PeripheralType } from '../types'
+import type { HardwareProfile, MonitorSoftwareType, PeripheralType } from '../types'
 import {
   CPU_TYPES,
   GPU_TYPES,
+  MONITOR_SOFTWARE_TYPES,
   OPTIMIZATION_KEYS,
   PERIPHERAL_TYPES,
   SCRIPT_FILENAME,
@@ -18,9 +19,18 @@ const preview = {
 // Peripheral package mapping - typed with PeripheralType
 const PERIPHERAL_PACKAGES: Record<PeripheralType, string> = {
   [PERIPHERAL_TYPES.LOGITECH]: 'Logitech.GHUB',
-  [PERIPHERAL_TYPES.RAZER]: 'Razer.Synapse3',
+  [PERIPHERAL_TYPES.RAZER]: 'RazerInc.RazerInstaller.Synapse4',
   [PERIPHERAL_TYPES.CORSAIR]: 'Corsair.iCUE.5',
   [PERIPHERAL_TYPES.STEELSERIES]: 'SteelSeries.GG',
+  [PERIPHERAL_TYPES.ASUS]: 'Asus.ArmouryCrate',
+  [PERIPHERAL_TYPES.WOOTING]: 'Wooting.Wootility',
+}
+
+// Monitor software package mapping
+const MONITOR_PACKAGES: Record<MonitorSoftwareType, string> = {
+  [MONITOR_SOFTWARE_TYPES.DELL]: 'Dell.DisplayManager',
+  [MONITOR_SOFTWARE_TYPES.LG]: 'LG.OnScreenControl',
+  [MONITOR_SOFTWARE_TYPES.HP]: 'HP.DisplayCenter',
 }
 
 export function getTrackedScript(): string {
@@ -46,6 +56,12 @@ export function generateScript(): string {
   // Add peripheral software
   for (const p of hw.peripherals) {
     const pkg = PERIPHERAL_PACKAGES[p]
+    if (pkg) packages.push(pkg)
+  }
+
+  // Add monitor software
+  for (const m of hw.monitorSoftware) {
+    const pkg = MONITOR_PACKAGES[m]
     if (pkg) packages.push(pkg)
   }
 
