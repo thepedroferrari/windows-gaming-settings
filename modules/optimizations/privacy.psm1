@@ -4,7 +4,7 @@
 .SYNOPSIS
     Privacy and telemetry optimizations (tiered approach)
 .DESCRIPTION
-    Three-tier privacy approach per PRD Category 7 research:
+    Three-tier privacy approach:
 
     TIER 1 (SAFE - Default):
     - Advertising ID disable
@@ -21,7 +21,7 @@
     TIER 3 (AGGRESSIVE - Strongly discouraged, opt-in only):
     - Xbox services disable (BREAKS Game Pass)
 
-    CRITICAL: SmartScreen and Windows Update are NEVER disabled (security surface).
+    SmartScreen and Windows Update are NEVER disabled (security surface).
 .NOTES
     Author: @thepedroferrari
     Risk Level: TIER_1_LOW (default), TIER_2_MED (moderate), TIER_3_HIGH (aggressive)
@@ -512,7 +512,7 @@ function Invoke-PrivacyOptimizations {
         }
 
         Write-Log "Privacy optimizations complete" "SUCCESS"
-        Write-Log "CRITICAL: SmartScreen and Windows Update remain ENABLED (security)" "INFO"
+        Write-Log "SmartScreen and Windows Update remain ENABLED (security)" "INFO"
 
     } catch {
         Write-Log "Error applying privacy optimizations: $_" "ERROR"

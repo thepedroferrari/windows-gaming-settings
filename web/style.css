@@ -34,11 +34,20 @@
     --border-light: #252538;
     --border-accent: #3d3d5c;
 
-    /* Glassmorphism 2026 */
+    /* Glassmorphism 2026 - Light System */
+    --light-angle: 135deg;
+    --light-intensity: 0.15;
+    --glass-depth-1: 8px;   /* furthest - sharp */
+    --glass-depth-2: 16px;  /* middle */
+    --glass-depth-3: 24px;  /* closest - heavy blur */
+
+    /* Glass Surface */
     --glass-bg: rgba(255, 255, 255, 0.02);
     --glass-border: rgba(255, 255, 255, 0.06);
     --glass-blur: 16px;
     --glass-glow: 0 0 40px rgba(139, 92, 246, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.2);
 
     /* Spacing */
     --space-xs: 0.25rem;
@@ -67,6 +76,19 @@
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* CSS Houdini - Animated Properties */
+@property --border-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --glow-opacity {
+    syntax: '<number>';
+    initial-value: 0;
+    inherits: false;
+}
+
 /* Reset */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -91,28 +113,59 @@ body {
     position: relative;
 }
 
-/* Gradient orbs background layer */
+/* Animated Aurora Background Layer */
 body::before {
     content: '';
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(139, 92, 246, 0.15), transparent 50%),
-        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(99, 102, 241, 0.1), transparent 50%),
-        radial-gradient(ellipse 50% 50% at 50% 100%, rgba(139, 92, 246, 0.08), transparent 40%);
+        radial-gradient(ellipse 100% 80% at 15% -15%, rgba(139, 92, 246, 0.2), transparent 50%),
+        radial-gradient(ellipse 90% 70% at 85% 15%, rgba(59, 130, 246, 0.15), transparent 50%),
+        radial-gradient(ellipse 70% 60% at 50% 110%, rgba(236, 72, 153, 0.1), transparent 45%),
+        radial-gradient(ellipse 50% 40% at 30% 60%, rgba(45, 212, 191, 0.05), transparent 40%);
+    animation: auroraShift 25s ease-in-out infinite alternate;
     pointer-events: none;
     z-index: -1;
 }
 
-/* Noise texture overlay */
+@keyframes auroraShift {
+    0% {
+        background-position: 0% 0%, 100% 0%, 50% 100%, 30% 50%;
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    33% {
+        background-position: 30% 20%, 70% 30%, 40% 90%, 60% 40%;
+        filter: hue-rotate(15deg) brightness(1.05);
+    }
+    66% {
+        background-position: 60% 10%, 40% 50%, 60% 100%, 20% 70%;
+        filter: hue-rotate(-10deg) brightness(1);
+    }
+    100% {
+        background-position: 100% 30%, 0% 70%, 50% 80%, 50% 30%;
+        filter: hue-rotate(20deg) brightness(1.02);
+    }
+}
+
+/* Noise texture overlay - animated grain */
 body::after {
     content: '';
     position: fixed;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.03;
+    opacity: 0.025;
     pointer-events: none;
     z-index: 1;
+    animation: noiseShift 0.4s steps(8) infinite;
+    mix-blend-mode: overlay;
+}
+
+@keyframes noiseShift {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-2%, -2%); }
+    50% { transform: translate(2%, 1%); }
+    75% { transform: translate(-1%, 2%); }
+    100% { transform: translate(1%, -1%); }
 }
 
 /* Accessibility */
@@ -187,15 +240,40 @@ header {
     animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
 }
 
+header::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 200px;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(139, 92, 246, 0.15) 0%,
+        transparent 70%
+    );
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: -1;
+}
+
 header::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 200px;
+    width: 300px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(139, 92, 246, 0.3) 20%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(139, 92, 246, 0.3) 80%,
+        transparent 100%
+    );
 }
 
 header h1 {
@@ -207,7 +285,16 @@ header h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 40px var(--accent-glow));
+    animation: titleGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    from {
+        filter: drop-shadow(0 0 30px var(--accent-glow));
+    }
+    to {
+        filter: drop-shadow(0 0 50px var(--accent-glow-strong));
+    }
 }
 
 header p {
@@ -275,41 +362,69 @@ footer a:hover {
     }
 }
 
-/* Step Sections */
+/* Step Sections - Multi-Layer Glass */
 .step {
+    --stagger: 0;
     margin-bottom: var(--space-2xl);
     padding: var(--space-xl);
-    background: linear-gradient(
-        145deg,
-        rgba(14, 14, 20, 0.5) 0%,
-        rgba(10, 10, 15, 0.4) 100%
-    );
-    backdrop-filter: blur(24px) saturate(1.4);
-    -webkit-backdrop-filter: blur(24px) saturate(1.4);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-lg);
-    box-shadow:
-        inset 0 1px 1px rgba(255, 255, 255, 0.05),
-        inset 0 -1px 1px rgba(0, 0, 0, 0.1),
-        0 8px 32px rgba(0, 0, 0, 0.3);
     position: relative;
+    border-radius: var(--radius-lg);
+    isolation: isolate;
+    transform-style: preserve-3d;
     opacity: 1;
     transform: translateY(0);
     transition: all 0.4s var(--ease-out-expo);
 }
 
-.step:hover {
-    border-color: rgba(139, 92, 246, 0.2);
+/* Base glass layer */
+.step::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        var(--light-angle),
+        rgba(255, 255, 255, 0.06) 0%,
+        rgba(255, 255, 255, 0.02) 40%,
+        rgba(0, 0, 0, 0.03) 100%
+    );
+    backdrop-filter: blur(var(--glass-depth-2)) saturate(1.5);
+    -webkit-backdrop-filter: blur(var(--glass-depth-2)) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: inherit;
     box-shadow:
         inset 0 1px 1px rgba(255, 255, 255, 0.08),
-        inset 0 -1px 1px rgba(0, 0, 0, 0.1),
-        0 12px 40px rgba(0, 0, 0, 0.35),
-        0 0 0 1px rgba(139, 92, 246, 0.1),
-        var(--glass-glow);
+        inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+        0 8px 32px rgba(0, 0, 0, 0.35),
+        0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: -2;
+    transition: all 0.4s var(--ease-out-expo);
 }
 
-/* Gradient accent line on step cards */
-.step::before {
+/* Inner light refraction layer */
+.step::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    background:
+        radial-gradient(
+            ellipse 120% 80% at 25% 15%,
+            rgba(255, 255, 255, 0.08),
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse 80% 60% at 85% 90%,
+            rgba(139, 92, 246, 0.04),
+            transparent 40%
+        );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+/* Accent glow line on top */
+.step > *:first-child::before {
     content: '';
     position: absolute;
     top: 0;
@@ -319,33 +434,112 @@ footer a:hover {
     background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba(139, 92, 246, 0.3) 20%,
-        rgba(139, 92, 246, 0.5) 50%,
-        rgba(139, 92, 246, 0.3) 80%,
+        rgba(139, 92, 246, 0.4) 20%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(139, 92, 246, 0.4) 80%,
         transparent 100%
     );
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.4s var(--ease-out-expo);
+    pointer-events: none;
 }
 
 .step:hover::before {
+    border-color: rgba(139, 92, 246, 0.25);
+    box-shadow:
+        inset 0 1px 2px rgba(255, 255, 255, 0.12),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+        0 16px 48px rgba(0, 0, 0, 0.4),
+        0 0 60px rgba(139, 92, 246, 0.08);
+}
+
+.step:hover::after {
     opacity: 1;
 }
 
-.step:hover {
-    background: rgba(14, 14, 20, 0.7);
-    border-color: rgba(255, 255, 255, 0.1);
+.step:hover > *:first-child::before {
+    opacity: 1;
 }
 
-/* Animated entrance when JS adds class */
+/* Luminous rotating border glow - use a wrapper div in HTML or add via JS */
+@keyframes borderRotate {
+    to { --border-angle: 360deg; }
+}
+
+@keyframes borderPulse {
+    0%, 100% {
+        opacity: 0.6;
+        filter: blur(4px);
+    }
+    50% {
+        opacity: 1;
+        filter: blur(6px);
+    }
+}
+
+/* Glowing border effect on step hover via box-shadow animation */
+.step:hover::before {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow:
+            inset 0 1px 2px rgba(255, 255, 255, 0.12),
+            inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+            0 16px 48px rgba(0, 0, 0, 0.4),
+            0 0 60px rgba(139, 92, 246, 0.08),
+            0 0 1px rgba(139, 92, 246, 0.4);
+    }
+    50% {
+        box-shadow:
+            inset 0 1px 2px rgba(255, 255, 255, 0.15),
+            inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+            0 16px 48px rgba(0, 0, 0, 0.4),
+            0 0 80px rgba(139, 92, 246, 0.12),
+            0 0 2px rgba(139, 92, 246, 0.6);
+    }
+}
+
+/* Staggered glass reveal animation */
 .step.animate-in {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(50px) scale(0.96);
+}
+
+.step.animate-in::before {
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
 }
 
 .step.animate-in.visible {
-    opacity: 1;
-    transform: translateY(0);
+    animation: glassReveal 0.9s var(--ease-out-expo) calc(var(--stagger, 0) * 120ms) both;
+}
+
+.step.animate-in.visible::before {
+    animation: glassBlurIn 0.9s var(--ease-out-expo) calc(var(--stagger, 0) * 120ms) both;
+}
+
+@keyframes glassReveal {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes glassBlurIn {
+    from {
+        backdrop-filter: blur(0px) saturate(1);
+        -webkit-backdrop-filter: blur(0px) saturate(1);
+    }
+    to {
+        backdrop-filter: blur(var(--glass-depth-2)) saturate(1.5);
+        -webkit-backdrop-filter: blur(var(--glass-depth-2)) saturate(1.5);
+    }
 }
 
 .step h2 {
@@ -558,19 +752,77 @@ fieldset:hover {
     border-color: var(--border-light);
 }
 
+/* Tier-based glass tinting */
 fieldset.tier-safe-field {
-    border-color: rgba(45, 212, 191, 0.2);
-    background: linear-gradient(135deg, var(--safe-bg) 0%, var(--bg-tertiary) 100%);
+    --glass-tint: rgba(45, 212, 191, 0.06);
+    --glass-edge: rgba(45, 212, 191, 0.35);
+    border-color: rgba(45, 212, 191, 0.25);
+    background:
+        linear-gradient(
+            var(--light-angle),
+            var(--glass-tint) 0%,
+            transparent 50%
+        ),
+        linear-gradient(135deg, var(--safe-bg) 0%, var(--bg-tertiary) 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(45, 212, 191, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+fieldset.tier-safe-field:hover {
+    border-color: rgba(45, 212, 191, 0.4);
+    box-shadow:
+        inset 0 1px 0 rgba(45, 212, 191, 0.15),
+        0 6px 24px rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(45, 212, 191, 0.08);
 }
 
 fieldset.tier-caution-field {
-    border-color: rgba(251, 191, 36, 0.2);
-    background: linear-gradient(135deg, var(--caution-bg) 0%, var(--bg-tertiary) 100%);
+    --glass-tint: rgba(251, 191, 36, 0.06);
+    --glass-edge: rgba(251, 191, 36, 0.35);
+    border-color: rgba(251, 191, 36, 0.25);
+    background:
+        linear-gradient(
+            var(--light-angle),
+            var(--glass-tint) 0%,
+            transparent 50%
+        ),
+        linear-gradient(135deg, var(--caution-bg) 0%, var(--bg-tertiary) 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(251, 191, 36, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+fieldset.tier-caution-field:hover {
+    border-color: rgba(251, 191, 36, 0.4);
+    box-shadow:
+        inset 0 1px 0 rgba(251, 191, 36, 0.15),
+        0 6px 24px rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(251, 191, 36, 0.08);
 }
 
 fieldset.tier-risky-field {
-    border-color: rgba(251, 113, 133, 0.2);
-    background: linear-gradient(135deg, var(--risky-bg) 0%, var(--bg-tertiary) 100%);
+    --glass-tint: rgba(251, 113, 133, 0.06);
+    --glass-edge: rgba(251, 113, 133, 0.35);
+    border-color: rgba(251, 113, 133, 0.25);
+    background:
+        linear-gradient(
+            var(--light-angle),
+            var(--glass-tint) 0%,
+            transparent 50%
+        ),
+        linear-gradient(135deg, var(--risky-bg) 0%, var(--bg-tertiary) 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(251, 113, 133, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+fieldset.tier-risky-field:hover {
+    border-color: rgba(251, 113, 133, 0.4);
+    box-shadow:
+        inset 0 1px 0 rgba(251, 113, 133, 0.15),
+        0 6px 24px rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(251, 113, 133, 0.08);
 }
 
 legend {
@@ -1121,6 +1373,7 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
 }
 
 .preset-btn {
+    position: relative;
     padding: var(--space-sm) var(--space-lg);
     background: var(--bg-tertiary);
     border: 1px solid var(--border);
@@ -1133,14 +1386,42 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
+    overflow: visible;
+    isolation: isolate;
+}
+
+/* Expanding glow effect */
+.preset-btn::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    background: radial-gradient(
+        circle at center,
+        var(--accent-glow-strong) 0%,
+        rgba(139, 92, 246, 0.2) 40%,
+        transparent 70%
+    );
+    border-radius: inherit;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: all 0.4s var(--ease-out-expo);
+    z-index: -1;
+    filter: blur(8px);
 }
 
 .preset-btn:hover {
     border-color: var(--accent);
     color: var(--text-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
-    background: rgba(139, 92, 246, 0.08);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+        0 8px 24px rgba(139, 92, 246, 0.25),
+        0 2px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.preset-btn:hover::before {
+    opacity: 1;
+    transform: scale(1.8);
 }
 
 .preset-btn.active {
@@ -1148,14 +1429,37 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
     border-color: var(--accent);
     color: white;
     box-shadow:
-        0 4px 20px var(--accent-glow),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        0 6px 24px var(--accent-glow-strong),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.preset-btn.active::before {
+    opacity: 0.8;
+    transform: scale(1.5);
+    animation: presetGlowPulse 2s ease-in-out infinite;
+}
+
+@keyframes presetGlowPulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.6);
+    }
 }
 
 .preset-btn .icon {
     width: 16px;
     height: 16px;
     flex-shrink: 0;
+    transition: transform 0.3s var(--ease-out-back);
+}
+
+.preset-btn:hover .icon {
+    transform: scale(1.15);
 }
 
 /* Legend icons */
@@ -1411,6 +1715,8 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: var(--space-md);
+    perspective: 1200px;
+    perspective-origin: center center;
 }
 
 /* List view */
@@ -1478,10 +1784,18 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
 
 /* Card with fade transition (no flip) */
 .software-card {
+    --light-x: 50%;
+    --light-y: 50%;
     position: relative;
     aspect-ratio: 1;
     cursor: pointer;
-    transition: transform 0.15s var(--ease-out-expo);
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    transition: transform 0.4s var(--ease-out-expo);
+}
+
+.software-card:hover {
+    transform: translateZ(20px) rotateX(-2deg) rotateY(2deg);
 }
 
 .software-card.entering {
@@ -1492,11 +1806,11 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
 @keyframes cardEnter {
     from {
         opacity: 0;
-        transform: translateY(20px) scale(0.9);
+        transform: translateY(20px) scale(0.9) translateZ(-20px);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0) scale(1) translateZ(0);
     }
 }
 
@@ -1582,6 +1896,28 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
     transform: translateX(100%);
 }
 
+/* Dynamic light reflection following mouse */
+.software-card-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle 80px at var(--light-x, 50%) var(--light-y, 50%),
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.05) 40%,
+        transparent 70%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.software-card:hover .software-card-inner::after {
+    opacity: 1;
+}
+
 /* Accent glow on back */
 .software-card-back::before {
     content: '';
@@ -1593,19 +1929,54 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
 }
 
 /* Selected state */
+/* Chromatic aberration glow on selected cards */
+.software-card.selected {
+    z-index: 1;
+}
+
+.software-card.selected::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 50, 150, 0.4),
+        rgba(50, 255, 200, 0.3),
+        rgba(100, 150, 255, 0.4)
+    );
+    filter: blur(10px);
+    border-radius: calc(var(--radius) + 3px);
+    z-index: -1;
+    opacity: 0.7;
+    animation: chromaticPulse 3s ease-in-out infinite;
+}
+
+@keyframes chromaticPulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+        filter: blur(10px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.03);
+        filter: blur(12px);
+    }
+}
+
 .software-card.selected .software-card-front,
 .software-card.selected .software-card-back {
     border-color: var(--accent);
     background: linear-gradient(
         135deg,
-        rgba(139, 92, 246, 0.08) 0%,
-        rgba(139, 92, 246, 0.02) 100%
+        rgba(139, 92, 246, 0.12) 0%,
+        rgba(139, 92, 246, 0.04) 100%
     );
     box-shadow:
         0 0 0 1px var(--accent),
-        0 0 20px var(--accent-glow),
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 30px var(--accent-glow-strong),
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
 
 .software-card.selected .software-card-front::after {
@@ -1784,19 +2155,53 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
 
 /* Summary */
 .summary {
-    background: rgba(20, 20, 28, 0.35);
-    backdrop-filter: blur(20px) saturate(1.3);
-    -webkit-backdrop-filter: blur(20px) saturate(1.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius);
+    position: relative;
+    background:
+        linear-gradient(
+            var(--light-angle),
+            rgba(255, 255, 255, 0.06) 0%,
+            rgba(255, 255, 255, 0.02) 50%,
+            transparent 100%
+        ),
+        rgba(20, 20, 28, 0.4);
+    backdrop-filter: blur(var(--glass-depth-3)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--glass-depth-3)) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-lg);
     box-shadow:
-        inset 0 1px 1px rgba(255, 255, 255, 0.05),
-        0 4px 24px rgba(0, 0, 0, 0.2);
+        0 24px 60px rgba(0, 0, 0, 0.45),
+        0 0 80px rgba(139, 92, 246, 0.08),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.15);
     padding: var(--space-lg);
     margin-bottom: var(--space-lg);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-md);
+    transform-style: preserve-3d;
+    transition: all 0.3s var(--ease-out-expo);
+}
+
+.summary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 100% 60% at 50% 0%,
+        rgba(139, 92, 246, 0.08),
+        transparent 50%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.summary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.5),
+        0 0 100px rgba(139, 92, 246, 0.1),
+        inset 0 1px 1px rgba(255, 255, 255, 0.12),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .summary-item {
@@ -2805,10 +3210,59 @@ fieldset label:hover input[type="checkbox"]:not(:checked) {
     .label-hint { display: none; }
 }
 
-/* Reduced motion */
+/* Reduced motion - accessibility */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Disable aurora background animation */
+    body::before {
+        animation: none !important;
+        filter: none !important;
+    }
+
+    /* Disable noise animation */
+    body::after {
+        animation: none !important;
+    }
+
+    /* Disable cursor glow */
+    .cursor-glow {
+        display: none !important;
+    }
+
+    /* Disable card 3D transforms */
+    .software-card:hover {
+        transform: none !important;
+    }
+
+    /* Disable chromatic glow pulse */
+    .software-card.selected::before {
+        animation: none !important;
+    }
+
+    /* Disable step hover animations */
+    .step:hover::before {
+        animation: none !important;
+    }
+
+    /* Disable preset button glow */
+    .preset-btn::before {
+        display: none !important;
+    }
+
+    /* Show content immediately without stagger */
+    .step.animate-in {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .step.animate-in::before {
+        backdrop-filter: blur(var(--glass-depth-2)) saturate(1.5) !important;
+        -webkit-backdrop-filter: blur(var(--glass-depth-2)) saturate(1.5) !important;
     }
 }

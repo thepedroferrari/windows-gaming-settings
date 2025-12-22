@@ -6,14 +6,10 @@
 .DESCRIPTION
     Optimizations for AMD Ryzen 7900X3D/7950X3D CPUs with 3D V-Cache technology.
 
-    CRITICAL FIX: This module ENABLES CPPC (was incorrectly disabled in old script).
+    This module ENABLES CPPC.
     AMD's 3D V-Cache Performance Optimizer driver REQUIRES CPPC enabled for proper
     CCD (Core Complex Die) thread steering.
 
-    Changes from old gaming-pc-setup.ps1:
-    - CPPC: NOW ENABLED (CppcEnable = 1, was 0) - BREAKING CHANGE
-    - HeteroPolicy: NOW REMOVED (was set to 0, interferes with scheduler)
-    - Game Bar: Detection kept enabled, overlays disabled only (was completely disabled)
 .NOTES
     Author: @thepedroferrari
     Risk Level: TIER_1_LOW
@@ -53,7 +49,7 @@ function Test-X3DCpu {
 
 <#
 .SYNOPSIS
-    Check if AMD Chipset Drivers are installed (critical for X3D)
+    Check if AMD Chipset Drivers are installed
 .DESCRIPTION
     Verifies that the AMD 3D V-Cache Performance Optimizer and PPM Provisioning
     File Driver are installed. These are required for proper X3D thread steering.
@@ -83,7 +79,7 @@ function Test-AMDChipsetDrivers {
             return $false
         } else {
             Write-Log "✗ AMD Chipset Drivers NOT DETECTED!" "ERROR"
-            Write-Log "CRITICAL: Install AMD Chipset Drivers from https://www.amd.com/en/support" "ERROR"
+            Write-Log "Install AMD Chipset Drivers from https://www.amd.com/en/support" "ERROR"
             Write-Log "Required for X3D thread steering - CPPC optimizations won't work without them!" "ERROR"
             return $false
         }
@@ -104,7 +100,7 @@ function Test-X3DOptimizations {
 
     Write-Log "Verifying AMD X3D optimizations..." "INFO"
 
-    # Check 0: AMD Chipset Drivers (critical!)
+    # Check 0: AMD Chipset Drivers
     if (-not (Test-AMDChipsetDrivers)) {
         Write-Log "WARNING: AMD Chipset Drivers not detected - X3D optimizations may not work!" "ERROR"
         # Don't fail verification, just warn
@@ -149,7 +145,7 @@ function Test-X3DOptimizations {
 
 <#
 .SYNOPSIS
-    Enable CPPC for AMD X3D CPUs (CRITICAL FIX)
+    Enable CPPC for AMD X3D CPUs
 .DESCRIPTION
     Enables CPPC (Collaborative Processor Performance Control) which is REQUIRED
     for AMD's 3D V-Cache Performance Optimizer and PPM Provisioning File Driver
@@ -169,7 +165,7 @@ function Enable-CPPCOptimization {
     Backup-RegistryKey -Path $regPath
 
     try {
-        # CRITICAL FIX: ENABLE CPPC (not disable)
+        # ENABLE CPPC (not disable)
         Set-RegistryValue -Path $regPath -Name "CppcEnable" -Value 1 -Type "DWORD"
         Write-Log "AMD X3D: ENABLED CPPC for proper CCD thread steering" "SUCCESS"
 
@@ -262,7 +258,7 @@ function Invoke-X3DOptimizations {
     }
 
     try {
-        # CRITICAL: Enable CPPC (this is the main fix)
+        # Enable CPPC
         Enable-CPPCOptimization
 
         # Configure Game Bar (keep detection, disable overlays)
@@ -271,7 +267,7 @@ function Invoke-X3DOptimizations {
         Write-Log "AMD X3D optimizations complete" "SUCCESS"
 
         if (-not $chipsetDriversInstalled) {
-            Write-Log "CRITICAL: Install AMD Chipset Drivers after reboot!" "ERROR"
+            Write-Log "Install AMD Chipset Drivers after reboot!" "ERROR"
             Write-Log "Download: https://www.amd.com/en/support" "ERROR"
         }
 

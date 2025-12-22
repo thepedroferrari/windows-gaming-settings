@@ -4,11 +4,7 @@
 .SYNOPSIS
     Network optimizations for gaming
 .DESCRIPTION
-    Evidence-based network optimizations. Most TCP tweaks removed per PRD research.
-
-    CRITICAL FINDING from PRD: Most modern games use UDP, not TCP.
-    TCP tweaks like TcpAckFrequency, TCPNoDelay, NetworkThrottlingIndex are folklore
-    and have NO EFFECT on UDP traffic.
+    Evidence-based network optimizations. Most TCP tweaks removed.
 
     What actually matters:
     - DNS provider selection (doesn't affect ping, but improves name resolution speed)
@@ -16,8 +12,6 @@
     - RSC (Receive Segment Coalescing) - disable only if measured jitter
     - NIC driver stability
     - Router QoS/SQM (out of scope for this script)
-
-    Breaking Changes from old script:
     - Removed TcpAckFrequency (irrelevant for UDP games)
     - Removed TCPNoDelay (irrelevant for UDP games)
     - Removed NetworkThrottlingIndex (folklore, no evidence)
@@ -340,7 +334,6 @@ function Set-QoSConfiguration {
 
 #endregion
 
-#region PRD New Network Functions
 
 <#
 .SYNOPSIS
@@ -348,7 +341,6 @@ function Set-QoSConfiguration {
 .DESCRIPTION
     Configures Windows to prefer IPv4 over IPv6 connections.
     Can reduce latency on misconfigured LANs but may break IPv6-only paths.
-    Score: 5/10 impact in PRD rubric.
 
     WEB_CONFIG: network.ipv4_prefer (boolean, default: false)
     Description: "Prefer IPv4 over IPv6 (risk: IPv6/Xbox features)"
@@ -381,7 +373,6 @@ function Set-IPv4Preference {
     Disable Teredo IPv6 tunneling
 .DESCRIPTION
     Disables Teredo IPv6 tunneling which can add latency/jitter.
-    Score: 5/10 impact in PRD rubric.
 
     WEB_CONFIG: network.teredo_disable (boolean, default: false)
     Description: "Disable Teredo IPv6 tunneling (may affect Xbox Live)"
@@ -458,7 +449,6 @@ function Invoke-NetworkOptimizations {
 
         [string[]]$GameExecutables = @("cs2.exe", "dota2.exe", "helldivers2.exe", "SpaceMarine2.exe"),
 
-        # PRD new parameters
         [bool]$PreferIPv4 = $false,
         [bool]$DisableTeredo = $false
     )
@@ -483,12 +473,12 @@ function Invoke-NetworkOptimizations {
             Set-QoSConfiguration -GameExecutables $GameExecutables
         }
 
-        # PRD: IPv4 preference (opt-in, risky)
+        # IPv4 preference (opt-in, risky)
         if ($PreferIPv4) {
             Set-IPv4Preference
         }
 
-        # PRD: Teredo disable (opt-in, risky)
+        # Teredo disable (opt-in, risky)
         if ($DisableTeredo) {
             Disable-Teredo
         }

@@ -224,7 +224,7 @@ foreach ($section in $sections) {
 }
 
 Write-Host ""
-Write-Host "CRITICAL: SmartScreen and Windows Update remain ENABLED (security)" -ForegroundColor Yellow
+Write-Host "SmartScreen and Windows Update remain ENABLED (security)" -ForegroundColor Yellow
 Write-Host ""
 
 if (-not $DryRun) {
@@ -309,7 +309,7 @@ Completed: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 System: $($sysInfo.CPU) | $($sysInfo.RAM) | $($sysInfo.GPU)
 
 ================================================================================
-    CRITICAL - REBOOT REQUIRED
+    REBOOT REQUIRED
 ================================================================================
 
 [X] REBOOT YOUR SYSTEM NOW
@@ -317,7 +317,7 @@ System: $($sysInfo.CPU) | $($sysInfo.RAM) | $($sysInfo.GPU)
     - Page file changes require a restart
 
 ================================================================================
-    BEFORE GAMING - TIMER TOOL (CRITICAL FOR MICRO-STUTTER FIX)
+    BEFORE GAMING - TIMER TOOL
 ================================================================================
 
 [X] Run timer-tool.ps1 BEFORE starting any game
@@ -427,7 +427,7 @@ Logitech G HUB / Razer Synapse / Corsair iCUE:
     AMD RYZEN X3D USERS (7900X3D / 7950X3D / 9800X3D)
 ================================================================================
 
-BIOS Settings (CRITICAL):
+BIOS Settings:
 ------------------------
 [X] CPPC (Collaborative Processor Performance Control): ENABLED or AUTO/DRIVER
     - DO NOT DISABLE (required for AMD 3D V-Cache Performance Optimizer)
@@ -548,7 +548,7 @@ Support:
 
 Remember:
 1. REBOOT NOW
-2. Run timer-tool.ps1 BEFORE gaming (critical!)
+2. Run timer-tool.ps1 BEFORE gaming
 3. Configure GPU driver settings manually
 
 Happy gaming! 🎮

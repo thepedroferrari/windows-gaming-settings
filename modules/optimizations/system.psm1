@@ -13,8 +13,6 @@
     - 32GB+ RAM: 4GB fixed page file
     - 16GB RAM: 8GB fixed page file
     - < 16GB RAM: Keep system-managed (not modified)
-
-    Note: PRD recommends system-managed, but user prefers fixed sizing for control.
 .NOTES
     Author: @thepedroferrari
     Risk Level: TIER_2_MED (page file changes can affect stability)
@@ -126,9 +124,8 @@ function Test-SystemOptimizations {
     Fixed sizing provides predictable performance and prevents dynamic resizing overhead.
 
     WEB_CONFIG: system.page_file_size_gb (dropdown: 4, 8, 16, "system-managed", default: "auto-detect")
-    Description: "4GB for 32GB+ RAM, 8GB for 16GB RAM (user preference, not PRD)"
+    Description: "4GB for 32GB+ RAM, 8GB for 16GB RAM (user preference)"
     Risk Level: TIER_2_MED
-    Note: "PRD recommends system-managed, but user prefers fixed sizing"
 #>
 function Set-PageFile {
     try {
@@ -194,7 +191,6 @@ function Set-PageFile {
     WEB_CONFIG: system.memory_compression_disabled (boolean, default: false)
     Description: "Disable memory compression on 32GB+ RAM (opt-in, validate with ETW first)"
     Risk Level: TIER_1_LOW
-    Note: "PRD recommends keeping enabled by default"
 #>
 function Set-MemoryCompression {
     param(

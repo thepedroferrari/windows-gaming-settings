@@ -210,13 +210,20 @@ function attachCardEventListeners(card: HTMLDivElement, key: PackageKey): void {
 
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect()
-    const x = (e.clientX - rect.left - rect.width / 2) * MAGNETIC_FACTOR
-    const y = (e.clientY - rect.top - rect.height / 2) * MAGNETIC_FACTOR
-    card.style.transform = `translate(${x}px, ${y}px)`
+    const magneticX = (e.clientX - rect.left - rect.width / 2) * MAGNETIC_FACTOR
+    const magneticY = (e.clientY - rect.top - rect.height / 2) * MAGNETIC_FACTOR
+    card.style.transform = `translate(${magneticX}px, ${magneticY}px)`
+
+    const lightX = ((e.clientX - rect.left) / rect.width) * 100
+    const lightY = ((e.clientY - rect.top) / rect.height) * 100
+    card.style.setProperty('--light-x', `${lightX}%`)
+    card.style.setProperty('--light-y', `${lightY}%`)
   })
 
   card.addEventListener('mouseleave', () => {
     card.style.transform = ''
+    card.style.setProperty('--light-x', '50%')
+    card.style.setProperty('--light-y', '50%')
   })
 
   card.addEventListener('animationend', () => {

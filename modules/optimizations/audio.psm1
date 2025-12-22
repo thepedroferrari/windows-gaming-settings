@@ -14,8 +14,6 @@
     - Disable system sounds
     - Configure exclusive mode preference (opt-in)
 
-    PRD Category 12 research shows audio enhancements are a safe target for
-    determinism improvements without quality loss for gaming.
 .NOTES
     Author: @thepedroferrari
     Risk Level: TIER_1_LOW

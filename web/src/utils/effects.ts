@@ -29,17 +29,20 @@ export function setupScrollAnimations(): void {
   const sections = document.querySelectorAll('.step')
   if (!sections.length) return
 
+  sections.forEach((section, idx) => {
+    ;(section as HTMLElement).style.setProperty('--stagger', String(idx))
+  })
+
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry, index) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.classList.add('visible')
-          }, index * 100)
+          entry.target.classList.add('visible')
+          observer.unobserve(entry.target)
         }
       })
     },
-    { threshold: 0.1, rootMargin: '-50px' },
+    { threshold: 0.1, rootMargin: '-30px' },
   )
 
   for (const section of sections) {

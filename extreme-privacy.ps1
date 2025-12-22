@@ -292,7 +292,7 @@ Write-Log "=== Advanced Hosts File Telemetry Blocking ==="
 try {
     $hostsFile = "$env:SystemRoot\System32\drivers\etc\hosts"
 
-    # AGGRESSIVE FIX FOR X-LITE: Take ownership and force permissions
+    # Take ownership and force permissions
     Write-Log "Taking ownership of hosts file (required for X-Lite builds)..."
 
     # Take ownership using takeown.exe

@@ -10,7 +10,7 @@ export interface Preset {
 
 type PresetName = 'competitive' | 'streaming' | 'balanced' | 'minimal'
 
-// PRD: Extreme Gamers profile definitions
+// Extreme Gamers profile definitions
 // Principles: FPS first, offline-friendly, power-hungry allowed, clear reversibility
 export const presets: Record<PresetName, Preset> = {
   competitive: {
@@ -26,8 +26,8 @@ export const presets: Record<PresetName, Preset> = {
       'dns',
       'nagle',
       'audio_enhancements',
-      'gamedvr', // Score 8: Critical for FPS
-      'background_apps', // Score 6: Stop background wakeups
+      'gamedvr',
+      'background_apps',
       'edge_debloat',
       'copilot_disable',
       'explorer_speed',

@@ -6,10 +6,6 @@
 .DESCRIPTION
     Extracted from Fix-Stutters function (gaming-pc-setup.ps1 lines 1026-1320).
     Provides granular control over performance-critical settings.
-
-    Breaking Changes from old script:
-    - HPET: Now OPT-IN only (was: always disabled) - PRD says limited benefit on Win11
-    - Core Parking: Now ENABLED by default (was: disabled) - PRD says X3D benefits from C-states
 .NOTES
     Author: @thepedroferrari
     Risk Level: TIER_1_LOW
@@ -77,9 +73,6 @@ function Test-PerformanceOptimizations {
     Disable HPET (High Precision Event Timer) via bcdedit
 .DESCRIPTION
     Disables platform clock and dynamic tick for potential latency reduction.
-
-    BREAKING CHANGE: This is now OPT-IN only (old script always disabled).
-    PRD research shows limited benefit on Windows 11 (QPC uses TSC by default).
 
     Only enable if validated with ETW traces showing HPET-related overhead.
 
@@ -209,17 +202,12 @@ function Enable-MSIMode {
 .SYNOPSIS
     Configure CPU core parking and C-states
 .DESCRIPTION
-    BREAKING CHANGE: This now KEEPS core parking ENABLED by default (old script disabled it).
-
-    PRD research shows X3D CPUs benefit from parking/C-states for thermal headroom
-    and boost behavior. Forcing 100% min processor state can reduce boost clocks.
-
+    Keeps core parking ENABLED by default.
     Only disable if validated with benchmarks showing improvement.
 
     WEB_CONFIG: performance.core_parking_enabled (boolean, default: true)
     Description: "Keep core parking enabled for X3D thermal/boost headroom"
     Risk Level: TIER_1_LOW
-    Note: "PRD recommends keeping enabled, especially for X3D"
 .PARAMETER Disable
     If true, disables core parking. If false (default), keeps it enabled.
 #>
@@ -511,7 +499,7 @@ function Invoke-PerformanceOptimizations {
 
         Write-Log "Performance optimizations complete" "SUCCESS"
         Write-Log "IMPORTANT: Reboot required for HPET and MSI mode changes" "INFO"
-        Write-Log "CRITICAL: Run timer-tool.ps1 during gameplay for 0.5-1.0ms timer resolution" "INFO"
+        Write-Log "Run timer-tool.ps1 during gameplay for 0.5-1.0ms timer resolution" "INFO"
 
     } catch {
         Write-Log "Error applying performance optimizations: $_" "ERROR"

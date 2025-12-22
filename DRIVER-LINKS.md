@@ -4,7 +4,7 @@ Essential drivers and software for optimal gaming performance on Windows 11.
 
 ## 🔴 AMD (Ryzen 7900X3D)
 
-### AMD Chipset Drivers (CRITICAL)
+### AMD Chipset Drivers
 **Download:** https://www.amd.com/en/support/chipsets/amd-socket-am5/x670e
 - Required for proper CPU performance
 - Includes power management drivers
@@ -130,7 +130,7 @@ winget install OBSProject.OBSStudio
 For a fresh Windows install, install in this order:
 
 1. **Windows Updates** (get latest Windows 11)
-2. **AMD Chipset Drivers** (critical first!)
+2. **AMD Chipset Drivers**
 3. **GPU Drivers** (NVIDIA or AMD)
 4. **Motherboard BIOS Update** (if needed for X3D)
 5. **Audio Drivers** (from motherboard manufacturer)

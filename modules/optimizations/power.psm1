@@ -7,10 +7,6 @@
     Configures Windows power plans for maximum performance while maintaining
     thermal headroom for boost behavior.
 
-    Breaking Changes from old script:
-    - Min Processor State: Now 5-10% (was: 100%) - PRD says X3D benefits from C-states
-    - C-States: Now ENABLED (was: disabled) - Thermal headroom improves boost clocks
-
     Safe optimizations:
     - High Performance / Ultimate Performance power plan
     - USB selective suspend disabled
@@ -69,7 +65,6 @@ function Test-PowerOptimizations {
 .DESCRIPTION
     Adds the hidden Ultimate Performance power plan and activates it.
     Biases scheduler and power to maximum performance.
-    Score: 7/10 impact in PRD rubric.
 
     WEB_CONFIG: power.ultimate_performance_plan (boolean, default: false)
     Description: "Add and activate Ultimate Performance power plan"
@@ -216,10 +211,7 @@ function Disable-USBSelectiveSuspend {
 .SYNOPSIS
     Set processor idle policy (C-States)
 .DESCRIPTION
-    BREAKING CHANGE: This now KEEPS C-States ENABLED by default (old script disabled them).
-
-    PRD research shows X3D CPUs benefit from C-states for thermal headroom and better
-    boost behavior. Forcing 100% min processor state can reduce max boost clocks.
+    Keeps C-States ENABLED by default.
 
     Default settings:
     - Min Processor State: 5-10% (not 100%)
@@ -228,7 +220,6 @@ function Disable-USBSelectiveSuspend {
     WEB_CONFIG: power.min_processor_state_percent (number, default: 5)
     Description: "Minimum processor state (5-10% recommended for X3D thermal headroom)"
     Risk Level: TIER_1_LOW
-    Note: "PRD recommends keeping C-states enabled, especially for X3D"
 .PARAMETER MinProcessorStatePercent
     Minimum processor state percentage (5-100). Default 5% for thermal headroom.
 #>

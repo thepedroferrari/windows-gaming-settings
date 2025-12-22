@@ -6,9 +6,6 @@
 .DESCRIPTION
     GPU-specific optimizations including HAGS configuration and vendor-specific tweaks.
 
-    Breaking Change from old script:
-    - HAGS: Now DEFAULT OFF (was: always enabled) - PRD says validate per game first
-
     HAGS (Hardware Accelerated GPU Scheduling) can improve or hurt performance
     depending on the game and GPU. Always benchmark before enabling.
 .NOTES
@@ -83,7 +80,7 @@ function Test-GPUOptimizations {
 .SYNOPSIS
     Set HAGS (Hardware Accelerated GPU Scheduling)
 .DESCRIPTION
-    BREAKING CHANGE: This is now OPT-IN only (old script always enabled).
+    This is now OPT-IN only.
 
     HAGS moves GPU scheduling from CPU to GPU, potentially reducing latency.
     However, results are game-dependent and GPU-dependent.
@@ -92,8 +89,6 @@ function Test-GPUOptimizations {
     - Windows 10 20H1 or later
     - WDDM 2.7+ GPU driver
     - Supported GPU (GTX 1000 series+, RX 5000 series+)
-
-    PRD research shows mixed results. Always benchmark before/after.
 
     WEB_CONFIG: gpu.hags_enabled (boolean, default: false)
     Description: "Enable HAGS (validate with benchmarks first)"

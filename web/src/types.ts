@@ -169,14 +169,13 @@ const SAFE_OPTIMIZATIONS = {
   DNS: 'dns',
   NAGLE: 'nagle',
   AUDIO_ENHANCEMENTS: 'audio_enhancements',
-  // PRD: New high-impact safe optimizations
-  GAMEDVR: 'gamedvr', // Score 8: Remove capture overhead
-  BACKGROUND_APPS: 'background_apps', // Score 6: Stop Store apps waking
-  EDGE_DEBLOAT: 'edge_debloat', // Score 5: Reduce Edge background tasks
-  COPILOT_DISABLE: 'copilot_disable', // Score 6: Remove Copilot hooks
-  EXPLORER_SPEED: 'explorer_speed', // Score 5: Disable folder type auto-detect
-  TEMP_PURGE: 'temp_purge', // Score 5: Delete temp files
-  RAZER_BLOCK: 'razer_block', // Score 5: Block OEM WPBT auto-installs
+  GAMEDVR: 'gamedvr',
+  BACKGROUND_APPS: 'background_apps',
+  EDGE_DEBLOAT: 'edge_debloat',
+  COPILOT_DISABLE: 'copilot_disable',
+  EXPLORER_SPEED: 'explorer_speed',
+  TEMP_PURGE: 'temp_purge',
+  RAZER_BLOCK: 'razer_block',
 } as const
 
 // Caution tier optimizations (test before/after)
@@ -185,11 +184,10 @@ const CAUTION_OPTIMIZATIONS = {
   HPET: 'hpet',
   GAME_BAR: 'game_bar',
   HAGS: 'hags',
-  // PRD: New caution-level optimizations
-  FSO_DISABLE: 'fso_disable', // Score 6: May affect HDR/color mgmt
-  ULTIMATE_PERF: 'ultimate_perf', // Score 7: High idle power/thermals
-  SERVICES_TRIM: 'services_trim', // Score 5: Set non-critical to manual
-  DISK_CLEANUP: 'disk_cleanup', // Score 5: Run cleanup/ResetBase
+  FSO_DISABLE: 'fso_disable',
+  ULTIMATE_PERF: 'ultimate_perf',
+  SERVICES_TRIM: 'services_trim',
+  DISK_CLEANUP: 'disk_cleanup',
 } as const
 
 // Risky tier optimizations (may break features)
@@ -198,9 +196,8 @@ const RISKY_OPTIMIZATIONS = {
   PRIVACY_TIER2: 'privacy_tier2',
   PRIVACY_TIER3: 'privacy_tier3',
   BLOATWARE: 'bloatware',
-  // PRD: New risky optimizations
-  IPV4_PREFER: 'ipv4_prefer', // Score 5: May break IPv6/Xbox
-  TEREDO_DISABLE: 'teredo_disable', // Score 5: May break Xbox Live
+  IPV4_PREFER: 'ipv4_prefer',
+  TEREDO_DISABLE: 'teredo_disable',
 } as const
 
 export const OPTIMIZATION_KEYS = {

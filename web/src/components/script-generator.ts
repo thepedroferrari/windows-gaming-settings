@@ -330,7 +330,7 @@ Write-Host "  [INFO] Removed: People, Your Phone, Solitaire, 3D Viewer, etc." -F
 
   if (opts.includes(OPTIMIZATION_KEYS.TIMER))
     code.push(`
-# Timer Resolution (0.5ms for smooth frame pacing - CRITICAL for micro-stutters)
+# Timer Resolution (0.5ms for smooth frame pacing)
 Add-Type @"
 using System; using System.Runtime.InteropServices;
 public class TimerRes { [DllImport("ntdll.dll")] public static extern uint NtSetTimerResolution(uint Res, bool Set, out uint Cur); }
@@ -354,10 +354,9 @@ bcdedit /set disabledynamictick yes 2>&1 | Out-Null
 Write-OK "HPET disabled (reboot required)"
 Write-Host "  [WARN] Test before/after with benchmarks - results vary by system" -ForegroundColor Yellow`)
 
-  // PRD: New high-impact optimizations (Score 8+)
   if (opts.includes(OPTIMIZATION_KEYS.GAMEDVR))
     code.push(`
-# Disable GameDVR (Score 8: Removes capture overhead and Xbox DVR hooks)
+# Disable GameDVR
 Set-Reg "HKCU:\\System\\GameConfigStore" "GameDVR_Enabled" 0
 Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" "AppCaptureEnabled" 0
 Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\default\\ApplicationManagement\\AllowGameDVR" "value" 0
@@ -366,14 +365,14 @@ Write-OK "GameDVR disabled (capture overhead removed)"`)
 
   if (opts.includes(OPTIMIZATION_KEYS.BACKGROUND_APPS))
     code.push(`
-# Block background Store apps (Score 6: Stop apps waking/consuming cycles)
+# Block background Store apps
 Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" "GlobalUserDisabled" 1
 Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search" "BackgroundAppGlobalToggle" 0
 Write-OK "Background apps blocked"`)
 
   if (opts.includes(OPTIMIZATION_KEYS.EDGE_DEBLOAT))
     code.push(`
-# Edge debloat (Score 5: Reduce browser background tasks/telemetry)
+# Edge debloat
 $edgePolicies = "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge"
 if (!(Test-Path $edgePolicies)) { New-Item -Path $edgePolicies -Force | Out-Null }
 Set-Reg $edgePolicies "StartupBoostEnabled" 0
@@ -388,7 +387,7 @@ Write-OK "Edge debloated (rewards/popups/telemetry off)"`)
 
   if (opts.includes(OPTIMIZATION_KEYS.COPILOT_DISABLE))
     code.push(`
-# Disable Copilot (Score 6: Remove Copilot surface/background hooks)
+# Disable Copilot
 Set-Reg "HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1
 Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1
 Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" "ShowCopilotButton" 0
@@ -396,7 +395,7 @@ Write-OK "Microsoft Copilot disabled"`)
 
   if (opts.includes(OPTIMIZATION_KEYS.EXPLORER_SPEED))
     code.push(`
-# Explorer speed (Score 5: Disable folder type auto-discovery)
+# Explorer speed
 Set-Reg "HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell" "FolderType" "NotSpecified" "String"
 Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" "LaunchTo" 1
 Write-OK "Explorer folder type detection disabled (faster browsing)"
@@ -404,7 +403,7 @@ Write-Host "  [INFO] May need to log off for full effect" -ForegroundColor Gray`
 
   if (opts.includes(OPTIMIZATION_KEYS.TEMP_PURGE))
     code.push(`
-# Purge temp files (Score 5: Free space, avoid cache bloat)
+# Purge temp files
 $tempPaths = @($env:TEMP, "$env:LOCALAPPDATA\\Temp", "$env:WINDIR\\Temp")
 $freed = 0
 foreach ($path in $tempPaths) {
@@ -419,7 +418,7 @@ Write-OK "Temp files purged (\${freedMB}MB freed)"`)
 
   if (opts.includes(OPTIMIZATION_KEYS.RAZER_BLOCK))
     code.push(`
-# Block Razer/OEM WPBT auto-install (Score 5: Prevent bloat reinstalls)
+# Block Razer/OEM WPBT auto-install
 Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager" "DisableWpbt" 1
 $razerPath = "$env:LOCALAPPDATA\\Razer"
 if (Test-Path $razerPath) {
@@ -431,10 +430,10 @@ if (Test-Path $razerPath) {
 }
 Write-OK "OEM/Razer WPBT auto-install blocked"`)
 
-  // PRD: Caution tier optimizations
+  // Caution tier optimizations
   if (opts.includes(OPTIMIZATION_KEYS.ULTIMATE_PERF))
     code.push(`
-# Ultimate Performance power plan (Score 7: Max scheduler/power bias)
+# Ultimate Performance power plan
 $ultPerfGuid = "e9a42b02-d5df-448d-aa00-03f14749eb61"
 powercfg -duplicatescheme $ultPerfGuid 2>$null
 powercfg /setactive $ultPerfGuid 2>$null
@@ -449,7 +448,7 @@ Write-Host "  [WARN] High idle power/thermals - avoid on laptops" -ForegroundCol
 
   if (opts.includes(OPTIMIZATION_KEYS.FSO_DISABLE))
     code.push(`
-# Disable Fullscreen Optimizations (Score 6: Helps legacy titles)
+# Disable Fullscreen Optimizations
 Set-Reg "HKCU:\\System\\GameConfigStore" "GameDVR_FSEBehaviorMode" 2
 Set-Reg "HKCU:\\System\\GameConfigStore" "GameDVR_HonorUserFSEBehaviorMode" 1
 Set-Reg "HKCU:\\System\\GameConfigStore" "GameDVR_FSEBehavior" 2
@@ -459,7 +458,7 @@ Write-Host "  [WARN] May affect HDR/color management in exclusive fullscreen" -F
 
   if (opts.includes(OPTIMIZATION_KEYS.SERVICES_TRIM))
     code.push(`
-# Trim non-critical services to manual (Score 5: Reduce idle wakeups)
+# Trim non-critical services to manual
 $safeServices = @(
     "DiagTrack",           # Connected User Experiences and Telemetry
     "dmwappushservice",    # WAP Push Message Routing
@@ -480,7 +479,7 @@ Write-OK "Non-critical services set to manual"`)
 
   if (opts.includes(OPTIMIZATION_KEYS.DISK_CLEANUP))
     code.push(`
-# Disk Cleanup with ResetBase (Score 5: Free space, pre-update cleanup)
+# Disk Cleanup with ResetBase
 Write-Host "  Running Disk Cleanup..." -NoNewline
 # Set cleanup flags
 $cleanupKey = "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VolumeCaches"
@@ -492,10 +491,9 @@ Start-Process "cleanmgr.exe" -ArgumentList "/sagerun:100" -Wait -WindowStyle Hid
 Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase 2>&1 | Out-Null
 Write-OK "Disk cleaned"`)
 
-  // PRD: Risky network optimizations
   if (opts.includes(OPTIMIZATION_KEYS.IPV4_PREFER))
     code.push(`
-# Prefer IPv4 over IPv6 (Score 5: Reduce IPv6 latency on misconfigured LANs)
+# Prefer IPv4 over IPv6
 Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters" "DisabledComponents" 32
 Write-OK "IPv4 preferred over IPv6"
 Write-Host "  [WARN] May break IPv6-only paths or Xbox/Store features" -ForegroundColor Yellow
@@ -503,7 +501,7 @@ Write-Host "  [INFO] Requires reboot to take effect" -ForegroundColor Gray`)
 
   if (opts.includes(OPTIMIZATION_KEYS.TEREDO_DISABLE))
     code.push(`
-# Disable Teredo tunneling (Score 5: Reduce latency/jitter)
+# Disable Teredo tunneling
 netsh interface teredo set state disabled 2>&1 | Out-Null
 Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters" "DisabledComponents" 1
 Write-OK "Teredo IPv6 tunneling disabled"
