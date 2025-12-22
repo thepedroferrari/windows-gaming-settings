@@ -1,5 +1,11 @@
 import { store } from '../state'
-import type { CpuType, GpuType, HardwareProfile, PeripheralType } from '../types'
+import type {
+  CpuType,
+  GpuType,
+  HardwareProfile,
+  MonitorSoftwareType,
+  PeripheralType,
+} from '../types'
 import { $, $$, $id } from '../utils/dom'
 
 export function getHardwareProfile(): HardwareProfile {
@@ -8,6 +14,9 @@ export function getHardwareProfile(): HardwareProfile {
     gpu: (($('input[name="gpu"]:checked') as HTMLInputElement)?.value as GpuType) || 'nvidia',
     peripherals: Array.from($$<HTMLInputElement>('input[name="peripheral"]:checked')).map(
       (el) => el.value as PeripheralType,
+    ),
+    monitorSoftware: Array.from($$<HTMLInputElement>('input[name="monitor-software"]:checked')).map(
+      (el) => el.value as MonitorSoftwareType,
     ),
   }
 }
@@ -64,14 +73,14 @@ export function updatePreflightCheck(hw: HardwareProfile): void {
 }
 
 export function setupFormListeners(): void {
-  $$('input[name="cpu"], input[name="gpu"], input[name="peripheral"], input[name="opt"]').forEach(
-    (el) => {
-      el.addEventListener('change', () => {
-        updateSummary()
-        document.dispatchEvent(new CustomEvent('script-change-request'))
-      })
-    },
-  )
+  $$(
+    'input[name="cpu"], input[name="gpu"], input[name="peripheral"], input[name="monitor-software"], input[name="opt"]',
+  ).forEach((el) => {
+    el.addEventListener('change', () => {
+      updateSummary()
+      document.dispatchEvent(new CustomEvent('script-change-request'))
+    })
+  })
 
   // Selectors that influence script output
   ;['#dns-provider', '#telemetry-level'].forEach((selector) => {
