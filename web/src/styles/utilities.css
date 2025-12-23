@@ -1,0 +1,59 @@
+/**
+ * Utility Classes
+ * Helper classes for common patterns
+ */
+
+@layer utilities {
+  /* Accessibility - Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    z-index: 10000;
+    text-decoration: none;
+    transition: top 0.2s var(--ease-out-expo);
+
+    &:focus {
+      top: 1rem;
+      outline: 2px solid white;
+      outline-offset: 2px;
+    }
+  }
+
+  /* Cursor glow effect */
+  .cursor-glow {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+  }
+
+  body:hover .cursor-glow {
+    opacity: 1;
+  }
+}
