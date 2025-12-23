@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "lint": "cd web && deno task lint",
+    "format": "cd web && deno task format"
+  }
+}

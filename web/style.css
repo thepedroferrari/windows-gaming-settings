@@ -373,7 +373,7 @@
 
      .driver-cards {
        display: grid;
-       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+       grid-template-columns: repeat(3, 1fr);
        gap: var(--space-md);
        margin-top: var(--space-lg);
      }
@@ -1832,7 +1832,8 @@
          grid-template-columns: 1fr;
        }
 
-       .driver-grid {
+       .driver-grid,
+       .driver-cards {
          grid-template-columns: 1fr;
        }
 

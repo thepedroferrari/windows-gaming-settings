@@ -19,6 +19,7 @@ function updateDriverCards(): void {
 
     const shouldShow = isMotherboard || cpuMatch.includes(cpu) || gpuMatch.includes(gpu)
     card.hidden = !shouldShow
+    card.classList.toggle('active', shouldShow)
   }
 }
 
