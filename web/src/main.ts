@@ -1,5 +1,9 @@
 import { setupAuditPanel } from './components/audit'
-import { renderSoftwareGrid, updateCategoryBadges } from './components/cards'
+import {
+  renderSoftwareGrid,
+  setupSoftwareListeners,
+  updateCategoryBadges,
+} from './components/cards'
 import { setupDriverLinks } from './components/drivers'
 import { setupFilters, setupSearch, setupViewToggle } from './components/filters'
 import { setupHeroCube } from './components/hero-cube'
@@ -12,6 +16,7 @@ import { store } from './state'
 import { CATEGORY_SVG_ICONS } from './types'
 import { $id, onReady } from './utils/dom'
 import { setupCursorGlow, setupImageFallbacks, setupScrollAnimations } from './utils/effects'
+import { type CleanupController, createCleanupController } from './utils/lifecycle'
 import { setupRichTooltips } from './utils/tooltips'
 
 interface LoadState {
@@ -23,6 +28,8 @@ const loadState: LoadState = {
   error: null,
   isLoading: false,
 }
+
+let appController: CleanupController | null = null
 
 async function loadCatalog(): Promise<ValidatedCatalog> {
   loadState.isLoading = true
@@ -66,9 +73,9 @@ function hideError(): void {
   if (banner) banner.hidden = true
 }
 
-function setupErrorHandlers(): void {
-  $id('error-retry')?.addEventListener('click', handleRetry)
-  $id('error-dismiss')?.addEventListener('click', hideError)
+function setupErrorHandlers(controller: CleanupController): void {
+  $id('error-retry')?.addEventListener('click', handleRetry, { signal: controller.signal })
+  $id('error-dismiss')?.addEventListener('click', hideError, { signal: controller.signal })
 }
 
 async function handleRetry(): Promise<void> {
@@ -87,7 +94,9 @@ async function handleRetry(): Promise<void> {
 }
 
 async function init(): Promise<void> {
-  setupErrorHandlers()
+  appController = createCleanupController()
+
+  setupErrorHandlers(appController)
 
   const catalog = await loadCatalog()
   store.setSoftware(catalog)
@@ -96,37 +105,51 @@ async function init(): Promise<void> {
     showError(loadState.error)
   }
 
-  setupVisualEffects()
-  setupUI()
-  setupInteractions()
+  setupVisualEffects(appController)
+  setupUI(appController)
+  setupInteractions(appController)
 
   updateSummary()
   document.dispatchEvent(new CustomEvent('script-change-request'))
+
+  // Cleanup on HMR (Vite dev mode)
+  const hot = (import.meta as unknown as { hot?: { dispose: (cb: () => void) => void } }).hot
+  if (hot) {
+    hot.dispose(() => {
+      appController?.cleanup()
+    })
+  }
 }
 
-function setupVisualEffects(): void {
-  setupCursorGlow()
-  setupScrollAnimations()
+function setupVisualEffects(controller: CleanupController): void {
+  setupCursorGlow(controller)
+  setupScrollAnimations(controller)
   setupImageFallbacks(CATEGORY_SVG_ICONS)
-  setupHeroCube()
-  setupRichTooltips()
+  setupHeroCube(controller)
+  setupRichTooltips(controller)
 }
 
-function setupUI(): void {
+function setupUI(controller: CleanupController): void {
   renderSoftwareGrid()
+  setupSoftwareListeners(controller)
   updateCategoryBadges()
 }
 
-function setupInteractions(): void {
+function setupInteractions(controller: CleanupController): void {
   setupFilters()
   setupSearch()
   setupViewToggle()
-  setupPresets()
+  setupPresets(controller)
   setupFormListeners()
   setupDownload()
   setupProfileActions()
-  setupAuditPanel()
+  setupAuditPanel(controller)
   setupDriverLinks()
 }
 
 onReady(init)
+
+export function cleanupApp(): void {
+  appController?.cleanup()
+  appController = null
+}

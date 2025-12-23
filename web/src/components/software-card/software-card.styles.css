@@ -8,6 +8,7 @@
     transform-style: preserve-3d;
     transform: translateZ(0);
     transition: transform 0.4s var(--ease-out-expo);
+    will-change: transform;
 
     &:hover {
       transform: translateZ(20px) rotateX(-2deg) rotateY(2deg);

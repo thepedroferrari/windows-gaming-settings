@@ -8,6 +8,8 @@
  * - Empty line creates paragraph break
  */
 
+import type { CleanupController } from './lifecycle'
+
 const TOOLTIP_ID = 'rich-tooltip'
 
 interface TooltipConfig {
@@ -22,8 +24,8 @@ const config: TooltipConfig = {
   offset: 8,
 }
 
-let showTimeout: number | null = null
-let hideTimeout: number | null = null
+let showTimeout: ReturnType<typeof setTimeout> | null = null
+let hideTimeout: ReturnType<typeof setTimeout> | null = null
 let currentTrigger: HTMLElement | null = null
 
 function createTooltipElement(): HTMLElement {
@@ -54,7 +56,6 @@ function parseRichContent(raw: string): string {
       continue
     }
 
-    // List items
     if (trimmed.startsWith('- ')) {
       if (!inList) {
         parts.push('<ul>')
@@ -65,25 +66,21 @@ function parseRichContent(raw: string): string {
       continue
     }
 
-    // Close list if we're not in a list item
     if (inList) {
       parts.push('</ul>')
       inList = false
     }
 
-    // Warning line
     if (trimmed.startsWith('⚠️') || trimmed.startsWith('⚠')) {
       parts.push(`<p class="tt-warn">${formatInline(trimmed)}</p>`)
       continue
     }
 
-    // Success/benefit line
     if (trimmed.startsWith('✓') || trimmed.startsWith('✔')) {
       parts.push(`<p class="tt-ok">${formatInline(trimmed)}</p>`)
       continue
     }
 
-    // Regular paragraph
     parts.push(`<p>${formatInline(trimmed)}</p>`)
   }
 
@@ -93,7 +90,6 @@ function parseRichContent(raw: string): string {
 }
 
 function formatInline(text: string): string {
-  // **bold** → <strong>bold</strong>
   return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 }
 
@@ -103,21 +99,17 @@ function positionTooltip(tooltip: HTMLElement, trigger: HTMLElement): void {
   const viewportWidth = window.innerWidth
   const viewportHeight = window.innerHeight
 
-  // Default: below the trigger
   let top = triggerRect.bottom + config.offset
   let left = triggerRect.left
 
-  // If tooltip would go off right edge, align to right of trigger
   if (left + tooltipRect.width > viewportWidth - 16) {
     left = triggerRect.right - tooltipRect.width
   }
 
-  // If tooltip would go off left edge
   if (left < 16) {
     left = 16
   }
 
-  // If tooltip would go off bottom, show above
   if (top + tooltipRect.height > viewportHeight - 16) {
     top = triggerRect.top - tooltipRect.height - config.offset
     tooltip.classList.add('tt-above')
@@ -135,7 +127,6 @@ function showTooltip(trigger: HTMLElement): void {
 
   if (!content) return
 
-  // Check if it's rich content (has newlines or formatting)
   const isRich = content.includes('\n') || content.includes('**') || content.includes('- ')
 
   if (isRich) {
@@ -150,7 +141,6 @@ function showTooltip(trigger: HTMLElement): void {
   tooltip.setAttribute('aria-hidden', 'false')
   currentTrigger = trigger
 
-  // Position after content is set (need dimensions)
   requestAnimationFrame(() => {
     positionTooltip(tooltip, trigger)
   })
@@ -165,7 +155,18 @@ function hideTooltip(): void {
   currentTrigger = null
 }
 
-function handleMouseEnter(e: Event): void {
+function clearTimeouts(): void {
+  if (showTimeout) {
+    clearTimeout(showTimeout)
+    showTimeout = null
+  }
+  if (hideTimeout) {
+    clearTimeout(hideTimeout)
+    hideTimeout = null
+  }
+}
+
+function handleMouseEnter(e: Event, controller?: CleanupController): void {
   const trigger = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement | null
   if (!trigger) return
 
@@ -176,20 +177,24 @@ function handleMouseEnter(e: Event): void {
 
   if (currentTrigger === trigger) return
 
-  showTimeout = window.setTimeout(() => {
+  showTimeout = setTimeout(() => {
     showTooltip(trigger)
   }, config.showDelay)
+
+  controller?.addTimeout(showTimeout)
 }
 
-function handleMouseLeave(): void {
+function handleMouseLeave(controller?: CleanupController): void {
   if (showTimeout) {
     clearTimeout(showTimeout)
     showTimeout = null
   }
 
-  hideTimeout = window.setTimeout(() => {
+  hideTimeout = setTimeout(() => {
     hideTooltip()
   }, config.hideDelay)
+
+  controller?.addTimeout(hideTimeout)
 }
 
 function handleFocusIn(e: Event): void {
@@ -201,23 +206,34 @@ function handleFocusOut(): void {
   hideTooltip()
 }
 
-export function setupRichTooltips(): void {
-  // Use event delegation on document
-  document.addEventListener('mouseenter', handleMouseEnter, true)
-  document.addEventListener('mouseleave', handleMouseLeave, true)
-  document.addEventListener('focusin', handleFocusIn)
-  document.addEventListener('focusout', handleFocusOut)
+export function setupRichTooltips(controller?: CleanupController): void {
+  const mouseEnterHandler = (e: Event): void => handleMouseEnter(e, controller)
+  const mouseLeaveHandler = (): void => handleMouseLeave(controller)
 
-  // Handle scroll/resize
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (currentTrigger) {
-        const tooltip = document.getElementById(TOOLTIP_ID)
-        if (tooltip) positionTooltip(tooltip, currentTrigger)
-      }
-    },
-    { passive: true },
-  )
+  document.addEventListener('mouseenter', mouseEnterHandler, {
+    capture: true,
+    signal: controller?.signal,
+  })
+  document.addEventListener('mouseleave', mouseLeaveHandler, {
+    capture: true,
+    signal: controller?.signal,
+  })
+  document.addEventListener('focusin', handleFocusIn, { signal: controller?.signal })
+  document.addEventListener('focusout', handleFocusOut, { signal: controller?.signal })
+
+  const scrollHandler = (): void => {
+    if (currentTrigger) {
+      const tooltip = document.getElementById(TOOLTIP_ID)
+      if (tooltip) positionTooltip(tooltip, currentTrigger)
+    }
+  }
+
+  window.addEventListener('scroll', scrollHandler, { passive: true, signal: controller?.signal })
+
+  controller?.onCleanup(() => {
+    clearTimeouts()
+    hideTooltip()
+    const tooltip = document.getElementById(TOOLTIP_ID)
+    tooltip?.remove()
+  })
 }
-

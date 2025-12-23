@@ -1,6 +1,7 @@
 import { store } from '../../state'
 import type { PresetType } from '../../types'
 import { $$ } from '../../utils/dom'
+import type { CleanupController } from '../../utils/lifecycle'
 import { updateSoftwareCounter } from '../cards'
 import { updateSummary } from '../summary/'
 
@@ -220,10 +221,6 @@ const _RISK_LEVELS = {
 
 let currentPreset: PresetType | null = null
 
-// ============================================
-// MATH UTILITIES (from reference implementation)
-// ============================================
-
 const round = (value: number, precision = 3): number => parseFloat(value.toFixed(precision))
 
 const clamp = (value: number, min = 0, max = 100): number => Math.min(Math.max(value, min), max)
@@ -235,10 +232,6 @@ const adjust = (
   toMin: number,
   toMax: number,
 ): number => round(toMin + ((toMax - toMin) * (value - fromMin)) / (fromMax - fromMin))
-
-// ============================================
-// SPRING PHYSICS CLASS
-// ============================================
 
 interface SpringConfig {
   stiffness?: number
@@ -296,10 +289,6 @@ class Spring {
   }
 }
 
-// ============================================
-// CARD STATE MANAGEMENT
-// ============================================
-
 interface CardState {
   card: HTMLButtonElement
   rotator: HTMLElement
@@ -310,13 +299,10 @@ interface CardState {
   springBackground: Spring
   interacting: boolean
   animationId: number | null
+  aborted: boolean
 }
 
 const cardStates = new Map<HTMLButtonElement, CardState>()
-
-// ============================================
-// PRESET BADGE HELPERS
-// ============================================
 
 function updatePresetBadges(presetName: PresetType, opts: string[]): void {
   const optsSet = new Set(opts)
@@ -347,17 +333,19 @@ export function applyPreset(presetName: PresetType): void {
   const preset = PRESETS[presetName]
   currentPreset = presetName
 
+  const optsArray = preset.opts as readonly string[]
   for (const cb of $$<HTMLInputElement>('input[name="opt"]')) {
-    cb.checked = preset.opts.includes(cb.value)
+    cb.checked = optsArray.includes(cb.value)
   }
 
-  updatePresetBadges(presetName, preset.opts)
-  store.setSelection(preset.software)
+  updatePresetBadges(presetName, [...optsArray])
+  store.setSelection([...preset.software])
 
+  const softwareArray = preset.software as readonly string[]
   for (const card of $$('.software-card')) {
     const key = card.dataset.key
     if (!key) continue
-    const selected = preset.software.includes(key)
+    const selected = softwareArray.includes(key)
     card.classList.toggle('selected', selected)
     card.setAttribute('aria-checked', String(selected))
     const action = card.querySelector('.back-action')
@@ -368,10 +356,6 @@ export function applyPreset(presetName: PresetType): void {
   updateSummary()
   document.dispatchEvent(new CustomEvent('script-change-request'))
 }
-
-// ============================================
-// APPLY CSS VARIABLES TO CARD
-// ============================================
 
 function applyCardStyles(state: CardState): void {
   const { card, rotator, springRotate, springGlare, springBackground } = state
@@ -402,11 +386,12 @@ function applyCardStyles(state: CardState): void {
   rotator.style.transform = `rotateY(${round(springRotate.current.x)}deg) rotateX(${round(springRotate.current.y)}deg)`
 }
 
-// ============================================
-// ANIMATION LOOP
-// ============================================
-
 function animateCard(state: CardState): void {
+  if (state.aborted) {
+    state.animationId = null
+    return
+  }
+
   state.springRotate.update()
   state.springGlare.update()
   state.springBackground.update()
@@ -426,16 +411,14 @@ function animateCard(state: CardState): void {
 }
 
 function startAnimation(state: CardState): void {
+  if (state.aborted) return
   if (state.animationId === null) {
     state.animationId = requestAnimationFrame(() => animateCard(state))
   }
 }
 
-// ============================================
-// INTERACTION HANDLERS
-// ============================================
-
 function handlePointerMove(state: CardState, e: PointerEvent): void {
+  if (state.aborted) return
   const rect = state.rotator.getBoundingClientRect()
 
   const absolute = {
@@ -473,6 +456,7 @@ function handlePointerMove(state: CardState, e: PointerEvent): void {
 }
 
 function handlePointerEnter(state: CardState): void {
+  if (state.aborted) return
   state.interacting = true
   state.card.classList.add('interacting')
 
@@ -487,6 +471,7 @@ function handlePointerEnter(state: CardState): void {
 }
 
 function handlePointerLeave(state: CardState): void {
+  if (state.aborted) return
   state.interacting = false
   state.card.classList.remove('interacting')
 
@@ -508,11 +493,7 @@ function handlePointerLeave(state: CardState): void {
   startAnimation(state)
 }
 
-// ============================================
-// CARD SETUP
-// ============================================
-
-function setupCardHolographicEffect(card: HTMLButtonElement): void {
+function setupCardHolographicEffect(card: HTMLButtonElement, controller?: CleanupController): void {
   const rotator = card.querySelector<HTMLElement>('.preset-card__rotator')
   const shine = card.querySelector<HTMLElement>('.preset-card__shine')
   const glare = card.querySelector<HTMLElement>('.preset-card__glare')
@@ -531,6 +512,7 @@ function setupCardHolographicEffect(card: HTMLButtonElement): void {
     springBackground: new Spring({ x: 50, y: 50 }, springInteractSettings),
     interacting: false,
     animationId: null,
+    aborted: false,
   }
 
   cardStates.set(card, state)
@@ -551,7 +533,7 @@ function setupCardHolographicEffect(card: HTMLButtonElement): void {
     (e: PointerEvent) => {
       handlePointerMove(state, e)
     },
-    { passive: true },
+    { passive: true, signal: controller?.signal },
   )
 
   rotator.addEventListener(
@@ -559,7 +541,7 @@ function setupCardHolographicEffect(card: HTMLButtonElement): void {
     () => {
       handlePointerEnter(state)
     },
-    { passive: true },
+    { passive: true, signal: controller?.signal },
   )
 
   rotator.addEventListener(
@@ -567,8 +549,16 @@ function setupCardHolographicEffect(card: HTMLButtonElement): void {
     () => {
       handlePointerLeave(state)
     },
-    { passive: true },
+    { passive: true, signal: controller?.signal },
   )
+
+  controller?.onCleanup(() => {
+    state.aborted = true
+    if (state.animationId !== null) {
+      cancelAnimationFrame(state.animationId)
+      state.animationId = null
+    }
+  })
 }
 
 function populateCardStats(card: HTMLButtonElement): void {
@@ -577,10 +567,11 @@ function populateCardStats(card: HTMLButtonElement): void {
 
   const preset = PRESETS[presetName]
 
+  const presetOpts = preset.opts as readonly string[]
   for (const [catKey, catConfig] of Object.entries(CATEGORY_OPTS)) {
     const el = card.querySelector<HTMLElement>(`[data-stat="${catKey}"]`)
     if (el) {
-      const enabled = catConfig.opts.filter((opt) => preset.opts.includes(opt)).length
+      const enabled = catConfig.opts.filter((opt) => presetOpts.includes(opt)).length
       const total = catConfig.opts.length
       el.textContent = `${enabled}/${total}`
       el.dataset.enabled = String(enabled)
@@ -592,33 +583,48 @@ function populateCardStats(card: HTMLButtonElement): void {
   if (softwareEl) softwareEl.textContent = String(preset.software.length)
 }
 
-export function setupPresets(): void {
+export function setupPresets(controller?: CleanupController): void {
   const cards = $$<HTMLButtonElement>('.preset-card')
 
   for (const card of cards) {
     populateCardStats(card)
-    setupCardHolographicEffect(card)
+    setupCardHolographicEffect(card, controller)
 
-    const handleCardClick = () => {
+    const handleCardClick = (): void => {
       const name = card.dataset.preset as PresetType | undefined
       if (!name || !PRESETS[name]) return
       for (const c of cards) c.classList.toggle('active', c === card)
       applyPreset(name)
     }
 
-    card.addEventListener('click', handleCardClick)
+    card.addEventListener('click', handleCardClick, { signal: controller?.signal })
     const rotator = card.querySelector<HTMLElement>('.preset-card__rotator')
     if (rotator) {
-      rotator.addEventListener('click', (e) => {
-        e.stopPropagation()
-        handleCardClick()
-      })
+      rotator.addEventListener(
+        'click',
+        (e) => {
+          e.stopPropagation()
+          handleCardClick()
+        },
+        { signal: controller?.signal },
+      )
     }
   }
 
   for (const cb of $$<HTMLInputElement>('input[name="opt"]')) {
-    cb.addEventListener('change', () => fadePresetBadge(cb.value))
+    cb.addEventListener('change', () => fadePresetBadge(cb.value), { signal: controller?.signal })
   }
+
+  controller?.onCleanup(() => {
+    for (const state of cardStates.values()) {
+      state.aborted = true
+      if (state.animationId !== null) {
+        cancelAnimationFrame(state.animationId)
+        state.animationId = null
+      }
+    }
+    cardStates.clear()
+  })
 }
 
 export function getCurrentPreset(): PresetType | null {

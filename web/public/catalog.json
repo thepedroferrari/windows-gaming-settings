@@ -1,113 +1,712 @@
 {
-  "steam": {"id": "Valve.Steam", "name": "Steam", "category": "launcher", "icon": "steam", "desc": "The largest PC gaming platform with thousands of games, cloud saves, and community features.", "selected": true},
-  "epic": {"id": "EpicGames.EpicGamesLauncher", "name": "Epic Games", "category": "launcher", "icon": "epicgames", "desc": "Free games weekly. Home to Fortnite and Unreal Engine exclusives."},
-  "gog": {"id": "GOG.Galaxy", "name": "GOG Galaxy", "category": "launcher", "icon": "gogdotcom", "desc": "DRM-free games and a unified library connecting all your platforms."},
-  "battlenet": {"id": "Blizzard.BattleNet", "name": "Battle.net", "category": "launcher", "icon": "battledotnet", "desc": "Blizzard launcher for WoW, Diablo, Overwatch, and Call of Duty."},
-  "ea": {"id": "ElectronicArts.EADesktop", "name": "EA App", "category": "launcher", "icon": "ea", "desc": "EA launcher for FC, Battlefield, Apex Legends, and The Sims."},
-  "ubisoft": {"id": "Ubisoft.Connect", "name": "Ubisoft Connect", "category": "launcher", "icon": "ubisoft", "desc": "Launcher for Assassin's Creed, Far Cry, Rainbow Six, and more."},
-  "xbox": {"id": "Microsoft.GamingApp", "name": "Xbox", "category": "launcher", "icon": "xbox", "desc": "Microsoft's launcher for Game Pass, Xbox games, and cloud gaming."},
-  "riot": {"id": "RiotGames.LeagueOfLegends.EUW", "name": "Riot Client", "category": "launcher", "icon": "riotgames", "desc": "Launcher for League of Legends, Valorant, and TFT."},
-  "rockstar": {"id": "Rockstar.RockstarGamesLauncher", "name": "Rockstar", "category": "launcher", "icon": "rockstargames", "desc": "Launcher for GTA V, Red Dead Redemption 2, and other Rockstar titles."},
-  "itch": {"id": "itch.itch", "name": "itch.io", "category": "launcher", "icon": "itchdotio", "desc": "Indie game marketplace with thousands of free and paid games."},
-  "amazon": {"id": "Amazon.Games", "name": "Amazon Games", "category": "launcher", "icon": "amazon", "desc": "Amazon's launcher with Prime Gaming free games."},
-  "playnite": {"id": "Playnite.Playnite", "name": "Playnite", "category": "launcher", "icon": "icons/playnite.svg", "desc": "Open source game library manager. Unifies all launchers."},
-
-  "discord": {"id": "Discord.Discord", "name": "Discord", "category": "gaming", "icon": "discord", "desc": "Voice, video, and text chat for gamers. Create or join servers.", "selected": true},
-  "teamspeak": {"id": "TeamSpeakSystems.TeamSpeakClient", "name": "TeamSpeak", "category": "gaming", "icon": "teamspeak", "desc": "Low-latency voice chat for competitive gaming."},
-  "guilded": {"id": "Guilded.Guilded", "name": "Guilded", "category": "gaming", "icon": "guilded", "desc": "Discord alternative with scheduling, forums, and team tools."},
-  "parsec": {"id": "Parsec.Parsec", "name": "Parsec", "category": "gaming", "icon": "parsec", "desc": "Ultra-low latency game streaming and remote desktop."},
-  "moonlight": {"id": "MoonlightGameStreamingProject.Moonlight", "name": "Moonlight", "category": "gaming", "icon": "icons/moonlight.svg", "desc": "Stream games from your PC to any device via NVIDIA GameStream."},
-
-  "obs": {"id": "OBSProject.OBSStudio", "name": "OBS Studio", "category": "streaming", "icon": "obsstudio", "desc": "Free, open source streaming and recording software."},
-  "streamlabs": {"id": "Streamlabs.Streamlabs", "name": "Streamlabs", "category": "streaming", "icon": "streamlabs", "desc": "All-in-one streaming with alerts, widgets, and overlays."},
-  "twitchstudio": {"id": "Twitch.TwitchStudio", "name": "Twitch Studio", "category": "streaming", "icon": "twitch", "desc": "Twitch's official streaming software for beginners."},
-  "voicemeeter": {"id": "VB-Audio.Voicemeeter.Potato", "name": "Voicemeeter", "category": "streaming", "icon": "icons/voicemeeter.svg", "desc": "Virtual audio mixer for streaming and podcasting."},
-  "nvidiabroadcast": {"id": "Nvidia.Broadcast", "name": "NVIDIA Broadcast", "category": "streaming", "icon": "nvidia", "desc": "AI-powered noise removal, virtual backgrounds, and auto-frame."},
-  "medal": {"id": "Medal.Medal", "name": "Medal.tv", "category": "streaming", "icon": "icons/medal.svg", "desc": "Clip and share your gaming moments automatically."},
-  "elgato": {"id": "Elgato.StreamDeck", "name": "Stream Deck", "category": "streaming", "icon": "elgato", "desc": "Control software for Elgato Stream Deck hardware."},
-  "prism": {"id": "PRISMLiveStudio.PRISMLiveStudio", "name": "Prism Live", "category": "streaming", "icon": "icons/prism.svg", "desc": "Free streaming software with virtual camera and effects."},
-
-  "hwinfo": {"id": "REALiX.HWiNFO", "name": "HWiNFO", "category": "monitoring", "icon": "icons/hwinfo.svg", "desc": "Comprehensive hardware analysis and real-time monitoring."},
-  "afterburner": {"id": "Guru3D.Afterburner", "name": "Afterburner", "category": "monitoring", "icon": "icons/afterburner.svg", "desc": "GPU overclocking, voltage control, and on-screen display."},
-  "cpuz": {"id": "CPUID.CPU-Z", "name": "CPU-Z", "category": "monitoring", "icon": "icons/cpuz.svg", "desc": "Detailed CPU, motherboard, memory, and SPD information."},
-  "gpuz": {"id": "TechPowerUp.GPU-Z", "name": "GPU-Z", "category": "monitoring", "icon": "icons/gpuz.svg", "desc": "GPU specs, clocks, temps, VRAM, and BIOS info."},
-  "coretemp": {"id": "ALCPU.CoreTemp", "name": "Core Temp", "category": "monitoring", "icon": "icons/coretemp.svg", "desc": "CPU temperature monitor with logging and alerts."},
-  "crystaldiskinfo": {"id": "CrystalDewWorld.CrystalDiskInfo", "name": "CrystalDiskInfo", "category": "monitoring", "icon": "icons/crystaldiskinfo.svg", "desc": "SSD/HDD health monitoring with SMART data analysis."},
-  "crystaldiskmark": {"id": "CrystalDewWorld.CrystalDiskMark", "name": "CrystalDiskMark", "category": "monitoring", "icon": "icons/crystaldiskmark.svg", "desc": "Disk benchmark tool for measuring read/write speeds."},
-  "fpsmonitor": {"id": "FPSMonitor.FPSMonitor", "name": "FPS Monitor", "category": "monitoring", "icon": "icons/fpsmonitor.svg", "desc": "In-game FPS counter with hardware monitoring overlay."},
-  "openhardwaremonitor": {"id": "OpenHardwareMonitor.OpenHardwareMonitor", "name": "Open Hardware Monitor", "category": "monitoring", "icon": "icons/openhardwaremonitor.svg", "desc": "Free, open source hardware monitoring tool."},
-  "nvcleanstall": {"id": "TechPowerUp.NVCleanstall", "name": "NVCleanstall", "category": "monitoring", "icon": "icons/nvcleanstall.svg", "desc": "Clean NVIDIA driver installer without bloatware."},
-  "displaydriveruninstaller": {"id": "Wagnardsoft.DisplayDriverUninstaller", "name": "DDU", "category": "monitoring", "icon": "icons/ddu.svg", "desc": "Completely remove GPU drivers for clean installs."},
-  "processlasso": {"id": "BitSum.ProcessLasso", "name": "Process Lasso", "category": "monitoring", "desc": "CPU optimization and process priority automation for gaming."},
-
-  "brave": {"id": "Brave.Brave", "name": "Brave", "category": "browser", "icon": "brave", "desc": "Privacy-focused browser with built-in ad blocking."},
-  "firefox": {"id": "Mozilla.Firefox", "name": "Firefox", "category": "browser", "icon": "firefox", "desc": "Independent, privacy-respecting browser from Mozilla."},
-  "chrome": {"id": "Google.Chrome", "name": "Chrome", "category": "browser", "icon": "googlechrome", "desc": "Fast, widely-used browser with great DevTools."},
-  "edge": {"id": "Microsoft.Edge", "name": "Edge", "category": "browser", "icon": "microsoftedge", "desc": "Microsoft's Chromium browser with vertical tabs."},
-  "operagx": {"id": "Opera.OperaGX", "name": "Opera GX", "category": "browser", "icon": "opera", "desc": "Gaming browser with RAM/CPU limiters and Twitch integration."},
-
-  "vlc": {"id": "VideoLAN.VLC", "name": "VLC", "category": "media", "icon": "vlcmediaplayer", "desc": "Plays everything. Free, open source media player.", "selected": true},
-  "spotify": {"id": "Spotify.Spotify", "name": "Spotify", "category": "media", "icon": "spotify", "desc": "Stream millions of songs and podcasts."},
-  "foobar2000": {"id": "PeterPawlowski.foobar2000", "name": "foobar2000", "category": "media", "icon": "icons/foobar2000.svg", "desc": "Lightweight, customizable audio player for audiophiles."},
-  "mpchc": {"id": "clsid2.mpc-hc", "name": "MPC-HC", "category": "media", "icon": "icons/mpchc.svg", "desc": "Lightweight video player with hardware acceleration."},
-  "plex": {"id": "Plex.Plex", "name": "Plex", "category": "media", "icon": "plex", "desc": "Media server to stream your library anywhere."},
-  "jellyfin": {"id": "Jellyfin.JellyfinMediaPlayer", "name": "Jellyfin", "category": "media", "icon": "jellyfin", "desc": "Free, open source alternative to Plex."},
-  "audacity": {"id": "Audacity.Audacity", "name": "Audacity", "category": "media", "icon": "audacity", "desc": "Free audio editor for recording and editing."},
-  "handbrake": {"id": "HandBrake.HandBrake", "name": "HandBrake", "category": "media", "icon": "handbrake", "desc": "Video transcoder. Convert to any format."},
-  "stremio": {"id": "Stremio.Stremio", "name": "Stremio", "category": "media", "icon": "stremio", "desc": "Modern streaming hub for movies and shows."},
-  "musicbee": {"id": "MusicBee.MusicBee", "name": "MusicBee", "category": "media", "icon": "icons/musicbee.svg", "desc": "Feature-rich music player and library manager."},
-
-  "7zip": {"id": "7zip.7zip", "name": "7-Zip", "category": "utility", "icon": "icons/7zip.svg", "desc": "Free file archiver with high compression ratio.", "selected": true},
-  "sharex": {"id": "ShareX.ShareX", "name": "ShareX", "category": "utility", "icon": "sharex", "desc": "Screenshot and screen recording with auto-upload."},
-  "powertoys": {"id": "Microsoft.PowerToys", "name": "PowerToys", "category": "utility", "icon": "icons/powertoys.svg", "desc": "Power-user utilities: FancyZones, PowerRename, Color Picker."},
-  "everything": {"id": "voidtools.Everything", "name": "Everything", "category": "utility", "icon": "icons/everything.svg", "desc": "Instant file search. Indexes your drive in seconds."},
-  "qbittorrent": {"id": "qBittorrent.qBittorrent", "name": "qBittorrent", "category": "utility", "icon": "qbittorrent", "desc": "Free, open source torrent client without ads."},
-  "bitwarden": {"id": "Bitwarden.Bitwarden", "name": "Bitwarden", "category": "utility", "icon": "bitwarden", "desc": "Open source password manager with sync."},
-  "keepassxc": {"id": "KeePassXCTeam.KeePassXC", "name": "KeePassXC", "category": "utility", "icon": "keepassxc", "desc": "Offline password manager with strong encryption."},
-  "notepadplusplus": {"id": "Notepad++.Notepad++", "name": "Notepad++", "category": "utility", "icon": "icons/notepadplusplus.svg", "desc": "Powerful text editor with syntax highlighting."},
-  "wiztree": {"id": "AntibodySoftware.WizTree", "name": "WizTree", "category": "utility", "icon": "icons/wiztree.svg", "desc": "Fastest disk space analyzer. Find large files instantly."},
-  "windirstat": {"id": "WinDirStat.WinDirStat", "name": "WinDirStat", "category": "utility", "icon": "icons/windirstat.svg", "desc": "Visual disk usage statistics and cleanup."},
-  "autohotkey": {"id": "AutoHotkey.AutoHotkey", "name": "AutoHotkey", "category": "utility", "icon": "icons/autohotkey.svg", "desc": "Automation scripting for hotkeys and macros."},
-  "f.lux": {"id": "flux.flux", "name": "f.lux", "category": "utility", "icon": "icons/flux.svg", "desc": "Reduce blue light at night for better sleep."},
-  "winrar": {"id": "RARLab.WinRAR", "name": "WinRAR", "category": "utility", "icon": "icons/winrar.svg", "desc": "Popular archive tool with RAR support."},
-  "peazip": {"id": "Giorgiotani.Peazip", "name": "PeaZip", "category": "utility", "icon": "icons/peazip.svg", "desc": "Free archiver supporting 200+ formats."},
-  "revo": {"id": "RevoUninstaller.RevoUninstaller", "name": "Revo Uninstaller", "category": "utility", "icon": "icons/revo.svg", "desc": "Thorough uninstaller that removes leftover files."},
-  "bulk": {"id": "TGRMNSoftware.BulkRenameUtility", "name": "Bulk Rename", "category": "utility", "icon": "icons/bulk-rename.svg", "desc": "Rename thousands of files with powerful patterns."},
-  "imageglass": {"id": "ImageGlass.ImageGlass", "name": "ImageGlass", "category": "utility", "icon": "icons/imageglass.svg", "desc": "Fast, modern image viewer with wide format support."},
-  "flameshot": {"id": "Flameshot.Flameshot", "name": "Flameshot", "category": "utility", "icon": "icons/flameshot.svg", "desc": "Powerful screenshot tool with annotation."},
-  "ditto": {"id": "Ditto.Ditto", "name": "Ditto", "category": "utility", "icon": "icons/ditto.svg", "desc": "Clipboard manager with history and search."},
-  "eartrumpet": {"id": "File-New-Project.EarTrumpet", "name": "EarTrumpet", "category": "utility", "icon": "icons/eartrumpet.svg", "desc": "Per-app volume control from the system tray."},
-
-  "logitechghub": {"id": "Logitech.GHUB", "name": "Logitech G HUB", "category": "rgb", "icon": "logitech", "desc": "Configure Logitech mice, keyboards, and headsets."},
-  "razersynapse": {"id": "RazerInc.RazerInstaller", "name": "Razer Synapse", "category": "rgb", "icon": "razer", "desc": "RGB and macro control for Razer peripherals."},
-  "icue": {"id": "Corsair.iCUE.5", "name": "Corsair iCUE", "category": "rgb", "icon": "corsair", "desc": "Control Corsair RGB, fans, and peripherals."},
-  "steelseriesgg": {"id": "SteelSeries.GG", "name": "SteelSeries GG", "category": "rgb", "icon": "steelseries", "desc": "Engine for SteelSeries keyboards, mice, and headsets."},
-  "nzxtcam": {"id": "NZXT.CAM", "name": "NZXT CAM", "category": "rgb", "icon": "nzxt", "desc": "Monitor temps and control NZXT cooling and RGB."},
-  "signalrgb": {"id": "WhirlwindFX.SignalRgb", "name": "SignalRGB", "category": "rgb", "icon": "icons/signalrgb.svg", "desc": "Universal RGB control for any brand."},
-  "openrgb": {"id": "OpenRGB.OpenRGB", "name": "OpenRGB", "category": "rgb", "icon": "icons/openrgb.svg", "desc": "Open source RGB control for all devices."},
-  "wooting": {"id": "Wooting.Wootility", "name": "Wootility", "category": "rgb", "icon": "icons/wootility.svg", "desc": "Configure Wooting analog keyboards."},
-
-  "vscode": {"id": "Microsoft.VisualStudioCode", "name": "VS Code", "category": "dev", "icon": "visualstudiocode", "desc": "Lightweight, powerful code editor."},
-  "git": {"id": "Git.Git", "name": "Git", "category": "dev", "icon": "git", "desc": "Distributed version control system."},
-  "python": {"id": "Python.Python.3.12", "name": "Python", "category": "dev", "icon": "python", "desc": "Popular language for scripts, AI, and automation."},
-  "nodejs": {"id": "OpenJS.NodeJS.LTS", "name": "Node.js", "category": "dev", "icon": "nodedotjs", "desc": "JavaScript runtime for servers and tools."},
-  "wt": {"id": "Microsoft.WindowsTerminal", "name": "Terminal", "category": "dev", "icon": "windowsterminal", "desc": "Modern terminal with tabs and GPU rendering."},
-  "docker": {"id": "Docker.DockerDesktop", "name": "Docker", "category": "dev", "icon": "docker", "desc": "Containerization platform for development."},
-  "postman": {"id": "Postman.Postman", "name": "Postman", "category": "dev", "icon": "postman", "desc": "API development and testing platform."},
-  "github": {"id": "GitHub.GitHubDesktop", "name": "GitHub Desktop", "category": "dev", "icon": "github", "desc": "Git GUI for GitHub repositories."},
-  "sublime": {"id": "SublimeHQ.SublimeText.4", "name": "Sublime Text", "category": "dev", "icon": "sublimetext", "desc": "Fast, sophisticated text editor."},
-  "neovim": {"id": "Neovim.Neovim", "name": "Neovim", "category": "dev", "icon": "neovim", "desc": "Hyperextensible Vim-based text editor."},
-  "wsl": {"id": "Canonical.Ubuntu.2404", "name": "Ubuntu (WSL)", "category": "dev", "icon": "ubuntu", "desc": "Linux environment on Windows via WSL."},
-  "jetbrains": {"id": "JetBrains.Toolbox", "name": "JetBrains Toolbox", "category": "dev", "icon": "jetbrains", "desc": "Manage all JetBrains IDEs in one place."},
-
-  "vcredist": {"id": "Microsoft.VCRedist.2015+.x64", "name": "VC++ Runtime", "category": "runtime", "icon": "icons/vcredist.svg", "desc": "Visual C++ runtime required by many games."},
-  "dotnet": {"id": "Microsoft.DotNet.DesktopRuntime.8", "name": ".NET Runtime", "category": "runtime", "icon": "dotnet", "desc": ".NET 8 runtime for modern applications."},
-  "directx": {"id": "Microsoft.DirectX", "name": "DirectX", "category": "runtime", "icon": "icons/directx.svg", "desc": "Graphics API runtime for Windows games."},
-  "java": {"id": "Oracle.JavaRuntimeEnvironment", "name": "Java", "category": "runtime", "icon": "icons/java.svg", "desc": "Java runtime for Minecraft and enterprise apps."},
-  "webview2": {"id": "Microsoft.EdgeWebView2Runtime", "name": "WebView2", "category": "runtime", "icon": "icons/webview2.svg", "desc": "Microsoft Edge WebView2 runtime."},
-
-  "3dmark": {"id": "Futuremark.3DMark", "name": "3DMark", "category": "benchmark", "icon": "icons/3dmark.svg", "desc": "Industry-standard GPU and CPU benchmarking."},
-  "cinebench": {"id": "Maxon.Cinebench", "name": "Cinebench", "category": "benchmark", "icon": "icons/cinebench.svg", "desc": "CPU benchmark based on Cinema 4D rendering."},
-  "geekbench": {"id": "Geekbench.Geekbench.6", "name": "Geekbench", "category": "benchmark", "icon": "icons/geekbench.svg", "desc": "Cross-platform CPU and GPU benchmark."},
-  "furmark": {"id": "Geeks3D.FurMark", "name": "FurMark", "category": "benchmark", "icon": "icons/furmark.svg", "desc": "GPU stress test and OpenGL benchmark."}
+  "steam": {
+    "id": "Valve.Steam",
+    "name": "Steam",
+    "category": "launcher",
+    "icon": "steam",
+    "desc": "The largest PC gaming platform with thousands of games, cloud saves, and community features.",
+    "selected": true
+  },
+  "epic": {
+    "id": "EpicGames.EpicGamesLauncher",
+    "name": "Epic Games",
+    "category": "launcher",
+    "icon": "epicgames",
+    "desc": "Free games weekly. Home to Fortnite and Unreal Engine exclusives."
+  },
+  "gog": {
+    "id": "GOG.Galaxy",
+    "name": "GOG Galaxy",
+    "category": "launcher",
+    "icon": "gogdotcom",
+    "desc": "DRM-free games and a unified library connecting all your platforms."
+  },
+  "battlenet": {
+    "id": "Blizzard.BattleNet",
+    "name": "Battle.net",
+    "category": "launcher",
+    "icon": "battledotnet",
+    "desc": "Blizzard launcher for WoW, Diablo, Overwatch, and Call of Duty."
+  },
+  "ea": {
+    "id": "ElectronicArts.EADesktop",
+    "name": "EA App",
+    "category": "launcher",
+    "icon": "ea",
+    "desc": "EA launcher for FC, Battlefield, Apex Legends, and The Sims."
+  },
+  "ubisoft": {
+    "id": "Ubisoft.Connect",
+    "name": "Ubisoft Connect",
+    "category": "launcher",
+    "icon": "ubisoft",
+    "desc": "Launcher for Assassin's Creed, Far Cry, Rainbow Six, and more."
+  },
+  "xbox": {
+    "id": "Microsoft.GamingApp",
+    "name": "Xbox",
+    "category": "launcher",
+    "icon": "xbox",
+    "desc": "Microsoft's launcher for Game Pass, Xbox games, and cloud gaming."
+  },
+  "riot": {
+    "id": "RiotGames.LeagueOfLegends.EUW",
+    "name": "Riot Client",
+    "category": "launcher",
+    "icon": "riotgames",
+    "desc": "Launcher for League of Legends, Valorant, and TFT."
+  },
+  "rockstar": {
+    "id": "Rockstar.RockstarGamesLauncher",
+    "name": "Rockstar",
+    "category": "launcher",
+    "icon": "rockstargames",
+    "desc": "Launcher for GTA V, Red Dead Redemption 2, and other Rockstar titles."
+  },
+  "itch": {
+    "id": "itch.itch",
+    "name": "itch.io",
+    "category": "launcher",
+    "icon": "itchdotio",
+    "desc": "Indie game marketplace with thousands of free and paid games."
+  },
+  "amazon": {
+    "id": "Amazon.Games",
+    "name": "Amazon Games",
+    "category": "launcher",
+    "icon": "amazon",
+    "desc": "Amazon's launcher with Prime Gaming free games."
+  },
+  "playnite": {
+    "id": "Playnite.Playnite",
+    "name": "Playnite",
+    "category": "launcher",
+    "icon": "icons/playnite.svg",
+    "desc": "Open source game library manager. Unifies all launchers."
+  },
+  "discord": {
+    "id": "Discord.Discord",
+    "name": "Discord",
+    "category": "gaming",
+    "icon": "discord",
+    "desc": "Voice, video, and text chat for gamers. Create or join servers.",
+    "selected": true
+  },
+  "teamspeak": {
+    "id": "TeamSpeakSystems.TeamSpeakClient",
+    "name": "TeamSpeak",
+    "category": "gaming",
+    "icon": "teamspeak",
+    "desc": "Low-latency voice chat for competitive gaming."
+  },
+  "guilded": {
+    "id": "Guilded.Guilded",
+    "name": "Guilded",
+    "category": "gaming",
+    "icon": "guilded",
+    "desc": "Discord alternative with scheduling, forums, and team tools."
+  },
+  "parsec": {
+    "id": "Parsec.Parsec",
+    "name": "Parsec",
+    "category": "gaming",
+    "icon": "parsec",
+    "desc": "Ultra-low latency game streaming and remote desktop."
+  },
+  "moonlight": {
+    "id": "MoonlightGameStreamingProject.Moonlight",
+    "name": "Moonlight",
+    "category": "gaming",
+    "icon": "icons/moonlight.svg",
+    "desc": "Stream games from your PC to any device via NVIDIA GameStream."
+  },
+  "obs": {
+    "id": "OBSProject.OBSStudio",
+    "name": "OBS Studio",
+    "category": "streaming",
+    "icon": "obsstudio",
+    "desc": "Free, open source streaming and recording software."
+  },
+  "streamlabs": {
+    "id": "Streamlabs.Streamlabs",
+    "name": "Streamlabs",
+    "category": "streaming",
+    "icon": "streamlabs",
+    "desc": "All-in-one streaming with alerts, widgets, and overlays."
+  },
+  "twitchstudio": {
+    "id": "Twitch.TwitchStudio",
+    "name": "Twitch Studio",
+    "category": "streaming",
+    "icon": "twitch",
+    "desc": "Twitch's official streaming software for beginners."
+  },
+  "voicemeeter": {
+    "id": "VB-Audio.Voicemeeter.Potato",
+    "name": "Voicemeeter",
+    "category": "streaming",
+    "icon": "icons/voicemeeter.svg",
+    "desc": "Virtual audio mixer for streaming and podcasting."
+  },
+  "nvidiabroadcast": {
+    "id": "Nvidia.Broadcast",
+    "name": "NVIDIA Broadcast",
+    "category": "streaming",
+    "icon": "nvidia",
+    "desc": "AI-powered noise removal, virtual backgrounds, and auto-frame."
+  },
+  "medal": {
+    "id": "Medal.Medal",
+    "name": "Medal.tv",
+    "category": "streaming",
+    "icon": "icons/medal.svg",
+    "desc": "Clip and share your gaming moments automatically."
+  },
+  "elgato": {
+    "id": "Elgato.StreamDeck",
+    "name": "Stream Deck",
+    "category": "streaming",
+    "icon": "elgato",
+    "desc": "Control software for Elgato Stream Deck hardware."
+  },
+  "prism": {
+    "id": "PRISMLiveStudio.PRISMLiveStudio",
+    "name": "Prism Live",
+    "category": "streaming",
+    "icon": "icons/prism.svg",
+    "desc": "Free streaming software with virtual camera and effects."
+  },
+  "hwinfo": {
+    "id": "REALiX.HWiNFO",
+    "name": "HWiNFO",
+    "category": "monitoring",
+    "icon": "icons/hwinfo.svg",
+    "desc": "Comprehensive hardware analysis and real-time monitoring."
+  },
+  "afterburner": {
+    "id": "Guru3D.Afterburner",
+    "name": "Afterburner",
+    "category": "monitoring",
+    "icon": "icons/afterburner.svg",
+    "desc": "GPU overclocking, voltage control, and on-screen display."
+  },
+  "cpuz": {
+    "id": "CPUID.CPU-Z",
+    "name": "CPU-Z",
+    "category": "monitoring",
+    "icon": "icons/cpuz.svg",
+    "desc": "Detailed CPU, motherboard, memory, and SPD information."
+  },
+  "gpuz": {
+    "id": "TechPowerUp.GPU-Z",
+    "name": "GPU-Z",
+    "category": "monitoring",
+    "icon": "icons/gpuz.svg",
+    "desc": "GPU specs, clocks, temps, VRAM, and BIOS info."
+  },
+  "coretemp": {
+    "id": "ALCPU.CoreTemp",
+    "name": "Core Temp",
+    "category": "monitoring",
+    "icon": "icons/coretemp.svg",
+    "desc": "CPU temperature monitor with logging and alerts."
+  },
+  "crystaldiskinfo": {
+    "id": "CrystalDewWorld.CrystalDiskInfo",
+    "name": "CrystalDiskInfo",
+    "category": "monitoring",
+    "icon": "icons/crystaldiskinfo.svg",
+    "desc": "SSD/HDD health monitoring with SMART data analysis."
+  },
+  "crystaldiskmark": {
+    "id": "CrystalDewWorld.CrystalDiskMark",
+    "name": "CrystalDiskMark",
+    "category": "monitoring",
+    "icon": "icons/crystaldiskmark.svg",
+    "desc": "Disk benchmark tool for measuring read/write speeds."
+  },
+  "fpsmonitor": {
+    "id": "FPSMonitor.FPSMonitor",
+    "name": "FPS Monitor",
+    "category": "monitoring",
+    "icon": "icons/fpsmonitor.svg",
+    "desc": "In-game FPS counter with hardware monitoring overlay."
+  },
+  "openhardwaremonitor": {
+    "id": "OpenHardwareMonitor.OpenHardwareMonitor",
+    "name": "Open Hardware Monitor",
+    "category": "monitoring",
+    "icon": "icons/openhardwaremonitor.svg",
+    "desc": "Free, open source hardware monitoring tool."
+  },
+  "nvcleanstall": {
+    "id": "TechPowerUp.NVCleanstall",
+    "name": "NVCleanstall",
+    "category": "monitoring",
+    "icon": "icons/nvcleanstall.svg",
+    "desc": "Clean NVIDIA driver installer without bloatware."
+  },
+  "displaydriveruninstaller": {
+    "id": "Wagnardsoft.DisplayDriverUninstaller",
+    "name": "DDU",
+    "category": "monitoring",
+    "icon": "icons/ddu.svg",
+    "desc": "Completely remove GPU drivers for clean installs."
+  },
+  "processlasso": {
+    "id": "BitSum.ProcessLasso",
+    "name": "Process Lasso",
+    "category": "monitoring",
+    "desc": "CPU optimization and process priority automation for gaming."
+  },
+  "brave": {
+    "id": "Brave.Brave",
+    "name": "Brave",
+    "category": "browser",
+    "icon": "brave",
+    "desc": "Privacy-focused browser with built-in ad blocking."
+  },
+  "firefox": {
+    "id": "Mozilla.Firefox",
+    "name": "Firefox",
+    "category": "browser",
+    "icon": "firefox",
+    "desc": "Independent, privacy-respecting browser from Mozilla."
+  },
+  "chrome": {
+    "id": "Google.Chrome",
+    "name": "Chrome",
+    "category": "browser",
+    "icon": "googlechrome",
+    "desc": "Fast, widely-used browser with great DevTools."
+  },
+  "edge": {
+    "id": "Microsoft.Edge",
+    "name": "Edge",
+    "category": "browser",
+    "icon": "microsoftedge",
+    "desc": "Microsoft's Chromium browser with vertical tabs."
+  },
+  "operagx": {
+    "id": "Opera.OperaGX",
+    "name": "Opera GX",
+    "category": "browser",
+    "icon": "opera",
+    "desc": "Gaming browser with RAM/CPU limiters and Twitch integration."
+  },
+  "vlc": {
+    "id": "VideoLAN.VLC",
+    "name": "VLC",
+    "category": "media",
+    "icon": "vlcmediaplayer",
+    "desc": "Plays everything. Free, open source media player.",
+    "selected": true
+  },
+  "spotify": {
+    "id": "Spotify.Spotify",
+    "name": "Spotify",
+    "category": "media",
+    "icon": "spotify",
+    "desc": "Stream millions of songs and podcasts."
+  },
+  "foobar2000": {
+    "id": "PeterPawlowski.foobar2000",
+    "name": "foobar2000",
+    "category": "media",
+    "icon": "icons/foobar2000.svg",
+    "desc": "Lightweight, customizable audio player for audiophiles."
+  },
+  "mpchc": {
+    "id": "clsid2.mpc-hc",
+    "name": "MPC-HC",
+    "category": "media",
+    "icon": "icons/mpchc.svg",
+    "desc": "Lightweight video player with hardware acceleration."
+  },
+  "plex": {
+    "id": "Plex.Plex",
+    "name": "Plex",
+    "category": "media",
+    "icon": "plex",
+    "desc": "Media server to stream your library anywhere."
+  },
+  "jellyfin": {
+    "id": "Jellyfin.JellyfinMediaPlayer",
+    "name": "Jellyfin",
+    "category": "media",
+    "icon": "jellyfin",
+    "desc": "Free, open source alternative to Plex."
+  },
+  "audacity": {
+    "id": "Audacity.Audacity",
+    "name": "Audacity",
+    "category": "media",
+    "icon": "audacity",
+    "desc": "Free audio editor for recording and editing."
+  },
+  "handbrake": {
+    "id": "HandBrake.HandBrake",
+    "name": "HandBrake",
+    "category": "media",
+    "icon": "handbrake",
+    "desc": "Video transcoder. Convert to any format."
+  },
+  "stremio": {
+    "id": "Stremio.Stremio",
+    "name": "Stremio",
+    "category": "media",
+    "icon": "stremio",
+    "desc": "Modern streaming hub for movies and shows."
+  },
+  "musicbee": {
+    "id": "MusicBee.MusicBee",
+    "name": "MusicBee",
+    "category": "media",
+    "icon": "icons/musicbee.svg",
+    "desc": "Feature-rich music player and library manager."
+  },
+  "7zip": {
+    "id": "7zip.7zip",
+    "name": "7-Zip",
+    "category": "utility",
+    "icon": "icons/7zip.svg",
+    "desc": "Free file archiver with high compression ratio.",
+    "selected": true
+  },
+  "sharex": {
+    "id": "ShareX.ShareX",
+    "name": "ShareX",
+    "category": "utility",
+    "icon": "sharex",
+    "desc": "Screenshot and screen recording with auto-upload."
+  },
+  "powertoys": {
+    "id": "Microsoft.PowerToys",
+    "name": "PowerToys",
+    "category": "utility",
+    "icon": "icons/powertoys.svg",
+    "desc": "Power-user utilities: FancyZones, PowerRename, Color Picker."
+  },
+  "everything": {
+    "id": "voidtools.Everything",
+    "name": "Everything",
+    "category": "utility",
+    "icon": "icons/everything.svg",
+    "desc": "Instant file search. Indexes your drive in seconds."
+  },
+  "qbittorrent": {
+    "id": "qBittorrent.qBittorrent",
+    "name": "qBittorrent",
+    "category": "utility",
+    "icon": "qbittorrent",
+    "desc": "Free, open source torrent client without ads."
+  },
+  "bitwarden": {
+    "id": "Bitwarden.Bitwarden",
+    "name": "Bitwarden",
+    "category": "utility",
+    "icon": "bitwarden",
+    "desc": "Open source password manager with sync."
+  },
+  "keepassxc": {
+    "id": "KeePassXCTeam.KeePassXC",
+    "name": "KeePassXC",
+    "category": "utility",
+    "icon": "keepassxc",
+    "desc": "Offline password manager with strong encryption."
+  },
+  "notepadplusplus": {
+    "id": "Notepad++.Notepad++",
+    "name": "Notepad++",
+    "category": "utility",
+    "icon": "icons/notepadplusplus.svg",
+    "desc": "Powerful text editor with syntax highlighting."
+  },
+  "wiztree": {
+    "id": "AntibodySoftware.WizTree",
+    "name": "WizTree",
+    "category": "utility",
+    "icon": "icons/wiztree.svg",
+    "desc": "Fastest disk space analyzer. Find large files instantly."
+  },
+  "windirstat": {
+    "id": "WinDirStat.WinDirStat",
+    "name": "WinDirStat",
+    "category": "utility",
+    "icon": "icons/windirstat.svg",
+    "desc": "Visual disk usage statistics and cleanup."
+  },
+  "autohotkey": {
+    "id": "AutoHotkey.AutoHotkey",
+    "name": "AutoHotkey",
+    "category": "utility",
+    "icon": "icons/autohotkey.svg",
+    "desc": "Automation scripting for hotkeys and macros."
+  },
+  "f.lux": {
+    "id": "flux.flux",
+    "name": "f.lux",
+    "category": "utility",
+    "icon": "icons/flux.svg",
+    "desc": "Reduce blue light at night for better sleep."
+  },
+  "winrar": {
+    "id": "RARLab.WinRAR",
+    "name": "WinRAR",
+    "category": "utility",
+    "icon": "icons/winrar.svg",
+    "desc": "Popular archive tool with RAR support."
+  },
+  "peazip": {
+    "id": "Giorgiotani.Peazip",
+    "name": "PeaZip",
+    "category": "utility",
+    "icon": "icons/peazip.svg",
+    "desc": "Free archiver supporting 200+ formats."
+  },
+  "revo": {
+    "id": "RevoUninstaller.RevoUninstaller",
+    "name": "Revo Uninstaller",
+    "category": "utility",
+    "icon": "icons/revo.svg",
+    "desc": "Thorough uninstaller that removes leftover files."
+  },
+  "bulk": {
+    "id": "TGRMNSoftware.BulkRenameUtility",
+    "name": "Bulk Rename",
+    "category": "utility",
+    "icon": "icons/bulk-rename.svg",
+    "desc": "Rename thousands of files with powerful patterns."
+  },
+  "imageglass": {
+    "id": "ImageGlass.ImageGlass",
+    "name": "ImageGlass",
+    "category": "utility",
+    "icon": "icons/imageglass.svg",
+    "desc": "Fast, modern image viewer with wide format support."
+  },
+  "flameshot": {
+    "id": "Flameshot.Flameshot",
+    "name": "Flameshot",
+    "category": "utility",
+    "icon": "icons/flameshot.svg",
+    "desc": "Powerful screenshot tool with annotation."
+  },
+  "ditto": {
+    "id": "Ditto.Ditto",
+    "name": "Ditto",
+    "category": "utility",
+    "icon": "icons/ditto.svg",
+    "desc": "Clipboard manager with history and search."
+  },
+  "eartrumpet": {
+    "id": "File-New-Project.EarTrumpet",
+    "name": "EarTrumpet",
+    "category": "utility",
+    "icon": "icons/eartrumpet.svg",
+    "desc": "Per-app volume control from the system tray."
+  },
+  "logitechghub": {
+    "id": "Logitech.GHUB",
+    "name": "Logitech G HUB",
+    "category": "rgb",
+    "icon": "logitech",
+    "desc": "Configure Logitech mice, keyboards, and headsets."
+  },
+  "razersynapse": {
+    "id": "RazerInc.RazerInstaller",
+    "name": "Razer Synapse",
+    "category": "rgb",
+    "icon": "razer",
+    "desc": "RGB and macro control for Razer peripherals."
+  },
+  "icue": {
+    "id": "Corsair.iCUE.5",
+    "name": "Corsair iCUE",
+    "category": "rgb",
+    "icon": "corsair",
+    "desc": "Control Corsair RGB, fans, and peripherals."
+  },
+  "steelseriesgg": {
+    "id": "SteelSeries.GG",
+    "name": "SteelSeries GG",
+    "category": "rgb",
+    "icon": "steelseries",
+    "desc": "Engine for SteelSeries keyboards, mice, and headsets."
+  },
+  "nzxtcam": {
+    "id": "NZXT.CAM",
+    "name": "NZXT CAM",
+    "category": "rgb",
+    "icon": "nzxt",
+    "desc": "Monitor temps and control NZXT cooling and RGB."
+  },
+  "signalrgb": {
+    "id": "WhirlwindFX.SignalRgb",
+    "name": "SignalRGB",
+    "category": "rgb",
+    "icon": "icons/signalrgb.svg",
+    "desc": "Universal RGB control for any brand."
+  },
+  "openrgb": {
+    "id": "OpenRGB.OpenRGB",
+    "name": "OpenRGB",
+    "category": "rgb",
+    "icon": "icons/openrgb.svg",
+    "desc": "Open source RGB control for all devices."
+  },
+  "wooting": {
+    "id": "Wooting.Wootility",
+    "name": "Wootility",
+    "category": "rgb",
+    "icon": "icons/wootility.svg",
+    "desc": "Configure Wooting analog keyboards."
+  },
+  "vscode": {
+    "id": "Microsoft.VisualStudioCode",
+    "name": "VS Code",
+    "category": "dev",
+    "icon": "visualstudiocode",
+    "desc": "Lightweight, powerful code editor."
+  },
+  "git": {
+    "id": "Git.Git",
+    "name": "Git",
+    "category": "dev",
+    "icon": "git",
+    "desc": "Distributed version control system."
+  },
+  "python": {
+    "id": "Python.Python.3.12",
+    "name": "Python",
+    "category": "dev",
+    "icon": "python",
+    "desc": "Popular language for scripts, AI, and automation."
+  },
+  "nodejs": {
+    "id": "OpenJS.NodeJS.LTS",
+    "name": "Node.js",
+    "category": "dev",
+    "icon": "nodedotjs",
+    "desc": "JavaScript runtime for servers and tools."
+  },
+  "wt": {
+    "id": "Microsoft.WindowsTerminal",
+    "name": "Terminal",
+    "category": "dev",
+    "icon": "windowsterminal",
+    "desc": "Modern terminal with tabs and GPU rendering."
+  },
+  "docker": {
+    "id": "Docker.DockerDesktop",
+    "name": "Docker",
+    "category": "dev",
+    "icon": "docker",
+    "desc": "Containerization platform for development."
+  },
+  "postman": {
+    "id": "Postman.Postman",
+    "name": "Postman",
+    "category": "dev",
+    "icon": "postman",
+    "desc": "API development and testing platform."
+  },
+  "github": {
+    "id": "GitHub.GitHubDesktop",
+    "name": "GitHub Desktop",
+    "category": "dev",
+    "icon": "github",
+    "desc": "Git GUI for GitHub repositories."
+  },
+  "sublime": {
+    "id": "SublimeHQ.SublimeText.4",
+    "name": "Sublime Text",
+    "category": "dev",
+    "icon": "sublimetext",
+    "desc": "Fast, sophisticated text editor."
+  },
+  "neovim": {
+    "id": "Neovim.Neovim",
+    "name": "Neovim",
+    "category": "dev",
+    "icon": "neovim",
+    "desc": "Hyperextensible Vim-based text editor."
+  },
+  "wsl": {
+    "id": "Canonical.Ubuntu.2404",
+    "name": "Ubuntu (WSL)",
+    "category": "dev",
+    "icon": "ubuntu",
+    "desc": "Linux environment on Windows via WSL."
+  },
+  "jetbrains": {
+    "id": "JetBrains.Toolbox",
+    "name": "JetBrains Toolbox",
+    "category": "dev",
+    "icon": "jetbrains",
+    "desc": "Manage all JetBrains IDEs in one place."
+  },
+  "vcredist": {
+    "id": "Microsoft.VCRedist.2015+.x64",
+    "name": "VC++ Runtime",
+    "category": "runtime",
+    "icon": "icons/vcredist.svg",
+    "desc": "Visual C++ runtime required by many games."
+  },
+  "dotnet": {
+    "id": "Microsoft.DotNet.DesktopRuntime.8",
+    "name": ".NET Runtime",
+    "category": "runtime",
+    "icon": "dotnet",
+    "desc": ".NET 8 runtime for modern applications."
+  },
+  "directx": {
+    "id": "Microsoft.DirectX",
+    "name": "DirectX",
+    "category": "runtime",
+    "icon": "icons/directx.svg",
+    "desc": "Graphics API runtime for Windows games."
+  },
+  "java": {
+    "id": "Oracle.JavaRuntimeEnvironment",
+    "name": "Java",
+    "category": "runtime",
+    "icon": "icons/java.svg",
+    "desc": "Java runtime for Minecraft and enterprise apps."
+  },
+  "webview2": {
+    "id": "Microsoft.EdgeWebView2Runtime",
+    "name": "WebView2",
+    "category": "runtime",
+    "icon": "icons/webview2.svg",
+    "desc": "Microsoft Edge WebView2 runtime."
+  },
+  "3dmark": {
+    "id": "Futuremark.3DMark",
+    "name": "3DMark",
+    "category": "benchmark",
+    "icon": "icons/3dmark.svg",
+    "desc": "Industry-standard GPU and CPU benchmarking."
+  },
+  "cinebench": {
+    "id": "Maxon.Cinebench",
+    "name": "Cinebench",
+    "category": "benchmark",
+    "icon": "icons/cinebench.svg",
+    "desc": "CPU benchmark based on Cinema 4D rendering."
+  },
+  "geekbench": {
+    "id": "Geekbench.Geekbench.6",
+    "name": "Geekbench",
+    "category": "benchmark",
+    "icon": "icons/geekbench.svg",
+    "desc": "Cross-platform CPU and GPU benchmark."
+  },
+  "furmark": {
+    "id": "Geeks3D.FurMark",
+    "name": "FurMark",
+    "category": "benchmark",
+    "icon": "icons/furmark.svg",
+    "desc": "GPU stress test and OpenGL benchmark."
+  }
 }

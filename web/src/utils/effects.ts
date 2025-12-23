@@ -1,4 +1,6 @@
-export function setupCursorGlow(): void {
+import type { CleanupController } from './lifecycle'
+
+export function setupCursorGlow(controller?: CleanupController): void {
   const glow = document.querySelector('.cursor-glow') as HTMLElement | null
   if (!glow) return
 
@@ -6,24 +8,50 @@ export function setupCursorGlow(): void {
   let targetY = 0
   let currentX = 0
   let currentY = 0
+  let rafId: number | null = null
+  let isAnimating = false
 
-  document.addEventListener('mousemove', (e) => {
+  const handleMouseMove = (e: MouseEvent): void => {
     targetX = e.clientX
     targetY = e.clientY
-  })
+
+    if (!isAnimating && !controller?.signal.aborted) {
+      isAnimating = true
+      rafId = requestAnimationFrame(animate)
+      controller?.addAnimationFrame(rafId)
+    }
+  }
+
+  document.addEventListener('mousemove', handleMouseMove, { signal: controller?.signal })
 
   function animate(): void {
-    const ease = 0.08
-    currentX += (targetX - currentX) * ease
-    currentY += (targetY - currentY) * ease
+    if (controller?.signal.aborted || !glow) {
+      rafId = null
+      isAnimating = false
+      return
+    }
+
+    const ease = 0.12
+    const dx = targetX - currentX
+    const dy = targetY - currentY
+
+    currentX += dx * ease
+    currentY += dy * ease
     glow.style.left = `${currentX}px`
     glow.style.top = `${currentY}px`
-    requestAnimationFrame(animate)
+
+    const settled = Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5
+    if (settled) {
+      isAnimating = false
+      rafId = null
+    } else {
+      rafId = requestAnimationFrame(animate)
+      controller?.addAnimationFrame(rafId)
+    }
   }
-  animate()
 }
 
-export function setupScrollAnimations(): void {
+export function setupScrollAnimations(controller?: CleanupController): void {
   const stepSections = document.querySelectorAll('.step')
   if (!stepSections.length) return
 
@@ -43,14 +71,16 @@ export function setupScrollAnimations(): void {
     { threshold: 0.1, rootMargin: '-30px' },
   )
 
+  controller?.addObserver(revealObserver)
+
   for (const section of stepSections) {
     revealObserver.observe(section)
   }
 
-  setupProgressNav()
+  setupProgressNav(controller)
 }
 
-function setupProgressNav(): void {
+function setupProgressNav(controller?: CleanupController): void {
   const dots = document.querySelectorAll<HTMLAnchorElement>('.step-dot')
   if (!dots.length) return
 
@@ -91,23 +121,36 @@ function setupProgressNav(): void {
     { threshold: [0, 0.1, 0.25, 0.5], rootMargin: '-45% 0px -45% 0px' },
   )
 
+  controller?.addObserver(progressObserver)
+
   for (const section of allSections) {
     progressObserver.observe(section)
   }
 
-  handleEdgeCases(allSections, updateActiveNav)
+  handleEdgeCases(allSections, updateActiveNav, controller)
 }
 
-function handleEdgeCases(sections: HTMLElement[], updateActiveNav: (id: string) => void): void {
+function handleEdgeCases(
+  sections: HTMLElement[],
+  updateActiveNav: (id: string) => void,
+  controller?: CleanupController,
+): void {
   const firstSection = sections[0]
   const lastSection = sections[sections.length - 1]
 
   let ticking = false
-  window.addEventListener('scroll', () => {
+  let rafId: number | null = null
+
+  const handleScroll = (): void => {
     if (ticking) return
     ticking = true
 
-    requestAnimationFrame(() => {
+    rafId = requestAnimationFrame(() => {
+      if (controller?.signal.aborted) {
+        ticking = false
+        return
+      }
+
       const scrollTop = window.scrollY
       const scrollBottom = scrollTop + window.innerHeight
       const docHeight = document.documentElement.scrollHeight
@@ -120,7 +163,13 @@ function handleEdgeCases(sections: HTMLElement[], updateActiveNav: (id: string) 
 
       ticking = false
     })
-  })
+
+    if (rafId !== null) {
+      controller?.addAnimationFrame(rafId)
+    }
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true, signal: controller?.signal })
 }
 
 export function createRipple(e: MouseEvent, card: HTMLElement): void {

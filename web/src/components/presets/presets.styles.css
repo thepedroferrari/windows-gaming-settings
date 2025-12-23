@@ -57,9 +57,11 @@
     cursor: pointer;
     outline: none;
     -webkit-tap-highlight-color: transparent;
+    contain: layout style;
 
     /* Hardware acceleration */
     transform: translate3d(0, 0, 0.01px);
+    will-change: transform;
     transform-style: preserve-3d;
     will-change: transform, z-index;
 

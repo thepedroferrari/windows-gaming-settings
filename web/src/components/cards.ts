@@ -1,9 +1,12 @@
 import { store } from '../state'
 import type { PackageKey } from '../types'
 import { $id } from '../utils/dom'
+import type { CleanupController } from '../utils/lifecycle'
 import { createCard } from './software-card'
 
 const ANIMATION_DELAY_MS = 30 as const
+
+let listenersInitialized = false
 
 export function renderSoftwareGrid(): void {
   const grid = $id('software-grid')
@@ -19,10 +22,21 @@ export function renderSoftwareGrid(): void {
   }
 
   updateSoftwareCounter()
+}
 
-  document.addEventListener('software-selection-changed', () => {
+export function setupSoftwareListeners(controller?: CleanupController): void {
+  if (listenersInitialized) return
+  listenersInitialized = true
+
+  const handler = (): void => {
     updateSoftwareCounter()
     document.dispatchEvent(new CustomEvent('script-change-request'))
+  }
+
+  document.addEventListener('software-selection-changed', handler, { signal: controller?.signal })
+
+  controller?.onCleanup(() => {
+    listenersInitialized = false
   })
 }
 

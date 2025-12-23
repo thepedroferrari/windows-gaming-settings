@@ -8,7 +8,7 @@ import {
   PERIPHERAL_TYPES,
   SCRIPT_FILENAME,
 } from '../types'
-import { computeStats, createCodeViewer, type CodeViewer } from './code-viewer'
+import { type CodeViewer, computeStats, createCodeViewer } from './code-viewer'
 import { getHardwareProfile, getSelectedOptimizations } from './summary/'
 
 const preview = {

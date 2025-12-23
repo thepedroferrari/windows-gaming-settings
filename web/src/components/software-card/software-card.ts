@@ -5,7 +5,7 @@ import { sanitize } from '../../utils/dom'
 import { createRipple } from '../../utils/effects'
 
 const DESCRIPTION_MAX_LENGTH = 60 as const
-const MAGNETIC_FACTOR = 0.05 as const
+const MAGNETIC_FACTOR = 0.15 as const
 
 const ARIA_LABELS = {
   selectedAction: 'remove from',

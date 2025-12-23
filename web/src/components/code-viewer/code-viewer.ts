@@ -26,19 +26,12 @@ export function renderDiffHtml(previous = '', current = ''): DiffResult {
   const rows: string[] = []
   const changedLineIds: string[] = []
 
-  console.log('[Diff Debug] Previous length:', previous.length, 'Current length:', current.length)
-  console.log('[Diff Debug] Parts count:', diffParts.length)
-
   for (const part of diffParts) {
     const lines = part.value.split('\n')
     if (lines[lines.length - 1] === '') lines.pop()
 
     const isAdded = Boolean(part.added)
     const isRemoved = Boolean(part.removed)
-
-    if (isAdded || isRemoved) {
-      console.log(`[Diff Debug] ${isAdded ? 'ADDED' : 'REMOVED'} ${lines.length} lines`)
-    }
 
     for (const line of lines) {
       const cls = isAdded ? 'diff-added' : isRemoved ? 'diff-removed' : 'diff-unchanged'
@@ -58,8 +51,6 @@ export function renderDiffHtml(previous = '', current = ''): DiffResult {
       rowIndex++
     }
   }
-
-  console.log('[Diff Debug] Total changed lines:', changedLineIds.length)
 
   return {
     html: rows.join(''),
