@@ -63,18 +63,19 @@ function Test-AMDChipsetDrivers {
         # Check for AMD 3D V-Cache Performance Optimizer
         $vCacheOptimizer = Get-PnpDevice -FriendlyName "*3D V-Cache*" -ErrorAction SilentlyContinue
 
-        # Check for AMD PPM Provisioning File Driver
-        $ppmDriver = Get-PnpDevice -FriendlyName "*PPM Provisioning*" -ErrorAction SilentlyContinue
+        # Check for AMD Provisioning Packages (PPM driver)
+        # Note: AMD calls this "AMD Provisioning Packages", not "PPM Provisioning"
+        $ppmDriver = Get-PnpDevice -FriendlyName "*Provisioning Packages*" -ErrorAction SilentlyContinue
 
         if ($vCacheOptimizer -and $ppmDriver) {
-            Write-Log "✓ AMD Chipset Drivers detected (3D V-Cache optimizer and PPM driver)" "SUCCESS"
+            Write-Log "✓ AMD Chipset Drivers detected (3D V-Cache optimizer and Provisioning Packages)" "SUCCESS"
             return $true
         } elseif ($vCacheOptimizer) {
-            Write-Log "⚠ AMD 3D V-Cache optimizer found, but PPM driver missing" "ERROR"
+            Write-Log "⚠ AMD 3D V-Cache optimizer found, but Provisioning Packages driver missing" "ERROR"
             Write-Log "Install AMD Chipset Drivers: https://www.amd.com/en/support" "ERROR"
             return $false
         } elseif ($ppmDriver) {
-            Write-Log "⚠ AMD PPM driver found, but 3D V-Cache optimizer missing" "ERROR"
+            Write-Log "⚠ AMD Provisioning Packages driver found, but 3D V-Cache optimizer missing" "ERROR"
             Write-Log "Install AMD Chipset Drivers: https://www.amd.com/en/support" "ERROR"
             return $false
         } else {
@@ -324,6 +325,7 @@ function Undo-X3DOptimizations {
 # Export functions
 Export-ModuleMember -Function @(
     'Test-X3DCpu',
+    'Test-AMDChipsetDrivers',
     'Enable-CPPCOptimization',
     'Set-GameBarConfiguration',
     'Test-X3DOptimizations',

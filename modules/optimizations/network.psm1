@@ -1,4 +1,4 @@
-#Requires -RunAsAdministrator
+﻿#Requires -RunAsAdministrator
 
 <#
 .SYNOPSIS
@@ -447,10 +447,7 @@ function Invoke-NetworkOptimizations {
 
         [bool]$EnableQoS = $false,
 
-        [string[]]$GameExecutables = @("cs2.exe", "dota2.exe", "helldivers2.exe", "SpaceMarine2.exe"),
-
-        [bool]$PreferIPv4 = $false,
-        [bool]$DisableTeredo = $false
+        [string[]]$GameExecutables = @("cs2.exe", "dota2.exe", "helldivers2.exe", "SpaceMarine2.exe")
     )
 
     Write-Log "Applying network optimizations..." "INFO"
@@ -554,3 +551,4 @@ Export-ModuleMember -Function @(
     'Invoke-NetworkOptimizations',
     'Undo-NetworkOptimizations'
 )
+

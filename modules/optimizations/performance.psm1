@@ -1,4 +1,4 @@
-#Requires -RunAsAdministrator
+﻿#Requires -RunAsAdministrator
 
 <#
 .SYNOPSIS
@@ -564,3 +564,4 @@ Export-ModuleMember -Function @(
     'Invoke-PerformanceOptimizations',
     'Undo-PerformanceOptimizations'
 )
+
