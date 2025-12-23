@@ -1,7 +1,7 @@
-import { store } from '../state'
-import type { FilterValue, ViewMode } from '../types'
-import { FILTER_ALL, isCategory, VIEW_MODES } from '../types'
-import { $, $$, $id, announce, debounce, isInputElement } from '../utils/dom'
+import { store } from '../../state'
+import type { FilterValue, ViewMode } from '../../types'
+import { FILTER_ALL, isCategory, VIEW_MODES } from '../../types'
+import { $, $$, $id, announce, debounce, isInputElement } from '../../utils/dom'
 
 // =============================================================================
 // CONSTANTS

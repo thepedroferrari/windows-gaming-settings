@@ -11,15 +11,15 @@
        Using perceptually uniform color space for better color mixing
        ========================================================================= */
 
-    /* Shimmer Effect - Animated gradient for download button */
-    --shimmer-hue-1: 165;
-    --shimmer-hue-2: 145;
-    --shimmer-hue-3: 125;
-    --shimmer-l-1: 0.35;
-    --shimmer-c-1: 0.2;
-    --shimmer-l-2: 0.42;
-    --shimmer-c-2: 0.19;
-    --shimmer-l-3: 0.48;
+    /* Shimmer Effect - Soft Magenta/Purple (matches accent) */
+    --shimmer-hue-1: 310;  /* Magenta */
+    --shimmer-hue-2: 292;  /* Purple (accent) */
+    --shimmer-hue-3: 270;  /* Violet */
+    --shimmer-l-1: 0.52;   /* Softer, not too bright */
+    --shimmer-c-1: 0.18;   /* Moderate chroma */
+    --shimmer-l-2: 0.48;
+    --shimmer-c-2: 0.20;
+    --shimmer-l-3: 0.45;
     --shimmer-c-3: 0.18;
 
     /* Background Surfaces */

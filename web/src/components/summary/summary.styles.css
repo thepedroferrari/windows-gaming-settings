@@ -1,0 +1,98 @@
+/**
+ * Summary Component Styles
+ * Displays hardware profile and selection stats
+ */
+
+@layer components {
+  /* Summary Panel */
+  .summary {
+    position: relative;
+    background:
+      linear-gradient(
+        var(--light-angle),
+        color-mix(in oklch, oklch(1 0 0) 6%, transparent) 0%,
+        color-mix(in oklch, oklch(1 0 0) 2%, transparent) 50%,
+        transparent 100%
+      ),
+      color-mix(in oklch, oklch(0.15 0.02 285) 40%, transparent);
+    backdrop-filter: blur(var(--glass-depth-3)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--glass-depth-3)) saturate(1.4);
+    border: 1px solid color-mix(in oklch, oklch(1 0 0) 12%, transparent);
+    border-radius: var(--radius-lg);
+    box-shadow:
+      0 24px 60px color-mix(in oklch, oklch(0 0 0) 45%, transparent),
+      0 0 80px color-mix(in oklch, var(--accent) 8%, transparent),
+      inset 0 1px 1px color-mix(in oklch, oklch(1 0 0) 10%, transparent),
+      inset 0 -2px 4px color-mix(in oklch, oklch(0 0 0) 15%, transparent);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    transform-style: preserve-3d;
+    transition: all 0.3s var(--ease-out-expo);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 100% 60% at 50% 0%,
+        color-mix(in oklch, var(--accent) 8%, transparent),
+        transparent 50%
+      );
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 28px 70px color-mix(in oklch, oklch(0 0 0) 50%, transparent),
+        0 0 100px color-mix(in oklch, var(--accent) 10%, transparent),
+        inset 0 1px 1px color-mix(in oklch, oklch(1 0 0) 12%, transparent),
+        inset 0 -2px 4px color-mix(in oklch, oklch(0 0 0) 15%, transparent);
+    }
+  }
+
+  .summary-item {
+    text-align: center;
+    padding: var(--space-sm);
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--border);
+    }
+  }
+
+  .summary-value {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+    letter-spacing: 0.02em;
+    /* Metallic engraved titanium effect */
+    background: linear-gradient(
+      180deg,
+      oklch(0.92 0.01 285) 0%,
+      oklch(0.78 0.02 285) 45%,
+      oklch(0.65 0.02 285) 55%,
+      oklch(0.85 0.01 285) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow:
+      0 1px 1px oklch(0 0 0 / 50%),
+      0 -1px 0 oklch(1 0 0 / 15%);
+    filter: drop-shadow(0 2px 4px oklch(0 0 0 / 30%));
+  }
+
+  .summary-label {
+    font-family: var(--font-ui);
+    color: var(--text-hint);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+}

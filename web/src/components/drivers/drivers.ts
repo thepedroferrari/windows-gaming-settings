@@ -1,4 +1,4 @@
-import { $, $$ } from '../utils/dom'
+import { $, $$ } from '../../utils/dom'
 
 type CpuType = 'amd_x3d' | 'amd' | 'intel'
 type GpuType = 'nvidia' | 'amd' | 'intel'

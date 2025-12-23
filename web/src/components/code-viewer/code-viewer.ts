@@ -1,5 +1,5 @@
 import { diffLines } from 'diff'
-import { escapeHtml } from '../utils/dom'
+import { escapeHtml } from '../../utils/dom'
 
 // Skip header lines when finding "meaningful" changes (timestamp always changes)
 const SKIP_HEADER_LINES = 12

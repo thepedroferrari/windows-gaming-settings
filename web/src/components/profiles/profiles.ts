@@ -3,13 +3,13 @@ import {
   isParseSuccess,
   safeParseProfile,
   type ValidatedProfile,
-} from '../schemas'
-import { store } from '../state'
-import type { SavedProfile } from '../types'
-import { isPeripheralType, PROFILE_VERSION } from '../types'
-import { $, $$, $id, isInputElement } from '../utils/dom'
-import { renderSoftwareGrid } from './cards'
-import { getHardwareProfile, getSelectedOptimizations, updateSummary } from './summary/'
+} from '../../schemas'
+import { store } from '../../state'
+import type { SavedProfile } from '../../types'
+import { isPeripheralType, PROFILE_VERSION } from '../../types'
+import { $, $$, $id, isInputElement } from '../../utils/dom'
+import { renderSoftwareGrid } from '../cards'
+import { getHardwareProfile, getSelectedOptimizations, updateSummary } from '../summary/'
 
 // =============================================================================
 // PROFILE SAVE

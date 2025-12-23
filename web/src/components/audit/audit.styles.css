@@ -1,0 +1,184 @@
+/**
+ * Audit Component Styles
+ * Audit panel and error banner
+ */
+
+@layer components {
+  /* Audit Panel */
+  .audit-panel {
+    position: fixed;
+    right: -480px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 520px;
+    max-height: 76vh;
+    background: linear-gradient(135deg, color-mix(in oklch, oklch(0.12 0.02 285) 95%, transparent) 0%, color-mix(in oklch, oklch(0.1 0.02 285) 98%, transparent) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-right: none;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    box-shadow:
+      -10px 0 40px color-mix(in oklch, oklch(0 0 0) 40%, transparent),
+      inset 1px 0 0 color-mix(in oklch, oklch(1 0 0) 5%, transparent);
+    transition: right 0.4s var(--ease-out-expo);
+    z-index: 100;
+    display: flex;
+
+    &.open {
+      right: 0;
+    }
+  }
+
+  .audit-toggle {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-100%, -50%);
+    width: 48px;
+    height: 64px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius);
+    color: var(--accent);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--bg-tertiary);
+      color: var(--accent-hover);
+    }
+
+    & svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s;
+    }
+
+    .audit-panel.open & svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  .audit-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .audit-header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--border);
+
+    & h3 {
+      font-family: var(--font-ui);
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+  }
+
+  .audit-hint {
+    font-size: 0.75rem;
+    color: var(--text-hint);
+  }
+
+  .audit-code {
+    flex: 1;
+    margin: 0;
+    padding: var(--space-md);
+    overflow: auto;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    white-space: pre;
+  }
+
+  .audit-stats {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.7rem;
+    color: var(--text-hint);
+    border-top: 1px solid var(--border);
+    background: var(--bg-tertiary);
+  }
+
+  /* Error Banner */
+  .error-banner {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    background: linear-gradient(135deg, color-mix(in oklch, var(--risky) 15%, transparent) 0%, color-mix(in oklch, var(--risky) 8%, transparent) 100%);
+    border: 1px solid color-mix(in oklch, var(--risky) 30%, transparent);
+    border-top: none;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px color-mix(in oklch, var(--risky) 15%, transparent);
+    animation: slideDown 0.3s var(--ease-out-expo);
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .error-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--risky);
+    flex-shrink: 0;
+  }
+
+  #error-message {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+
+  .error-retry {
+    padding: var(--space-xs) var(--space-md);
+    background: var(--risky);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--risky-dim);
+      transform: scale(1.05);
+    }
+  }
+
+  .error-dismiss {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--risky);
+    }
+  }
+}

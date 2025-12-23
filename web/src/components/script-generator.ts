@@ -8,7 +8,7 @@ import {
   PERIPHERAL_TYPES,
   SCRIPT_FILENAME,
 } from '../types'
-import { getHardwareProfile, getSelectedOptimizations } from './summary'
+import { getHardwareProfile, getSelectedOptimizations } from './summary/'
 
 // Preview state for diff tracking
 const preview = {

@@ -1,6 +1,6 @@
-import { $$, $id } from '../utils/dom'
-import { type CodeViewer, computeStats, createCodeViewer } from './code-viewer'
-import { getPreviousScript, getTrackedScript } from './script-generator'
+import { $$, $id } from '../../utils/dom'
+import { type CodeViewer, computeStats, createCodeViewer } from '../code-viewer/'
+import { getPreviousScript, getTrackedScript } from '../script-generator'
 
 let auditViewer: CodeViewer | null = null
 

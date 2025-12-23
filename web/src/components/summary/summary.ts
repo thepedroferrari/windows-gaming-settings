@@ -1,12 +1,12 @@
-import { store } from '../state'
+import { store } from '../../state'
 import type {
   CpuType,
   GpuType,
   HardwareProfile,
   MonitorSoftwareType,
   PeripheralType,
-} from '../types'
-import { $, $$, $id } from '../utils/dom'
+} from '../../types'
+import { $, $$, $id } from '../../utils/dom'
 
 export function getHardwareProfile(): HardwareProfile {
   return {

@@ -1,0 +1,284 @@
+/**
+ * Drivers Component Styles
+ * Driver links section and hardware driver cards
+ */
+
+@layer components {
+  /* Driver Links Section */
+  .driver-links {
+    margin-top: var(--space-lg);
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, color-mix(in oklch, var(--accent) 5%, transparent) 0%, color-mix(in oklch, oklch(0.6 0.15 250) 3%, transparent) 100%);
+    border: 1px solid color-mix(in oklch, var(--accent) 15%, transparent);
+    border-radius: var(--radius-lg);
+  }
+
+  .driver-links-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-xs);
+  }
+
+  .driver-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+  }
+
+  .driver-links-desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0 0 var(--space-lg);
+  }
+
+  .driver-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-md);
+    transition: all 0.2s ease;
+    opacity: 0.5;
+    pointer-events: none;
+
+    &.active {
+      opacity: 1;
+      pointer-events: auto;
+      border-color: var(--border-light);
+
+      &:hover {
+        border-color: var(--accent);
+        background: var(--bg-card-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px color-mix(in oklch, oklch(0 0 0) 20%, transparent);
+      }
+    }
+
+    &--mobo,
+    &--monitor {
+      opacity: 1;
+      pointer-events: auto;
+      border-color: var(--border-light);
+    }
+
+    &--mobo {
+      grid-column: span 1;
+    }
+
+    &--monitor {
+      grid-column: span 2;
+    }
+  }
+
+  /* Explicit selectors for mobo/monitor to ensure visibility */
+  .driver-card.driver-card--mobo,
+  .driver-card.driver-card--monitor {
+    opacity: 1;
+    pointer-events: auto;
+    border-color: var(--border-light);
+
+    &:hover {
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px color-mix(in oklch, oklch(0 0 0) 20%, transparent);
+    }
+  }
+
+  .driver-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xs);
+
+    & h4 {
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-primary);
+    }
+  }
+
+  .driver-badge {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+
+    &.cpu {
+      background: color-mix(in oklch, oklch(0.7 0.15 45) 25%, transparent);
+      color: oklch(0.8 0.12 55);
+    }
+
+    &.gpu {
+      background: color-mix(in oklch, oklch(0.65 0.2 145) 25%, transparent);
+      color: oklch(0.75 0.18 145);
+    }
+
+    &.mobo {
+      background: color-mix(in oklch, oklch(0.65 0.18 270) 25%, transparent);
+      color: oklch(0.8 0.12 270);
+    }
+
+    &.monitor {
+      background: color-mix(in oklch, oklch(0.7 0.15 200) 25%, transparent);
+      color: oklch(0.8 0.12 200);
+    }
+  }
+
+  .driver-card p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-sm);
+    line-height: 1.4;
+  }
+
+  .driver-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--accent-hover);
+    }
+
+    & svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .mobo-links,
+  .monitor-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+
+    & a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      background: color-mix(in oklch, oklch(1 0 0) 5%, transparent);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+
+      & svg {
+        width: 10px;
+        height: 10px;
+        opacity: 0.6;
+        flex-shrink: 0;
+      }
+
+      &:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+
+        & svg {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .monitor-links a:hover {
+    background: oklch(0.8 0.12 200);
+    border-color: oklch(0.8 0.12 200);
+    color: oklch(0.15 0.02 285);
+  }
+
+  .hardware-drivers-fieldset {
+    margin-top: var(--space-lg);
+  }
+
+  .monitor-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .monitor-scroll {
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: var(--space-sm);
+    margin-right: calc(var(--space-sm) * -1);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-light) transparent;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-light);
+      border-radius: 3px;
+
+      &:hover {
+        background: var(--accent);
+      }
+    }
+  }
+
+  .monitor-brand-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+
+    & a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      background: color-mix(in oklch, oklch(1 0 0) 5%, transparent);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+
+      & svg {
+        width: 10px;
+        height: 10px;
+        opacity: 0.6;
+        flex-shrink: 0;
+        margin-left: auto;
+      }
+
+      &:hover {
+        background: oklch(0.8 0.12 200);
+        border-color: oklch(0.8 0.12 200);
+        color: oklch(0.15 0.02 285);
+
+        & svg {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

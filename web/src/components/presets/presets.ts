@@ -1,7 +1,7 @@
-import { store } from '../state'
-import { $$ } from '../utils/dom'
-import { updateSoftwareCounter } from './cards'
-import { updateSummary } from './summary/'
+import { store } from '../../state'
+import { $$ } from '../../utils/dom'
+import { updateSoftwareCounter } from '../cards'
+import { updateSummary } from '../summary/'
 
 export interface Preset {
   opts: string[]
