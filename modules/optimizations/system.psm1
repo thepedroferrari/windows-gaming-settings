@@ -184,9 +184,65 @@ function Disable-ExplorerAutoType {
 
 
 function Invoke-DiskCleanup {
+    param(
+        [switch]$Async,
+        [int]$ThresholdPercent = 90
+    )
+
     try {
-        Dism.exe /Online /Cleanup-Image /StartComponentCleanup /ResetBase 2>&1 | Out-Null
-        Write-Log "Disk cleanup complete" "SUCCESS"
+        # Check disk usage before running expensive cleanup
+        $sysDrive = (Get-CimInstance Win32_OperatingSystem).SystemDrive
+        $disk = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='$sysDrive'"
+        $usedPercent = [math]::Round((($disk.Size - $disk.FreeSpace) / $disk.Size) * 100, 1)
+        $freeGB = [math]::Round($disk.FreeSpace / 1GB, 1)
+
+        if ($usedPercent -lt $ThresholdPercent) {
+            Write-Log "System drive $usedPercent% full (${freeGB}GB free) - skipping cleanup (threshold: ${ThresholdPercent}%)" "INFO"
+            return
+        }
+
+        Write-Log "System drive $usedPercent% full (${freeGB}GB free) - running cleanup" "INFO"
+
+        # Set cleanup flags for cleanmgr
+        $cleanupKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches"
+        Get-ChildItem $cleanupKey -EA SilentlyContinue | ForEach-Object {
+            Set-ItemProperty -Path $_.PSPath -Name "StateFlags0100" -Value 2 -EA SilentlyContinue
+        }
+
+        # Run cleanmgr synchronously (reasonably fast)
+        Start-Process "cleanmgr.exe" -ArgumentList "/sagerun:100" -Wait -WindowStyle Hidden
+        Write-Log "Disk Cleanup (cleanmgr) complete" "SUCCESS"
+
+        if ($Async) {
+            # DISM ResetBase can take 10-30+ minutes, run async with notification
+            $dismJob = Start-Job -ScriptBlock {
+                Dism.exe /Online /Cleanup-Image /StartComponentCleanup /ResetBase 2>&1 | Out-Null
+            }
+
+            Register-ObjectEvent -InputObject $dismJob -EventName StateChanged -Action {
+                if ($Sender.State -eq 'Completed') {
+                    try {
+                        [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
+                        $template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02)
+                        $text = $template.GetElementsByTagName("text")
+                        $text.Item(0).AppendChild($template.CreateTextNode("Gaming PC Setup")) | Out-Null
+                        $text.Item(1).AppendChild($template.CreateTextNode("DISM ResetBase complete! Disk space reclaimed.")) | Out-Null
+                        $notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Gaming PC Setup")
+                        $notifier.Show([Windows.UI.Notifications.ToastNotification]::new($template))
+                    } catch {
+                        # Toast failed silently
+                    }
+                    Unregister-Event -SourceIdentifier $Event.SourceIdentifier
+                    Remove-Job $Sender
+                }
+            } | Out-Null
+
+            Write-Log "DISM ResetBase started in background (toast notification on completion)" "INFO"
+        } else {
+            # Synchronous mode for backwards compatibility
+            Dism.exe /Online /Cleanup-Image /StartComponentCleanup /ResetBase 2>&1 | Out-Null
+            Write-Log "DISM ResetBase complete" "SUCCESS"
+        }
     } catch {
         Write-Log "Error running Disk Cleanup: $_" "ERROR"
         throw
@@ -286,7 +342,7 @@ function Invoke-SystemOptimizations {
         }
 
         if ($RunDiskCleanup) {
-            Invoke-DiskCleanup
+            Invoke-DiskCleanup -Async
         }
 
         if ($RunTempPurge) {
