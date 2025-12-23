@@ -95,16 +95,16 @@ function buildLogoHTML(pkg: Readonly<SoftwarePackage>): LogoConfig {
       }
     }
     case 'cdn': {
-      const safeIcon = sanitize(pkg.icon!)
+      const safeIcon = sanitize(pkg.icon ?? '')
       const safeCategory = sanitize(pkg.category)
-      const safeEmoji = sanitize(pkg.emoji)
+      const safeEmoji = sanitize(pkg.emoji ?? '')
       return {
         type,
         html: `<img src="${SIMPLE_ICONS_CDN}/${safeIcon}/white" alt="${safeName} logo" loading="lazy" data-category="${safeCategory}" data-fallback="${safeEmoji}">`,
       }
     }
     case 'emoji': {
-      const safeEmoji = sanitize(pkg.emoji!)
+      const safeEmoji = sanitize(pkg.emoji ?? '')
       return {
         type,
         html: `<span class="emoji-icon" role="img" aria-label="${safeName} icon">${safeEmoji}</span>`,

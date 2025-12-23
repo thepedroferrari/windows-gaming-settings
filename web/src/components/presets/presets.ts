@@ -5,11 +5,11 @@ import { updateSoftwareCounter } from '../cards'
 import { updateSummary } from '../summary/'
 
 interface PresetConfig {
-  opts: string[]
-  software: string[]
+  readonly opts: readonly string[]
+  readonly software: readonly string[]
 }
 
-const PRESETS: Record<PresetType, PresetConfig> = {
+const PRESETS = {
   overkill: {
     opts: [
       'pagefile',
@@ -128,17 +128,17 @@ const PRESETS: Record<PresetType, PresetConfig> = {
     ],
     software: ['steam', '7zip'],
   },
-}
+} as const satisfies Record<PresetType, PresetConfig>
 
-const PRESET_LABELS: Record<PresetType, string> = {
+const PRESET_LABELS = {
   overkill: 'Overkill',
   competitive: 'Competitive',
   streaming: 'Streaming',
   balanced: 'Balanced',
   minimal: 'Minimal',
-}
+} as const satisfies Record<PresetType, string>
 
-const OPT_DISPLAY_NAMES: Record<string, string> = {
+const _OPT_DISPLAY_NAMES = {
   pagefile: 'Pagefile',
   fastboot: 'Fast Boot',
   timer: 'Timer 0.5ms',
@@ -167,9 +167,9 @@ const OPT_DISPLAY_NAMES: Record<string, string> = {
   bloatware: 'Bloatware',
   ipv4_prefer: 'IPv4 Pref',
   teredo_disable: 'Teredo Off',
-}
+} as const satisfies Record<string, string>
 
-const CATEGORY_OPTS: Record<string, { label: string; opts: string[] }> = {
+const CATEGORY_OPTS = {
   system: {
     label: 'System',
     opts: ['pagefile', 'fastboot', 'timer', 'explorer_speed', 'temp_purge'],
@@ -208,15 +208,15 @@ const CATEGORY_OPTS: Record<string, { label: string; opts: string[] }> = {
     label: 'Experimental',
     opts: ['msi_mode', 'services_trim', 'disk_cleanup'],
   },
-}
+} as const satisfies Record<string, { label: string; opts: readonly string[] }>
 
-const RISK_LEVELS: Record<PresetType, { stars: string; level: number }> = {
+const _RISK_LEVELS = {
   overkill: { stars: '★★★★★', level: 5 },
   competitive: { stars: '★★★☆☆', level: 3 },
   streaming: { stars: '★☆☆☆☆', level: 1 },
   balanced: { stars: '☆☆☆☆☆', level: 0 },
   minimal: { stars: '☆☆☆☆☆', level: 0 },
-}
+} as const satisfies Record<PresetType, { stars: string; level: number }>
 
 let currentPreset: PresetType | null = null
 

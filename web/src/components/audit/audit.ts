@@ -1,4 +1,4 @@
-import { $$, $id } from '../../utils/dom'
+import { $id } from '../../utils/dom'
 import { type CodeViewer, computeStats, createCodeViewer } from '../code-viewer/'
 import { getPreviousScript, getTrackedScript } from '../script-generator'
 

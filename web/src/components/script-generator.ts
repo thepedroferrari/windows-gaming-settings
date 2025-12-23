@@ -15,20 +15,20 @@ const preview = {
   current: '',
 }
 
-const PERIPHERAL_PACKAGES: Record<PeripheralType, string> = {
+const PERIPHERAL_PACKAGES = {
   [PERIPHERAL_TYPES.LOGITECH]: 'Logitech.GHUB',
   [PERIPHERAL_TYPES.RAZER]: 'RazerInc.RazerInstaller.Synapse4',
   [PERIPHERAL_TYPES.CORSAIR]: 'Corsair.iCUE.5',
   [PERIPHERAL_TYPES.STEELSERIES]: 'SteelSeries.GG',
   [PERIPHERAL_TYPES.ASUS]: 'Asus.ArmouryCrate',
   [PERIPHERAL_TYPES.WOOTING]: 'Wooting.Wootility',
-}
+} as const satisfies Record<PeripheralType, string>
 
-const MONITOR_PACKAGES: Record<MonitorSoftwareType, string> = {
+const MONITOR_PACKAGES = {
   [MONITOR_SOFTWARE_TYPES.DELL]: 'Dell.DisplayManager',
   [MONITOR_SOFTWARE_TYPES.LG]: 'LG.OnScreenControl',
   [MONITOR_SOFTWARE_TYPES.HP]: 'HP.DisplayCenter',
-}
+} as const satisfies Record<MonitorSoftwareType, string>
 
 export function getTrackedScript(): string {
   const script = generateScript()

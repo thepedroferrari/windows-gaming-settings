@@ -26,9 +26,7 @@ export function renderSoftwareGrid(): void {
   })
 }
 
-export { createCard } from './software-card'
-
-export { toggleCardSelection as toggleSoftware } from './software-card'
+export { createCard, toggleCardSelection as toggleSoftware } from './software-card'
 
 export function updateSoftwareCounter(): void {
   const counter = $id('software-counter')

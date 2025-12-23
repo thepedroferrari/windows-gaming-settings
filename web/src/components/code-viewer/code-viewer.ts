@@ -108,7 +108,6 @@ export function createCodeViewer(root: HTMLElement | null): CodeViewer | null {
 
     navContainer.hidden = mode !== 'diff'
 
-    const currentId = meaningfulChanges[currentChangeIndex] || ''
     const displayIndex = currentChangeIndex >= 0 ? currentChangeIndex + 1 : 0
     navCount.textContent = `${displayIndex}/${total}`
 

@@ -29,8 +29,14 @@ export function updateSummary(): void {
   const hw = getHardwareProfile()
   const opts = getSelectedOptimizations()
 
-  const cpuLabels: Record<CpuType, string> = { amd_x3d: 'X3D', amd: 'AMD', intel: 'Intel' }
-  const gpuLabels: Record<GpuType, string> = { nvidia: 'NVIDIA', amd: 'Radeon', intel: 'Arc' }
+  const cpuLabels = { amd_x3d: 'X3D', amd: 'AMD', intel: 'Intel' } as const satisfies Record<
+    CpuType,
+    string
+  >
+  const gpuLabels = { nvidia: 'NVIDIA', amd: 'Radeon', intel: 'Arc' } as const satisfies Record<
+    GpuType,
+    string
+  >
 
   const cpuLabel = cpuLabels[hw.cpu] || hw.cpu
   const gpuLabel = gpuLabels[hw.gpu] || hw.gpu
