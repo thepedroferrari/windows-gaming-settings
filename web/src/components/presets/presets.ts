@@ -360,8 +360,8 @@ function handlePointerMove(state: CardState, e: PointerEvent): void {
   })
 
   state.springRotate.set({
-    x: round(-(center.x / 3.5)),
-    y: round(center.y / 3.5),
+    x: round(center.x / 3.5),
+    y: round(-(center.y / 3.5)),
   })
 
   state.springGlare.set({

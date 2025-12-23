@@ -337,39 +337,41 @@
 
     .quick-start-callout {
       text-align: center;
-      padding: var(--space-xl) var(--space-lg);
+      padding: var(--space-md) 0;
       margin-bottom: var(--space-lg);
-      background:
-        radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in oklch, var(--accent) 12%, transparent), transparent 60%),
-        linear-gradient(180deg, color-mix(in oklch, var(--accent) 6%, transparent), color-mix(in oklch, var(--accent) 2%, transparent));
-      border: 1px solid color-mix(in oklch, var(--accent) 20%, transparent);
-      border-radius: var(--radius-lg);
+      background: transparent;
+      border: none;
       animation: fadeInUp 0.6s var(--ease-out-expo);
       overflow: visible;
+
+      @media (min-width: 1200px) {
+        margin: 0 -100px;
+      }
     }
 
     .quick-start-header {
-      margin-bottom: var(--space-xl);
+      margin-bottom: var(--space-lg);
 
       & h2 {
         font-family: var(--font-display);
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         display: inline-flex;
         align-items: center;
         gap: var(--space-sm);
-        margin: 0 0 var(--space-sm);
+        margin: 0 0 var(--space-xs);
+        color: var(--text-secondary);
       }
 
       & p {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
         margin: 0;
       }
     }
 
     .quick-start-icon {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       color: var(--accent);
     }
 
