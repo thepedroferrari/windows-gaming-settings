@@ -46,7 +46,7 @@
     "id": "Microsoft.GamingApp",
     "name": "Xbox",
     "category": "launcher",
-    "icon": "xbox",
+    "icon": "icons/xbox.svg",
     "desc": "Microsoft's launcher for Game Pass, Xbox games, and cloud gaming."
   },
   "riot": {
@@ -74,7 +74,7 @@
     "id": "Amazon.Games",
     "name": "Amazon Games",
     "category": "launcher",
-    "icon": "amazon",
+    "icon": "icons/amazon.svg",
     "desc": "Amazon's launcher with Prime Gaming free games."
   },
   "playnite": {
@@ -89,8 +89,7 @@
     "name": "Discord",
     "category": "gaming",
     "icon": "discord",
-    "desc": "Voice, video, and text chat for gamers. Create or join servers.",
-    "selected": true
+    "desc": "Voice, video, and text chat for gamers. Create or join servers."
   },
   "teamspeak": {
     "id": "TeamSpeakSystems.TeamSpeakClient",
@@ -110,7 +109,7 @@
     "id": "Parsec.Parsec",
     "name": "Parsec",
     "category": "gaming",
-    "icon": "parsec",
+    "icon": "icons/parsec.svg",
     "desc": "Ultra-low latency game streaming and remote desktop."
   },
   "moonlight": {
@@ -284,7 +283,7 @@
     "id": "Microsoft.Edge",
     "name": "Edge",
     "category": "browser",
-    "icon": "microsoftedge",
+    "icon": "icons/edge.svg",
     "desc": "Microsoft's Chromium browser with vertical tabs."
   },
   "operagx": {
@@ -299,8 +298,7 @@
     "name": "VLC",
     "category": "media",
     "icon": "vlcmediaplayer",
-    "desc": "Plays everything. Free, open source media player.",
-    "selected": true
+    "desc": "Plays everything. Free, open source media player."
   },
   "spotify": {
     "id": "Spotify.Spotify",
@@ -348,7 +346,7 @@
     "id": "HandBrake.HandBrake",
     "name": "HandBrake",
     "category": "media",
-    "icon": "handbrake",
+    "icon": "icons/handbrake.svg",
     "desc": "Video transcoder. Convert to any format."
   },
   "stremio": {
@@ -370,8 +368,7 @@
     "name": "7-Zip",
     "category": "utility",
     "icon": "icons/7zip.svg",
-    "desc": "Free file archiver with high compression ratio.",
-    "selected": true
+    "desc": "Free file archiver with high compression ratio."
   },
   "sharex": {
     "id": "ShareX.ShareX",
@@ -510,7 +507,7 @@
     "id": "Logitech.GHUB",
     "name": "Logitech G HUB",
     "category": "rgb",
-    "icon": "logitech",
+    "icon": "icons/logitech.svg",
     "desc": "Configure Logitech mice, keyboards, and headsets."
   },
   "razersynapse": {
@@ -566,7 +563,7 @@
     "id": "Microsoft.VisualStudioCode",
     "name": "VS Code",
     "category": "dev",
-    "icon": "visualstudiocode",
+    "icon": "icons/vscode.svg",
     "desc": "Lightweight, powerful code editor."
   },
   "git": {
@@ -594,7 +591,7 @@
     "id": "Microsoft.WindowsTerminal",
     "name": "Terminal",
     "category": "dev",
-    "icon": "windowsterminal",
+    "icon": "icons/windowsterminal.svg",
     "desc": "Modern terminal with tabs and GPU rendering."
   },
   "docker": {
@@ -708,5 +705,197 @@
     "category": "benchmark",
     "icon": "icons/furmark.svg",
     "desc": "GPU stress test and OpenGL benchmark."
+  },
+  "heroic": {
+    "id": "HeroicGamesLauncher.HeroicGamesLauncher",
+    "name": "Heroic",
+    "category": "launcher",
+    "icon": "icons/heroic.svg",
+    "desc": "Open-source launcher that can unify Epic, GOG, and Amazon games.",
+    "selected": false
+  },
+  "sunshine": {
+    "id": "LizardByte.Sunshine",
+    "name": "Sunshine",
+    "category": "streaming",
+    "icon": "icons/sunshine.svg",
+    "desc": "Self-hosted low-latency streaming host (perfect pair for Moonlight).",
+    "selected": false
+  },
+  "steamlink": {
+    "id": "Valve.SteamLink",
+    "name": "Steam Link",
+    "category": "streaming",
+    "icon": "icons/steamlink.svg",
+    "desc": "Stream Steam games to other devices/PCs over LAN or internet.",
+    "selected": false
+  },
+  "rtss": {
+    "id": "Guru3D.RTSS",
+    "name": "RivaTuner Statistics Server (RTSS)",
+    "category": "monitoring",
+    "icon": "icons/rtss.svg",
+    "desc": "The classic frametime/FPS OSD overlay; pairs well with Afterburner.",
+    "selected": false
+  },
+  "capframex": {
+    "id": "CXWorld.CapFrameX",
+    "name": "CapFrameX",
+    "category": "monitoring",
+    "icon": "icons/capframex.svg",
+    "desc": "Capture and analyze frametimes for proper performance comparisons.",
+    "selected": false
+  },
+  "latencymon": {
+    "id": "Resplendence.LatencyMon",
+    "name": "LatencyMon",
+    "category": "monitoring",
+    "icon": "icons/latencymon.svg",
+    "desc": "Diagnose DPC/ISR latency issues that cause audio crackle and stutter.",
+    "selected": false
+  },
+  "fancontrol": {
+    "id": "Rem0o.FanControl",
+    "name": "FanControl",
+    "category": "monitoring",
+    "icon": "icons/fancontrol.svg",
+    "desc": "Make smart fan curves tied to CPU/GPU temps (quiet + cool).",
+    "selected": false
+  },
+  "librehardwaremonitor": {
+    "id": "LibreHardwareMonitor.LibreHardwareMonitor",
+    "name": "Libre Hardware Monitor",
+    "category": "monitoring",
+    "icon": "icons/librehardwaremonitor.svg",
+    "desc": "Open-source hardware monitoring (temps, fans, voltages, clocks).",
+    "selected": false
+  },
+  "bcuninstaller": {
+    "id": "Klocman.BulkCrapUninstaller",
+    "name": "Bulk Crap Uninstaller",
+    "category": "utility",
+    "icon": "icons/bcuninstaller.svg",
+    "desc": "Batch uninstall apps and clean leftovers—great after a fresh install.",
+    "selected": false
+  },
+  "sysinternals_suite": {
+    "id": "Microsoft.Sysinternals.Suite",
+    "name": "Sysinternals Suite",
+    "category": "utility",
+    "icon": "icons/sysinternals.svg",
+    "desc": "Power Windows troubleshooting tools bundle (ProcMon, Autoruns, etc.).",
+    "selected": false
+  },
+  "powershell": {
+    "id": "Microsoft.PowerShell",
+    "name": "PowerShell",
+    "category": "dev",
+    "icon": "powershell",
+    "desc": "Modern PowerShell (pwsh). Nice for scripting and automation.",
+    "selected": false
+  },
+  "gh": {
+    "id": "GitHub.cli",
+    "name": "GitHub CLI",
+    "category": "dev",
+    "icon": "github",
+    "desc": "Use GitHub from the terminal (issues, PRs, releases, auth).",
+    "selected": false
+  },
+  "vivaldi": {
+    "id": "Vivaldi.Vivaldi",
+    "name": "Vivaldi",
+    "category": "browser",
+    "icon": "vivaldi",
+    "desc": "Highly customizable Chromium browser for power users.",
+    "selected": false
+  },
+  "librewolf": {
+    "id": "LibreWolf.LibreWolf",
+    "name": "LibreWolf",
+    "category": "browser",
+    "icon": "icons/librewolf.svg",
+    "desc": "Privacy-focused Firefox fork with reduced telemetry and tracking.",
+    "selected": false
+  },
+  "rainmeter": {
+    "id": "Rainmeter.Rainmeter",
+    "name": "Rainmeter",
+    "category": "utility",
+    "icon": "icons/rainmeter.svg",
+    "desc": "Desktop skins/widgets—perfect for that retro-custom PC vibe.",
+    "selected": false
+  },
+  "lively": {
+    "id": "rocksdanister.LivelyWallpaper",
+    "name": "Lively Wallpaper",
+    "category": "utility",
+    "icon": "icons/lively.svg",
+    "desc": "Animated wallpapers and screensavers (video/web/shaders).",
+    "selected": false
+  },
+  "vcredist_x86": {
+    "id": "Microsoft.VCRedist.2015+.x86",
+    "name": "VC++ Runtime (x86)",
+    "category": "runtime",
+    "icon": "icons/vcredist.svg",
+    "desc": "32-bit Visual C++ runtime used by many older games and tools.",
+    "selected": false
+  },
+  "dotnet_runtime_8": {
+    "id": "Microsoft.DotNet.Runtime.8",
+    "name": ".NET Runtime 8",
+    "category": "runtime",
+    "icon": "dotnet",
+    "desc": ".NET runtime needed for many modern Windows apps.",
+    "selected": false
+  },
+  "dotnet_sdk_8": {
+    "id": "Microsoft.DotNet.SDK.8",
+    "name": ".NET SDK 8",
+    "category": "dev",
+    "icon": "dotnet",
+    "desc": "Full .NET SDK for building and running .NET projects locally.",
+    "selected": false
+  },
+  "occt": {
+    "id": "OCBase.OCCT.Personal",
+    "name": "OCCT",
+    "category": "benchmark",
+    "icon": "icons/occt.svg",
+    "desc": "All-in-one stress testing for CPU/GPU/RAM/PSU stability.",
+    "selected": false
+  },
+  "unigine_heaven": {
+    "id": "Unigine.HeavenBenchmark",
+    "name": "Unigine Heaven",
+    "category": "benchmark",
+    "icon": "icons/unigine-heaven.svg",
+    "desc": "Classic GPU benchmark and stability test.",
+    "selected": false
+  },
+  "unigine_valley": {
+    "id": "Unigine.ValleyBenchmark",
+    "name": "Unigine Valley",
+    "category": "benchmark",
+    "icon": "icons/unigine-valley.svg",
+    "desc": "GPU benchmark for stress testing and performance comparisons.",
+    "selected": false
+  },
+  "unigine_superposition": {
+    "id": "Unigine.SuperpositionBenchmark",
+    "name": "Unigine Superposition",
+    "category": "benchmark",
+    "icon": "icons/unigine-superposition.svg",
+    "desc": "GPU benchmark; occasionally the winget download can be flaky.",
+    "selected": false
+  },
+  "torbrowser": {
+    "id": "TorProject.TorBrowser",
+    "name": "Tor Browser",
+    "category": "browser",
+    "icon": "icons/torbrowser.svg",
+    "desc": "Privacy browser via Tor network (winget install can be inconsistent).",
+    "selected": false
   }
 }
