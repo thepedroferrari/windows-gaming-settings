@@ -132,6 +132,16 @@
     --neon-yellow: oklch(0.92 0.2 100);
     --neon-yellow-glow: oklch(0.85 0.22 100 / 50%);
 
+    --cyber-yellow: oklch(0.92 0.19 102);
+    --cyber-yellow-dim: oklch(0.75 0.16 102);
+    --cyber-yellow-glow: oklch(0.85 0.2 102 / 50%);
+    --cyber-yellow-bg: color-mix(in oklch, var(--cyber-yellow) 8%, transparent);
+
+    --clip-cyber-sm: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+    --clip-cyber-md: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    --clip-cyber-lg: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+    --clip-cyber-xl: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+
     --cyber-border-speed: 3s;
     --cyber-glitch-speed: 0.15s;
     --cyber-pulse-speed: 2s;
