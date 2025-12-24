@@ -1,1 +1,3 @@
-export { setupFilters, setupSearch, setupViewToggle } from './filters'
+export { setupClearAll, setupFilters, setupSearch, setupViewToggle } from './filters'
+
+

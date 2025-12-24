@@ -1,9 +1,10 @@
 import { store } from '../../state'
 import type { FilterValue, ViewMode } from '../../types'
-import { FILTER_ALL, isCategory, VIEW_MODES } from '../../types'
+import { FILTER_ALL, FILTER_SELECTED, isCategory, VIEW_MODES } from '../../types'
 import { $, $$, $id, announce, debounce, isInputElement } from '../../utils/dom'
 
 const FILTER_WILDCARD = '*' as const
+const FILTER_SELECTED_VALUE = 'selected' as const
 const ANIMATION_DELAY_MS = 20 as const
 const SEARCH_ANNOUNCE_DELAY_MS = 500 as const
 
@@ -32,6 +33,7 @@ function handleFilterClick(
 
 function parseFilterValue(raw: string): FilterValue {
   if (raw === FILTER_WILDCARD) return FILTER_ALL
+  if (raw === FILTER_SELECTED_VALUE) return FILTER_SELECTED
   return isCategory(raw) ? raw : FILTER_ALL
 }
 
@@ -40,7 +42,17 @@ function animateVisibleCards(filter: string): void {
   let visibleIndex = 0
 
   for (const card of cards) {
-    const isVisible = filter === FILTER_WILDCARD || card.dataset.category === filter
+    const key = card.dataset.key
+    let isVisible: boolean
+
+    if (filter === FILTER_WILDCARD) {
+      isVisible = true
+    } else if (filter === FILTER_SELECTED_VALUE) {
+      isVisible = key ? store.isSelected(key) : false
+    } else {
+      isVisible = card.dataset.category === filter
+    }
+
     card.classList.toggle('hidden', !isVisible)
 
     if (isVisible) {
@@ -96,7 +108,15 @@ function filterCardsBySearch(query: string, activeFilter: string): number {
       pkg.desc?.toLowerCase().includes(query) ||
       pkg.category.toLowerCase().includes(query)
 
-    const matchesFilter = activeFilter === FILTER_WILDCARD || card.dataset.category === activeFilter
+    let matchesFilter: boolean
+    if (activeFilter === FILTER_WILDCARD) {
+      matchesFilter = true
+    } else if (activeFilter === FILTER_SELECTED_VALUE) {
+      matchesFilter = store.isSelected(key)
+    } else {
+      matchesFilter = card.dataset.category === activeFilter
+    }
+
     const isVisible = matchesSearch && matchesFilter
 
     card.classList.toggle('hidden', !isVisible)
@@ -132,4 +152,22 @@ function handleViewToggle(
 
 function parseViewMode(raw: string | undefined): ViewMode {
   return raw === VIEW_MODES.LIST ? VIEW_MODES.LIST : VIEW_MODES.GRID
+}
+
+export function setupClearAll(): void {
+  const btn = $id('clear-all-software')
+  if (!btn) return
+
+  btn.addEventListener('click', () => {
+    store.clearSelection()
+
+    for (const card of $$<HTMLDivElement>('.software-card')) {
+      card.classList.remove('selected')
+      card.setAttribute('aria-checked', 'false')
+      const action = card.querySelector('.back-action')
+      if (action) action.textContent = 'Click to add'
+    }
+
+    document.dispatchEvent(new CustomEvent('software-selection-changed'))
+  })
 }
