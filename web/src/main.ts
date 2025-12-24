@@ -5,7 +5,7 @@ import {
   updateCategoryBadges,
 } from './components/cards'
 import { setupDriverLinks } from './components/drivers'
-import { setupFilters, setupSearch, setupViewToggle } from './components/filters'
+import { setupClearAll, setupFilters, setupSearch, setupViewToggle } from './components/filters'
 import { setupHeroCube } from './components/hero-cube'
 import { setupPresets } from './components/presets'
 import { setupProfileActions } from './components/profiles'
@@ -139,6 +139,7 @@ function setupInteractions(controller: CleanupController): void {
   setupFilters()
   setupSearch()
   setupViewToggle()
+  setupClearAll()
   setupPresets(controller)
   setupFormListeners()
   setupDownload()

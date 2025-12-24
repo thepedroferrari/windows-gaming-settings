@@ -47,6 +47,10 @@ export function updateSoftwareCounter(): void {
   if (counter) {
     counter.textContent = `${store.selectedCount} selected`
   }
+  const selectedBadge = $id('count-selected')
+  if (selectedBadge) {
+    selectedBadge.textContent = String(store.selectedCount)
+  }
 }
 
 export function updateCategoryBadges(): void {

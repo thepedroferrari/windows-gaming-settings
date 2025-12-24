@@ -120,10 +120,15 @@ export const VIEW_MODES = {
 export type ViewMode = (typeof VIEW_MODES)[keyof typeof VIEW_MODES]
 
 export const FILTER_ALL = 'all' as const
-export type FilterValue = Category | typeof FILTER_ALL
+export const FILTER_SELECTED = 'selected' as const
+export type FilterValue = Category | typeof FILTER_ALL | typeof FILTER_SELECTED
 
 export function isFilterAll(filter: FilterValue): filter is typeof FILTER_ALL {
   return filter === FILTER_ALL
+}
+
+export function isFilterSelected(filter: FilterValue): filter is typeof FILTER_SELECTED {
+  return filter === FILTER_SELECTED
 }
 
 export const OPTIMIZATION_TIERS = {
