@@ -1041,34 +1041,42 @@ Removes:
         </section>
 
         <section id="software" class="step animate-in">
-            <h2>
-                <span class="step-num">4</span> Arsenal
-                <span id="software-counter" class="selection-counter">4 selected</span>
-            </h2>
-            <p class="step-desc">All packages installed via <abbr title="Windows Package Manager">winget</abbr></p>
+            <div class="arsenal-header">
+                <h2>
+                    <span class="step-num">4</span> Arsenal
+                </h2>
+                <p class="step-desc">All packages installed via <abbr title="Windows Package Manager">winget</abbr></p>
+                <div class="arsenal-header-actions">
+                    <div class="view-toggle" role="group" aria-label="View mode">
+                        <button type="button" class="view-btn active" data-view="grid" aria-label="Grid view" title="Grid view">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        </button>
+                        <button type="button" class="view-btn" data-view="list" aria-label="List view" title="List view">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <div class="software-toolbar">
                 <div class="search-wrap">
                     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     <input type="search" id="software-search" class="search-input" placeholder="Search packages..." autocomplete="off">
                 </div>
-                <button type="button" id="clear-all-software" class="btn-clear-all" title="Remove all selected software">
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-                    Purge
-                </button>
-                <div class="view-toggle" role="group" aria-label="View mode">
-                    <button type="button" class="view-btn active" data-view="grid" aria-label="Grid view" title="Grid view">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <div class="selected-action-badge" id="selected-action-badge">
+                    <button type="button" class="selected-count-btn" data-filter="selected" title="Filter by selected packages">
+                        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span id="software-counter">1</span> Selected
                     </button>
-                    <button type="button" class="view-btn" data-view="list" aria-label="List view" title="List view">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+                    <button type="button" id="clear-all-software" class="purge-btn" title="Remove all selected software">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                        Purge
                     </button>
                 </div>
             </div>
 
             <div class="filter-bar">
                 <button type="button" class="filter active" data-filter="*">All <span class="count" id="count-all">0</span></button>
-                <button type="button" class="filter filter--selected" data-filter="selected">Selected <span class="count" id="count-selected">0</span></button>
                 <button type="button" class="filter" data-filter="launcher">Launchers <span class="count" id="count-launcher">0</span></button>
                 <button type="button" class="filter" data-filter="gaming">Gaming <span class="count" id="count-gaming">0</span></button>
                 <button type="button" class="filter" data-filter="streaming">Streaming <span class="count" id="count-streaming">0</span></button>
