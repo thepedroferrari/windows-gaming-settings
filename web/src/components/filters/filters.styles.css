@@ -45,26 +45,52 @@
       animation: filterEnter 0.4s var(--ease-out-expo) forwards;
     }
 
-    @for $i from 1 through 15 {
-      & .filter:nth-child(#{$i}) {
-        animation-delay: calc(#{$i} * 30ms);
-      }
-    }
-
     /* CSS version for broader support */
-    & .filter:nth-child(1) { animation-delay: 30ms; }
-    & .filter:nth-child(2) { animation-delay: 60ms; }
-    & .filter:nth-child(3) { animation-delay: 90ms; }
-    & .filter:nth-child(4) { animation-delay: 120ms; }
-    & .filter:nth-child(5) { animation-delay: 150ms; }
-    & .filter:nth-child(6) { animation-delay: 180ms; }
-    & .filter:nth-child(7) { animation-delay: 210ms; }
-    & .filter:nth-child(8) { animation-delay: 240ms; }
-    & .filter:nth-child(9) { animation-delay: 270ms; }
-    & .filter:nth-child(10) { animation-delay: 300ms; }
-    & .filter:nth-child(11) { animation-delay: 330ms; }
-    & .filter:nth-child(12) { animation-delay: 360ms; }
-    & .filter:nth-child(13) { animation-delay: 390ms; }
+    & .filter:nth-child(1) {
+      animation-delay: 30ms;
+    }
+    & .filter:nth-child(2) {
+      animation-delay: 60ms;
+    }
+    & .filter:nth-child(3) {
+      animation-delay: 90ms;
+    }
+    & .filter:nth-child(4) {
+      animation-delay: 120ms;
+    }
+    & .filter:nth-child(5) {
+      animation-delay: 150ms;
+    }
+    & .filter:nth-child(6) {
+      animation-delay: 180ms;
+    }
+    & .filter:nth-child(7) {
+      animation-delay: 210ms;
+    }
+    & .filter:nth-child(8) {
+      animation-delay: 240ms;
+    }
+    & .filter:nth-child(9) {
+      animation-delay: 270ms;
+    }
+    & .filter:nth-child(10) {
+      animation-delay: 300ms;
+    }
+    & .filter:nth-child(11) {
+      animation-delay: 330ms;
+    }
+    & .filter:nth-child(12) {
+      animation-delay: 360ms;
+    }
+    & .filter:nth-child(13) {
+      animation-delay: 390ms;
+    }
+    & .filter:nth-child(14) {
+      animation-delay: 420ms;
+    }
+    & .filter:nth-child(15) {
+      animation-delay: 450ms;
+    }
   }
 
   @keyframes filterEnter {
@@ -98,8 +124,19 @@
       content: "";
       position: absolute;
       inset: 0;
-      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-      background: linear-gradient(135deg, transparent 40%, color-mix(in oklch, oklch(1 0 0) 8%, transparent) 100%);
+      clip-path: polygon(
+        8px 0,
+        100% 0,
+        100% calc(100% - 8px),
+        calc(100% - 8px) 100%,
+        0 100%,
+        0 8px
+      );
+      background: linear-gradient(
+        135deg,
+        transparent 40%,
+        color-mix(in oklch, oklch(1 0 0) 8%, transparent) 100%
+      );
       pointer-events: none;
     }
 
@@ -126,7 +163,14 @@
         position: absolute;
         inset: -2px;
         background: linear-gradient(135deg, var(--accent), var(--neon-cyan));
-        clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+        clip-path: polygon(
+          9px 0,
+          100% 0,
+          100% calc(100% - 9px),
+          calc(100% - 9px) 100%,
+          0 100%,
+          0 9px
+        );
         z-index: -1;
         opacity: 0.4;
         filter: blur(4px);
@@ -160,7 +204,8 @@
   }
 
   @keyframes activeFilterGlow {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.3;
       transform: scale(1);
     }
@@ -174,8 +219,16 @@
   .selected-action-badge {
     display: flex;
     align-items: stretch;
-    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-    background: linear-gradient(135deg,
+    clip-path: polygon(
+      10px 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%,
+      0 10px
+    );
+    background: linear-gradient(
+      135deg,
       color-mix(in oklch, var(--accent) 15%, var(--bg-tertiary)) 0%,
       var(--bg-tertiary) 100%
     );
@@ -255,7 +308,8 @@
     }
 
     &.active {
-      background: linear-gradient(135deg,
+      background: linear-gradient(
+        135deg,
         color-mix(in oklch, var(--accent) 20%, transparent) 0%,
         color-mix(in oklch, var(--neon-cyan) 10%, transparent) 100%
       );
@@ -274,7 +328,8 @@
     letter-spacing: 0.05em;
     text-transform: uppercase;
     white-space: nowrap;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in oklch, oklch(0.45 0.22 15) 30%, transparent) 0%,
       color-mix(in oklch, oklch(0.35 0.25 10) 20%, transparent) 100%
     );
@@ -301,7 +356,8 @@
     }
 
     &:hover {
-      background: linear-gradient(135deg,
+      background: linear-gradient(
+        135deg,
         color-mix(in oklch, oklch(0.55 0.28 15) 50%, transparent) 0%,
         color-mix(in oklch, oklch(0.45 0.3 10) 40%, transparent) 100%
       );
@@ -332,7 +388,8 @@
     align-items: center;
     gap: 4px;
     white-space: nowrap;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in oklch, oklch(0.5 0.25 25) 20%, transparent) 0%,
       color-mix(in oklch, oklch(0.4 0.3 15) 15%, transparent) 100%
     );
@@ -359,7 +416,8 @@
     }
 
     &:hover {
-      background: linear-gradient(135deg,
+      background: linear-gradient(
+        135deg,
         color-mix(in oklch, oklch(0.55 0.28 20) 40%, transparent) 0%,
         color-mix(in oklch, oklch(0.5 0.3 15) 30%, transparent) 100%
       );
@@ -406,7 +464,14 @@
         oklch(0.6 0.2 30) 100%
       );
       background-size: 200% 100%;
-      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      clip-path: polygon(
+        12px 0,
+        100% 0,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        0 100%,
+        0 12px
+      );
       opacity: 0;
       transition: opacity 0.3s ease;
       z-index: -1;
@@ -419,8 +484,12 @@
   }
 
   @keyframes searchGlow {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 
   .search-icon {
@@ -456,7 +525,14 @@
     font-weight: 500;
     letter-spacing: 0.02em;
     transition: all 0.2s ease;
-    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    clip-path: polygon(
+      12px 0,
+      100% 0,
+      100% calc(100% - 12px),
+      calc(100% - 12px) 100%,
+      0 100%,
+      0 12px
+    );
 
     &::placeholder {
       color: oklch(0.5 0.05 40);

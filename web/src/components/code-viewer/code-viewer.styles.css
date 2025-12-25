@@ -166,7 +166,7 @@
     align-items: flex-start;
 
     &.diff-focus {
-      background: color-mix(in oklch, var(--accent) 15%, transparent) !important;
+      background: color-mix(in oklch, var(--accent) 15%, transparent);
       box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 40%, transparent);
       animation: diff-pulse 0.3s ease-out;
     }

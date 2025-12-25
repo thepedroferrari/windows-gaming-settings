@@ -19,6 +19,7 @@
    @import './src/components/audit/audit.styles.css' layer(components);
    @import './src/components/profiles/profiles.styles.css' layer(components);
    @import './src/components/unified-nav/unified-nav.styles.css' layer(components);
+   @import './src/styles/overrides.css' layer(overrides);
 
 
    @property --border-angle {

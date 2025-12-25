@@ -4,7 +4,7 @@ class CyberToggle {
   private rows: SVGGElement[]
   private animationOrder: number[]
 
-  constructor(private input: HTMLInputElement) {
+  constructor(input: HTMLInputElement) {
     const label = input.nextElementSibling as HTMLLabelElement
     const track = label?.querySelector('.cyber-toggle-track')
     if (!track) return
@@ -40,5 +40,7 @@ class CyberToggle {
 
 export function initCyberToggle(): void {
   const toggles = document.querySelectorAll<HTMLInputElement>('.cyber-toggle-input')
-  toggles.forEach((input) => new CyberToggle(input))
+  toggles.forEach((input) => {
+    new CyberToggle(input)
+  })
 }

@@ -857,7 +857,7 @@
   @media (prefers-reduced-motion: reduce) {
     .preset-card__rotator {
       transition: none;
-      transform: none !important;
+      transform: none;
     }
 
     .preset-card__shine,

@@ -324,15 +324,18 @@
     }
 
     .summary-item {
-      border-right: none !important;
       border-bottom: 1px solid color-mix(in oklch, var(--cyber-yellow) 20%, var(--border));
       padding: var(--space-sm);
+
+      &:not(:last-child) {
+        border-right: none;
+      }
 
       &:last-child {
         border-bottom: none;
       }
 
-      &::after {
+      &:not(:last-child)::after {
         display: none;
       }
     }
