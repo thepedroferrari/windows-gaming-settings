@@ -1,5 +1,6 @@
 import { diffLines } from 'diff'
 import { escapeHtml } from '../../utils/dom'
+import type { CleanupController } from '../../utils/lifecycle'
 
 const SKIP_HEADER_LINES = 12
 
@@ -66,7 +67,10 @@ export function getMeaningfulChanges(changedLineIds: string[]): string[] {
   })
 }
 
-export function createCodeViewer(root: HTMLElement | null): CodeViewer | null {
+export function createCodeViewer(
+  root: HTMLElement | null,
+  controller?: CleanupController,
+): CodeViewer | null {
   if (!root) return null
 
   const tabs = Array.from(root.querySelectorAll('.cv-tab')) as HTMLElement[]
@@ -142,6 +146,22 @@ export function createCodeViewer(root: HTMLElement | null): CodeViewer | null {
     }
   }
 
+  const addListener = (
+    target: EventTarget,
+    type: string,
+    handler: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ): void => {
+    if (controller) {
+      controller.addEventListener(target, type, handler, options)
+    } else {
+      target.addEventListener(type, handler, options)
+    }
+  }
+
+  const scheduleTimeout = (fn: () => void, delay: number): ReturnType<typeof setTimeout> =>
+    controller ? controller.setTimeout(fn, delay) : setTimeout(fn, delay)
+
   function setMode(next: string): void {
     if (!panes[next]) return
     mode = next
@@ -163,7 +183,7 @@ export function createCodeViewer(root: HTMLElement | null): CodeViewer | null {
     if (next === 'diff') {
       const meaningfulChanges = getMeaningfulChanges(changedLineIds)
       if (meaningfulChanges.length > 0) {
-        setTimeout(() => scrollToChange(meaningfulChanges.length - 1), 100)
+        scheduleTimeout(() => scrollToChange(meaningfulChanges.length - 1), 100)
       }
     }
   }
@@ -203,14 +223,18 @@ export function createCodeViewer(root: HTMLElement | null): CodeViewer | null {
   }
 
   for (const tab of tabs) {
-    tab.addEventListener('click', () => {
+    addListener(tab, 'click', () => {
       const tabMode = tab.dataset.mode
       if (tabMode) setMode(tabMode)
     })
   }
 
-  navPrev?.addEventListener('click', () => navigateDiff('prev'))
-  navNext?.addEventListener('click', () => navigateDiff('next'))
+  if (navPrev) {
+    addListener(navPrev, 'click', () => navigateDiff('prev'))
+  }
+  if (navNext) {
+    addListener(navNext, 'click', () => navigateDiff('next'))
+  }
 
   setMode('current')
 

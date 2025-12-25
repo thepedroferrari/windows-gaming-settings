@@ -20,14 +20,25 @@ export function setupAuditPanel(controller?: CleanupController): void {
   const linesEl = $id('audit-lines')
   const sizeEl = $id('audit-size')
 
-  auditViewer = createCodeViewer($id('audit-viewer'))
+  auditViewer = createCodeViewer($id('audit-viewer'), controller)
 
-  toggle?.addEventListener('click', () => {
-    panel?.classList.toggle('open')
-    if (panel?.classList.contains('open')) {
-      updateAudit()
+  if (toggle) {
+    if (controller) {
+      controller.addEventListener(toggle, 'click', () => {
+        panel?.classList.toggle('open')
+        if (panel?.classList.contains('open')) {
+          updateAudit()
+        }
+      })
+    } else {
+      toggle.addEventListener('click', () => {
+        panel?.classList.toggle('open')
+        if (panel?.classList.contains('open')) {
+          updateAudit()
+        }
+      })
     }
-  })
+  }
 
   const updateAudit = (): void => {
     if (!panel?.classList.contains('open')) return
@@ -53,34 +64,43 @@ export function setupAuditPanel(controller?: CleanupController): void {
     debouncedUpdate()
   }
 
-  document.addEventListener('script-change-request', handleScriptChange, {
-    signal: controller?.signal,
-  })
+  if (controller) {
+    controller.addEventListener(document, 'script-change-request', handleScriptChange)
+  } else {
+    document.addEventListener('script-change-request', handleScriptChange)
+  }
 
   controller?.onCleanup(() => {
     debouncedUpdate.cancel()
     lastScriptHash = ''
   })
 
-  $id('audit-copy')?.addEventListener(
-    'click',
-    async () => {
+  const copyBtn = $id('audit-copy')
+  if (copyBtn) {
+    const handleCopy = async (): Promise<void> => {
       const script = auditViewer?.getContent() || ''
       try {
         await navigator.clipboard.writeText(script)
-        const btn = $id('audit-copy')
-        if (btn) {
-          const original = btn.textContent
-          btn.textContent = '✓ Copied'
-          const timeoutId = setTimeout(() => {
-            btn.textContent = original
+        const original = copyBtn.textContent
+        copyBtn.textContent = '✓ Copied'
+        if (controller) {
+          controller.setTimeout(() => {
+            copyBtn.textContent = original
           }, 1800)
-          controller?.addTimeout(timeoutId)
+        } else {
+          setTimeout(() => {
+            copyBtn.textContent = original
+          }, 1800)
         }
       } catch (err) {
         alert(`Failed to copy: ${err instanceof Error ? err.message : 'Unknown error'}`)
       }
-    },
-    { signal: controller?.signal },
-  )
+    }
+
+    if (controller) {
+      controller.addEventListener(copyBtn, 'click', handleCopy)
+    } else {
+      copyBtn.addEventListener('click', handleCopy)
+    }
+  }
 }

@@ -74,8 +74,10 @@ function hideError(): void {
 }
 
 function setupErrorHandlers(controller: CleanupController): void {
-  $id('error-retry')?.addEventListener('click', handleRetry, { signal: controller.signal })
-  $id('error-dismiss')?.addEventListener('click', hideError, { signal: controller.signal })
+  const retryBtn = $id('error-retry')
+  const dismissBtn = $id('error-dismiss')
+  if (retryBtn) controller.addEventListener(retryBtn, 'click', handleRetry)
+  if (dismissBtn) controller.addEventListener(dismissBtn, 'click', hideError)
 }
 
 async function handleRetry(): Promise<void> {
@@ -124,7 +126,7 @@ async function init(): Promise<void> {
 function setupVisualEffects(controller: CleanupController): void {
   setupCursorGlow(controller)
   setupProgressNav(controller)
-  setupImageFallbacks(CATEGORY_SVG_ICONS)
+  setupImageFallbacks(CATEGORY_SVG_ICONS, controller)
   setupRichTooltips(controller)
 }
 
@@ -135,17 +137,17 @@ function setupUI(controller: CleanupController): void {
 }
 
 function setupInteractions(controller: CleanupController): void {
-  setupFilters()
-  setupSearch()
-  setupViewToggle()
-  setupClearAll()
+  setupFilters(controller)
+  setupSearch(controller)
+  setupViewToggle(controller)
+  setupClearAll(controller)
   setupPresets(controller)
-  setupFormListeners()
-  setupDownload()
-  setupProfileActions()
+  setupFormListeners(controller)
+  setupDownload(controller)
+  setupProfileActions(controller)
   setupAuditPanel(controller)
-  setupDriverLinks()
-  initCyberToggle()
+  setupDriverLinks(controller)
+  initCyberToggle(controller)
 }
 
 onReady(init)

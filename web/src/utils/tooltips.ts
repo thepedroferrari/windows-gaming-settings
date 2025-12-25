@@ -121,7 +121,7 @@ function positionTooltip(tooltip: HTMLElement, trigger: HTMLElement): void {
   tooltip.style.left = `${left + window.scrollX}px`
 }
 
-function showTooltip(trigger: HTMLElement): void {
+function showTooltip(trigger: HTMLElement, controller?: CleanupController): void {
   const tooltip = createTooltipElement()
   const content = trigger.dataset.tooltip || ''
 
@@ -141,7 +141,10 @@ function showTooltip(trigger: HTMLElement): void {
   tooltip.setAttribute('aria-hidden', 'false')
   currentTrigger = trigger
 
-  requestAnimationFrame(() => {
+  const scheduleFrame = (cb: FrameRequestCallback): number =>
+    controller ? controller.requestAnimationFrame(cb) : requestAnimationFrame(cb)
+
+  scheduleFrame(() => {
     positionTooltip(tooltip, trigger)
   })
 }
@@ -155,15 +158,31 @@ function hideTooltip(): void {
   currentTrigger = null
 }
 
-function clearTimeouts(): void {
-  if (showTimeout) {
-    clearTimeout(showTimeout)
-    showTimeout = null
+function scheduleTimeout(
+  controller: CleanupController | undefined,
+  fn: () => void,
+  delay: number,
+): ReturnType<typeof setTimeout> {
+  return controller ? controller.setTimeout(fn, delay) : setTimeout(fn, delay)
+}
+
+function clearTimeoutWithController(
+  controller: CleanupController | undefined,
+  id: ReturnType<typeof setTimeout> | null,
+): void {
+  if (!id) return
+  if (controller) {
+    controller.clearTimeout(id)
+  } else {
+    clearTimeout(id)
   }
-  if (hideTimeout) {
-    clearTimeout(hideTimeout)
-    hideTimeout = null
-  }
+}
+
+function clearTimeouts(controller?: CleanupController): void {
+  clearTimeoutWithController(controller, showTimeout)
+  showTimeout = null
+  clearTimeoutWithController(controller, hideTimeout)
+  hideTimeout = null
 }
 
 function handleMouseEnter(e: Event, controller?: CleanupController): void {
@@ -174,38 +193,40 @@ function handleMouseEnter(e: Event, controller?: CleanupController): void {
   if (!trigger) return
 
   if (hideTimeout) {
-    clearTimeout(hideTimeout)
+    clearTimeoutWithController(controller, hideTimeout)
     hideTimeout = null
   }
 
   if (currentTrigger === trigger) return
 
-  showTimeout = setTimeout(() => {
-    showTooltip(trigger)
-  }, config.showDelay)
-
-  controller?.addTimeout(showTimeout)
+  showTimeout = scheduleTimeout(
+    controller,
+    () => showTooltip(trigger, controller),
+    config.showDelay,
+  )
 }
 
 function handleMouseLeave(controller?: CleanupController): void {
   if (showTimeout) {
-    clearTimeout(showTimeout)
+    clearTimeoutWithController(controller, showTimeout)
     showTimeout = null
   }
 
-  hideTimeout = setTimeout(() => {
-    hideTooltip()
-  }, config.hideDelay)
-
-  controller?.addTimeout(hideTimeout)
+  hideTimeout = scheduleTimeout(
+    controller,
+    () => {
+      hideTooltip()
+    },
+    config.hideDelay,
+  )
 }
 
-function handleFocusIn(e: Event): void {
+function handleFocusIn(e: Event, controller?: CleanupController): void {
   const target = e.target
   if (!(target instanceof Element)) return
 
   const trigger = target.closest('[data-tooltip]') as HTMLElement | null
-  if (trigger) showTooltip(trigger)
+  if (trigger) showTooltip(trigger, controller)
 }
 
 function handleFocusOut(): void {
@@ -215,17 +236,19 @@ function handleFocusOut(): void {
 export function setupRichTooltips(controller?: CleanupController): void {
   const mouseEnterHandler = (e: Event): void => handleMouseEnter(e, controller)
   const mouseLeaveHandler = (): void => handleMouseLeave(controller)
+  const focusInHandler = (e: Event): void => handleFocusIn(e, controller)
 
-  document.addEventListener('mouseenter', mouseEnterHandler, {
-    capture: true,
-    signal: controller?.signal,
-  })
-  document.addEventListener('mouseleave', mouseLeaveHandler, {
-    capture: true,
-    signal: controller?.signal,
-  })
-  document.addEventListener('focusin', handleFocusIn, { signal: controller?.signal })
-  document.addEventListener('focusout', handleFocusOut, { signal: controller?.signal })
+  if (controller) {
+    controller.addEventListener(document, 'mouseenter', mouseEnterHandler, { capture: true })
+    controller.addEventListener(document, 'mouseleave', mouseLeaveHandler, { capture: true })
+    controller.addEventListener(document, 'focusin', focusInHandler)
+    controller.addEventListener(document, 'focusout', handleFocusOut)
+  } else {
+    document.addEventListener('mouseenter', mouseEnterHandler, { capture: true })
+    document.addEventListener('mouseleave', mouseLeaveHandler, { capture: true })
+    document.addEventListener('focusin', focusInHandler)
+    document.addEventListener('focusout', handleFocusOut)
+  }
 
   const scrollHandler = (): void => {
     if (currentTrigger) {
@@ -234,10 +257,14 @@ export function setupRichTooltips(controller?: CleanupController): void {
     }
   }
 
-  window.addEventListener('scroll', scrollHandler, { passive: true, signal: controller?.signal })
+  if (controller) {
+    controller.addEventListener(window, 'scroll', scrollHandler, { passive: true })
+  } else {
+    window.addEventListener('scroll', scrollHandler, { passive: true })
+  }
 
   controller?.onCleanup(() => {
-    clearTimeouts()
+    clearTimeouts(controller)
     hideTooltip()
     const tooltip = document.getElementById(TOOLTIP_ID)
     tooltip?.remove()

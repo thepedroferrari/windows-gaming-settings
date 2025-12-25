@@ -4,9 +4,18 @@ export interface CleanupController {
   readonly signal: AbortSignal
   cleanup: CleanupFn
   onCleanup: (fn: CleanupFn) => void
-  addTimeout: (id: ReturnType<typeof setTimeout>) => void
-  addInterval: (id: ReturnType<typeof setInterval>) => void
-  addAnimationFrame: (id: number) => void
+  addEventListener: <T extends EventTarget>(
+    target: T,
+    type: string,
+    handler: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ) => void
+  setTimeout: (fn: () => void, delay: number) => ReturnType<typeof setTimeout>
+  clearTimeout: (id: ReturnType<typeof setTimeout>) => void
+  setInterval: (fn: () => void, delay: number) => ReturnType<typeof setInterval>
+  clearInterval: (id: ReturnType<typeof setInterval>) => void
+  requestAnimationFrame: (cb: FrameRequestCallback) => number
+  cancelAnimationFrame: (id: number) => void
   addObserver: (observer: IntersectionObserver | MutationObserver | ResizeObserver) => void
 }
 
@@ -17,6 +26,7 @@ export function createCleanupController(): CleanupController {
   const intervalIds: Set<ReturnType<typeof setInterval>> = new Set()
   const animationFrameIds: Set<number> = new Set()
   const observers: Set<IntersectionObserver | MutationObserver | ResizeObserver> = new Set()
+  const cleanupListener: CleanupFn[] = []
 
   const cleanup: CleanupFn = () => {
     controller.abort()
@@ -41,6 +51,15 @@ export function createCleanupController(): CleanupController {
     }
     observers.clear()
 
+    for (const fn of cleanupListener) {
+      try {
+        fn()
+      } catch (e) {
+        console.error('Cleanup error:', e)
+      }
+    }
+    cleanupListener.length = 0
+
     for (const fn of cleanupFns) {
       try {
         fn()
@@ -57,14 +76,74 @@ export function createCleanupController(): CleanupController {
     onCleanup: (fn: CleanupFn) => {
       cleanupFns.push(fn)
     },
-    addTimeout: (id: ReturnType<typeof setTimeout>) => {
+    addEventListener: <T extends EventTarget>(
+      target: T,
+      type: string,
+      handler: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions,
+    ): void => {
+      if (controller.signal.aborted) return
+
+      let listenerOptions: AddEventListenerOptions | boolean | undefined
+      if (options === undefined) {
+        listenerOptions = { signal: controller.signal }
+      } else if (typeof options === 'boolean') {
+        listenerOptions = { capture: options, signal: controller.signal }
+      } else {
+        listenerOptions = { ...options, signal: controller.signal }
+      }
+
+      target.addEventListener(type, handler, listenerOptions)
+      cleanupListener.push(() => {
+        target.removeEventListener(type, handler, listenerOptions)
+      })
+    },
+    setTimeout: (fn: () => void, delay: number) => {
+      const id = globalThis.setTimeout(() => {
+        timeoutIds.delete(id)
+        if (!controller.signal.aborted) {
+          fn()
+        }
+      }, delay)
       timeoutIds.add(id)
+      return id
     },
-    addInterval: (id: ReturnType<typeof setInterval>) => {
+    clearTimeout: (id: ReturnType<typeof setTimeout>) => {
+      if (timeoutIds.has(id)) {
+        timeoutIds.delete(id)
+      }
+      globalThis.clearTimeout(id)
+    },
+    setInterval: (fn: () => void, delay: number) => {
+      const id = globalThis.setInterval(() => {
+        if (!controller.signal.aborted) {
+          fn()
+        }
+      }, delay)
       intervalIds.add(id)
+      return id
     },
-    addAnimationFrame: (id: number) => {
+    clearInterval: (id: ReturnType<typeof setInterval>) => {
+      if (intervalIds.has(id)) {
+        intervalIds.delete(id)
+      }
+      globalThis.clearInterval(id)
+    },
+    requestAnimationFrame: (cb: FrameRequestCallback) => {
+      const id = globalThis.requestAnimationFrame((time) => {
+        animationFrameIds.delete(id)
+        if (!controller.signal.aborted) {
+          cb(time)
+        }
+      })
       animationFrameIds.add(id)
+      return id
+    },
+    cancelAnimationFrame: (id: number) => {
+      if (animationFrameIds.has(id)) {
+        animationFrameIds.delete(id)
+      }
+      globalThis.cancelAnimationFrame(id)
     },
     addObserver: (observer: IntersectionObserver | MutationObserver | ResizeObserver) => {
       observers.add(observer)

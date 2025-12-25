@@ -1,4 +1,5 @@
 import { $, $$ } from '../../utils/dom'
+import type { CleanupController } from '../../utils/lifecycle'
 
 type CpuType = 'amd_x3d' | 'amd' | 'intel'
 type GpuType = 'nvidia' | 'amd' | 'intel'
@@ -23,10 +24,24 @@ function updateDriverCards(): void {
   }
 }
 
-export function setupDriverLinks(): void {
+function addListener(
+  controller: CleanupController | undefined,
+  target: EventTarget,
+  type: string,
+  handler: EventListenerOrEventListenerObject,
+  options?: boolean | AddEventListenerOptions,
+): void {
+  if (controller) {
+    controller.addEventListener(target, type, handler, options)
+  } else {
+    target.addEventListener(type, handler, options)
+  }
+}
+
+export function setupDriverLinks(controller?: CleanupController): void {
   const inputs = $$<HTMLInputElement>('input[name="cpu"], input[name="gpu"]')
   for (const input of inputs) {
-    input.addEventListener('change', updateDriverCards)
+    addListener(controller, input, 'change', updateDriverCards)
   }
   updateDriverCards()
 }

@@ -2,13 +2,28 @@ import { store } from '../../state'
 import type { FilterValue, ViewMode } from '../../types'
 import { FILTER_ALL, FILTER_SELECTED, isCategory, VIEW_MODES } from '../../types'
 import { $, $$, $id, announce, debounce, isInputElement } from '../../utils/dom'
+import type { CleanupController } from '../../utils/lifecycle'
 
 const FILTER_WILDCARD = '*' as const
 const FILTER_SELECTED_VALUE = 'selected' as const
 const ANIMATION_DELAY_MS = 20 as const
 const SEARCH_ANNOUNCE_DELAY_MS = 500 as const
 
-export function setupFilters(): void {
+function addListener(
+  controller: CleanupController | undefined,
+  target: EventTarget,
+  type: string,
+  handler: EventListenerOrEventListenerObject,
+  options?: boolean | AddEventListenerOptions,
+): void {
+  if (controller) {
+    controller.addEventListener(target, type, handler, options)
+  } else {
+    target.addEventListener(type, handler, options)
+  }
+}
+
+export function setupFilters(controller?: CleanupController): void {
   const filterButtons = $$<HTMLButtonElement>('.filter')
   const selectedBadgeBtn = $<HTMLButtonElement>('.selected-count-btn')
 
@@ -17,11 +32,11 @@ export function setupFilters(): void {
     : [...filterButtons]
 
   for (const btn of filterButtons) {
-    btn.addEventListener('click', () => handleFilterClick(btn, allFilterButtons))
+    addListener(controller, btn, 'click', () => handleFilterClick(btn, allFilterButtons))
   }
 
   if (selectedBadgeBtn) {
-    selectedBadgeBtn.addEventListener('click', () =>
+    addListener(controller, selectedBadgeBtn, 'click', () =>
       handleFilterClick(selectedBadgeBtn, allFilterButtons),
     )
   }
@@ -72,7 +87,7 @@ function animateVisibleCards(filter: string): void {
   }
 }
 
-export function setupSearch(): void {
+export function setupSearch(controller?: CleanupController): void {
   const input = $id('software-search')
   if (!isInputElement(input)) return
 
@@ -80,7 +95,7 @@ export function setupSearch(): void {
     announce(`${count} package${count !== 1 ? 's' : ''} found`)
   }, SEARCH_ANNOUNCE_DELAY_MS)
 
-  input.addEventListener('input', (e) => handleSearchInput(e, announceResults))
+  addListener(controller, input, 'input', (e) => handleSearchInput(e, announceResults))
 }
 
 function handleSearchInput(event: Event, announceResults: (count: number) => void): void {
@@ -134,13 +149,13 @@ function filterCardsBySearch(query: string, activeFilter: string): number {
   return visibleCount
 }
 
-export function setupViewToggle(): void {
+export function setupViewToggle(controller?: CleanupController): void {
   const buttons = $$<HTMLButtonElement>('.view-btn')
   const grid = $id('software-grid')
   if (!buttons.length || !grid) return
 
   for (const btn of buttons) {
-    btn.addEventListener('click', () => handleViewToggle(btn, buttons, grid))
+    addListener(controller, btn, 'click', () => handleViewToggle(btn, buttons, grid))
   }
 }
 
@@ -162,11 +177,11 @@ function parseViewMode(raw: string | undefined): ViewMode {
   return raw === VIEW_MODES.LIST ? VIEW_MODES.LIST : VIEW_MODES.GRID
 }
 
-export function setupClearAll(): void {
+export function setupClearAll(controller?: CleanupController): void {
   const btn = $id('clear-all-software')
   if (!btn) return
 
-  btn.addEventListener('click', () => {
+  addListener(controller, btn, 'click', () => {
     store.clearSelection()
 
     for (const card of $$<HTMLDivElement>('.software-card')) {

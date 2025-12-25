@@ -8,8 +8,10 @@ export function setupCursorGlow(controller?: CleanupController): void {
   let targetY = 0
   let currentX = 0
   let currentY = 0
-  let rafId: number | null = null
   let isAnimating = false
+
+  const scheduleFrame = (cb: FrameRequestCallback): number =>
+    controller ? controller.requestAnimationFrame(cb) : requestAnimationFrame(cb)
 
   const handleMouseMove = (e: MouseEvent): void => {
     targetX = e.clientX
@@ -17,16 +19,18 @@ export function setupCursorGlow(controller?: CleanupController): void {
 
     if (!isAnimating && !controller?.signal.aborted) {
       isAnimating = true
-      rafId = requestAnimationFrame(animate)
-      controller?.addAnimationFrame(rafId)
+      scheduleFrame(animate)
     }
   }
 
-  document.addEventListener('mousemove', handleMouseMove, { signal: controller?.signal })
+  if (controller) {
+    controller.addEventListener(document, 'mousemove', handleMouseMove)
+  } else {
+    document.addEventListener('mousemove', handleMouseMove)
+  }
 
   function animate(): void {
     if (controller?.signal.aborted || !glow) {
-      rafId = null
       isAnimating = false
       return
     }
@@ -43,10 +47,8 @@ export function setupCursorGlow(controller?: CleanupController): void {
     const settled = Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5
     if (settled) {
       isAnimating = false
-      rafId = null
     } else {
-      rafId = requestAnimationFrame(animate)
-      controller?.addAnimationFrame(rafId)
+      scheduleFrame(animate)
     }
   }
 }
@@ -116,13 +118,14 @@ function handleEdgeCases(
   const lastSection = sections[sections.length - 1]
 
   let ticking = false
-  let rafId: number | null = null
+  const scheduleFrame = (cb: FrameRequestCallback): number =>
+    controller ? controller.requestAnimationFrame(cb) : requestAnimationFrame(cb)
 
   const handleScroll = (): void => {
     if (ticking) return
     ticking = true
 
-    rafId = requestAnimationFrame(() => {
+    scheduleFrame(() => {
       if (controller?.signal.aborted) {
         ticking = false
         return
@@ -140,13 +143,13 @@ function handleEdgeCases(
 
       ticking = false
     })
-
-    if (rafId !== null) {
-      controller?.addAnimationFrame(rafId)
-    }
   }
 
-  window.addEventListener('scroll', handleScroll, { passive: true, signal: controller?.signal })
+  if (controller) {
+    controller.addEventListener(window, 'scroll', handleScroll, { passive: true })
+  } else {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+  }
 }
 
 export function createRipple(e: MouseEvent, card: HTMLElement): void {
@@ -165,22 +168,27 @@ export function createRipple(e: MouseEvent, card: HTMLElement): void {
   }
 }
 
-export function setupImageFallbacks(categoryIcons: Record<string, string>): void {
-  document.addEventListener(
-    'error',
-    (e) => {
-      const target = e.target as HTMLElement
-      if (target.tagName === 'IMG' && target.closest('.software-card')) {
-        const img = target as HTMLImageElement
-        const customFallback = img.dataset.fallback
-        const category = img.dataset.category || 'default'
-        const fallbackIcon = customFallback || categoryIcons[category] || categoryIcons.default
-        img.style.display = 'none'
-        if (img.parentElement) {
-          img.parentElement.innerHTML = fallbackIcon
-        }
+export function setupImageFallbacks(
+  categoryIcons: Record<string, string>,
+  controller?: CleanupController,
+): void {
+  const handler = (e: Event): void => {
+    const target = e.target as HTMLElement
+    if (target.tagName === 'IMG' && target.closest('.software-card')) {
+      const img = target as HTMLImageElement
+      const customFallback = img.dataset.fallback
+      const category = img.dataset.category || 'default'
+      const fallbackIcon = customFallback || categoryIcons[category] || categoryIcons.default
+      img.style.display = 'none'
+      if (img.parentElement) {
+        img.parentElement.innerHTML = fallbackIcon
       }
-    },
-    true,
-  )
+    }
+  }
+
+  if (controller) {
+    controller.addEventListener(document, 'error', handler, true)
+  } else {
+    document.addEventListener('error', handler, true)
+  }
 }

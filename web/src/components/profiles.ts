@@ -8,6 +8,7 @@ import { store } from '../state'
 import type { SavedProfile } from '../types'
 import { isPeripheralType, PROFILE_VERSION } from '../types'
 import { $, $$, $id, isInputElement } from '../utils/dom'
+import type { CleanupController } from '../utils/lifecycle'
 import { renderSoftwareGrid } from './cards'
 import { getHardwareProfile, getSelectedOptimizations, updateSummary } from './summary/'
 
@@ -128,12 +129,29 @@ function showLoadSuccess(profile: ValidatedProfile): void {
   alert(`Profile loaded: ${packageCount} packages, ${optCount} optimizations`)
 }
 
-export function setupProfileActions(): void {
-  $id('save-profile-btn')?.addEventListener('click', saveProfile)
+function addListener(
+  controller: CleanupController | undefined,
+  target: EventTarget,
+  type: string,
+  handler: EventListenerOrEventListenerObject,
+  options?: boolean | AddEventListenerOptions,
+): void {
+  if (controller) {
+    controller.addEventListener(target, type, handler, options)
+  } else {
+    target.addEventListener(type, handler, options)
+  }
+}
+
+export function setupProfileActions(controller?: CleanupController): void {
+  const saveBtn = $id('save-profile-btn')
+  if (saveBtn) {
+    addListener(controller, saveBtn, 'click', saveProfile)
+  }
 
   const loadInput = $id('load-profile-input')
   if (isInputElement(loadInput)) {
-    loadInput.addEventListener('change', handleFileSelect)
+    addListener(controller, loadInput, 'change', handleFileSelect)
   }
 }
 

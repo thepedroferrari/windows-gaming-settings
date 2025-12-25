@@ -689,28 +689,44 @@ function setupCardHolographicEffect(card: HTMLButtonElement, controller?: Cleanu
   card.style.setProperty('--background-x', '50%')
   card.style.setProperty('--background-y', '50%')
 
-  rotator.addEventListener(
+  const addListener = (
+    target: EventTarget,
+    type: string,
+    handler: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ): void => {
+    if (controller) {
+      controller.addEventListener(target, type, handler, options)
+    } else {
+      target.addEventListener(type, handler, options)
+    }
+  }
+
+  addListener(
+    rotator,
     'pointermove',
     (e: PointerEvent) => {
       handlePointerMove(state, e)
     },
-    { passive: true, signal: controller?.signal },
+    { passive: true },
   )
 
-  rotator.addEventListener(
+  addListener(
+    rotator,
     'pointerenter',
     () => {
       handlePointerEnter(state)
     },
-    { passive: true, signal: controller?.signal },
+    { passive: true },
   )
 
-  rotator.addEventListener(
+  addListener(
+    rotator,
     'pointerleave',
     () => {
       handlePointerLeave(state)
     },
-    { passive: true, signal: controller?.signal },
+    { passive: true },
   )
 
   controller?.onCleanup(() => {
@@ -746,6 +762,18 @@ function populateCardStats(card: HTMLButtonElement): void {
 
 export function setupPresets(controller?: CleanupController): void {
   const cards = $$<HTMLButtonElement>('.preset-card')
+  const addListener = (
+    target: EventTarget,
+    type: string,
+    handler: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ): void => {
+    if (controller) {
+      controller.addEventListener(target, type, handler, options)
+    } else {
+      target.addEventListener(type, handler, options)
+    }
+  }
 
   for (const card of cards) {
     populateCardStats(card)
@@ -758,22 +786,18 @@ export function setupPresets(controller?: CleanupController): void {
       applyPreset(name)
     }
 
-    card.addEventListener('click', handleCardClick, { signal: controller?.signal })
+    addListener(card, 'click', handleCardClick)
     const rotator = card.querySelector<HTMLElement>('.preset-card__rotator')
     if (rotator) {
-      rotator.addEventListener(
-        'click',
-        (e) => {
-          e.stopPropagation()
-          handleCardClick()
-        },
-        { signal: controller?.signal },
-      )
+      addListener(rotator, 'click', (e) => {
+        e.stopPropagation()
+        handleCardClick()
+      })
     }
   }
 
   for (const cb of $$<HTMLInputElement>('input[name="opt"]')) {
-    cb.addEventListener('change', () => fadePresetBadge(cb.value), { signal: controller?.signal })
+    addListener(cb, 'change', () => fadePresetBadge(cb.value))
   }
 
   controller?.onCleanup(() => {

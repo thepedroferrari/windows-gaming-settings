@@ -33,7 +33,11 @@ export function setupSoftwareListeners(controller?: CleanupController): void {
     document.dispatchEvent(new CustomEvent('script-change-request'))
   }
 
-  document.addEventListener('software-selection-changed', handler, { signal: controller?.signal })
+  if (controller) {
+    controller.addEventListener(document, 'software-selection-changed', handler)
+  } else {
+    document.addEventListener('software-selection-changed', handler)
+  }
 
   controller?.onCleanup(() => {
     listenersInitialized = false

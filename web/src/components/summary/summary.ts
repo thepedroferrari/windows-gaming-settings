@@ -7,6 +7,7 @@ import type {
   PeripheralType,
 } from '../../types'
 import { $, $$, $id } from '../../utils/dom'
+import type { CleanupController } from '../../utils/lifecycle'
 
 export function getHardwareProfile(): HardwareProfile {
   return {
@@ -78,11 +79,25 @@ export function updatePreflightCheck(hw: HardwareProfile): void {
   })
 }
 
-export function setupFormListeners(): void {
+function addListener(
+  controller: CleanupController | undefined,
+  target: EventTarget,
+  type: string,
+  handler: EventListenerOrEventListenerObject,
+  options?: boolean | AddEventListenerOptions,
+): void {
+  if (controller) {
+    controller.addEventListener(target, type, handler, options)
+  } else {
+    target.addEventListener(type, handler, options)
+  }
+}
+
+export function setupFormListeners(controller?: CleanupController): void {
   $$(
     'input[name="cpu"], input[name="gpu"], input[name="peripheral"], input[name="monitor-software"], input[name="opt"]',
   ).forEach((el) => {
-    el.addEventListener('change', () => {
+    addListener(controller, el, 'change', () => {
       updateSummary()
       document.dispatchEvent(new CustomEvent('script-change-request'))
     })
@@ -90,8 +105,10 @@ export function setupFormListeners(): void {
 
   ;['#dns-provider', '#telemetry-level'].forEach((selector) => {
     const el = document.querySelector<HTMLSelectElement>(selector)
-    el?.addEventListener('change', () => {
-      document.dispatchEvent(new CustomEvent('script-change-request'))
-    })
+    if (el) {
+      addListener(controller, el, 'change', () => {
+        document.dispatchEvent(new CustomEvent('script-change-request'))
+      })
+    }
   })
 }
