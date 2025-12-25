@@ -35,12 +35,12 @@
     /* Tuned for optimal back face width and text tiling */
     --cube-width: clamp(990px, 90vw, 1485px);
     --cube-half: calc(var(--cube-width) / 2);
-    --cube-height: clamp(100px, 12vw, 160px);
-    --cube-font: clamp(3.5rem, 5vw, 6rem);
+    --cube-height: clamp(80px, 10vw, 130px);
+    --cube-font: clamp(3rem, 4.5vw, 5rem);
 
     position: relative;
     width: 100%;
-    height: clamp(280px, 25vw, 400px);
+    height: clamp(200px, 18vw, 280px);
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -282,8 +282,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: var(--space-xs) var(--space-md) var(--space-sm);
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-md);
     text-align: center;
     pointer-events: none;
 
@@ -363,7 +364,7 @@
     & h1 {
       position: relative;
       font-family: var(--font-logo, var(--font-display));
-      font-size: clamp(3.5rem, 15vw, 6rem);
+      font-size: clamp(2.8rem, 12vw, 5rem);
       font-weight: 900;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -466,7 +467,7 @@
 
   .hero-cube-reflect {
     position: absolute;
-    top: 60%;
+    top: 55%;
     left: 50%;
     transform: translateX(-50%);
     filter: blur(8px);

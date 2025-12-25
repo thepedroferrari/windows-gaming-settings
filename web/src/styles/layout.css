@@ -24,6 +24,105 @@
     }
   }
 
+  .value-prop {
+    padding: 0 var(--space-md) var(--space-lg);
+    display: flex;
+    justify-content: center;
+    animation: fadeIn 0.8s var(--ease-out-expo) 0.6s forwards;
+    opacity: 0;
+  }
+
+  .mission-brief {
+    max-width: 700px;
+    width: 100%;
+    background: color-mix(in oklch, var(--surface-2) 30%, transparent);
+    border: 1px solid color-mix(in oklch, var(--accent) 20%, transparent);
+    border-left: 2px solid var(--accent);
+    padding: var(--space-lg);
+    position: relative;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 30px -10px color-mix(in oklch, var(--accent) 10%, transparent);
+    
+    /* Tech corners */
+    &::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 10px;
+      height: 10px;
+      border-top: 2px solid var(--accent);
+      border-right: 2px solid var(--accent);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 10px;
+      height: 10px;
+      border-bottom: 2px solid var(--accent);
+      border-right: 2px solid var(--accent);
+    }
+  }
+
+  .value-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0 0 var(--space-md);
+    color: var(--text-primary);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5ch;
+    
+    & .text-highlight {
+      color: var(--accent);
+      text-shadow: 0 0 15px color-mix(in oklch, var(--accent) 40%, transparent);
+    }
+  }
+
+  .value-body {
+    font-family: 'Rajdhani', var(--font-mono), monospace;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.5;
+    margin: 0;
+    color: var(--text-secondary);
+    font-weight: 500;
+
+    & strong {
+      color: var(--text-primary);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .value-perks {
+    display: block;
+    color: var(--accent);
+    font-size: 0.9em;
+    letter-spacing: 0.02em;
+    opacity: 0.9;
+    border-top: 1px dashed color-mix(in oklch, var(--text-secondary) 20%, transparent);
+    padding-top: var(--space-sm);
+    margin-top: var(--space-xs);
+  }
+
+  @media (max-width: 600px) {
+    .mission-brief {
+      padding: var(--space-md);
+      border-left-width: 1px;
+    }
+    
+    .value-headline {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+
   main {
     max-width: var(--max-width);
     margin: 0 auto;

@@ -2447,24 +2447,25 @@
        }
      }
 
-     @media (max-width: 768px) {
-       .hero-cube-container,
-       .hero-cube-reflect {
-         transform: scale(0.65);
-       }
-       .hero-cube-reflect {
-         transform: translateX(-50%) scale(0.65);
-       }
-       .hero-overlay {
-         padding: var(--space-xs) var(--space-sm);
-       }
-       .hero-overlay h1 {
-         font-size: 2rem;
-       }
-       .hero-overlay .tagline {
-         font-size: 1.1rem;
-         letter-spacing: 0.15em;
-       }
+    @media (max-width: 768px) {
+      .hero-cube-container,
+      .hero-cube-reflect {
+        transform: scale(0.65);
+      }
+      .hero-cube-reflect {
+        transform: translateX(-50%) scale(0.65);
+      }
+      .hero-overlay {
+        padding: var(--space-xs) var(--space-sm);
+        gap: var(--space-2xs);
+      }
+      .hero-overlay h1 {
+        font-size: 1.8rem;
+      }
+      .hero-overlay .tagline {
+        font-size: 0.95rem;
+        letter-spacing: 0.12em;
+      }
 
        .upgrades-grid {
          grid-template-columns: 1fr;
@@ -2532,25 +2533,26 @@
        }
      }
 
-     @media (max-width: 480px) {
-       .hero-cube-container,
-       .hero-cube-reflect {
-         transform: scale(0.5);
-       }
-       .hero-cube-reflect {
-         transform: translateX(-50%) scale(0.5);
-       }
-       .hero-overlay {
-         padding: 2px var(--space-xs);
-       }
-       .hero-overlay h1 {
-         font-size: 2rem;
-       }
-       .hero-overlay .tagline {
-         font-size: 0.9rem;
-         letter-spacing: 0.1em;
-       }
-     }
+    @media (max-width: 480px) {
+      .hero-cube-container,
+      .hero-cube-reflect {
+        transform: scale(0.5);
+      }
+      .hero-cube-reflect {
+        transform: translateX(-50%) scale(0.5);
+      }
+      .hero-overlay {
+        padding: 2px var(--space-xs);
+        gap: 2px;
+      }
+      .hero-overlay h1 {
+        font-size: 1.5rem;
+      }
+      .hero-overlay .tagline {
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+      }
+    }
 
 
      @media (max-width: 1200px) {
