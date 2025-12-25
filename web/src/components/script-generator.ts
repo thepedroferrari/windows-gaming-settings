@@ -527,6 +527,41 @@ Write-OK "Teredo IPv6 tunneling disabled"
 Write-Host "  [WARN] May break Xbox Live connectivity" -ForegroundColor Yellow
 Write-Host "  [INFO] Requires reboot to take effect" -ForegroundColor Gray`)
 
+  if (opts.includes(OPTIMIZATION_KEYS.NATIVE_NVME))
+    code.push(`
+# Native NVMe I/O Path (Windows 11 24H2+ / Server 2025)
+# Eliminates SCSI translation layer for up to ~80% more IOPS, ~45% less CPU overhead
+$nvmeDrives = Get-PhysicalDisk | Where-Object { $_.BusType -eq "NVMe" }
+if (-not $nvmeDrives) {
+    Write-Host "  [SKIP] Native NVMe: No NVMe drives detected" -ForegroundColor Yellow
+} else {
+    $build = [int](Get-CimInstance Win32_OperatingSystem).BuildNumber
+    if ($build -lt 26100) {
+        Write-Host "  [SKIP] Native NVMe: Requires Windows 11 24H2+ (Build 26100+)" -ForegroundColor Yellow
+        Write-Host "  [INFO] Current build: $build" -ForegroundColor Gray
+    } else {
+        # Check if using in-box stornvme driver (vendor drivers won't benefit)
+        $stornvmeDevices = Get-PnpDevice -Class DiskDrive -EA SilentlyContinue | Where-Object {
+            $_.InstanceId -like "*NVME*"
+        } | ForEach-Object {
+            $svc = (Get-PnpDeviceProperty -InstanceId $_.InstanceId -KeyName "DEVPKEY_Device_Service" -EA SilentlyContinue).Data
+            if ($svc -eq "stornvme") { $_ }
+        }
+        if (-not $stornvmeDevices) {
+            Write-Host "  [WARN] Native NVMe: NVMe drives using vendor driver (not stornvme.sys)" -ForegroundColor Yellow
+            Write-Host "  [INFO] Native NVMe only works with Windows in-box NVMe driver" -ForegroundColor Gray
+        }
+        # Enable Native NVMe via Feature Management registry key
+        $nvmePath = "HKLM:\\SYSTEM\\CurrentControlSet\\Policies\\Microsoft\\FeatureManagement\\Overrides"
+        if (!(Test-Path $nvmePath)) { New-Item -Path $nvmePath -Force | Out-Null }
+        Set-Reg $nvmePath "1176759950" 1
+        Write-OK "Native NVMe I/O path enabled (reboot required)"
+        Write-Host "  [INFO] After reboot: NVMe moves from 'Disk drives' to 'Storage disks' in Device Manager" -ForegroundColor Cyan
+        Write-Host "  [WARN] EXPERIMENTAL: Known issues with Data Deduplication - disable dedup first if enabled" -ForegroundColor Yellow
+        Write-Host "  [INFO] Rollback: Set registry value to 0 and reboot" -ForegroundColor Gray
+    }
+}`)
+
   return code.join('\n')
 }
 

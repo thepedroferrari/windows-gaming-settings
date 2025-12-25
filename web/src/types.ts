@@ -176,6 +176,7 @@ const RISKY_OPTIMIZATIONS = {
   BLOATWARE: 'bloatware',
   IPV4_PREFER: 'ipv4_prefer',
   TEREDO_DISABLE: 'teredo_disable',
+  NATIVE_NVME: 'native_nvme',
 } as const
 
 export const OPTIMIZATION_KEYS = {

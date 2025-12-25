@@ -308,6 +308,220 @@ function Set-FullscreenOptimizations {
 }
 
 
+function Test-NVMeSupport {
+    <#
+    .SYNOPSIS
+        Tests if Native NVMe optimization can be applied to this system.
+    .DESCRIPTION
+        Checks for:
+        1. NVMe drives present
+        2. Windows 11 24H2+ (Build 26100+) or Windows Server 2025
+        3. Using Windows in-box stornvme.sys driver (not vendor driver)
+    .OUTPUTS
+        PSObject with HasNVMe, IsSupported, UsesInboxDriver, Message properties
+    #>
+
+    $result = [PSCustomObject]@{
+        HasNVMe = $false
+        IsSupported = $false
+        UsesInboxDriver = $false
+        BuildNumber = 0
+        Message = ""
+        NVMeDrives = @()
+    }
+
+    try {
+        # Check for NVMe drives
+        $nvmeDrives = Get-PhysicalDisk | Where-Object { $_.BusType -eq "NVMe" }
+        if (-not $nvmeDrives) {
+            $result.Message = "No NVMe drives detected"
+            Write-Log "Native NVMe: No NVMe drives detected" "INFO"
+            return $result
+        }
+
+        $result.HasNVMe = $true
+        $result.NVMeDrives = $nvmeDrives | Select-Object FriendlyName, MediaType, Size
+        Write-Log "Native NVMe: Found $($nvmeDrives.Count) NVMe drive(s)" "INFO"
+
+        # Check Windows version (Build 26100+ for Windows 11 24H2)
+        $build = [int](Get-CimInstance Win32_OperatingSystem).BuildNumber
+        $result.BuildNumber = $build
+
+        if ($build -lt 26100) {
+            $result.Message = "Requires Windows 11 24H2+ (Build 26100+). Current: $build"
+            Write-Log "Native NVMe: Unsupported Windows version (Build $build, need 26100+)" "INFO"
+            return $result
+        }
+
+        $result.IsSupported = $true
+
+        # Check if using in-box stornvme driver
+        $stornvmeDevices = Get-PnpDevice -Class DiskDrive -ErrorAction SilentlyContinue | Where-Object {
+            $_.InstanceId -like "*NVME*"
+        } | ForEach-Object {
+            $svc = (Get-PnpDeviceProperty -InstanceId $_.InstanceId -KeyName "DEVPKEY_Device_Service" -ErrorAction SilentlyContinue).Data
+            if ($svc -eq "stornvme") { $_ }
+        }
+
+        if ($stornvmeDevices) {
+            $result.UsesInboxDriver = $true
+            Write-Log "Native NVMe: Using Windows in-box stornvme.sys driver" "SUCCESS"
+        } else {
+            Write-Log "Native NVMe: Using vendor NVMe driver (in-box driver not detected)" "INFO"
+            $result.Message = "NVMe drives using vendor driver - Native NVMe only works with stornvme.sys"
+        }
+
+        if (-not $result.Message) {
+            $result.Message = "System supports Native NVMe optimization"
+        }
+
+    } catch {
+        $result.Message = "Error checking NVMe support: $_"
+        Write-Log "Native NVMe: Error during detection - $_" "ERROR"
+    }
+
+    return $result
+}
+
+
+function Enable-NativeNVMe {
+    <#
+    .SYNOPSIS
+        Enables Native NVMe I/O path on Windows 11 24H2+ / Server 2025.
+    .DESCRIPTION
+        Eliminates SCSI translation layer for NVMe drives, delivering:
+        - Up to ~80% more IOPS
+        - ~45% reduction in CPU cycles per I/O
+        - Direct multi-queue access to NVMe hardware
+
+        After reboot, NVMe devices move from "Disk drives" to "Storage disks" in Device Manager.
+
+        EXPERIMENTAL: Known issues with Data Deduplication - disable dedup first if enabled.
+    .PARAMETER Enable
+        If false, skips enabling Native NVMe (opt-in only)
+    .PARAMETER Force
+        If true, enables even if vendor driver detected (may have no effect)
+    #>
+    param(
+        [bool]$Enable = $false,
+        [bool]$Force = $false
+    )
+
+    if (-not $Enable) {
+        Write-Log "Native NVMe: OPT-IN only (skipped)" "INFO"
+        return $false
+    }
+
+    Write-Log "Enabling Native NVMe I/O path..." "INFO"
+
+    try {
+        # Run detection
+        $support = Test-NVMeSupport
+
+        if (-not $support.HasNVMe) {
+            Write-Log "Native NVMe: Skipped - No NVMe drives detected" "INFO"
+            return $false
+        }
+
+        if (-not $support.IsSupported) {
+            Write-Log "Native NVMe: Skipped - $($support.Message)" "INFO"
+            return $false
+        }
+
+        if (-not $support.UsesInboxDriver -and -not $Force) {
+            Write-Log "Native NVMe: Warning - NVMe drives using vendor driver" "INFO"
+            Write-Log "Native NVMe: Native NVMe only works with Windows in-box stornvme.sys driver" "INFO"
+            Write-Log "Native NVMe: Continuing anyway (may have no effect on vendor-driver devices)" "INFO"
+        }
+
+        # Enable Native NVMe via Feature Management registry key
+        $nvmePath = "HKLM:\SYSTEM\CurrentControlSet\Policies\Microsoft\FeatureManagement\Overrides"
+
+        if (-not (Test-Path $nvmePath)) {
+            New-Item -Path $nvmePath -Force | Out-Null
+            Write-Log "Created Native NVMe registry path" "INFO"
+        }
+
+        Backup-RegistryKey -Path $nvmePath
+        Set-RegistryValue -Path $nvmePath -Name "1176759950" -Value 1 -Type "DWORD"
+
+        Write-Log "Native NVMe I/O path enabled (reboot required)" "SUCCESS"
+        Write-Log "After reboot: NVMe devices move from 'Disk drives' to 'Storage disks' in Device Manager" "INFO"
+        Write-Log "EXPERIMENTAL: Known issues with Data Deduplication - disable dedup first if enabled" "INFO"
+
+        return $true
+
+    } catch {
+        Write-Log "Error enabling Native NVMe: $_" "ERROR"
+        throw
+    }
+}
+
+
+function Disable-NativeNVMe {
+    <#
+    .SYNOPSIS
+        Disables Native NVMe I/O path and reverts to legacy SCSI translation.
+    .DESCRIPTION
+        Sets the feature flag to 0 and requires a reboot.
+        After reboot, NVMe devices return to "Disk drives" in Device Manager.
+    #>
+
+    Write-Log "Disabling Native NVMe I/O path..." "INFO"
+
+    try {
+        $nvmePath = "HKLM:\SYSTEM\CurrentControlSet\Policies\Microsoft\FeatureManagement\Overrides"
+
+        if (Test-Path $nvmePath) {
+            $currentValue = Get-RegistryValue -Path $nvmePath -Name "1176759950"
+            if ($null -ne $currentValue) {
+                Set-RegistryValue -Path $nvmePath -Name "1176759950" -Value 0 -Type "DWORD"
+                Write-Log "Native NVMe disabled (reboot required)" "SUCCESS"
+                Write-Log "After reboot: NVMe devices return to 'Disk drives' in Device Manager" "INFO"
+                return $true
+            } else {
+                Write-Log "Native NVMe was not enabled (registry key not found)" "INFO"
+                return $false
+            }
+        } else {
+            Write-Log "Native NVMe was not enabled (registry path not found)" "INFO"
+            return $false
+        }
+
+    } catch {
+        Write-Log "Error disabling Native NVMe: $_" "ERROR"
+        throw
+    }
+}
+
+
+function Test-NativeNVMeStatus {
+    <#
+    .SYNOPSIS
+        Checks if Native NVMe is currently enabled.
+    .OUTPUTS
+        $true if enabled, $false otherwise
+    #>
+
+    try {
+        $nvmePath = "HKLM:\SYSTEM\CurrentControlSet\Policies\Microsoft\FeatureManagement\Overrides"
+
+        if (Test-Path $nvmePath) {
+            $value = Get-RegistryValue -Path $nvmePath -Name "1176759950"
+            if ($value -eq 1) {
+                Write-Log "Native NVMe: Currently ENABLED" "SUCCESS"
+                return $true
+            }
+        }
+
+        Write-Log "Native NVMe: Currently DISABLED" "INFO"
+        return $false
+
+    } catch {
+        Write-Log "Error checking Native NVMe status: $_" "ERROR"
+        return $false
+    }
+}
 
 
 function Invoke-PerformanceOptimizations {
@@ -315,7 +529,8 @@ function Invoke-PerformanceOptimizations {
         [bool]$DisableHPET = $false,
         [bool]$DisableCoreParking = $false,
         [bool]$DisableGameDVR = $true,
-        [bool]$DisableFSO = $true
+        [bool]$DisableFSO = $true,
+        [bool]$EnableNativeNVMe = $false
     )
 
     Write-Log "Applying performance optimizations..." "INFO"
@@ -338,8 +553,10 @@ function Invoke-PerformanceOptimizations {
 
         Enable-GameMode
 
+        Enable-NativeNVMe -Enable $EnableNativeNVMe
+
         Write-Log "Performance optimizations complete" "SUCCESS"
-        Write-Log "IMPORTANT: Reboot required for HPET and MSI mode changes" "INFO"
+        Write-Log "IMPORTANT: Reboot required for HPET, MSI mode, and Native NVMe changes" "INFO"
         Write-Log "Run timer-tool.ps1 during gameplay for 0.5-1.0ms timer resolution" "INFO"
 
     } catch {
@@ -373,6 +590,9 @@ function Undo-PerformanceOptimizations {
             }
         }
 
+        # Disable Native NVMe if it was enabled
+        Disable-NativeNVMe | Out-Null
+
         Write-Log "Performance optimization rollback complete (restart required)" "SUCCESS"
 
     } catch {
@@ -392,6 +612,10 @@ Export-ModuleMember -Function @(
     'Enable-GameMode',
     'Set-GameDVR',
     'Set-FullscreenOptimizations',
+    'Test-NVMeSupport',
+    'Enable-NativeNVMe',
+    'Disable-NativeNVMe',
+    'Test-NativeNVMeStatus',
     'Test-PerformanceOptimizations',
     'Invoke-PerformanceOptimizations',
     'Undo-PerformanceOptimizations'

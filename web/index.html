@@ -53,7 +53,7 @@
         <div class="holo-content">
             <div class="holo-title-lockup">
                 <h1 class="holo-logo" data-text="ROCKTUNE">ROCKTUNE</h1>
-                <div class="holo-subtitle">[ MAXIMUM FPS . ZERO BLOAT ]</div>
+                <div class="holo-subtitle">[ MAXIMUM FPS :: ZERO BLOAT ]</div>
             </div>
             <div class="holo-terminal-window">
                 <div class="terminal-header">
@@ -64,7 +64,7 @@
                     <div class="terminal-loading">
                         <span class="loading-line">> 47 background services... <span class="result">OPTIMIZED</span></span>
                         <span class="loading-line">> 12 telemetry endpoints... <span class="result">BLOCKED</span></span>
-                        <span class="loading-line">> Input latency 16ms → 0.5ms... <span class="result">FIXED</span></span>
+                        <span class="loading-line">> Input latency 52ms → 0.5ms... <span class="result">FIXED</span></span>
                         <span class="loading-line success">> YOUR LOADOUT IS READY.</span>
                     </div>
                 </div>
@@ -943,6 +943,25 @@ Services set to Manual (safe list only):
                         <span class="label-text">Disk Cleanup</span>
                         <span class="preset-badge" hidden></span>
                         <span class="label-hint">Auto-skip if &lt;90% full</span>
+                    </label>
+                    <label data-opt="native_nvme" data-tooltip="**Native NVMe** — bypass SCSI translation layer
+
+- Windows 11 24H2+ only (Build 26100+)
+- Up to ~80% more IOPS
+- ~45% reduction in CPU cycles per I/O
+- Direct multi-queue NVMe access
+
+After reboot:
+- NVMe moves from 'Disk drives' to 'Storage disks' in Device Manager
+
+⚠️ EXPERIMENTAL: Microsoft opt-in feature
+⚠️ Known issues with Data Deduplication
+⚠️ Only works with in-box stornvme.sys driver
+✓ Auto-skips if no NVMe or OS too old">
+                        <input type="checkbox" name="opt" value="native_nvme">
+                        <span class="label-text">Native NVMe</span>
+                        <span class="preset-badge" hidden></span>
+                        <span class="label-hint"><svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Win11 24H2+, experimental</span>
                     </label>
                 </fieldset>
 
