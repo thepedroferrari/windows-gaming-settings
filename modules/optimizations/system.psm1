@@ -316,6 +316,239 @@ function Disable-RazerAutoInstall {
 }
 
 
+function New-RestorePoint {
+    <#
+    .SYNOPSIS
+        Creates a Windows System Restore Point before applying optimizations.
+    .DESCRIPTION
+        Safety feature - creates a restore point so user can roll back if needed.
+        Requires System Restore to be enabled on the system drive.
+    #>
+    param(
+        [string]$Description = "Pre-Gaming-PC-Setup"
+    )
+
+    try {
+        # Check if System Restore is enabled
+        $srStatus = Get-ComputerRestorePoint -ErrorAction SilentlyContinue
+
+        # Enable System Restore on C: if needed (will fail silently if already enabled)
+        Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
+
+        # Create restore point
+        Checkpoint-Computer -Description $Description -RestorePointType "MODIFY_SETTINGS" -ErrorAction Stop
+        Write-Log "Created System Restore Point: $Description" "SUCCESS"
+        return $true
+    } catch {
+        if ($_.Exception.Message -like "*1058*" -or $_.Exception.Message -like "*disabled*") {
+            Write-Log "System Restore is disabled - skipping restore point creation" "INFO"
+        } elseif ($_.Exception.Message -like "*frequency*" -or $_.Exception.Message -like "*already*") {
+            Write-Log "Restore point recently created (Windows limits frequency) - continuing" "INFO"
+        } else {
+            Write-Log "Could not create restore point: $_" "ERROR"
+        }
+        return $false
+    }
+}
+
+
+function Set-ClassicContextMenu {
+    <#
+    .SYNOPSIS
+        Restores the classic Windows 10-style right-click context menu on Windows 11.
+    .DESCRIPTION
+        Windows 11's new context menu is slower and requires extra clicks.
+        This tweak restores the full classic menu for faster navigation.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Classic context menu: skipped" "INFO"
+        return
+    }
+
+    try {
+        # Check if Windows 11
+        $build = [int](Get-CimInstance Win32_OperatingSystem).BuildNumber
+        if ($build -lt 22000) {
+            Write-Log "Classic context menu: Not needed (Windows 10 detected)" "INFO"
+            return
+        }
+
+        $classicMenuPath = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
+
+        # Create the key path if it doesn't exist
+        if (-not (Test-Path $classicMenuPath)) {
+            New-Item -Path $classicMenuPath -Force | Out-Null
+        }
+
+        # Set empty default value to enable classic menu
+        Set-ItemProperty -Path $classicMenuPath -Name "(Default)" -Value "" -Force
+
+        Write-Log "Classic right-click context menu enabled (restart Explorer to apply)" "SUCCESS"
+    } catch {
+        Write-Log "Error setting classic context menu: $_" "ERROR"
+    }
+}
+
+
+function Disable-StorageSense {
+    <#
+    .SYNOPSIS
+        Disables Windows Storage Sense automatic cleanup.
+    .DESCRIPTION
+        Storage Sense can cause background disk activity during gaming.
+        Disabling it prevents unexpected cleanup operations.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Disable Storage Sense: skipped" "INFO"
+        return
+    }
+
+    try {
+        $storagePath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy"
+        Backup-RegistryKey -Path $storagePath
+
+        # Disable Storage Sense
+        Set-RegistryValue -Path $storagePath -Name "01" -Value 0 -Type "DWORD"
+        Set-RegistryValue -Path $storagePath -Name "StoragePoliciesNotified" -Value 1 -Type "DWORD"
+
+        Write-Log "Disabled Storage Sense (no background cleanup during gaming)" "SUCCESS"
+    } catch {
+        Write-Log "Error disabling Storage Sense: $_" "ERROR"
+    }
+}
+
+
+function Set-DisplayPerformance {
+    <#
+    .SYNOPSIS
+        Configures Windows visual effects for maximum performance.
+    .DESCRIPTION
+        Disables animations, shadows, and other visual effects that consume GPU/CPU resources.
+        Reduces visual overhead for slightly better gaming performance.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Display performance mode: skipped" "INFO"
+        return
+    }
+
+    try {
+        $visualPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects"
+        Backup-RegistryKey -Path $visualPath
+        Set-RegistryValue -Path $visualPath -Name "VisualFXSetting" -Value 2 -Type "DWORD"  # 2 = Custom (we'll set individual settings)
+
+        $advancedPath = "HKCU:\Control Panel\Desktop"
+        Backup-RegistryKey -Path $advancedPath
+        Set-RegistryValue -Path $advancedPath -Name "DragFullWindows" -Value "0" -Type "String"
+        Set-RegistryValue -Path $advancedPath -Name "MenuShowDelay" -Value "0" -Type "String"
+
+        $windowMetrics = "HKCU:\Control Panel\Desktop\WindowMetrics"
+        Backup-RegistryKey -Path $windowMetrics
+        Set-RegistryValue -Path $windowMetrics -Name "MinAnimate" -Value "0" -Type "String"
+
+        $explorerPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+        Backup-RegistryKey -Path $explorerPath
+        Set-RegistryValue -Path $explorerPath -Name "TaskbarAnimations" -Value 0 -Type "DWORD"
+        Set-RegistryValue -Path $explorerPath -Name "ListviewAlphaSelect" -Value 0 -Type "DWORD"
+        Set-RegistryValue -Path $explorerPath -Name "ListviewShadow" -Value 0 -Type "DWORD"
+
+        Write-Log "Set display for performance (reduced visual effects)" "SUCCESS"
+    } catch {
+        Write-Log "Error setting display performance: $_" "ERROR"
+    }
+}
+
+
+function Enable-TaskbarEndTask {
+    <#
+    .SYNOPSIS
+        Enables "End Task" option when right-clicking taskbar items.
+    .DESCRIPTION
+        Useful for quickly killing frozen games or unresponsive applications
+        without needing to open Task Manager.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Taskbar End Task: skipped" "INFO"
+        return
+    }
+
+    try {
+        $taskbarPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings"
+
+        if (-not (Test-Path $taskbarPath)) {
+            New-Item -Path $taskbarPath -Force | Out-Null
+        }
+
+        Backup-RegistryKey -Path $taskbarPath
+        Set-RegistryValue -Path $taskbarPath -Name "TaskbarEndTask" -Value 1 -Type "DWORD"
+
+        Write-Log "Enabled 'End Task' in taskbar right-click menu" "SUCCESS"
+    } catch {
+        Write-Log "Error enabling taskbar End Task: $_" "ERROR"
+    }
+}
+
+
+function Remove-ExplorerClutter {
+    <#
+    .SYNOPSIS
+        Removes Home and Gallery from Windows 11 Explorer navigation pane.
+    .DESCRIPTION
+        Cleans up Explorer navigation for faster access to files.
+        Only applies to Windows 11.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Remove Explorer clutter: skipped" "INFO"
+        return
+    }
+
+    try {
+        # Check if Windows 11
+        $build = [int](Get-CimInstance Win32_OperatingSystem).BuildNumber
+        if ($build -lt 22000) {
+            Write-Log "Remove Explorer clutter: Not needed (Windows 10 detected)" "INFO"
+            return
+        }
+
+        # Remove Home from Explorer
+        $homePath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}"
+        if (Test-Path $homePath) {
+            Remove-Item -Path $homePath -Force -ErrorAction SilentlyContinue
+            Write-Log "Removed 'Home' from Explorer navigation" "SUCCESS"
+        }
+
+        # Remove Gallery from Explorer
+        $galleryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}"
+        if (Test-Path $galleryPath) {
+            Remove-Item -Path $galleryPath -Force -ErrorAction SilentlyContinue
+            Write-Log "Removed 'Gallery' from Explorer navigation" "SUCCESS"
+        }
+
+    } catch {
+        Write-Log "Error removing Explorer clutter: $_" "ERROR"
+    }
+}
+
+
 
 
 function Invoke-SystemOptimizations {
@@ -325,7 +558,12 @@ function Invoke-SystemOptimizations {
         [bool]$RunDiskCleanup = $true,
         [bool]$RunTempPurge = $true,
         [bool]$ServiceTrimSafe = $true,
-        [bool]$BlockRazer = $true
+        [bool]$BlockRazer = $true,
+        [bool]$ClassicContextMenu = $true,
+        [bool]$DisableStorageSense = $true,
+        [bool]$DisplayPerformance = $true,
+        [bool]$TaskbarEndTask = $true,
+        [bool]$RemoveExplorerClutter = $true
     )
 
     Write-Log "Applying system optimizations..." "INFO"
@@ -352,6 +590,17 @@ function Invoke-SystemOptimizations {
         Set-ServiceTrimSafe -Enable $ServiceTrimSafe
 
         Disable-RazerAutoInstall -Enable $BlockRazer
+
+        # New WinUtil-inspired tweaks
+        Set-ClassicContextMenu -Enable $ClassicContextMenu
+
+        Disable-StorageSense -Enable $DisableStorageSense
+
+        Set-DisplayPerformance -Enable $DisplayPerformance
+
+        Enable-TaskbarEndTask -Enable $TaskbarEndTask
+
+        Remove-ExplorerClutter -Enable $RemoveExplorerClutter
 
         Write-Log "System optimizations complete" "SUCCESS"
 
@@ -412,6 +661,12 @@ Export-ModuleMember -Function @(
     'Invoke-TempPurge',
     'Set-ServiceTrimSafe',
     'Disable-RazerAutoInstall',
+    'New-RestorePoint',
+    'Set-ClassicContextMenu',
+    'Disable-StorageSense',
+    'Set-DisplayPerformance',
+    'Enable-TaskbarEndTask',
+    'Remove-ExplorerClutter',
     'Test-SystemOptimizations',
     'Invoke-SystemOptimizations',
     'Undo-SystemOptimizations'

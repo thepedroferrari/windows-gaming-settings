@@ -316,6 +316,110 @@ function Disable-Copilot {
 }
 
 
+function Disable-Notifications {
+    <#
+    .SYNOPSIS
+        Disables Windows notification center and toast notifications.
+    .DESCRIPTION
+        Prevents popup distractions during gaming sessions.
+        Disables both the notification center and individual toast popups.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Disable notifications: skipped" "INFO"
+        return
+    }
+
+    try {
+        # Disable Notification Center
+        $notifPath = "HKCU:\Software\Policies\Microsoft\Windows\Explorer"
+        Backup-RegistryKey -Path $notifPath
+        Set-RegistryValue -Path $notifPath -Name "DisableNotificationCenter" -Value 1 -Type "DWORD"
+
+        # Disable toast notifications
+        $toastPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\PushNotifications"
+        Backup-RegistryKey -Path $toastPath
+        Set-RegistryValue -Path $toastPath -Name "ToastEnabled" -Value 0 -Type "DWORD"
+
+        # Disable lock screen notifications
+        $lockPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings"
+        Backup-RegistryKey -Path $lockPath
+        Set-RegistryValue -Path $lockPath -Name "NOC_GLOBAL_SETTING_ALLOW_TOASTS_ABOVE_LOCK" -Value 0 -Type "DWORD"
+        Set-RegistryValue -Path $lockPath -Name "NOC_GLOBAL_SETTING_ALLOW_CRITICAL_TOASTS_ABOVE_LOCK" -Value 0 -Type "DWORD"
+
+        Write-Log "Disabled notifications (no popups during gaming)" "SUCCESS"
+    } catch {
+        Write-Log "Error disabling notifications: $_" "ERROR"
+    }
+}
+
+
+function Disable-PS7Telemetry {
+    <#
+    .SYNOPSIS
+        Disables PowerShell 7 telemetry collection.
+    .DESCRIPTION
+        Sets the POWERSHELL_TELEMETRY_OPTOUT environment variable.
+        Only relevant if PowerShell 7 is installed.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Disable PS7 telemetry: skipped" "INFO"
+        return
+    }
+
+    try {
+        # Check if PowerShell 7 is installed
+        $ps7Path = "$env:ProgramFiles\PowerShell\7\pwsh.exe"
+        if (-not (Test-Path $ps7Path)) {
+            Write-Log "PowerShell 7 not installed - skipping telemetry opt-out" "INFO"
+            return
+        }
+
+        # Set environment variable to opt out of PS7 telemetry
+        [Environment]::SetEnvironmentVariable("POWERSHELL_TELEMETRY_OPTOUT", "1", "Machine")
+        Write-Log "Disabled PowerShell 7 telemetry (env var set)" "SUCCESS"
+    } catch {
+        Write-Log "Error disabling PS7 telemetry: $_" "ERROR"
+    }
+}
+
+
+function Disable-WPBT {
+    <#
+    .SYNOPSIS
+        Disables Windows Platform Binary Table (WPBT).
+    .DESCRIPTION
+        WPBT allows OEMs to inject software at boot time.
+        Disabling prevents manufacturer bloatware from auto-installing.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Disable WPBT: skipped" "INFO"
+        return
+    }
+
+    try {
+        $wpbtPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager"
+        Backup-RegistryKey -Path $wpbtPath
+        Set-RegistryValue -Path $wpbtPath -Name "DisableWpbtExecution" -Value 1 -Type "DWORD"
+
+        Write-Log "Disabled WPBT (blocks OEM bloatware injection at boot)" "SUCCESS"
+    } catch {
+        Write-Log "Error disabling WPBT: $_" "ERROR"
+    }
+}
+
+
 
 
 function Invoke-PrivacyOptimizations {
@@ -327,7 +431,10 @@ function Invoke-PrivacyOptimizations {
         [bool]$RemoveXboxApps = $false,
         [bool]$BackgroundAppsOff = $true,
         [bool]$EdgeDebloat = $true,
-        [bool]$DisableCopilot = $true
+        [bool]$DisableCopilot = $true,
+        [bool]$DisableNotifications = $true,
+        [bool]$DisablePS7Telemetry = $true,
+        [bool]$DisableWPBT = $true
     )
 
     Write-Log "Applying privacy optimizations..." "INFO"
@@ -364,6 +471,13 @@ function Invoke-PrivacyOptimizations {
         if ($DisableCopilot) {
             Disable-Copilot
         }
+
+        # New WinUtil-inspired tweaks
+        Disable-Notifications -Enable $DisableNotifications
+
+        Disable-PS7Telemetry -Enable $DisablePS7Telemetry
+
+        Disable-WPBT -Enable $DisableWPBT
 
         Write-Log "Privacy optimizations complete" "SUCCESS"
         Write-Log "SmartScreen and Windows Update remain ENABLED (security)" "INFO"
@@ -435,6 +549,9 @@ Export-ModuleMember -Function @(
     'Set-BackgroundAppsOff',
     'Apply-EdgeDebloat',
     'Disable-Copilot',
+    'Disable-Notifications',
+    'Disable-PS7Telemetry',
+    'Disable-WPBT',
     'Test-PrivacyOptimizations',
     'Invoke-PrivacyOptimizations',
     'Undo-PrivacyOptimizations'

@@ -101,7 +101,7 @@ $sections = @(
         TestFunction = "Test-SystemOptimizations"
         Condition = $null
         Weight = 10
-        Description = "Page file (4GB/8GB), fast startup disabled, Explorer speedups, disk cleanup, temp purge, safe service trim, Razer block"
+        Description = "Page file, fast startup off, classic context menu, Storage Sense off, display performance, End Task in taskbar, Explorer cleanup"
     },
     @{
         Name = "Performance Optimizations"
@@ -149,7 +149,7 @@ $sections = @(
         TestFunction = "Test-PrivacyOptimizations"
         Condition = $null
         Weight = 15
-        Description = "Tiered telemetry, background apps off, Edge debloat, Copilot disable, optional bloat/Xbox removal"
+        Description = "Telemetry reduced, notifications off, WPBT blocked, PS7 telemetry off, background apps off, Edge debloat, Copilot disable"
     },
     @{
         Name = "Software Installation"
@@ -200,6 +200,13 @@ if (-not $DryRun) {
 Write-Host ""
 Write-Host "Starting optimizations..." -ForegroundColor Cyan
 Write-Host ""
+
+# Create a restore point before making any changes (safety feature)
+if (-not $DryRun) {
+    Write-Host "Creating System Restore Point..." -ForegroundColor Yellow
+    New-RestorePoint -Description "Pre-Gaming-PC-Setup-$(Get-Date -Format 'yyyyMMdd-HHmm')"
+    Write-Host ""
+}
 
 
 
