@@ -7,7 +7,6 @@ import {
 import { initCyberToggle } from './components/cyber-toggle'
 import { setupDriverLinks } from './components/drivers'
 import { setupClearAll, setupFilters, setupSearch, setupViewToggle } from './components/filters'
-import { setupHeroCube } from './components/hero-cube'
 import { setupPresets } from './components/presets'
 import { setupProfileActions } from './components/profiles'
 import { setupDownload } from './components/script-generator'
@@ -126,7 +125,6 @@ function setupVisualEffects(controller: CleanupController): void {
   setupCursorGlow(controller)
   setupProgressNav(controller)
   setupImageFallbacks(CATEGORY_SVG_ICONS)
-  setupHeroCube(controller)
   setupRichTooltips(controller)
 }
 

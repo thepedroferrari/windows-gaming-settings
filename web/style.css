@@ -9,6 +9,7 @@
    @import './src/styles/utilities.css' layer(utilities);
    @import './src/styles/layout.css' layer(layout);
 
+   @import './src/components/holographic-header/holographic-header.styles.css' layer(components);
    @import './src/components/software-card/software-card.styles.css' layer(components);
    @import './src/components/summary/summary.styles.css' layer(components);
    @import './src/components/filters/filters.styles.css' layer(components);
@@ -16,7 +17,6 @@
    @import './src/components/presets/presets.styles.css' layer(components);
    @import './src/components/code-viewer/code-viewer.styles.css' layer(components);
    @import './src/components/audit/audit.styles.css' layer(components);
-   @import './src/components/hero-cube/hero-cube.styles.css' layer(components);
    @import './src/components/profiles/profiles.styles.css' layer(components);
 
 

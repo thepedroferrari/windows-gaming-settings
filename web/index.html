@@ -28,54 +28,40 @@
         <button type="button" id="error-dismiss" class="error-dismiss" aria-label="Dismiss">&times;</button>
     </div>
 
-    <header>
-        <div class="hero-cube-wrapper">
-            <div class="hero-cube-content">
-                <div class="hero-hue-overlay"></div>
-                <img class="hero-bg-image" src="/rocktune-3d-bg-by-alexandre-vacassin.jpg" alt="" aria-hidden="true">
-                <img class="hero-silhouette" src="/rocktune-silhouete-by-alexandre-vacassin.png" alt="" aria-hidden="true">
-                <div class="hero-cube-container">
-                    <div class="cube">
-                        <div class="face top"></div>
-                        <div class="face bottom"></div>
-                        <div class="face left text"></div>
-                        <div class="face right text"></div>
-                        <div class="face front"></div>
-                        <div class="face back text"></div>
-                    </div>
+    <header class="holo-console">
+        <div class="holo-grid-bg"></div>
+        <div class="holo-scanlines"></div>
+        <div class="holo-content">
+            <div class="holo-status-bar">
+                <span class="status-text">SYSTEM STATUS: ONLINE</span>
+                <span class="status-id">ID: RCK-TUNE-V1</span>
+            </div>
+            <div class="holo-title-lockup">
+                <h1 class="holo-logo" data-text="ROCKTUNE">ROCKTUNE</h1>
+                <div class="holo-subtitle">[ MAXIMUM FPS . ZERO BLOAT ]</div>
+            </div>
+            <div class="holo-terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-title">>> MISSION BRIEF: OPTIMIZATION PROTOCOL</span>
                 </div>
-                <div class="hero-cube-reflect">
-                    <div class="cube">
-                        <div class="face top"></div>
-                        <div class="face bottom"></div>
-                        <div class="face left text"></div>
-                        <div class="face right text"></div>
-                        <div class="face front"></div>
-                        <div class="face back text"></div>
+                <div class="terminal-body">
+                    <p class="terminal-text">Your PC was built to game. <span class="highlight-text">Your OS wasn't.</span></p>
+                    <div class="terminal-loading">
+                        <span class="loading-line">> Scanning processes...</span>
+                        <span class="loading-line">> Removing bloat...</span>
+                        <span class="loading-line">> Fixing latency...</span>
+                        <span class="loading-line success">> ESSENTIALS INSTALLED.</span>
                     </div>
                 </div>
             </div>
-            <div class="hero-overlay">
-                <div class="logo-container">
-                    <div class="logo-accent logo-accent--left"></div>
-                    <h1>RockTune</h1>
-                    <div class="logo-accent logo-accent--right"></div>
-                </div>
-                <p class="tagline">Maximum FPS. Zero bloat.</p>
+            <div class="holo-actions">
+                <a href="#quick-start" class="holo-btn">
+                    <span class="btn-text">INITIALIZE_QUICK_START</span>
+                    <span class="btn-glitch"></span>
+                </a>
             </div>
         </div>
     </header>
-
-    <section class="value-prop">
-        <div class="mission-brief">
-            <p class="value-headline">Your PC was built to game. <span class="text-highlight">Your OS wasn't.</span></p>
-            <p class="value-body">
-                Windows tries to do everything at once. RockTune generates a safe, one-time script that focuses your entire system on one thing: <strong>Gaming.</strong>
-                <br><br>
-                <span class="value-perks">Removes bloat. Fixes latency. Installs essentials. Run once, game forever.</span>
-            </p>
-        </div>
-    </section>
 
     <main>
 

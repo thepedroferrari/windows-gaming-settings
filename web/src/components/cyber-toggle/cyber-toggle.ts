@@ -43,3 +43,4 @@ export function initCyberToggle(): void {
   toggles.forEach((input) => new CyberToggle(input))
 }
 
+
