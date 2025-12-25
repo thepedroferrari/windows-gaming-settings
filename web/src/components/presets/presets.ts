@@ -391,6 +391,12 @@ export function applyPreset(presetName: PresetType): void {
   updateSoftwareCounter()
   updateSummary()
   document.dispatchEvent(new CustomEvent('script-change-request'))
+
+  // Show action buttons when a preset is selected
+  const actionsEl = document.getElementById('preset-actions')
+  if (actionsEl) {
+    actionsEl.hidden = false
+  }
 }
 
 function applyCardStyles(state: CardState): void {

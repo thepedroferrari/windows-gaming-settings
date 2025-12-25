@@ -18,6 +18,7 @@
    @import './src/components/code-viewer/code-viewer.styles.css' layer(components);
    @import './src/components/audit/audit.styles.css' layer(components);
    @import './src/components/profiles/profiles.styles.css' layer(components);
+   @import './src/components/unified-nav/unified-nav.styles.css' layer(components);
 
 
    @property --border-angle {
@@ -406,113 +407,6 @@
   }
 
    @layer components {
-     .step-progress {
-       display: flex;
-       justify-content: center;
-       gap: 2px;
-       margin: var(--space-lg) 0;
-       position: sticky;
-       top: var(--space-md);
-       z-index: 100;
-       padding: 4px;
-       background: linear-gradient(
-         135deg,
-         color-mix(in oklch, oklch(0.1 0.02 280) 95%, transparent) 0%,
-         color-mix(in oklch, oklch(0.08 0.015 285) 98%, transparent) 100%
-       );
-       backdrop-filter: blur(12px);
-       -webkit-backdrop-filter: blur(12px);
-       border-radius: 0;
-       clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-       width: fit-content;
-       margin-inline: auto;
-       border: 1px solid color-mix(in oklch, var(--accent) 35%, var(--border));
-       box-shadow:
-         0 4px 20px color-mix(in oklch, oklch(0 0 0) 30%, transparent),
-         inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 4%, transparent);
-       transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-       &:hover {
-         border-color: color-mix(in oklch, var(--accent) 50%, var(--border));
-         box-shadow:
-           0 4px 20px color-mix(in oklch, oklch(0 0 0) 30%, transparent),
-           0 0 15px color-mix(in oklch, var(--accent) 15%, transparent),
-           inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 4%, transparent);
-       }
-
-       @media (max-width: 600px) {
-         max-width: calc(100vw - var(--space-md) * 2);
-         overflow-x: auto;
-         overflow-y: hidden;
-         scrollbar-width: none;
-         -ms-overflow-style: none;
-         justify-content: flex-start;
-         clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-
-         &::-webkit-scrollbar {
-           display: none;
-         }
-       }
-     }
-
-     .step-dot {
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       padding: var(--space-xs) var(--space-sm);
-       border-radius: 0;
-       clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
-       font-family: var(--font-display);
-       font-size: 0.7rem;
-       font-weight: 600;
-       text-decoration: none;
-       text-transform: uppercase;
-       letter-spacing: 0.04em;
-       color: var(--text-hint);
-       background: transparent;
-       border: 1px solid transparent;
-       transition: all 0.2s var(--ease-out-expo);
-       white-space: nowrap;
-       flex-shrink: 0;
-       position: relative;
-
-       &:hover {
-         color: var(--text-primary);
-         background: color-mix(in oklch, var(--accent) 12%, transparent);
-         border-color: color-mix(in oklch, var(--accent) 25%, transparent);
-       }
-
-       &[aria-current="step"] {
-         background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-         border-color: var(--accent);
-         color: white;
-         box-shadow:
-           0 0 12px var(--accent-glow),
-           inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 15%, transparent);
-         text-shadow: 0 1px 2px color-mix(in oklch, oklch(0 0 0) 40%, transparent);
-
-         &::after {
-           content: "";
-           position: absolute;
-           bottom: 0;
-           left: 20%;
-           right: 20%;
-           height: 1px;
-           background: linear-gradient(90deg, transparent, var(--accent-hover), transparent);
-         }
-       }
-
-       @media (max-width: 600px) {
-         font-size: 0.65rem;
-         padding: var(--space-xs) calc(var(--space-sm) * 0.8);
-         clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-       }
-     }
-
-     .step-label {
-       display: block;
-     }
-
     .quick-start-callout {
       text-align: center;
       padding: var(--space-md) 0;

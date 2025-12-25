@@ -222,6 +222,43 @@
     gap: var(--space-md);
   }
 
+  /* Prominent tagline styling */
+  .terminal-tagline {
+    color: var(--text-secondary);
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0;
+    padding: var(--space-sm) 0;
+    position: relative;
+  }
+
+  .terminal-tagline .highlight-text {
+    display: inline-block;
+    color: var(--holo-primary);
+    font-weight: 700;
+    text-shadow:
+      0 0 20px var(--holo-glow),
+      0 0 40px color-mix(in oklch, var(--holo-primary) 50%, transparent);
+    position: relative;
+    animation: taglineGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes taglineGlow {
+    0%, 100% {
+      text-shadow:
+        0 0 20px var(--holo-glow),
+        0 0 40px color-mix(in oklch, var(--holo-primary) 50%, transparent);
+    }
+    50% {
+      text-shadow:
+        0 0 30px var(--holo-glow),
+        0 0 60px color-mix(in oklch, var(--holo-primary) 70%, transparent),
+        0 0 80px color-mix(in oklch, var(--holo-primary) 30%, transparent);
+    }
+  }
+
+  /* Legacy support for terminal-text */
   .terminal-text {
     color: var(--text-secondary);
     font-size: 1.1rem;
@@ -238,14 +275,20 @@
   .terminal-loading {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     font-size: 0.85rem;
     color: var(--text-hint);
+    padding: var(--space-sm) 0;
+    border-top: 1px solid color-mix(in oklch, var(--holo-primary) 15%, transparent);
+    margin-top: var(--space-sm);
   }
 
   .loading-line {
     opacity: 0;
     animation: type-line 0.5s forwards;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .loading-line:nth-child(1) { animation-delay: 0.5s; }
@@ -253,9 +296,18 @@
   .loading-line:nth-child(3) { animation-delay: 2.5s; }
   .loading-line:nth-child(4) { animation-delay: 3.5s; }
 
-  .loading-line.success {
+  .loading-line .result {
     color: var(--safe);
     font-weight: 600;
+    text-shadow: 0 0 8px color-mix(in oklch, var(--safe) 50%, transparent);
+  }
+
+  .loading-line.success {
+    color: var(--safe);
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-top: var(--space-xs);
+    text-shadow: 0 0 10px color-mix(in oklch, var(--safe) 60%, transparent);
   }
 
   @keyframes type-line {
@@ -278,7 +330,7 @@
     justify-content: center;
     padding: var(--space-md) var(--space-2xl);
     background: transparent;
-    border: 1px solid var(--holo-primary);
+    border: 2px solid var(--holo-primary);
     color: var(--holo-primary);
     font-family: var(--font-display);
     font-weight: 700;
@@ -286,31 +338,176 @@
     letter-spacing: 0.1em;
     text-decoration: none;
     text-transform: uppercase;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    overflow: hidden;
+    animation: btnIdleGlitch 4s infinite;
   }
 
-  .holo-btn:hover {
-    background: var(--holo-primary);
-    color: black;
-    box-shadow: 0 0 30px var(--holo-glow);
-    text-shadow: none;
+  /* Chromatic aberration pseudo-elements */
+  .holo-btn::before,
+  .holo-btn::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .holo-btn::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border: 1px solid var(--holo-primary);
-    opacity: 0.3;
-    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-    transform: scale(1.05);
-    transition: transform 0.2s ease;
+    color: var(--neon-cyan);
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translate(calc(-50% - 2px), -50%);
   }
 
-  .holo-btn:hover::before {
-    transform: scale(1.1);
-    opacity: 0.6;
+  .holo-btn::after {
+    color: var(--neon-magenta);
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    transform: translate(calc(-50% + 2px), -50%);
+  }
+
+  .holo-btn:hover {
+    background: color-mix(in oklch, var(--holo-primary) 15%, transparent);
+    color: var(--holo-primary);
+    box-shadow:
+      0 0 30px var(--holo-glow),
+      0 0 60px color-mix(in oklch, var(--holo-primary) 30%, transparent);
+    text-shadow: 0 0 10px var(--holo-glow);
+    animation: btnGlitchHover 0.3s steps(1) infinite;
+  }
+
+  .holo-btn:hover::before,
+  .holo-btn:hover::after {
+    opacity: 0.8;
+    animation: chromaticSplit 0.2s steps(2) infinite;
+  }
+
+  .holo-btn:active {
+    transform: scale(0.98);
+    background: var(--holo-primary);
+    color: black;
+    text-shadow: none;
+  }
+
+  /* Glitch flicker effect overlay */
+  .holo-btn .glitch-layer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in oklch, var(--holo-primary) 20%, transparent) 50%,
+      transparent 100%
+    );
+    opacity: 0;
+    pointer-events: none;
+    animation: glitchFlicker 3s steps(1) infinite;
+  }
+
+  @keyframes btnIdleGlitch {
+    0%, 100% {
+      transform: translateX(0);
+      filter: none;
+    }
+    2% {
+      transform: translateX(-2px);
+      filter: hue-rotate(30deg);
+    }
+    4% {
+      transform: translateX(2px);
+      filter: hue-rotate(-30deg);
+    }
+    6% {
+      transform: translateX(0);
+      filter: none;
+    }
+    50% {
+      transform: translateX(0);
+      filter: none;
+    }
+    52% {
+      transform: translateX(1px) skewX(-1deg);
+      filter: brightness(1.2);
+    }
+    54% {
+      transform: translateX(-1px) skewX(1deg);
+    }
+    56% {
+      transform: translateX(0);
+      filter: none;
+    }
+  }
+
+  @keyframes btnGlitchHover {
+    0%, 100% {
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    }
+    10% {
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      transform: translateX(-2px);
+    }
+    20% {
+      clip-path: polygon(10px 0, 95% 0, 98% 20%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      transform: translateX(2px);
+    }
+    30% {
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 5% 95%, 0 10px);
+      transform: translateX(0);
+    }
+    40% {
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    }
+  }
+
+  @keyframes chromaticSplit {
+    0%, 100% {
+      transform: translate(calc(-50% - 2px), -50%);
+    }
+    50% {
+      transform: translate(calc(-50% - 3px), -50%);
+    }
+  }
+
+  @keyframes glitchFlicker {
+    0%, 100% { opacity: 0; }
+    5% { opacity: 1; transform: translateX(-100%); }
+    6% { opacity: 0; }
+    50% { opacity: 0; }
+    55% { opacity: 0.5; transform: translateX(100%); }
+    56% { opacity: 0; }
+  }
+
+  /* Scanline overlay on button */
+  .holo-btn .btn-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      color-mix(in oklch, var(--holo-primary) 3%, transparent) 2px,
+      color-mix(in oklch, var(--holo-primary) 3%, transparent) 4px
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .holo-btn:hover .btn-scanlines {
+    opacity: 1;
+    animation: scanlineMove 0.5s linear infinite;
+  }
+
+  @keyframes scanlineMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
   }
 
   /* ============================================

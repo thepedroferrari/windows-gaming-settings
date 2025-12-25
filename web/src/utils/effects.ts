@@ -52,8 +52,9 @@ export function setupCursorGlow(controller?: CleanupController): void {
 }
 
 export function setupProgressNav(controller?: CleanupController): void {
-  const dots = document.querySelectorAll<HTMLAnchorElement>('.step-dot')
-  if (!dots.length) return
+  // Support both old .step-dot and new .nav-link selectors
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('.nav-link, .step-dot')
+  if (!navLinks.length) return
 
   const quickStart = document.getElementById('quick-start')
   const stepSections = document.querySelectorAll<HTMLElement>('.step')
@@ -67,10 +68,15 @@ export function setupProgressNav(controller?: CleanupController): void {
     if (currentSection === sectionId) return
     currentSection = sectionId
 
-    dots.forEach((dot) => {
-      dot.removeAttribute('aria-current')
-      if (dot.getAttribute('href') === `#${sectionId}`) {
-        dot.setAttribute('aria-current', 'step')
+    navLinks.forEach((link) => {
+      const href = link.getAttribute('href')
+      const isActive = href === `#${sectionId}`
+      // Handle both old and new attributes
+      link.removeAttribute('aria-current')
+      link.classList.remove('active')
+      if (isActive) {
+        link.setAttribute('aria-current', 'true')
+        link.classList.add('active')
       }
     })
   }

@@ -1,0 +1,193 @@
+/* Unified Navigation - combines status bar and step navigation */
+.unified-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 var(--space-lg);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, oklch(0.08 0.02 280) 98%, transparent) 0%,
+    color-mix(in oklch, oklch(0.06 0.015 285) 95%, transparent) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border));
+  box-shadow:
+    0 2px 20px color-mix(in oklch, oklch(0 0 0) 40%, transparent),
+    inset 0 -1px 0 color-mix(in oklch, oklch(1 0 0) 3%, transparent);
+}
+
+.unified-nav__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-width: 90px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--safe);
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px var(--safe),
+    0 0 12px color-mix(in oklch, var(--safe) 40%, transparent);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow:
+      0 0 6px var(--safe),
+      0 0 12px color-mix(in oklch, var(--safe) 40%, transparent);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow:
+      0 0 10px var(--safe),
+      0 0 20px color-mix(in oklch, var(--safe) 60%, transparent);
+  }
+}
+
+.status-label {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--safe);
+  text-shadow: 0 0 8px color-mix(in oklch, var(--safe) 40%, transparent);
+}
+
+.unified-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: color-mix(in oklch, oklch(0 0 0) 20%, transparent);
+  border-radius: 0;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-hint);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  transition: all 0.2s var(--ease-out-expo);
+  white-space: nowrap;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  border-color: color-mix(in oklch, var(--accent) 25%, transparent);
+}
+
+.nav-link[aria-current="true"],
+.nav-link.active {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+  border-color: var(--accent);
+  color: white;
+  box-shadow:
+    0 0 10px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 15%, transparent);
+  text-shadow: 0 1px 2px color-mix(in oklch, oklch(0 0 0) 40%, transparent);
+}
+
+.nav-link[aria-current="true"]::after,
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-hover), transparent);
+}
+
+.unified-nav__id {
+  min-width: 90px;
+  text-align: right;
+}
+
+.id-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  padding: 3px 8px;
+  background: color-mix(in oklch, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in oklch, var(--accent) 20%, transparent);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+/* Add top padding to body when nav is present */
+body:has(.unified-nav) {
+  padding-top: 44px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .unified-nav {
+    padding: 0 var(--space-sm);
+  }
+
+  .unified-nav__status,
+  .unified-nav__id {
+    display: none;
+  }
+
+  .unified-nav__links {
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .unified-nav__links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .unified-nav {
+    height: 40px;
+  }
+
+  body:has(.unified-nav) {
+    padding-top: 40px;
+  }
+
+  .nav-link {
+    padding: 5px 8px;
+    font-size: 0.55rem;
+  }
+}
+
