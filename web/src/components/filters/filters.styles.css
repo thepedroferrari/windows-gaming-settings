@@ -480,38 +480,43 @@
 
   .view-toggle {
     display: flex;
-    background: color-mix(in oklch, oklch(1 0 0) 4%, transparent);
-    border: 1px solid var(--border);
-    padding: 2px;
+    background: color-mix(in oklch, oklch(1 0 0) 6%, transparent);
+    border: 1px solid color-mix(in oklch, var(--accent) 30%, var(--border));
+    padding: 3px;
     clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+    gap: 2px;
   }
 
   .view-btn {
-    padding: 7px 9px;
-    min-width: 32px;
-    min-height: 32px;
+    padding: 8px 10px;
+    min-width: 36px;
+    min-height: 36px;
     background: transparent;
     border: none;
-    color: var(--text-hint);
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s var(--ease-out-expo);
     display: flex;
     align-items: center;
     justify-content: center;
     clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
 
     & svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
     }
 
     &:hover {
       color: var(--text-primary);
+      background: color-mix(in oklch, var(--accent) 15%, transparent);
     }
 
     &.active {
-      background: var(--accent);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
       color: white;
+      box-shadow:
+        0 0 12px color-mix(in oklch, var(--accent) 40%, transparent),
+        inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 15%, transparent);
     }
   }
 

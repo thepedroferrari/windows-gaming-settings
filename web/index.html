@@ -32,7 +32,7 @@
             <a href="#generate" class="nav-link" data-step="5">Forge</a>
         </div>
         <div class="unified-nav__id">
-            <span class="id-badge">RCK-TUNE-V1</span>
+            <a href="https://github.com/thepedroferrari/rocktuner" target="_blank" rel="noopener" class="id-badge">RCK-TUNE-V1</a>
         </div>
     </nav>
 
@@ -250,7 +250,7 @@
                 <div class="step-header__right">
                     <button type="button" class="help-trigger" popovertarget="hardware-help" style="anchor-name: --hw-help-anchor">
                         Don't know your specs?
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
                     </button>
                 </div>
             </div>
@@ -273,8 +273,8 @@
             <div class="core-grid">
                 <fieldset>
                 <legend>
+                    <span class="legend-badge legend-badge--hardware">CPU</span>
                     <svg class="legend-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
-                    CPU
                 </legend>
                 <label>
                     <input type="radio" name="cpu" value="amd_x3d" checked>
@@ -295,8 +295,8 @@
 
                 <fieldset>
                 <legend>
+                    <span class="legend-badge legend-badge--hardware">GPU</span>
                     <svg class="legend-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01"/><path d="M10 12h.01"/><path d="M14 12h.01"/><path d="M18 12h.01"/><path d="M6 8v8"/><path d="M22 10v4"/></svg>
-                    GPU
                 </legend>
                 <label>
                     <input type="radio" name="gpu" value="nvidia" checked>
@@ -317,10 +317,10 @@
             </div>
 
             <div class="driver-warning">
-                <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                    <line x1="12" y1="9" x2="12" y2="13"/>
-                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <path d="M12 9v4"/>
+                    <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
                 </svg>
                 <div class="warning-content">
                     <strong>Critical for stability & performance</strong>
@@ -380,8 +380,8 @@
             <div class="peripherals-grid">
             <fieldset class="peripherals-fieldset peripherals-fieldset--gear">
                 <legend>
+                    <span class="legend-badge legend-badge--peripherals">Gear</span>
                     <svg class="legend-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="13" height="12" rx="2"/><path d="m22 12-4-4v8l4-4Z"/><circle cx="8" cy="12" r="2"/></svg>
-                    Gear
                 </legend>
                 <div class="peripheral-columns">
                     <div class="peripheral-column">
@@ -532,8 +532,8 @@
 
             <fieldset class="peripherals-fieldset peripherals-fieldset--monitors">
                 <legend>
+                    <span class="legend-badge legend-badge--peripherals">Monitors</span>
                     <svg class="legend-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    Monitors
                 </legend>
                 <div class="peripheral-columns">
                     <div class="peripheral-column">
@@ -1156,12 +1156,12 @@ Removes:
         </section>
 
         <section id="software" class="step">
-            <div class="arsenal-header">
-                <h2>
-                    <span class="step-num">4</span> Arsenal
-                </h2>
-                <p class="step-desc">All packages installed via <abbr title="Windows Package Manager">winget</abbr></p>
-                <div class="arsenal-header-actions">
+            <div class="step-header">
+                <div class="step-header__left">
+                    <h2><span class="step-num">4</span> Arsenal</h2>
+                    <p class="step-desc">All packages installed via <abbr title="Windows Package Manager">winget</abbr></p>
+                </div>
+                <div class="step-header__right">
                     <div class="view-toggle" role="group" aria-label="View mode">
                         <button type="button" class="view-btn active" data-view="grid" aria-label="Grid view" title="Grid view">
                             <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -1304,13 +1304,13 @@ Removes:
                     <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                     Preview
                 </button>
-                <button type="button" id="download-btn" class="download-btn" title="Download the generated PowerShell script">
-                    <div class="download-btn-content">
-                      <div>
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span class="text">Forge</span></div> <code>rocktune-setup.ps1</code>
-                    </div>
-                    <span class="shimmer"></span>
+                <button type="button" id="download-btn" class="download-btn download-btn--forge" data-text="FORGE" title="Download the generated PowerShell script">
+                    <span class="btn-text">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        FORGE
+                    </span>
+                    <span class="glitch-layer"></span>
+                    <span class="btn-scanlines"></span>
                 </button>
             </div>
 
