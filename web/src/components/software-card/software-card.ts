@@ -2,11 +2,8 @@ import { store } from '../../state'
 import type { Category, PackageKey, SoftwarePackage } from '../../types'
 import { CATEGORY_SVG_ICONS, SIMPLE_ICONS_CDN } from '../../types'
 import { sanitize } from '../../utils/dom'
-import { createRipple } from '../../utils/effects'
 
 const DESCRIPTION_MAX_LENGTH = 60 as const
-const MAGNETIC_FACTOR = 0.015 as const
-const TILT_FACTOR = 3 as const
 
 const ARIA_LABELS = {
   selectedAction: 'remove from',
@@ -51,7 +48,6 @@ export function createCard(
   setupCardElement(card, config)
   setupCardAccessibility(card, config)
   card.innerHTML = buildCardHTML(config)
-  attachCardEventListeners(card, key)
 
   return card
 }
@@ -157,57 +153,6 @@ function buildCardHTML(config: CardConfig): string {
       </div>
     </div>
   `
-}
-
-function attachCardEventListeners(card: HTMLDivElement, key: PackageKey): void {
-  card.addEventListener('click', (e) => {
-    toggleCardSelection(key, card)
-    createRipple(e, card)
-  })
-
-  card.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      toggleCardSelection(key, card)
-    }
-  })
-
-  card.addEventListener('mousemove', (e) => {
-    const grid = card.closest('.software-grid')
-    const isListView = grid?.classList.contains('list-view')
-
-    if (isListView) return
-
-    const rect = card.getBoundingClientRect()
-    const centerX = e.clientX - rect.left - rect.width / 2
-    const centerY = e.clientY - rect.top - rect.height / 2
-
-    const magneticX = centerX * MAGNETIC_FACTOR
-    // Constrain vertical movement: only allow slight downward press, no upward lift
-    const magneticY = Math.max(0, centerY * MAGNETIC_FACTOR * 0.5)
-
-    const normalizedX = centerX / (rect.width / 2)
-    const normalizedY = centerY / (rect.height / 2)
-    const rotateY = normalizedX * TILT_FACTOR
-    const rotateX = -normalizedY * TILT_FACTOR
-
-    card.style.transform = `translate(${magneticX}px, ${magneticY}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
-
-    const lightX = ((e.clientX - rect.left) / rect.width) * 100
-    const lightY = ((e.clientY - rect.top) / rect.height) * 100
-    card.style.setProperty('--light-x', `${lightX}%`)
-    card.style.setProperty('--light-y', `${lightY}%`)
-  })
-
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = ''
-    card.style.setProperty('--light-x', '50%')
-    card.style.setProperty('--light-y', '50%')
-  })
-
-  card.addEventListener('animationend', () => {
-    card.classList.remove('entering')
-  })
 }
 
 export function toggleCardSelection(key: PackageKey, card: HTMLElement): void {

@@ -26,13 +26,20 @@ function addListener(
 export function setupFilters(controller?: CleanupController): void {
   const filterButtons = $$<HTMLButtonElement>('.filter')
   const selectedBadgeBtn = $<HTMLButtonElement>('.selected-count-btn')
+  const filterBar = $<HTMLDivElement>('.filter-bar')
 
   const allFilterButtons = selectedBadgeBtn
     ? [...filterButtons, selectedBadgeBtn]
     : [...filterButtons]
 
-  for (const btn of filterButtons) {
-    addListener(controller, btn, 'click', () => handleFilterClick(btn, allFilterButtons))
+  if (filterBar) {
+    addListener(controller, filterBar, 'click', (e: Event) => {
+      const target = e.target
+      if (!(target instanceof Element)) return
+      const btn = target.closest<HTMLButtonElement>('.filter')
+      if (!btn) return
+      handleFilterClick(btn, allFilterButtons)
+    })
   }
 
   if (selectedBadgeBtn) {
@@ -81,7 +88,6 @@ function animateVisibleCards(filter: string): void {
     if (isVisible) {
       card.style.animationDelay = `${visibleIndex * ANIMATION_DELAY_MS}ms`
       card.classList.add('entering')
-      card.addEventListener('animationend', () => card.classList.remove('entering'), { once: true })
       visibleIndex++
     }
   }
@@ -152,11 +158,16 @@ function filterCardsBySearch(query: string, activeFilter: string): number {
 export function setupViewToggle(controller?: CleanupController): void {
   const buttons = $$<HTMLButtonElement>('.view-btn')
   const grid = $id('software-grid')
-  if (!buttons.length || !grid) return
+  const viewToggle = $<HTMLDivElement>('.view-toggle')
+  if (!buttons.length || !grid || !viewToggle) return
 
-  for (const btn of buttons) {
-    addListener(controller, btn, 'click', () => handleViewToggle(btn, buttons, grid))
-  }
+  addListener(controller, viewToggle, 'click', (e: Event) => {
+    const target = e.target
+    if (!(target instanceof Element)) return
+    const btn = target.closest<HTMLButtonElement>('.view-btn')
+    if (!btn) return
+    handleViewToggle(btn, buttons, grid)
+  })
 }
 
 function handleViewToggle(
