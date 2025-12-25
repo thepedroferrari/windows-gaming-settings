@@ -5,5 +5,3 @@ export {
   getMeaningfulChanges,
   renderDiffHtml,
 } from './code-viewer'
-
-

@@ -14,8 +14,7 @@
         color-mix(in oklch, oklch(1 0 0) 5%, transparent) 0%,
         color-mix(in oklch, oklch(1 0 0) 2%, transparent) 50%,
         transparent 100%
-      ),
-      color-mix(in oklch, oklch(0.12 0.02 285) 85%, transparent);
+      ), color-mix(in oklch, oklch(0.12 0.02 285) 85%, transparent);
     backdrop-filter: blur(var(--glass-depth-3)) saturate(1.4);
     -webkit-backdrop-filter: blur(var(--glass-depth-3)) saturate(1.4);
     border: 1px solid color-mix(in oklch, var(--summary-accent) 35%, var(--border));
@@ -188,7 +187,8 @@
   }
 
   @keyframes cornerPulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.7;
     }
     50% {
@@ -212,12 +212,7 @@
         right: 0;
         width: 1px;
         height: 60%;
-        background: linear-gradient(
-          180deg,
-          transparent,
-          var(--cyber-yellow-glow),
-          transparent
-        );
+        background: linear-gradient(180deg, transparent, var(--cyber-yellow-glow), transparent);
         opacity: 0.5;
       }
     }
@@ -263,7 +258,8 @@
   }
 
   @keyframes dataFlicker {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     92% {
@@ -284,10 +280,12 @@
   }
 
   @keyframes terminalBlink {
-    0%, 50% {
+    0%,
+    50% {
       opacity: 1;
     }
-    51%, 100% {
+    51%,
+    100% {
       opacity: 0;
     }
   }
@@ -344,5 +342,3 @@
     }
   }
 }
-
-

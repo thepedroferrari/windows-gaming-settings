@@ -5,5 +5,3 @@ export {
   updatePreflightCheck,
   updateSummary,
 } from './summary'
-
-

@@ -42,5 +42,3 @@ export function initCyberToggle(): void {
   const toggles = document.querySelectorAll<HTMLInputElement>('.cyber-toggle-input')
   toggles.forEach((input) => new CyberToggle(input))
 }
-
-

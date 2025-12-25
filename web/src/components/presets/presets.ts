@@ -114,7 +114,16 @@ const PRESETS = {
       'tcp_optimizer',
       'audio_exclusive',
     ],
-    software: ['steam', 'discord', 'processlasso', 'hwinfo', 'afterburner', 'rtss', '7zip', 'sharex'],
+    software: [
+      'steam',
+      'discord',
+      'processlasso',
+      'hwinfo',
+      'afterburner',
+      'rtss',
+      '7zip',
+      'sharex',
+    ],
   },
   streaming: {
     opts: [

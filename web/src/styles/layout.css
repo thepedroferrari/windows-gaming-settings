@@ -42,10 +42,10 @@
     position: relative;
     backdrop-filter: blur(4px);
     box-shadow: 0 0 30px -10px color-mix(in oklch, var(--accent) 10%, transparent);
-    
+
     /* Tech corners */
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -1px;
       right: -1px;
@@ -56,7 +56,7 @@
     }
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -1px;
       right: -1px;
@@ -78,7 +78,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5ch;
-    
+
     & .text-highlight {
       color: var(--accent);
       text-shadow: 0 0 15px color-mix(in oklch, var(--accent) 40%, transparent);
@@ -86,7 +86,7 @@
   }
 
   .value-body {
-    font-family: 'Rajdhani', var(--font-mono), monospace;
+    font-family: "Rajdhani", var(--font-mono), monospace;
     font-size: clamp(1rem, 2vw, 1.15rem);
     line-height: 1.5;
     margin: 0;
@@ -116,7 +116,7 @@
       padding: var(--space-md);
       border-left-width: 1px;
     }
-    
+
     .value-headline {
       flex-direction: column;
       gap: 0;

@@ -44,8 +44,12 @@
   }
 
   @keyframes grid-scroll {
-    0% { background-position: center 0; }
-    100% { background-position: center 80px; }
+    0% {
+      background-position: center 0;
+    }
+    100% {
+      background-position: center 80px;
+    }
   }
 
   .holo-scanlines {
@@ -99,7 +103,7 @@
   }
 
   .status-text::before {
-    content: '';
+    content: "";
     display: inline-block;
     width: 8px;
     height: 8px;
@@ -111,8 +115,13 @@
   }
 
   @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
   }
 
   /* ============================================
@@ -191,13 +200,19 @@
     font-family: var(--font-mono);
     position: relative;
     clip-path: polygon(
-      0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px,
-      100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px)
+      0 12px,
+      12px 0,
+      calc(100% - 12px) 0,
+      100% 12px,
+      100% calc(100% - 12px),
+      calc(100% - 12px) 100%,
+      12px 100%,
+      0 calc(100% - 12px)
     );
 
     /* Neon border glow */
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       inset: -2px;
       background: linear-gradient(
@@ -214,7 +229,7 @@
 
     /* Inner background */
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       inset: 2px;
       background: var(--term-bg);
@@ -224,7 +239,8 @@
   }
 
   @keyframes borderPulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.6;
       filter: blur(0px);
     }
@@ -244,7 +260,7 @@
 
   .terminal-corner::before,
   .terminal-corner::after {
-    content: '';
+    content: "";
     position: absolute;
     background: var(--term-neon);
     box-shadow: 0 0 10px var(--term-neon-glow);
@@ -253,29 +269,61 @@
   .terminal-corner--tl {
     top: 4px;
     left: 4px;
-    &::before { width: 12px; height: 2px; }
-    &::after { width: 2px; height: 12px; }
+    &::before {
+      width: 12px;
+      height: 2px;
+    }
+    &::after {
+      width: 2px;
+      height: 12px;
+    }
   }
 
   .terminal-corner--tr {
     top: 4px;
     right: 4px;
-    &::before { width: 12px; height: 2px; right: 0; }
-    &::after { width: 2px; height: 12px; right: 0; }
+    &::before {
+      width: 12px;
+      height: 2px;
+      right: 0;
+    }
+    &::after {
+      width: 2px;
+      height: 12px;
+      right: 0;
+    }
   }
 
   .terminal-corner--bl {
     bottom: 4px;
     left: 4px;
-    &::before { width: 12px; height: 2px; bottom: 0; }
-    &::after { width: 2px; height: 12px; bottom: 0; }
+    &::before {
+      width: 12px;
+      height: 2px;
+      bottom: 0;
+    }
+    &::after {
+      width: 2px;
+      height: 12px;
+      bottom: 0;
+    }
   }
 
   .terminal-corner--br {
     bottom: 4px;
     right: 4px;
-    &::before { width: 12px; height: 2px; right: 0; bottom: 0; }
-    &::after { width: 2px; height: 12px; right: 0; bottom: 0; }
+    &::before {
+      width: 12px;
+      height: 2px;
+      right: 0;
+      bottom: 0;
+    }
+    &::after {
+      width: 2px;
+      height: 12px;
+      right: 0;
+      bottom: 0;
+    }
   }
 
   /* ============================================
@@ -347,9 +395,21 @@
   }
 
   @keyframes statusFlicker {
-    0%, 90%, 100% { opacity: 1; }
-    92%, 94%, 96% { opacity: 0.3; }
-    93%, 95%, 97% { opacity: 1; }
+    0%,
+    90%,
+    100% {
+      opacity: 1;
+    }
+    92%,
+    94%,
+    96% {
+      opacity: 0.3;
+    }
+    93%,
+    95%,
+    97% {
+      opacity: 1;
+    }
   }
 
   .header-status {
@@ -398,8 +458,12 @@
   }
 
   @keyframes scanlineMove {
-    0% { background-position: 0 -100%; }
-    100% { background-position: 0 200%; }
+    0% {
+      background-position: 0 -100%;
+    }
+    100% {
+      background-position: 0 200%;
+    }
   }
 
   /* ============================================
@@ -417,9 +481,18 @@
   }
 
   @keyframes bootFadeOut {
-    0% { opacity: 1; clip-path: inset(0); }
-    50% { clip-path: inset(0 0 0 0); }
-    100% { opacity: 0; visibility: hidden; clip-path: inset(100% 0 0 0); }
+    0% {
+      opacity: 1;
+      clip-path: inset(0);
+    }
+    50% {
+      clip-path: inset(0 0 0 0);
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+      clip-path: inset(100% 0 0 0);
+    }
   }
 
   /* Glitch rain effect */
@@ -431,7 +504,7 @@
 
     &::before,
     &::after {
-      content: '█▓▒░ ◢◤◢◤ ▓▒░█ ░▒▓█ ◣◥◣◥ █░▒▓ ▒░█▓ ◢◤◢◤ ▓█░▒';
+      content: "█▓▒░ ◢◤◢◤ ▓▒░█ ░▒▓█ ◣◥◣◥ █░▒▓ ▒░█▓ ◢◤◢◤ ▓█░▒";
       position: absolute;
       top: -100%;
       left: 0;
@@ -455,11 +528,21 @@
   }
 
   @keyframes glitchFall {
-    0% { transform: translateY(0) skewX(0deg); }
-    25% { transform: translateY(100%) skewX(-2deg); }
-    50% { transform: translateY(200%) skewX(2deg); }
-    75% { transform: translateY(300%) skewX(-1deg); }
-    100% { transform: translateY(400%) skewX(0deg); }
+    0% {
+      transform: translateY(0) skewX(0deg);
+    }
+    25% {
+      transform: translateY(100%) skewX(-2deg);
+    }
+    50% {
+      transform: translateY(200%) skewX(2deg);
+    }
+    75% {
+      transform: translateY(300%) skewX(-1deg);
+    }
+    100% {
+      transform: translateY(400%) skewX(0deg);
+    }
   }
 
   .boot-sequence {
@@ -478,11 +561,21 @@
     animation: bootLineGlitch 0.4s ease-out forwards;
   }
 
-  .boot-line:nth-child(1) { animation-delay: 0.2s; }
-  .boot-line:nth-child(2) { animation-delay: 0.6s; }
-  .boot-line:nth-child(3) { animation-delay: 1.0s; }
-  .boot-line:nth-child(4) { animation-delay: 1.4s; }
-  .boot-line:nth-child(5) { animation-delay: 1.8s; }
+  .boot-line:nth-child(1) {
+    animation-delay: 0.2s;
+  }
+  .boot-line:nth-child(2) {
+    animation-delay: 0.6s;
+  }
+  .boot-line:nth-child(3) {
+    animation-delay: 1s;
+  }
+  .boot-line:nth-child(4) {
+    animation-delay: 1.4s;
+  }
+  .boot-line:nth-child(5) {
+    animation-delay: 1.8s;
+  }
 
   .boot-line.boot-success {
     color: var(--term-neon);
@@ -631,7 +724,8 @@
   }
 
   @keyframes menacingGlitch {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0) skewX(0deg);
       filter: brightness(1);
     }
@@ -664,15 +758,39 @@
   }
 
   @keyframes glitchLeft {
-    0%, 100% { opacity: 0; transform: translateX(0); }
-    2%, 4% { opacity: 0.8; transform: translateX(-4px); }
-    52%, 54% { opacity: 0.5; transform: translateX(-2px); }
+    0%,
+    100% {
+      opacity: 0;
+      transform: translateX(0);
+    }
+    2%,
+    4% {
+      opacity: 0.8;
+      transform: translateX(-4px);
+    }
+    52%,
+    54% {
+      opacity: 0.5;
+      transform: translateX(-2px);
+    }
   }
 
   @keyframes glitchRight {
-    0%, 100% { opacity: 0; transform: translateX(0); }
-    2%, 4% { opacity: 0.8; transform: translateX(4px); }
-    52%, 54% { opacity: 0.5; transform: translateX(2px); }
+    0%,
+    100% {
+      opacity: 0;
+      transform: translateX(0);
+    }
+    2%,
+    4% {
+      opacity: 0.8;
+      transform: translateX(4px);
+    }
+    52%,
+    54% {
+      opacity: 0.5;
+      transform: translateX(2px);
+    }
   }
 
   /* ============================================
@@ -699,11 +817,21 @@
   }
 
   /* Staggered animation delays */
-  .loading-line:nth-child(1) { animation-delay: 3.5s; }
-  .loading-line:nth-child(2) { animation-delay: 4.2s; }
-  .loading-line:nth-child(3) { animation-delay: 4.9s; }
-  .loading-line:nth-child(4) { animation-delay: 5.6s; }
-  .loading-line:nth-child(5) { animation-delay: 6.3s; }
+  .loading-line:nth-child(1) {
+    animation-delay: 3.5s;
+  }
+  .loading-line:nth-child(2) {
+    animation-delay: 4.2s;
+  }
+  .loading-line:nth-child(3) {
+    animation-delay: 4.9s;
+  }
+  .loading-line:nth-child(4) {
+    animation-delay: 5.6s;
+  }
+  .loading-line:nth-child(5) {
+    animation-delay: 6.3s;
+  }
 
   @keyframes lineReveal {
     0% {
@@ -729,8 +857,13 @@
   }
 
   @keyframes progressPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   .line-text {
@@ -775,8 +908,13 @@
   }
 
   @keyframes successPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
   }
 
   /* Blinking cursor - more aggressive */
@@ -789,11 +927,13 @@
   }
 
   @keyframes cursorGlow {
-    0%, 50% {
+    0%,
+    50% {
       opacity: 1;
       text-shadow: 0 0 20px var(--term-neon-glow);
     }
-    51%, 100% {
+    51%,
+    100% {
       opacity: 0;
     }
   }
@@ -822,7 +962,14 @@
     text-decoration: none;
     text-transform: uppercase;
     transition: all 0.15s ease;
-    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    clip-path: polygon(
+      10px 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%,
+      0 10px
+    );
     overflow: hidden;
     animation: btnIdleGlitch 4s infinite;
   }
@@ -896,7 +1043,8 @@
   }
 
   @keyframes btnIdleGlitch {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
       filter: none;
     }
@@ -930,28 +1078,66 @@
   }
 
   @keyframes btnGlitchHover {
-    0%, 100% {
-      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    0%,
+    100% {
+      clip-path: polygon(
+        10px 0,
+        100% 0,
+        100% calc(100% - 10px),
+        calc(100% - 10px) 100%,
+        0 100%,
+        0 10px
+      );
     }
     10% {
-      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      clip-path: polygon(
+        10px 0,
+        100% 0,
+        100% calc(100% - 10px),
+        calc(100% - 10px) 100%,
+        0 100%,
+        0 10px
+      );
       transform: translateX(-2px);
     }
     20% {
-      clip-path: polygon(10px 0, 95% 0, 98% 20%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      clip-path: polygon(
+        10px 0,
+        95% 0,
+        98% 20%,
+        100% calc(100% - 10px),
+        calc(100% - 10px) 100%,
+        0 100%,
+        0 10px
+      );
       transform: translateX(2px);
     }
     30% {
-      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 5% 95%, 0 10px);
+      clip-path: polygon(
+        10px 0,
+        100% 0,
+        100% calc(100% - 10px),
+        calc(100% - 10px) 100%,
+        5% 95%,
+        0 10px
+      );
       transform: translateX(0);
     }
     40% {
-      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      clip-path: polygon(
+        10px 0,
+        100% 0,
+        100% calc(100% - 10px),
+        calc(100% - 10px) 100%,
+        0 100%,
+        0 10px
+      );
     }
   }
 
   @keyframes chromaticSplit {
-    0%, 100% {
+    0%,
+    100% {
       transform: translate(calc(-50% - 2px), -50%);
     }
     50% {
@@ -960,12 +1146,27 @@
   }
 
   @keyframes glitchFlicker {
-    0%, 100% { opacity: 0; }
-    5% { opacity: 1; transform: translateX(-100%); }
-    6% { opacity: 0; }
-    50% { opacity: 0; }
-    55% { opacity: 0.5; transform: translateX(100%); }
-    56% { opacity: 0; }
+    0%,
+    100% {
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+      transform: translateX(-100%);
+    }
+    6% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0;
+    }
+    55% {
+      opacity: 0.5;
+      transform: translateX(100%);
+    }
+    56% {
+      opacity: 0;
+    }
   }
 
   /* Scanline overlay on button */
@@ -990,8 +1191,12 @@
   }
 
   @keyframes scanlineMove {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(4px); }
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(4px);
+    }
   }
 
   /* ============================================
@@ -999,29 +1204,75 @@
      ============================================ */
 
   @keyframes glitch-skew {
-    0% { transform: skew(0deg); }
-    10% { transform: skew(-2deg); }
-    20% { transform: skew(2deg); }
-    30% { transform: skew(0deg); }
-    100% { transform: skew(0deg); }
+    0% {
+      transform: skew(0deg);
+    }
+    10% {
+      transform: skew(-2deg);
+    }
+    20% {
+      transform: skew(2deg);
+    }
+    30% {
+      transform: skew(0deg);
+    }
+    100% {
+      transform: skew(0deg);
+    }
   }
 
   @keyframes glitch-anim-1 {
-    0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
-    20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
-    40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
-    60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
-    80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
-    100% { clip-path: inset(30% 0 50% 0); transform: translate(1px, -1px); }
+    0% {
+      clip-path: inset(20% 0 80% 0);
+      transform: translate(-2px, 1px);
+    }
+    20% {
+      clip-path: inset(60% 0 10% 0);
+      transform: translate(2px, -1px);
+    }
+    40% {
+      clip-path: inset(40% 0 50% 0);
+      transform: translate(-2px, 2px);
+    }
+    60% {
+      clip-path: inset(80% 0 5% 0);
+      transform: translate(2px, -2px);
+    }
+    80% {
+      clip-path: inset(10% 0 70% 0);
+      transform: translate(-1px, 1px);
+    }
+    100% {
+      clip-path: inset(30% 0 50% 0);
+      transform: translate(1px, -1px);
+    }
   }
 
   @keyframes glitch-anim-2 {
-    0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
-    20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); }
-    40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 1px); }
-    60% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -2px); }
-    80% { clip-path: inset(50% 0 30% 0); transform: translate(1px, 2px); }
-    100% { clip-path: inset(70% 0 10% 0); transform: translate(-1px, -1px); }
+    0% {
+      clip-path: inset(10% 0 60% 0);
+      transform: translate(2px, -1px);
+    }
+    20% {
+      clip-path: inset(80% 0 5% 0);
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      clip-path: inset(30% 0 20% 0);
+      transform: translate(2px, 1px);
+    }
+    60% {
+      clip-path: inset(10% 0 80% 0);
+      transform: translate(-2px, -2px);
+    }
+    80% {
+      clip-path: inset(50% 0 30% 0);
+      transform: translate(1px, 2px);
+    }
+    100% {
+      clip-path: inset(70% 0 10% 0);
+      transform: translate(-1px, -1px);
+    }
   }
 
   /* ============================================
@@ -1052,4 +1303,3 @@
     }
   }
 }
-

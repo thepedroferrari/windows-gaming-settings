@@ -27,10 +27,7 @@ export function setupFilters(): void {
   }
 }
 
-function handleFilterClick(
-  activeBtn: HTMLButtonElement,
-  allButtons: HTMLButtonElement[],
-): void {
+function handleFilterClick(activeBtn: HTMLButtonElement, allButtons: HTMLButtonElement[]): void {
   for (const btn of allButtons) {
     btn.classList.toggle('active', btn === activeBtn)
   }

@@ -42,7 +42,8 @@
 }
 
 @keyframes statusPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     box-shadow:
       0 0 6px var(--safe),
@@ -213,4 +214,3 @@ body:has(.unified-nav) {
     font-size: 0.55rem;
   }
 }
-

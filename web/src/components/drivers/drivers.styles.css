@@ -14,7 +14,7 @@
     position: relative;
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -1px;
       right: -1px;
@@ -198,7 +198,14 @@
       background: color-mix(in oklch, oklch(1 0 0) 5%, transparent);
       border: 1px solid var(--border);
       border-radius: 0;
-      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      clip-path: polygon(
+        4px 0,
+        100% 0,
+        100% calc(100% - 4px),
+        calc(100% - 4px) 100%,
+        0 100%,
+        0 4px
+      );
       font-size: 0.72rem;
       font-family: var(--font-mono);
       font-weight: 500;
@@ -286,7 +293,14 @@
       background: color-mix(in oklch, oklch(1 0 0) 5%, transparent);
       border: 1px solid var(--border);
       border-radius: 0;
-      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      clip-path: polygon(
+        4px 0,
+        100% 0,
+        100% calc(100% - 4px),
+        calc(100% - 4px) 100%,
+        0 100%,
+        0 4px
+      );
       font-size: 0.72rem;
       font-family: var(--font-mono);
       font-weight: 500;
@@ -316,5 +330,3 @@
     }
   }
 }
-
-
