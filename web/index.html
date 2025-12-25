@@ -242,22 +242,40 @@
 
 
         <section id="hardware" class="step">
-            <h2><span class="step-num">1</span> Hardware</h2>
-            <p class="step-desc">Select your CPU and GPU to enable the right optimizations</p>
+            <div class="step-header">
+                <div class="step-header__left">
+                    <h2><span class="step-num">1</span> Hardware</h2>
+                    <p class="step-desc">Select your CPU and GPU to enable the right optimizations</p>
+                </div>
+                <div class="step-header__right">
+                    <button type="button" class="help-trigger" popovertarget="hardware-help" style="anchor-name: --hw-help-anchor">
+                        Don't know your specs?
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="hardware-help" popover class="hardware-help-panel">
+                <div class="help-section">
+                    <h4>How to find your CPU</h4>
+                    <p>Press <kbd>Win</kbd> + <kbd>Pause</kbd> or search <strong>"System Information"</strong> in Start</p>
+                    <p>Look for <strong>Processor</strong> — e.g., "AMD Ryzen 7 7800X3D" or "Intel Core i7-13700K"</p>
+                    <p class="tip">X3D chips have extra cache for gaming — if yours ends in "X3D", select the first option!</p>
+                </div>
+                <div class="help-section">
+                    <h4>How to find your GPU</h4>
+                    <p>Press <kbd>Win</kbd> + <kbd>X</kbd> → <strong>Device Manager</strong> → <strong>Display adapters</strong></p>
+                    <p>Or right-click Desktop → <strong>Display settings</strong> → scroll to <strong>Advanced display</strong></p>
+                    <p class="tip">GeForce = NVIDIA, Radeon = AMD, Arc = Intel</p>
+                </div>
+            </div>
 
             <div class="core-grid">
                 <fieldset>
                 <legend>
                     <svg class="legend-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
                     CPU
-                    <button type="button" class="info-btn" popovertarget="cpu-help" aria-label="How to find your CPU">?</button>
                 </legend>
-                <div id="cpu-help" popover class="help-popover">
-                    <h4>How to find your CPU</h4>
-                    <p>Press <kbd>Win</kbd> + <kbd>Pause</kbd> or search <strong>"System Information"</strong> in Start</p>
-                    <p>Look for <strong>Processor</strong> — e.g., "AMD Ryzen 7 7800X3D" or "Intel Core i7-13700K"</p>
-                    <p class="tip">X3D chips have extra cache for gaming — if yours ends in "X3D", select the first option!</p>
-                </div>
                 <label>
                     <input type="radio" name="cpu" value="amd_x3d" checked>
                     <span class="label-text">AMD Ryzen X3D</span>
@@ -279,14 +297,7 @@
                 <legend>
                     <svg class="legend-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01"/><path d="M10 12h.01"/><path d="M14 12h.01"/><path d="M18 12h.01"/><path d="M6 8v8"/><path d="M22 10v4"/></svg>
                     GPU
-                    <button type="button" class="info-btn" popovertarget="gpu-help" aria-label="How to find your GPU">?</button>
                 </legend>
-                <div id="gpu-help" popover class="help-popover">
-                    <h4>How to find your GPU</h4>
-                    <p>Press <kbd>Win</kbd> + <kbd>X</kbd> → <strong>Device Manager</strong> → <strong>Display adapters</strong></p>
-                    <p>Or right-click Desktop → <strong>Display settings</strong> → scroll to <strong>Advanced display</strong></p>
-                    <p class="tip">GeForce = NVIDIA, Radeon = AMD, Arc = Intel</p>
-                </div>
                 <label>
                     <input type="radio" name="gpu" value="nvidia" checked>
                     <span class="label-text">NVIDIA GeForce</span>
@@ -303,6 +314,18 @@
                     <span class="label-hint">A770, A750, B580</span>
                 </label>
                 </fieldset>
+            </div>
+
+            <div class="driver-warning">
+                <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <div class="warning-content">
+                    <strong>Critical for stability & performance</strong>
+                    <span>Outdated drivers can cause crashes, stuttering, and break optimizations. Update these before running any script.</span>
+                </div>
             </div>
 
             <div id="driver-cards" class="driver-cards">
@@ -517,33 +540,38 @@
         </section>
 
         <section id="optimizations" class="step">
-            <h2><span class="step-num">3</span> Upgrades</h2>
-            <p class="step-desc">Safe options enabled by default — hover for details</p>
-
-            <div class="wizard-toggle">
-                <div class="cyber-toggle">
-                    <input type="checkbox" id="wizard-mode" class="cyber-toggle-input" />
-                    <label for="wizard-mode" class="cyber-toggle-label">
-                        <svg class="cyber-toggle-svg" height="28" width="64" viewBox="0 0 64 28" xmlns="http://www.w3.org/2000/svg">
-                            <g class="cyber-toggle-track">
-                                <g class="pixel-row"><rect x="4" y="4" width="2" height="2"/><rect x="6" y="4" width="2" height="2"/><rect x="8" y="4" width="2" height="2"/><rect x="10" y="4" width="2" height="2"/><rect x="12" y="4" width="2" height="2"/><rect x="14" y="4" width="2" height="2"/><rect x="16" y="4" width="2" height="2"/><rect x="18" y="4" width="2" height="2"/><rect x="20" y="4" width="2" height="2"/><rect x="22" y="4" width="2" height="2"/><rect x="24" y="4" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="6" width="2" height="2"/><rect x="6" y="6" width="2" height="2"/><rect x="8" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="12" y="6" width="2" height="2"/><rect x="14" y="6" width="2" height="2"/><rect x="16" y="6" width="2" height="2"/><rect x="18" y="6" width="2" height="2"/><rect x="20" y="6" width="2" height="2"/><rect x="22" y="6" width="2" height="2"/><rect x="24" y="6" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="8" width="2" height="2"/><rect x="6" y="8" width="2" height="2"/><rect x="8" y="8" width="2" height="2"/><rect x="10" y="8" width="2" height="2"/><rect x="12" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="16" y="8" width="2" height="2"/><rect x="18" y="8" width="2" height="2"/><rect x="20" y="8" width="2" height="2"/><rect x="22" y="8" width="2" height="2"/><rect x="24" y="8" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="10" width="2" height="2"/><rect x="6" y="10" width="2" height="2"/><rect x="8" y="10" width="2" height="2"/><rect x="10" y="10" width="2" height="2"/><rect x="12" y="10" width="2" height="2"/><rect x="14" y="10" width="2" height="2"/><rect x="16" y="10" width="2" height="2"/><rect x="18" y="10" width="2" height="2"/><rect x="20" y="10" width="2" height="2"/><rect x="22" y="10" width="2" height="2"/><rect x="24" y="10" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="12" width="2" height="2"/><rect x="6" y="12" width="2" height="2"/><rect x="8" y="12" width="2" height="2"/><rect x="10" y="12" width="2" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="14" y="12" width="2" height="2"/><rect x="16" y="12" width="2" height="2"/><rect x="18" y="12" width="2" height="2"/><rect x="20" y="12" width="2" height="2"/><rect x="22" y="12" width="2" height="2"/><rect x="24" y="12" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="14" width="2" height="2"/><rect x="6" y="14" width="2" height="2"/><rect x="8" y="14" width="2" height="2"/><rect x="10" y="14" width="2" height="2"/><rect x="12" y="14" width="2" height="2"/><rect x="14" y="14" width="2" height="2"/><rect x="16" y="14" width="2" height="2"/><rect x="18" y="14" width="2" height="2"/><rect x="20" y="14" width="2" height="2"/><rect x="22" y="14" width="2" height="2"/><rect x="24" y="14" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="16" width="2" height="2"/><rect x="6" y="16" width="2" height="2"/><rect x="8" y="16" width="2" height="2"/><rect x="10" y="16" width="2" height="2"/><rect x="12" y="16" width="2" height="2"/><rect x="14" y="16" width="2" height="2"/><rect x="16" y="16" width="2" height="2"/><rect x="18" y="16" width="2" height="2"/><rect x="20" y="16" width="2" height="2"/><rect x="22" y="16" width="2" height="2"/><rect x="24" y="16" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="18" width="2" height="2"/><rect x="6" y="18" width="2" height="2"/><rect x="8" y="18" width="2" height="2"/><rect x="10" y="18" width="2" height="2"/><rect x="12" y="18" width="2" height="2"/><rect x="14" y="18" width="2" height="2"/><rect x="16" y="18" width="2" height="2"/><rect x="18" y="18" width="2" height="2"/><rect x="20" y="18" width="2" height="2"/><rect x="22" y="18" width="2" height="2"/><rect x="24" y="18" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="20" width="2" height="2"/><rect x="6" y="20" width="2" height="2"/><rect x="8" y="20" width="2" height="2"/><rect x="10" y="20" width="2" height="2"/><rect x="12" y="20" width="2" height="2"/><rect x="14" y="20" width="2" height="2"/><rect x="16" y="20" width="2" height="2"/><rect x="18" y="20" width="2" height="2"/><rect x="20" y="20" width="2" height="2"/><rect x="22" y="20" width="2" height="2"/><rect x="24" y="20" width="2" height="2"/></g>
-                                <g class="pixel-row"><rect x="4" y="22" width="2" height="2"/><rect x="6" y="22" width="2" height="2"/><rect x="8" y="22" width="2" height="2"/><rect x="10" y="22" width="2" height="2"/><rect x="12" y="22" width="2" height="2"/><rect x="14" y="22" width="2" height="2"/><rect x="16" y="22" width="2" height="2"/><rect x="18" y="22" width="2" height="2"/><rect x="20" y="22" width="2" height="2"/><rect x="22" y="22" width="2" height="2"/><rect x="24" y="22" width="2" height="2"/></g>
-                            </g>
-                        </svg>
-                    </label>
+            <div class="step-header">
+                <div class="step-header__left">
+                    <h2><span class="step-num">3</span> Upgrades</h2>
+                    <p class="step-desc">Safe options enabled by default — hover for details</p>
                 </div>
-                <span class="toggle-label">
-                    <strong>Wizard Mode</strong>
-                    <span class="toggle-hint">Review each change before enabling</span>
-                </span>
+                <div class="step-header__right">
+                    <div class="wizard-toggle">
+                        <span class="toggle-label">
+                            <strong>Wizard Mode</strong>
+                            <span class="toggle-hint">Review each change</span>
+                        </span>
+                        <div class="cyber-toggle">
+                            <input type="checkbox" id="wizard-mode" class="cyber-toggle-input" />
+                            <label for="wizard-mode" class="cyber-toggle-label">
+                                <svg class="cyber-toggle-svg" height="28" width="64" viewBox="0 0 64 28" xmlns="http://www.w3.org/2000/svg">
+                                    <g class="cyber-toggle-track">
+                                        <g class="pixel-row"><rect x="4" y="4" width="2" height="2"/><rect x="6" y="4" width="2" height="2"/><rect x="8" y="4" width="2" height="2"/><rect x="10" y="4" width="2" height="2"/><rect x="12" y="4" width="2" height="2"/><rect x="14" y="4" width="2" height="2"/><rect x="16" y="4" width="2" height="2"/><rect x="18" y="4" width="2" height="2"/><rect x="20" y="4" width="2" height="2"/><rect x="22" y="4" width="2" height="2"/><rect x="24" y="4" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="6" width="2" height="2"/><rect x="6" y="6" width="2" height="2"/><rect x="8" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="12" y="6" width="2" height="2"/><rect x="14" y="6" width="2" height="2"/><rect x="16" y="6" width="2" height="2"/><rect x="18" y="6" width="2" height="2"/><rect x="20" y="6" width="2" height="2"/><rect x="22" y="6" width="2" height="2"/><rect x="24" y="6" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="8" width="2" height="2"/><rect x="6" y="8" width="2" height="2"/><rect x="8" y="8" width="2" height="2"/><rect x="10" y="8" width="2" height="2"/><rect x="12" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="16" y="8" width="2" height="2"/><rect x="18" y="8" width="2" height="2"/><rect x="20" y="8" width="2" height="2"/><rect x="22" y="8" width="2" height="2"/><rect x="24" y="8" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="10" width="2" height="2"/><rect x="6" y="10" width="2" height="2"/><rect x="8" y="10" width="2" height="2"/><rect x="10" y="10" width="2" height="2"/><rect x="12" y="10" width="2" height="2"/><rect x="14" y="10" width="2" height="2"/><rect x="16" y="10" width="2" height="2"/><rect x="18" y="10" width="2" height="2"/><rect x="20" y="10" width="2" height="2"/><rect x="22" y="10" width="2" height="2"/><rect x="24" y="10" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="12" width="2" height="2"/><rect x="6" y="12" width="2" height="2"/><rect x="8" y="12" width="2" height="2"/><rect x="10" y="12" width="2" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="14" y="12" width="2" height="2"/><rect x="16" y="12" width="2" height="2"/><rect x="18" y="12" width="2" height="2"/><rect x="20" y="12" width="2" height="2"/><rect x="22" y="12" width="2" height="2"/><rect x="24" y="12" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="14" width="2" height="2"/><rect x="6" y="14" width="2" height="2"/><rect x="8" y="14" width="2" height="2"/><rect x="10" y="14" width="2" height="2"/><rect x="12" y="14" width="2" height="2"/><rect x="14" y="14" width="2" height="2"/><rect x="16" y="14" width="2" height="2"/><rect x="18" y="14" width="2" height="2"/><rect x="20" y="14" width="2" height="2"/><rect x="22" y="14" width="2" height="2"/><rect x="24" y="14" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="16" width="2" height="2"/><rect x="6" y="16" width="2" height="2"/><rect x="8" y="16" width="2" height="2"/><rect x="10" y="16" width="2" height="2"/><rect x="12" y="16" width="2" height="2"/><rect x="14" y="16" width="2" height="2"/><rect x="16" y="16" width="2" height="2"/><rect x="18" y="16" width="2" height="2"/><rect x="20" y="16" width="2" height="2"/><rect x="22" y="16" width="2" height="2"/><rect x="24" y="16" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="18" width="2" height="2"/><rect x="6" y="18" width="2" height="2"/><rect x="8" y="18" width="2" height="2"/><rect x="10" y="18" width="2" height="2"/><rect x="12" y="18" width="2" height="2"/><rect x="14" y="18" width="2" height="2"/><rect x="16" y="18" width="2" height="2"/><rect x="18" y="18" width="2" height="2"/><rect x="20" y="18" width="2" height="2"/><rect x="22" y="18" width="2" height="2"/><rect x="24" y="18" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="20" width="2" height="2"/><rect x="6" y="20" width="2" height="2"/><rect x="8" y="20" width="2" height="2"/><rect x="10" y="20" width="2" height="2"/><rect x="12" y="20" width="2" height="2"/><rect x="14" y="20" width="2" height="2"/><rect x="16" y="20" width="2" height="2"/><rect x="18" y="20" width="2" height="2"/><rect x="20" y="20" width="2" height="2"/><rect x="22" y="20" width="2" height="2"/><rect x="24" y="20" width="2" height="2"/></g>
+                                        <g class="pixel-row"><rect x="4" y="22" width="2" height="2"/><rect x="6" y="22" width="2" height="2"/><rect x="8" y="22" width="2" height="2"/><rect x="10" y="22" width="2" height="2"/><rect x="12" y="22" width="2" height="2"/><rect x="14" y="22" width="2" height="2"/><rect x="16" y="22" width="2" height="2"/><rect x="18" y="22" width="2" height="2"/><rect x="20" y="22" width="2" height="2"/><rect x="22" y="22" width="2" height="2"/><rect x="24" y="22" width="2" height="2"/></g>
+                                    </g>
+                                </svg>
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
