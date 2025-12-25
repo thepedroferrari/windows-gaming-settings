@@ -58,41 +58,88 @@
                 <h1 class="holo-logo" data-text="ROCKTUNE">ROCKTUNE</h1>
                 <div class="holo-subtitle">[ MAXIMUM FPS :: ZERO BLOAT ]</div>
             </div>
-            <div class="holo-terminal-window">
-                <div class="terminal-chrome">
-                    <div class="terminal-buttons">
-                        <span class="terminal-btn terminal-btn--close"></span>
-                        <span class="terminal-btn terminal-btn--min"></span>
-                        <span class="terminal-btn terminal-btn--max"></span>
+            <div class="cyber-terminal">
+                <!-- Corner accents -->
+                <div class="terminal-corner terminal-corner--tl"></div>
+                <div class="terminal-corner terminal-corner--tr"></div>
+                <div class="terminal-corner terminal-corner--bl"></div>
+                <div class="terminal-corner terminal-corner--br"></div>
+
+                <!-- Cyberpunk header bar -->
+                <div class="terminal-header">
+                    <div class="header-left">
+                        <span class="header-bracket">◢</span>
+                        <span class="header-label">SYS://ROCKTUNE</span>
                     </div>
-                    <span class="terminal-title">rocktune@system:~</span>
-                    <div class="terminal-spacer"></div>
+                    <div class="header-center">
+                        <span class="header-line"></span>
+                    </div>
+                    <div class="header-right">
+                        <span class="status-indicator"></span>
+                        <span class="header-status">ONLINE</span>
+                        <span class="header-bracket">◣</span>
+                    </div>
                 </div>
+
+                <!-- Terminal screen with noise overlay -->
                 <div class="terminal-screen">
-                    <!-- Matrix-style boot sequence -->
+                    <div class="screen-noise"></div>
+                    <div class="screen-scanline"></div>
+
+                    <!-- Glitchy boot sequence -->
                     <div class="terminal-boot">
-                        <div class="matrix-rain" aria-hidden="true"></div>
+                        <div class="glitch-rain" aria-hidden="true"></div>
                         <div class="boot-sequence">
-                            <span class="boot-line">[    0.000000] ROCKTUNE kernel loading...</span>
-                            <span class="boot-line">[    0.142857] Detecting hardware configuration</span>
-                            <span class="boot-line">[    0.285714] Initializing optimization modules</span>
-                            <span class="boot-line">[    0.428571] Loading performance profiles</span>
-                            <span class="boot-line boot-success">[    0.571428] System ready. Executing protocol...</span>
+                            <span class="boot-line">█▓▒░ ROCKTUNE.exe initializing...</span>
+                            <span class="boot-line">█▓▒░ Scanning system configuration</span>
+                            <span class="boot-line">█▓▒░ Loading optimization protocols</span>
+                            <span class="boot-line">█▓▒░ Bypassing Windows restrictions</span>
+                            <span class="boot-line boot-success">█▓▒░ SYSTEM BREACH SUCCESSFUL</span>
                         </div>
                     </div>
-                    <!-- Main terminal content (appears after boot) -->
+
+                    <!-- Main terminal content -->
                     <div class="terminal-body">
                         <div class="terminal-prompt">
-                            <span class="prompt-user">root@rocktune</span><span class="prompt-separator">:</span><span class="prompt-path">~</span><span class="prompt-symbol">$</span>
-                            <span class="prompt-command">./optimize.sh --mission-brief</span>
+                            <span class="prompt-path">C:\ROCKTUNE</span><span class="prompt-symbol">></span>
+                            <span class="prompt-command">optimize.exe /mission-brief</span>
                         </div>
-                        <p class="terminal-tagline">Your PC was built to game. <span class="highlight-text">Windows wasn't.</span></p>
+
+                        <p class="terminal-tagline">
+                            Your PC was built to game.<br>
+                            <span class="highlight-text" data-text="WINDOWS WASN'T.">WINDOWS WASN'T.</span>
+                        </p>
+
                         <div class="terminal-loading">
-                            <span class="loading-line"><span class="line-prefix">[<span class="line-status">OK</span>]</span> 8 network settings... <span class="result">LOWER PING</span></span>
-                            <span class="loading-line"><span class="line-prefix">[<span class="line-status">OK</span>]</span> 47 background services... <span class="result">OPTIMIZED</span></span>
-                            <span class="loading-line"><span class="line-prefix">[<span class="line-status">OK</span>]</span> 12 telemetry endpoints... <span class="result">BLOCKED</span></span>
-                            <span class="loading-line"><span class="line-prefix">[<span class="line-status">OK</span>]</span> Input latency 15.6ms → 0.5ms... <span class="result">FIXED</span></span>
-                            <span class="loading-line success">>>> YOUR LOADOUT IS READY. <span class="cursor-blink">█</span></span>
+                            <span class="loading-line">
+                                <span class="line-progress">■■■</span>
+                                <span class="line-text">8 network settings</span>
+                                <span class="line-dots"></span>
+                                <span class="result">LOWER PING</span>
+                            </span>
+                            <span class="loading-line">
+                                <span class="line-progress">■■■</span>
+                                <span class="line-text">47 background services</span>
+                                <span class="line-dots"></span>
+                                <span class="result">OPTIMIZED</span>
+                            </span>
+                            <span class="loading-line">
+                                <span class="line-progress">■■■</span>
+                                <span class="line-text">12 telemetry endpoints</span>
+                                <span class="line-dots"></span>
+                                <span class="result">BLOCKED</span>
+                            </span>
+                            <span class="loading-line">
+                                <span class="line-progress">■■■</span>
+                                <span class="line-text">Input latency 15.6ms → 0.5ms</span>
+                                <span class="line-dots"></span>
+                                <span class="result">FIXED</span>
+                            </span>
+                            <span class="loading-line success">
+                                <span class="success-icon">◢◤</span>
+                                LOADOUT READY
+                                <span class="cursor-blink">█</span>
+                            </span>
                         </div>
                     </div>
                 </div>
