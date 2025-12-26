@@ -1,4 +1,13 @@
-﻿#Requires -RunAsAdministrator
+﻿<#
+.SYNOPSIS
+    Audio-related latency and quality-of-life optimizations.
+.DESCRIPTION
+    Disables system sounds, reduces audio driver power management, and optionally
+    enables exclusive mode hints to lower audio latency.
+.NOTES
+    Requires Administrator for HKLM changes and driver registry paths.
+#>
+#Requires -RunAsAdministrator
 
 
 
@@ -8,6 +17,14 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Test-AudioOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies applied audio optimizations.
+    .DESCRIPTION
+        Checks registry values used to disable system sounds.
+    .OUTPUTS
+        [bool] True when expected values are present.
+    #>
     $allPassed = $true
 
     Write-Log "Verifying audio optimizations..." "INFO"
@@ -28,6 +45,15 @@ function Test-AudioOptimizations {
 
 
 function Disable-AudioEnhancements {
+    <#
+    .SYNOPSIS
+        Disables system sounds and some audio processing overhead.
+    .DESCRIPTION
+        Writes audio settings under HKLM to reduce unnecessary audio processing
+        and lower DPC impact from system sounds.
+    .OUTPUTS
+        None.
+    #>
     try {
         $audioPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Audio"
         Backup-RegistryKey -Path $audioPath
@@ -48,6 +74,15 @@ function Disable-AudioEnhancements {
 
 
 function Set-AudioDriverOptimizations {
+    <#
+    .SYNOPSIS
+        Disables audio driver power management features.
+    .DESCRIPTION
+        Iterates audio device class registry keys and disables power saving
+        features that can introduce latency.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Optimizing audio drivers for low DPC latency..." "INFO"
 
@@ -76,6 +111,17 @@ function Set-AudioDriverOptimizations {
 
 
 function Set-AudioExclusiveMode {
+    <#
+    .SYNOPSIS
+        Sets an exclusive-mode preference for audio.
+    .DESCRIPTION
+        Toggles UserDuckingPreference to signal exclusive-mode preference.
+        This is optional and disabled by default.
+    .PARAMETER Enable
+        When true, writes the exclusive mode preference setting.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $false
     )
@@ -99,6 +145,15 @@ function Set-AudioExclusiveMode {
 
 
 function Disable-SystemSounds {
+    <#
+    .SYNOPSIS
+        Disables Windows system sounds for lower background audio activity.
+    .DESCRIPTION
+        Updates AppEvents scheme defaults and specific event paths to silence
+        system sound triggers.
+    .OUTPUTS
+        None.
+    #>
     try {
         $soundPath = "HKCU:\AppEvents\Schemes"
         Backup-RegistryKey -Path $soundPath
@@ -132,6 +187,17 @@ function Disable-SystemSounds {
 
 
 function Invoke-AudioOptimizations {
+    <#
+    .SYNOPSIS
+        Applies all audio optimizations in this module.
+    .DESCRIPTION
+        Disables audio enhancements and system sounds, applies driver power
+        management changes, and optionally enables exclusive mode preference.
+    .PARAMETER EnableExclusiveMode
+        Enables exclusive mode preference when true.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$EnableExclusiveMode = $false
     )
@@ -158,6 +224,14 @@ function Invoke-AudioOptimizations {
 
 
 function Undo-AudioOptimizations {
+    <#
+    .SYNOPSIS
+        Reverts audio-related registry changes.
+    .DESCRIPTION
+        Restores backed up registry keys for audio-related settings.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back audio optimizations..." "INFO"
 
     try {

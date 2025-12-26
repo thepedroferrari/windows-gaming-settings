@@ -1,7 +1,15 @@
 
+<#
+.SYNOPSIS
+    Configuration loading, merging, and persistence helpers.
+.DESCRIPTION
+    Loads defaults, user configuration, and profiles from JSON files under
+    the config directory. Includes helpers to merge and validate configurations.
+.NOTES
+    The config directory is resolved relative to the module root.
+#>
 
-
-
+# Module paths for configuration storage.
 $script:ConfigDir = Join-Path $PSScriptRoot "..\..\config"
 $script:DataDir = Join-Path $PSScriptRoot "..\..\data"
 $script:DefaultsPath = Join-Path $script:ConfigDir "defaults.json"
@@ -10,7 +18,15 @@ $script:ProfilesDir = Join-Path $script:ConfigDir "profiles"
 
 
 function Get-DefaultConfig {
-    
+    <#
+    .SYNOPSIS
+        Returns the default configuration.
+    .DESCRIPTION
+        Attempts to load defaults.json from the config directory. Falls back to
+        embedded defaults when the file is missing or invalid.
+    .OUTPUTS
+        [hashtable] Default configuration.
+    #>
 
     [CmdletBinding()]
     param()
@@ -80,7 +96,15 @@ function Get-DefaultConfig {
 }
 
 function Get-UserConfig {
-    
+    <#
+    .SYNOPSIS
+        Loads the user configuration file when present.
+    .DESCRIPTION
+        Reads user-config.json and converts it to a hashtable. Falls back to
+        Get-DefaultConfig if the file does not exist or is invalid.
+    .OUTPUTS
+        [hashtable] User configuration merged from disk or defaults.
+    #>
 
     [CmdletBinding()]
     param()
@@ -98,7 +122,17 @@ function Get-UserConfig {
 }
 
 function Save-UserConfig {
-    
+    <#
+    .SYNOPSIS
+        Persists a configuration to disk.
+    .DESCRIPTION
+        Creates the config directory if needed, backs up any existing
+        user-config.json, and writes the new configuration in JSON format.
+    .PARAMETER Config
+        Hashtable of configuration settings to save.
+    .OUTPUTS
+        [bool] True on success, false on failure.
+    #>
 
     [CmdletBinding()]
     param(
@@ -129,7 +163,17 @@ function Save-UserConfig {
 }
 
 function Get-Profile {
-    
+    <#
+    .SYNOPSIS
+        Loads a named profile from the profiles directory.
+    .DESCRIPTION
+        Reads a profile JSON file and converts it to a hashtable. Falls back to
+        defaults when the profile is missing or invalid.
+    .PARAMETER ProfileName
+        Profile identifier. Valid values: competitive, balanced, privacy-focused.
+    .OUTPUTS
+        [hashtable] Profile configuration.
+    #>
 
     [CmdletBinding()]
     param(
@@ -155,7 +199,15 @@ function Get-Profile {
 }
 
 function Get-AvailableProfiles {
-    
+    <#
+    .SYNOPSIS
+        Lists available profile names.
+    .DESCRIPTION
+        Reads profile JSON filenames from the profiles directory. Returns a
+        default list if the directory does not exist.
+    .OUTPUTS
+        [string[]] Profile name list.
+    #>
 
     if (Test-Path $script:ProfilesDir) {
         $profiles = Get-ChildItem -Path $script:ProfilesDir -Filter "*.json" |
@@ -167,7 +219,19 @@ function Get-AvailableProfiles {
 }
 
 function Merge-Config {
-    
+    <#
+    .SYNOPSIS
+        Deep-merges two configuration hashtables.
+    .DESCRIPTION
+        Recursively merges the override hashtable into the base hashtable,
+        returning a new hashtable instance.
+    .PARAMETER Base
+        Base configuration hashtable.
+    .PARAMETER Override
+        Overrides that take precedence over base values.
+    .OUTPUTS
+        [hashtable] Merged configuration.
+    #>
 
     [CmdletBinding()]
     param(
@@ -196,7 +260,16 @@ function Merge-Config {
 }
 
 function Test-ConfigValid {
-    
+    <#
+    .SYNOPSIS
+        Validates configuration structure.
+    .DESCRIPTION
+        Ensures required top-level keys exist in the configuration.
+    .PARAMETER Config
+        Configuration to validate.
+    .OUTPUTS
+        [bool] True when required keys are present.
+    #>
 
     [CmdletBinding()]
     param(
@@ -218,7 +291,17 @@ function Test-ConfigValid {
 
 
 function Convert-PSObjectToHashtable {
-    
+    <#
+    .SYNOPSIS
+        Converts PSCustomObject graphs into hashtables.
+    .DESCRIPTION
+        Recursively converts PSCustomObject and collections so that downstream
+        code can treat config data as hashtables rather than PSObjects.
+    .PARAMETER InputObject
+        Object or collection to convert.
+    .OUTPUTS
+        [object] A hashtable, array, or scalar equivalent of the input.
+    #>
 
     param($InputObject)
 

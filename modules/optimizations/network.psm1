@@ -1,4 +1,13 @@
-﻿#Requires -RunAsAdministrator
+﻿<#
+.SYNOPSIS
+    Network performance and latency optimizations.
+.DESCRIPTION
+    Tunes adapter settings, DNS providers, IPv4 preference, Teredo, QoS, and
+    TCP stack parameters aimed at gaming latency and stability.
+.NOTES
+    Requires Administrator. Some changes require reboot or router QoS support.
+#>
+#Requires -RunAsAdministrator
 
 
 
@@ -8,6 +17,15 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Get-ActiveNetworkAdapter {
+    <#
+    .SYNOPSIS
+        Finds the first active Ethernet or Wi-Fi adapter.
+    .DESCRIPTION
+        Scans enabled adapters and selects the first matching Ethernet/Wi-Fi
+        interface for subsequent configuration.
+    .OUTPUTS
+        [Microsoft.Management.Infrastructure.CimInstance] Adapter object or $null.
+    #>
     try {
         $adapter = Get-NetAdapter | Where-Object {
             $_.Status -eq "Up" -and
@@ -29,6 +47,14 @@ function Get-ActiveNetworkAdapter {
 
 
 function Test-NetworkOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies network-related registry settings.
+    .DESCRIPTION
+        Checks for Receive Side Scaling (RSS) enablement.
+    .OUTPUTS
+        [bool] True when checks pass, else false.
+    #>
     $allPassed = $true
 
     Write-Log "Verifying network optimizations..." "INFO"
@@ -49,6 +75,17 @@ function Test-NetworkOptimizations {
 
 
 function Set-NetworkAdapterOptimizations {
+    <#
+    .SYNOPSIS
+        Applies adapter-level network optimizations.
+    .DESCRIPTION
+        Enables RSS and optionally disables RSC. Attempts to disable adapter
+        power saving for more consistent latency.
+    .PARAMETER DisableRSC
+        When true, disables Receive Segment Coalescing (opt-in).
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$DisableRSC = $false
     )
@@ -90,6 +127,17 @@ function Set-NetworkAdapterOptimizations {
 
 
 function Set-DNSProvider {
+    <#
+    .SYNOPSIS
+        Sets the DNS resolver for the active adapter.
+    .DESCRIPTION
+        Applies a well-known DNS provider or restores ISP defaults via DHCP.
+        Flushes DNS cache and performs a simple resolution test.
+    .PARAMETER Provider
+        DNS provider name: cloudflare, google, quad9, adguard, opendns, isp.
+    .OUTPUTS
+        None.
+    #>
     param(
         [ValidateSet("cloudflare", "google", "quad9", "adguard", "opendns", "isp")]
         [string]$Provider = "cloudflare"
@@ -161,6 +209,16 @@ function Set-DNSProvider {
 
 
 function Set-IPv4Preference {
+    <#
+    .SYNOPSIS
+        Optionally prefers IPv4 over IPv6.
+    .DESCRIPTION
+        Sets the DisabledComponents value to prefer IPv4. Requires reboot.
+    .PARAMETER Enable
+        When true, applies IPv4 preference.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $false
     )
@@ -182,6 +240,16 @@ function Set-IPv4Preference {
 
 
 function Disable-Teredo {
+    <#
+    .SYNOPSIS
+        Optionally disables Teredo IPv6 tunneling.
+    .DESCRIPTION
+        Disables Teredo via netsh when requested. Requires reboot for full effect.
+    .PARAMETER Enable
+        When true, disables Teredo.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $false
     )
@@ -201,6 +269,16 @@ function Disable-Teredo {
 
 
 function Set-QoSConfiguration {
+    <#
+    .SYNOPSIS
+        Creates QoS policies for selected game executables.
+    .DESCRIPTION
+        Adds per-executable QoS policies with DSCP 46 for priority handling.
+    .PARAMETER GameExecutables
+        Executable names to target (e.g., cs2.exe).
+    .OUTPUTS
+        None.
+    #>
     param(
         [string[]]$GameExecutables = @("cs2.exe", "dota2.exe", "helldivers2.exe", "SpaceMarine2.exe")
     )
@@ -230,6 +308,14 @@ function Set-QoSConfiguration {
 
 
 function Set-IPv4Preference {
+    <#
+    .SYNOPSIS
+        Prefers IPv4 over IPv6 (registry-based).
+    .DESCRIPTION
+        Writes DisabledComponents to prefer IPv4 and warns about feature impact.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Setting IPv4 preference..." "INFO"
 
@@ -251,6 +337,14 @@ function Set-IPv4Preference {
 
 
 function Disable-Teredo {
+    <#
+    .SYNOPSIS
+        Disables Teredo IPv6 tunneling (registry + netsh).
+    .DESCRIPTION
+        Disables Teredo and updates DisabledComponents to prevent tunneling.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Disabling Teredo IPv6 tunneling..." "INFO"
 
@@ -286,6 +380,12 @@ function Enable-QoSGaming {
     .DESCRIPTION
         Configures Windows QoS to mark gaming UDP traffic with high priority
         DSCP values for better handling by routers that support QoS.
+    .PARAMETER Enable
+        When true, creates QoS policies for gaming traffic.
+    .PARAMETER GamePorts
+        UDP port ranges to mark with DSCP 46.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true,
@@ -336,6 +436,10 @@ function Disable-NetworkThrottling {
         Removes the NetworkThrottlingIndex limit that Windows applies
         to multimedia streaming to prevent network congestion.
         This can improve network performance for games.
+    .PARAMETER Enable
+        When true, disables network throttling.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -371,6 +475,10 @@ function Set-TCPOptimizations {
         Configures TCP settings for lower latency gaming including
         disabling Nagle's algorithm, optimizing ACK behavior, and
         tuning window scaling.
+    .PARAMETER Enable
+        When true, applies TCP stack changes.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -411,6 +519,26 @@ function Set-TCPOptimizations {
 
 
 function Invoke-NetworkOptimizations {
+    <#
+    .SYNOPSIS
+        Applies the full network optimization set.
+    .DESCRIPTION
+        Tunes adapter settings, DNS, IPv4/Teredo, and optional QoS policies.
+    .PARAMETER DNSProvider
+        DNS provider to apply (cloudflare, google, quad9, adguard, opendns, isp).
+    .PARAMETER DisableRSC
+        Disables Receive Segment Coalescing when true.
+    .PARAMETER PreferIPv4
+        Prefers IPv4 over IPv6 when true.
+    .PARAMETER DisableTeredo
+        Disables Teredo tunneling when true.
+    .PARAMETER EnableQoS
+        Enables per-game QoS policies when true.
+    .PARAMETER GameExecutables
+        Executable names for per-game QoS policy creation.
+    .OUTPUTS
+        None.
+    #>
     param(
         [ValidateSet("cloudflare", "google", "quad9", "adguard", "opendns", "isp")]
         [string]$DNSProvider = "cloudflare",
@@ -459,6 +587,15 @@ function Invoke-NetworkOptimizations {
 
 
 function Undo-NetworkOptimizations {
+    <#
+    .SYNOPSIS
+        Reverts network-related changes.
+    .DESCRIPTION
+        Resets DNS to DHCP, restores IPv6 defaults, removes QoS policies,
+        and restores TCP/IP registry settings.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back network optimizations..." "INFO"
 
     try {
@@ -509,4 +646,3 @@ Export-ModuleMember -Function @(
     'Invoke-NetworkOptimizations',
     'Undo-NetworkOptimizations'
 )
-

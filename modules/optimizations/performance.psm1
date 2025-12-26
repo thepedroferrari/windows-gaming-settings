@@ -1,4 +1,14 @@
-﻿#Requires -RunAsAdministrator
+﻿<#
+.SYNOPSIS
+    Performance-focused optimizations (scheduler, timer, GameDVR, NVMe, etc).
+.DESCRIPTION
+    Applies registry and boot configuration tweaks that target frame pacing and
+    latency. Includes opt-in changes that carry risk (HPET, mitigations, Core
+    Isolation) and a rollback helper.
+.NOTES
+    Requires Administrator. Some changes require reboot to take effect.
+#>
+#Requires -RunAsAdministrator
 
 
 
@@ -8,6 +18,19 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Test-PerformanceOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies key performance-related registry settings.
+    .DESCRIPTION
+        Checks MMCSS GPU priority, scheduler priority separation, and timer
+        resolution registry preferences.
+    .PARAMETER HPETDisabled
+        Currently unused; retained for parity with historical interfaces.
+    .PARAMETER CoreParkingDisabled
+        Currently unused; retained for parity with historical interfaces.
+    .OUTPUTS
+        [bool] True when checks pass, else false.
+    #>
     param(
         [bool]$HPETDisabled = $false,
         [bool]$CoreParkingDisabled = $false
@@ -48,6 +71,17 @@ function Test-PerformanceOptimizations {
 
 
 function Disable-HPET {
+    <#
+    .SYNOPSIS
+        Optionally disables HPET-related boot settings.
+    .DESCRIPTION
+        Uses bcdedit to disable useplatformclock and dynamic tick. This is an
+        opt-in change and requires a reboot.
+    .PARAMETER Enable
+        When true, applies the HPET-related changes.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $false
     )
@@ -84,6 +118,15 @@ function Disable-HPET {
 
 
 function Enable-MSIMode {
+    <#
+    .SYNOPSIS
+        Enables MSI mode for GPU and network adapters.
+    .DESCRIPTION
+        Toggles MessageSignaledInterruptProperties for selected devices to
+        reduce interrupt latency.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Configuring MSI Mode for devices (reduces DPC latency)..." "INFO"
 
     $msiEnabled = 0
@@ -146,6 +189,17 @@ function Enable-MSIMode {
 
 
 function Set-CoreParking {
+    <#
+    .SYNOPSIS
+        Disables CPU core parking (opt-in).
+    .DESCRIPTION
+        Updates power-related registry settings and per-scheme powercfg values
+        to keep cores unparked.
+    .PARAMETER Disable
+        When true, disables core parking.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Disable = $false
     )
@@ -179,6 +233,15 @@ function Set-CoreParking {
 
 
 function Set-SchedulerOptimizations {
+    <#
+    .SYNOPSIS
+        Applies Windows scheduler tuning for games.
+    .DESCRIPTION
+        Sets Win32PrioritySeparation and IRQ8Priority to values commonly used
+        for balanced gaming performance.
+    .OUTPUTS
+        None.
+    #>
     try {
         $schedulerPath = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
         Backup-RegistryKey -Path $schedulerPath
@@ -197,6 +260,16 @@ function Set-SchedulerOptimizations {
 
 
 function Set-TimerResolution {
+    <#
+    .SYNOPSIS
+        Configures registry preferences for timer resolution.
+    .DESCRIPTION
+        Enables GlobalTimerResolutionRequests and sets related multimedia and
+        power settings that influence timer behavior. Use timer-tool.ps1 at
+        runtime for actual 0.5ms resolution.
+    .OUTPUTS
+        None.
+    #>
     try {
         $timerPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"
         Backup-RegistryKey -Path $timerPath
@@ -223,6 +296,14 @@ function Set-TimerResolution {
 
 
 function Set-MMCSSGamingTweaks {
+    <#
+    .SYNOPSIS
+        Applies MMCSS tweaks for gaming workloads.
+    .DESCRIPTION
+        Adjusts MMCSS game task priorities to favor GPU and CPU scheduling.
+    .OUTPUTS
+        None.
+    #>
     try {
         $mmcssGamesPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"
         Backup-RegistryKey -Path $mmcssGamesPath
@@ -242,6 +323,14 @@ function Set-MMCSSGamingTweaks {
 
 
 function Enable-GameMode {
+    <#
+    .SYNOPSIS
+        Enables Windows Game Mode.
+    .DESCRIPTION
+        Sets the policy manager flag for Game Mode.
+    .OUTPUTS
+        None.
+    #>
     try {
         $gameModePath = "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameMode"
         Backup-RegistryKey -Path $gameModePath
@@ -257,6 +346,16 @@ function Enable-GameMode {
 
 
 function Set-GameDVR {
+    <#
+    .SYNOPSIS
+        Disables GameDVR capture and recording.
+    .DESCRIPTION
+        Turns off GameDVR capture and sets related GameConfigStore values.
+    .PARAMETER Enable
+        When true, applies the disablement (opt-in flag naming kept for API parity).
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $true
     )
@@ -286,6 +385,16 @@ function Set-GameDVR {
 
 
 function Set-FullscreenOptimizations {
+    <#
+    .SYNOPSIS
+        Disables Fullscreen Optimizations (FSO).
+    .DESCRIPTION
+        Writes GameConfigStore values to opt out of FSO for reduced overhead.
+    .PARAMETER Enable
+        When true, applies the disablement (opt-in flag naming kept for API parity).
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $true
     )
@@ -465,6 +574,8 @@ function Disable-NativeNVMe {
     .DESCRIPTION
         Sets the feature flag to 0 and requires a reboot.
         After reboot, NVMe devices return to "Disk drives" in Device Manager.
+    .OUTPUTS
+        [bool] True when a change was made, else false.
     #>
 
     Write-Log "Disabling Native NVMe I/O path..." "INFO"
@@ -525,6 +636,25 @@ function Test-NativeNVMeStatus {
 
 
 function Invoke-PerformanceOptimizations {
+    <#
+    .SYNOPSIS
+        Applies the full performance optimization set.
+    .DESCRIPTION
+        Runs GameDVR/FSO toggles, HPET (opt-in), MSI mode, scheduler tweaks,
+        timer and MMCSS adjustments, Game Mode, and optional Native NVMe.
+    .PARAMETER DisableHPET
+        Enables HPET-related changes when true (opt-in).
+    .PARAMETER DisableCoreParking
+        Disables core parking when true (opt-in).
+    .PARAMETER DisableGameDVR
+        Disables GameDVR capture when true.
+    .PARAMETER DisableFSO
+        Disables Fullscreen Optimizations when true.
+    .PARAMETER EnableNativeNVMe
+        Enables Native NVMe I/O path when true (opt-in).
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$DisableHPET = $false,
         [bool]$DisableCoreParking = $false,
@@ -574,6 +704,8 @@ function Disable-MultiplaneOverlay {
         MPO is a DWM feature that can cause stuttering during streaming/recording.
         Disabling it reduces GPU overhead from window composition.
         Best for: Streamers and users experiencing DWM-related stutters.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -606,6 +738,8 @@ function Disable-ProcessMitigations {
         Security mitigations like CFG and SEHOP add overhead.
         Disabling them can improve benchmark scores but reduces security.
         Best for: Benchmarking only - NOT recommended for daily use.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -640,6 +774,8 @@ function Set-InterruptAffinity {
         Assigns GPU interrupts to a specific CPU core to reduce
         context switching and improve frame consistency.
         Best for: High-end systems chasing benchmark scores.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -692,6 +828,8 @@ function Disable-CoreIsolation {
         Virtualization-Based Security adds ~5-10% overhead.
         Disabling it improves performance but reduces security.
         Best for: Benchmarking only - NOT recommended for daily use.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -725,6 +863,15 @@ function Disable-CoreIsolation {
 
 
 function Undo-PerformanceOptimizations {
+    <#
+    .SYNOPSIS
+        Rolls back performance-related changes.
+    .DESCRIPTION
+        Removes HPET boot flags, restores registry backups, and disables Native
+        NVMe when it was enabled.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back performance optimizations..." "INFO"
 
     try {
@@ -782,4 +929,3 @@ Export-ModuleMember -Function @(
     'Invoke-PerformanceOptimizations',
     'Undo-PerformanceOptimizations'
 )
-

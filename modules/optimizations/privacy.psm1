@@ -1,3 +1,12 @@
+<#
+.SYNOPSIS
+    Privacy-focused tweaks and optional debloat actions.
+.DESCRIPTION
+    Applies tiered privacy settings, reduces telemetry, removes select UWP apps,
+    and configures Windows privacy-related policies.
+.NOTES
+    Requires Administrator. Tier 3 and Xbox removals can break Game Pass features.
+#>
 #Requires -RunAsAdministrator
 
 
@@ -8,6 +17,14 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Test-PrivacyOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies privacy-related registry values.
+    .DESCRIPTION
+        Checks advertising ID and activity history policies.
+    .OUTPUTS
+        [bool] True when checks pass, else false.
+    #>
     $allPassed = $true
 
     Write-Log "Verifying privacy optimizations..." "INFO"
@@ -32,6 +49,15 @@ function Test-PrivacyOptimizations {
 
 
 function Apply-PrivacyTier1Safe {
+    <#
+    .SYNOPSIS
+        Applies Tier 1 privacy settings (safe defaults).
+    .DESCRIPTION
+        Disables advertising ID, activity history, WiFi Sense, feedback prompts,
+        spotlight content, cloud clipboard, and reduces telemetry level.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Applying Tier 1 safe privacy tweaks..." "INFO"
 
@@ -91,6 +117,14 @@ function Apply-PrivacyTier1Safe {
 
 
 function Apply-PrivacyTier2Moderate {
+    <#
+    .SYNOPSIS
+        Applies Tier 2 privacy settings (moderate).
+    .DESCRIPTION
+        Disables telemetry-related services and delivery optimization.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Applying Tier 2 moderate privacy tweaks (opt-in)..." "INFO"
 
@@ -150,6 +184,15 @@ function Apply-PrivacyTier2Moderate {
 
 
 function Apply-PrivacyTier3Aggressive {
+    <#
+    .SYNOPSIS
+        Applies Tier 3 privacy settings (aggressive).
+    .DESCRIPTION
+        Disables Xbox/Game Pass services and other components that can break
+        Microsoft gaming features.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Applying Tier 3 aggressive privacy tweaks (opt-in, BREAKS features)..." "INFO"
         Write-Log "WARNING: This will BREAK Game Pass and Xbox app functionality!" "ERROR"
@@ -186,6 +229,14 @@ function Apply-PrivacyTier3Aggressive {
 
 
 function Remove-Bloatware {
+    <#
+    .SYNOPSIS
+        Removes selected built-in UWP apps.
+    .DESCRIPTION
+        Uninstalls a curated list of consumer apps for a leaner system.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Removing UWP bloatware..." "INFO"
 
@@ -227,6 +278,14 @@ function Remove-Bloatware {
 
 
 function Remove-XboxApps {
+    <#
+    .SYNOPSIS
+        Removes Xbox-related UWP apps.
+    .DESCRIPTION
+        Uninstalls Xbox UWP apps. This breaks Game Pass and Xbox app features.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Removing Xbox UWP apps (BREAKS Game Pass)..." "INFO"
 
@@ -265,6 +324,14 @@ function Remove-XboxApps {
 
 
 function Set-BackgroundAppsOff {
+    <#
+    .SYNOPSIS
+        Disables background UWP app activity.
+    .DESCRIPTION
+        Turns off background app access and related search toggles.
+    .OUTPUTS
+        None.
+    #>
     try {
         $path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications"
         Backup-RegistryKey -Path $path
@@ -283,6 +350,14 @@ function Set-BackgroundAppsOff {
 
 
 function Apply-EdgeDebloat {
+    <#
+    .SYNOPSIS
+        Applies Microsoft Edge policy debloat settings.
+    .DESCRIPTION
+        Disables select Edge UI features and prompts via policy keys.
+    .OUTPUTS
+        None.
+    #>
     try {
         $edge = "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
         Backup-RegistryKey -Path $edge
@@ -299,6 +374,14 @@ function Apply-EdgeDebloat {
 
 
 function Disable-Copilot {
+    <#
+    .SYNOPSIS
+        Disables Windows Copilot.
+    .DESCRIPTION
+        Applies user and policy keys to disable Copilot UI on Windows 11.
+    .OUTPUTS
+        None.
+    #>
     try {
         $userCopilot = "HKCU:\SOFTWARE\Microsoft\Windows\Shell\CopilotAI"
         Backup-RegistryKey -Path $userCopilot
@@ -323,6 +406,10 @@ function Disable-Notifications {
     .DESCRIPTION
         Prevents popup distractions during gaming sessions.
         Disables both the notification center and individual toast popups.
+    .PARAMETER Enable
+        When true, disables notifications.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -364,6 +451,10 @@ function Disable-PS7Telemetry {
     .DESCRIPTION
         Sets the POWERSHELL_TELEMETRY_OPTOUT environment variable.
         Only relevant if PowerShell 7 is installed.
+    .PARAMETER Enable
+        When true, sets the opt-out environment variable.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -398,6 +489,10 @@ function Disable-WPBT {
     .DESCRIPTION
         WPBT allows OEMs to inject software at boot time.
         Disabling prevents manufacturer bloatware from auto-installing.
+    .PARAMETER Enable
+        When true, disables WPBT execution.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -423,6 +518,37 @@ function Disable-WPBT {
 
 
 function Invoke-PrivacyOptimizations {
+    <#
+    .SYNOPSIS
+        Applies selected privacy optimization tiers and extras.
+    .DESCRIPTION
+        Runs tiered privacy settings, optional debloat steps, and WinUtil-inspired
+        tweaks such as notification and Copilot disablement.
+    .PARAMETER Tier1Safe
+        Applies safe privacy defaults when true.
+    .PARAMETER Tier2Moderate
+        Applies moderate privacy settings when true.
+    .PARAMETER Tier3Aggressive
+        Applies aggressive settings (breaks Xbox/Game Pass) when true.
+    .PARAMETER RemoveBloatware
+        Removes select built-in apps when true.
+    .PARAMETER RemoveXboxApps
+        Removes Xbox apps (breaks Game Pass) when true.
+    .PARAMETER BackgroundAppsOff
+        Disables background UWP apps when true.
+    .PARAMETER EdgeDebloat
+        Applies Edge policy debloat settings when true.
+    .PARAMETER DisableCopilot
+        Disables Windows Copilot when true.
+    .PARAMETER DisableNotifications
+        Disables notifications when true.
+    .PARAMETER DisablePS7Telemetry
+        Disables PowerShell 7 telemetry when true.
+    .PARAMETER DisableWPBT
+        Disables WPBT execution when true.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Tier1Safe = $true,
         [bool]$Tier2Moderate = $false,
@@ -490,6 +616,14 @@ function Invoke-PrivacyOptimizations {
 
 
 function Undo-PrivacyOptimizations {
+    <#
+    .SYNOPSIS
+        Reverts privacy-related changes.
+    .DESCRIPTION
+        Re-enables services and restores backed up registry values.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back privacy optimizations..." "INFO"
 
     try {

@@ -1,3 +1,12 @@
+<#
+.SYNOPSIS
+    Software installation helpers based on the catalog definition.
+.DESCRIPTION
+    Ensures winget availability, loads the software catalog, detects peripherals,
+    and installs packages by category.
+.NOTES
+    Requires Administrator. Uses winget and may prompt for Store installation.
+#>
 #Requires -RunAsAdministrator
 
 
@@ -7,6 +16,14 @@ Import-Module (Join-Path $PSScriptRoot "..\core\logger.psm1") -Force -Global
 
 
 function Test-WingetAvailable {
+    <#
+    .SYNOPSIS
+        Checks whether winget is available.
+    .DESCRIPTION
+        Invokes winget --version and returns success based on exit code.
+    .OUTPUTS
+        [bool] True if winget is callable.
+    #>
     try {
         $null = winget --version 2>&1
         return ($LASTEXITCODE -eq 0)
@@ -17,6 +34,16 @@ function Test-WingetAvailable {
 
 
 function Install-Winget {
+    <#
+    .SYNOPSIS
+        Attempts to install winget if missing.
+    .DESCRIPTION
+        First attempts to open the Microsoft Store App Installer page, then
+        falls back to downloading the App Installer bundle directly.
+    .OUTPUTS
+        [bool] True if winget is already installed; otherwise false to indicate
+        a restart/install is required.
+    #>
     Write-Log "Checking for winget..." "INFO"
 
     if (Test-WingetAvailable) {
@@ -69,6 +96,14 @@ function Install-Winget {
 
 
 function Get-SoftwareCatalog {
+    <#
+    .SYNOPSIS
+        Loads the software catalog JSON.
+    .DESCRIPTION
+        Reads the catalog from the web folder and returns it as a PSCustomObject.
+    .OUTPUTS
+        [PSCustomObject] Catalog data or $null on failure.
+    #>
     try {
         $catalogPath = Join-Path $PSScriptRoot "..\..\web\catalog.json"
 
@@ -91,6 +126,14 @@ function Get-SoftwareCatalog {
 
 
 function Test-HardwarePeripherals {
+    <#
+    .SYNOPSIS
+        Detects connected gaming peripherals by vendor ID.
+    .DESCRIPTION
+        Scans HID/USB devices for known VID values and returns vendor names.
+    .OUTPUTS
+        [string[]] Detected vendor names.
+    #>
     try {
         Write-Log "Detecting gaming peripheral hardware..." "INFO"
 
@@ -141,6 +184,19 @@ function Test-HardwarePeripherals {
 
 
 function Install-PackageFromCatalog {
+    <#
+    .SYNOPSIS
+        Installs a single package from the catalog using winget.
+    .DESCRIPTION
+        Runs winget install for the given package id, then verifies install
+        status when winget returns a non-zero exit code.
+    .PARAMETER Package
+        Package object from the catalog.
+    .PARAMETER PackageName
+        Catalog key name used for logging.
+    .OUTPUTS
+        [bool] True if installed or already present, else false.
+    #>
     param(
         [Parameter(Mandatory=$true)]
         [PSCustomObject]$Package,
@@ -175,6 +231,19 @@ function Install-PackageFromCatalog {
 
 
 function Install-PeripheralSoftware {
+    <#
+    .SYNOPSIS
+        Installs peripheral software based on detected hardware.
+    .DESCRIPTION
+        Compares detected vendor names to the catalog's hardware vendor map
+        and installs matching peripheral packages.
+    .PARAMETER Catalog
+        Catalog object containing package definitions.
+    .PARAMETER DetectedVendors
+        List of detected vendor names.
+    .OUTPUTS
+        [int] Count of installed packages.
+    #>
     param(
         [Parameter(Mandatory=$true)]
         [PSCustomObject]$Catalog,
@@ -221,6 +290,22 @@ function Install-PeripheralSoftware {
 
 
 function Invoke-SoftwareInstallation {
+    <#
+    .SYNOPSIS
+        Installs software packages by category.
+    .DESCRIPTION
+        Ensures winget is available, loads the catalog, installs packages in
+        the requested categories, and optionally includes optional/peripheral
+        packages.
+    .PARAMETER Categories
+        List of catalog categories to install (default: essential, recommended, keep).
+    .PARAMETER IncludeOptional
+        When true, also installs optional category packages.
+    .PARAMETER IncludePeripherals
+        When true, installs peripheral packages based on hardware detection.
+    .OUTPUTS
+        None.
+    #>
     param(
         [string[]]$Categories = @("essential", "recommended", "keep"),
         [bool]$IncludeOptional = $false,

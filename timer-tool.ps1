@@ -1,3 +1,25 @@
+<#
+.SYNOPSIS
+    Forces and maintains a lower Windows timer resolution while gaming.
+.DESCRIPTION
+    Uses native Windows APIs (NtSetTimerResolution / NtQueryTimerResolution)
+    to request a target timer resolution (default 0.5ms). When a GameProcess
+    is provided, the script monitors that process and exits when the game closes.
+.PARAMETER GameProcess
+    Optional process name without extension (e.g., "cs2"). When supplied, the
+    script exits automatically once the process is no longer running.
+.PARAMETER Resolution
+    Target timer resolution in milliseconds. Default is 0.5.
+.EXAMPLE
+    .\timer-tool.ps1
+.EXAMPLE
+    .\timer-tool.ps1 -GameProcess "dota2"
+.EXAMPLE
+    .\timer-tool.ps1 -Resolution 1.0
+.NOTES
+    Requires Administrator. The timer request is active only while the script runs.
+    Use Ctrl+C to exit if running in manual mode.
+#>
 #Requires -RunAsAdministrator
 
 
@@ -7,6 +29,7 @@ param(
     [double]$Resolution = 0.5
 )
 
+# Native interop wrapper for timer resolution APIs.
 Add-Type @"
 using System;
 using System.Runtime.InteropServices;
@@ -26,6 +49,20 @@ public class TimerResolution {
 }
 "@
 
+<#
+.SYNOPSIS
+    Requests a specific system timer resolution.
+.DESCRIPTION
+    Converts milliseconds to the 100-nanosecond units required by NtSetTimerResolution
+    and requests the OS to adopt that resolution while this process is running.
+.PARAMETER Milliseconds
+    Desired resolution in milliseconds.
+.OUTPUTS
+    [bool] True when the native call reports STATUS_SUCCESS (0).
+.NOTES
+    Requires admin privileges. This call is process-scoped and will be released when
+    the process exits.
+#>
 function Set-TimerResolution {
     param([double]$Milliseconds)
 
@@ -49,6 +86,14 @@ function Set-TimerResolution {
     }
 }
 
+<#
+.SYNOPSIS
+    Reads the current system timer resolution.
+.DESCRIPTION
+    Queries NtQueryTimerResolution and converts the current resolution to milliseconds.
+.OUTPUTS
+    [double] Current timer resolution in milliseconds, or $null on failure.
+#>
 function Get-CurrentTimerResolution {
     try {
         $minRes = [uint32]0
@@ -105,6 +150,7 @@ if ($GameProcess) {
     Write-Host "Script will exit when game closes." -ForegroundColor Yellow
     Write-Host ""
     
+    # Poll for process exit every few seconds to avoid busy looping.
     $processRunning = $true
     while ($processRunning) {
         $process = Get-Process -Name $GameProcess -ErrorAction SilentlyContinue

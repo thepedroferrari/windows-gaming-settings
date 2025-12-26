@@ -1,9 +1,33 @@
 
-
-
+<#
+.SYNOPSIS
+    Interactive console menu utilities.
+.DESCRIPTION
+    Provides interactive, text-based selection menus for choosing categories,
+    toggling options, and printing a configuration summary.
+.NOTES
+    Designed for PowerShell console UX; uses Clear-Host and Read-Host.
+#>
 
 function Show-Menu {
-    
+    <#
+    .SYNOPSIS
+        Renders an interactive checkbox-style menu.
+    .DESCRIPTION
+        Displays options with selection markers and optional descriptions. Users
+        can toggle items by number, select all/none/recommended, and press Enter
+        to accept the current selection.
+    .PARAMETER Title
+        Menu title displayed at the top.
+    .PARAMETER Options
+        Array of hashtables with keys: Label, Selected, Description, Icon, Disabled.
+    .PARAMETER Legend
+        Optional legend text shown under the list.
+    .PARAMETER AllowMultiple
+        Indicates whether multi-select is allowed (kept for future extensibility).
+    .OUTPUTS
+        [int[]] Indices of selected items.
+    #>
 
     [CmdletBinding()]
     param(
@@ -105,7 +129,17 @@ function Show-Menu {
 }
 
 function Show-CategoryMenu {
-    
+    <#
+    .SYNOPSIS
+        Presents a category selection menu.
+    .DESCRIPTION
+        Converts category metadata into menu options and returns the selected
+        category keys in the original hash order.
+    .PARAMETER Categories
+        Hashtable of category definitions with Icon/ItemCount/Recommended metadata.
+    .OUTPUTS
+        [string[]] Selected category keys.
+    #>
 
     [CmdletBinding()]
     param(
@@ -138,7 +172,21 @@ function Show-CategoryMenu {
 }
 
 function Get-UserChoice {
-    
+    <#
+    .SYNOPSIS
+        Prompts for a single validated choice.
+    .DESCRIPTION
+        Loops until the user enters one of the allowed choices, optionally
+        accepting a default when Enter is pressed.
+    .PARAMETER Prompt
+        Prompt text shown to the user.
+    .PARAMETER ValidChoices
+        Array of allowed choices (strings).
+    .PARAMETER DefaultChoice
+        Optional default choice when user presses Enter.
+    .OUTPUTS
+        [string] Selected choice.
+    #>
 
     [CmdletBinding()]
     param(
@@ -175,7 +223,19 @@ function Get-UserChoice {
 }
 
 function Show-Summary {
-    
+    <#
+    .SYNOPSIS
+        Displays a configuration summary.
+    .DESCRIPTION
+        Prints a categorized view of the selected configuration with simple
+        YES/NO mapping for boolean values.
+    .PARAMETER Title
+        Summary header text.
+    .PARAMETER Config
+        Hashtable of configuration values to display.
+    .OUTPUTS
+        None.
+    #>
 
     [CmdletBinding()]
     param(
@@ -217,7 +277,16 @@ function Show-Summary {
 }
 
 function Show-Welcome {
-    
+    <#
+    .SYNOPSIS
+        Shows the interactive setup welcome screen.
+    .DESCRIPTION
+        Prints a banner and optional system information for user context.
+    .PARAMETER SystemInfo
+        Hashtable of system key/value pairs to display.
+    .OUTPUTS
+        None.
+    #>
 
     [CmdletBinding()]
     param(
@@ -245,7 +314,15 @@ function Show-Welcome {
 }
 
 function Show-SetupModeSelection {
-    
+    <#
+    .SYNOPSIS
+        Presents the setup mode selection menu.
+    .DESCRIPTION
+        Lets the user choose between express, custom, or profile-based setup,
+        or exit the wizard.
+    .OUTPUTS
+        [string] One of: express, custom, profile, exit.
+    #>
 
     Clear-Host
     Write-Host "?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????" -ForegroundColor Cyan
@@ -290,5 +367,4 @@ Export-ModuleMember -Function @(
     'Show-Welcome',
     'Show-SetupModeSelection'
 )
-
 

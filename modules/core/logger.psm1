@@ -1,13 +1,34 @@
 
+<#
+.SYNOPSIS
+    Logging utilities for the Gaming PC Setup scripts.
+.DESCRIPTION
+    Provides a small logging surface that writes to a shared log file and the
+    console, with severity coloring and a summary helper. Uses module-scoped
+    variables to store log path and start time.
+.NOTES
+    Import this module before any other module that calls Write-Log.
+#>
 
-
-
+# Module-scoped state for log file path and runtime duration tracking.
 $script:LogPath = ".\gaming-pc-setup.log"
 $script:StartTime = Get-Date
 
 
 function Initialize-Logger {
-    
+    <#
+    .SYNOPSIS
+        Initializes logging for the current run.
+    .DESCRIPTION
+        Sets the log path, records the start time, creates the log directory if
+        missing, optionally clears any existing log, and writes a header block.
+    .PARAMETER LogPath
+        Destination log file path. Defaults to ./gaming-pc-setup.log.
+    .PARAMETER ClearExisting
+        When true, removes the existing log file before writing new entries.
+    .OUTPUTS
+        None.
+    #>
 
     [CmdletBinding()]
     param(
@@ -35,7 +56,19 @@ function Initialize-Logger {
 }
 
 function Write-Log {
-    
+    <#
+    .SYNOPSIS
+        Writes a log line to file and console.
+    .DESCRIPTION
+        Prepends a timestamp and severity level, appends to the log file, and
+        writes to the console with a severity-based color.
+    .PARAMETER Message
+        Message text to record.
+    .PARAMETER Level
+        Severity label. Accepted values: INFO, SUCCESS, ERROR, WARNING.
+    .OUTPUTS
+        None.
+    #>
 
     [CmdletBinding()]
     param(
@@ -67,7 +100,14 @@ function Write-Log {
 }
 
 function Write-LogSection {
-    
+    <#
+    .SYNOPSIS
+        Writes a banner-style section header to the log.
+    .PARAMETER SectionName
+        Human-friendly section name to render.
+    .OUTPUTS
+        None.
+    #>
 
     [CmdletBinding()]
     param(
@@ -81,7 +121,15 @@ function Write-LogSection {
 }
 
 function Get-LogSummary {
-    
+    <#
+    .SYNOPSIS
+        Summarizes log output for reporting.
+    .DESCRIPTION
+        Counts success/error/warning lines and returns a summary hashtable with
+        duration and log metadata. Returns zero counts if the log file is missing.
+    .OUTPUTS
+        [hashtable] Summary information including counts and duration.
+    #>
 
     [CmdletBinding()]
     param()

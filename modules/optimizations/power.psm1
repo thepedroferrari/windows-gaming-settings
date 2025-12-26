@@ -1,3 +1,12 @@
+<#
+.SYNOPSIS
+    Power plan and power management optimizations.
+.DESCRIPTION
+    Activates high-performance power plans and disables select power-saving
+    features that can introduce latency or device sleep during gaming.
+.NOTES
+    Requires Administrator. Many settings apply to the active power scheme.
+#>
 #Requires -RunAsAdministrator
 
 
@@ -8,6 +17,14 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Test-PowerOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies power-related optimizations.
+    .DESCRIPTION
+        Checks for a high-performance power plan and confirms hibernation state.
+    .OUTPUTS
+        [bool] True when checks pass, else false.
+    #>
     $allPassed = $true
 
     Write-Log "Verifying power optimizations..." "INFO"
@@ -34,6 +51,15 @@ function Test-PowerOptimizations {
 
 
 function Set-UltimatePerformancePlan {
+    <#
+    .SYNOPSIS
+        Creates or activates the Ultimate Performance power plan.
+    .DESCRIPTION
+        Duplicates the Ultimate Performance scheme if needed, activates it,
+        and falls back to High Performance when unavailable.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Adding Ultimate Performance power plan..." "INFO"
 
@@ -68,6 +94,14 @@ function Set-UltimatePerformancePlan {
 
 
 function Set-PowerPlan {
+    <#
+    .SYNOPSIS
+        Activates the High Performance power plan.
+    .DESCRIPTION
+        Finds and activates High Performance; if missing, attempts to create it.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Configuring power plan..." "INFO"
 
@@ -97,6 +131,14 @@ function Set-PowerPlan {
 
 
 function Disable-PCIeLinkState {
+    <#
+    .SYNOPSIS
+        Disables PCIe link state power management.
+    .DESCRIPTION
+        Sets PCIe link state power settings to Off for AC and DC.
+    .OUTPUTS
+        None.
+    #>
     try {
         powercfg /setacvalueindex SCHEME_CURRENT 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0 2>&1 | Out-Null
 
@@ -114,6 +156,14 @@ function Disable-PCIeLinkState {
 
 
 function Disable-USBSelectiveSuspend {
+    <#
+    .SYNOPSIS
+        Disables USB selective suspend.
+    .DESCRIPTION
+        Prevents USB devices from entering low-power sleep states.
+    .OUTPUTS
+        None.
+    #>
     try {
         powercfg /setacvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0 2>&1 | Out-Null
 
@@ -131,6 +181,16 @@ function Disable-USBSelectiveSuspend {
 
 
 function Set-ProcessorIdlePolicy {
+    <#
+    .SYNOPSIS
+        Configures minimum processor state for the active plan.
+    .DESCRIPTION
+        Sets the minimum processor state to a bounded percentage (5-100).
+    .PARAMETER MinProcessorStatePercent
+        Minimum CPU state percentage; values are clamped to 5..100.
+    .OUTPUTS
+        None.
+    #>
     param(
         [int]$MinProcessorStatePercent = 5
     )
@@ -155,6 +215,15 @@ function Set-ProcessorIdlePolicy {
 
 
 function Disable-Hibernation {
+    <#
+    .SYNOPSIS
+        Disables Windows hibernation.
+    .DESCRIPTION
+        Removes hiberfil.sys and reduces disk usage. Also disables Fast Startup
+        if it depends on hibernation.
+    .OUTPUTS
+        None.
+    #>
     try {
         powercfg /hibernate off 2>&1 | Out-Null
         Write-Log "Disabled hibernation (saves disk space)" "SUCCESS"
@@ -169,6 +238,17 @@ function Disable-Hibernation {
 
 
 function Invoke-PowerOptimizations {
+    <#
+    .SYNOPSIS
+        Applies the full power optimization set.
+    .DESCRIPTION
+        Activates a high-performance plan, disables PCIe and USB power saving,
+        configures minimum processor state, and disables hibernation.
+    .PARAMETER MinProcessorStatePercent
+        Minimum processor state percentage to apply.
+    .OUTPUTS
+        None.
+    #>
     param(
         [int]$MinProcessorStatePercent = 5
     )
@@ -196,6 +276,15 @@ function Invoke-PowerOptimizations {
 
 
 function Undo-PowerOptimizations {
+    <#
+    .SYNOPSIS
+        Reverts power-related changes.
+    .DESCRIPTION
+        Restores the Balanced plan, re-enables hibernation, and resets default
+        power schemes.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back power optimizations..." "INFO"
 
     try {

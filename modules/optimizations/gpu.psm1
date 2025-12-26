@@ -1,4 +1,14 @@
-﻿#Requires -RunAsAdministrator
+﻿<#
+.SYNOPSIS
+    GPU optimization helpers with vendor-specific tuning notes.
+.DESCRIPTION
+    Applies optional HAGS settings and performs vendor-specific housekeeping,
+    primarily focused on reducing background telemetry tasks.
+.NOTES
+    Requires Administrator. Vendor control panel settings are suggested but not
+    changed by this module.
+#>
+#Requires -RunAsAdministrator
 
 
 
@@ -8,6 +18,14 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Test-GPUVendor {
+    <#
+    .SYNOPSIS
+        Detects the primary GPU vendor.
+    .DESCRIPTION
+        Reads Win32_VideoController and maps the first adapter to nvidia/amd/intel.
+    .OUTPUTS
+        [string] One of: nvidia, amd, intel, unknown.
+    #>
     try {
         $gpu = Get-CimInstance Win32_VideoController -ErrorAction Stop | Select-Object -First 1
 
@@ -32,6 +50,14 @@ function Test-GPUVendor {
 
 
 function Test-GPUOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies GPU-related settings.
+    .DESCRIPTION
+        Reads HAGS (Hardware-accelerated GPU Scheduling) state from registry.
+    .OUTPUTS
+        [bool] True when verification runs without errors.
+    #>
     $allPassed = $true
 
     Write-Log "Verifying GPU optimizations..." "INFO"
@@ -51,6 +77,16 @@ function Test-GPUOptimizations {
 
 
 function Set-HAGS {
+    <#
+    .SYNOPSIS
+        Enables or disables Hardware-accelerated GPU Scheduling.
+    .DESCRIPTION
+        Writes HwSchMode under GraphicsDrivers and logs the chosen state.
+    .PARAMETER Enable
+        When true, enables HAGS; when false, disables it.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $false
     )
@@ -76,6 +112,15 @@ function Set-HAGS {
 
 
 function Set-NVIDIAOptimizations {
+    <#
+    .SYNOPSIS
+        Applies NVIDIA-specific housekeeping.
+    .DESCRIPTION
+        Disables known NVIDIA telemetry and updater scheduled tasks. Logs
+        recommended control panel settings for manual review.
+    .OUTPUTS
+        None.
+    #>
     try {
         $nvidiaPath = "HKLM:\SYSTEM\CurrentControlSet\Services\nvlddmkm"
 
@@ -127,6 +172,14 @@ function Set-NVIDIAOptimizations {
 
 
 function Set-AMDOptimizations {
+    <#
+    .SYNOPSIS
+        Applies AMD-specific housekeeping.
+    .DESCRIPTION
+        Performs minimal registry backup and prints recommended Radeon settings.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Applying AMD optimizations..." "INFO"
 
@@ -151,6 +204,14 @@ function Set-AMDOptimizations {
 
 
 function Set-IntelOptimizations {
+    <#
+    .SYNOPSIS
+        Applies Intel-specific housekeeping.
+    .DESCRIPTION
+        Logs recommended Intel graphics settings for manual review.
+    .OUTPUTS
+        None.
+    #>
     try {
         Write-Log "Applying Intel GPU optimizations..." "INFO"
 
@@ -169,6 +230,17 @@ function Set-IntelOptimizations {
 
 
 function Invoke-GPUOptimizations {
+    <#
+    .SYNOPSIS
+        Runs GPU optimizations based on detected vendor.
+    .DESCRIPTION
+        Applies HAGS preference, detects GPU vendor, and executes the matching
+        vendor-specific helper.
+    .PARAMETER EnableHAGS
+        Enables HAGS when true.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$EnableHAGS = $false
     )
@@ -205,6 +277,15 @@ function Invoke-GPUOptimizations {
 
 
 function Undo-GPUOptimizations {
+    <#
+    .SYNOPSIS
+        Reverts GPU-related settings and tasks.
+    .DESCRIPTION
+        Disables HAGS, re-enables NVIDIA scheduled tasks, and restores backed
+        up registry values when present.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back GPU optimizations..." "INFO"
 
     try {

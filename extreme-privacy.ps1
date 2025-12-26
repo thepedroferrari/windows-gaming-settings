@@ -1,3 +1,23 @@
+<#
+.SYNOPSIS
+    Applies aggressive privacy and anti-tracking hardening to Windows.
+.DESCRIPTION
+    Disables Windows Update, telemetry services, location and cloud features,
+    Microsoft account integration, and other data collection paths. This is an
+    intentionally heavy-handed profile that may break features like Store apps,
+    Cortana, or cloud sync. Use only if you fully understand the tradeoffs.
+.PARAMETER SkipConfirmations
+    Skips the interactive confirmation prompt.
+.PARAMETER EnableFirewallRules
+    When set, adds outbound firewall rules to block known telemetry IPs.
+.EXAMPLE
+    .\extreme-privacy.ps1
+.EXAMPLE
+    .\extreme-privacy.ps1 -SkipConfirmations
+.NOTES
+    Requires Administrator. Writes `extreme-privacy.log` in the current directory.
+    Many changes are registry- and service-based and may require a reboot.
+#>
 #Requires -RunAsAdministrator
 
 
@@ -7,9 +27,23 @@ param(
     [switch]$EnableFirewallRules
 )
 
+# Fail fast to avoid partial application when an error is encountered.
 $ErrorActionPreference = "Stop"
 $script:LogPath = ".\extreme-privacy.log"
 
+<#
+.SYNOPSIS
+    Writes a structured log line to file and console.
+.DESCRIPTION
+    Prepends timestamp and severity level, appends to the log file, and mirrors
+    the message to the console with a level-aware color.
+.PARAMETER Message
+    Human-readable log text.
+.PARAMETER Level
+    Severity marker: INFO, SUCCESS, or ERROR.
+.OUTPUTS
+    None.
+#>
 function Write-Log {
     param([string]$Message, [string]$Level = "INFO")
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -23,6 +57,23 @@ function Write-Log {
     Write-Host $logMessage -ForegroundColor $(if ($Level -eq "ERROR") { "Red" } elseif ($Level -eq "SUCCESS") { "Green" } else { "White" })
 }
 
+<#
+.SYNOPSIS
+    Sets a registry value, creating the key if needed.
+.DESCRIPTION
+    Ensures the registry path exists, writes the requested value and type,
+    and logs success or failure.
+.PARAMETER Path
+    Registry path (e.g., HKLM:\Software\...).
+.PARAMETER Name
+    Registry value name.
+.PARAMETER Value
+    Data to store at the registry value.
+.PARAMETER Type
+    Registry value type (defaults to DWORD).
+.OUTPUTS
+    [bool] True on success, false on failure.
+#>
 function Set-RegistryValue {
     param(
         [string]$Path,
@@ -58,6 +109,7 @@ if (-not $SkipConfirmations) {
     }
 }
 
+# Windows Update is disabled to prevent telemetry and background bandwidth usage.
 Write-Log "=== Disabling Windows Update Completely ==="
 try {
     Stop-Service wuauserv -Force -ErrorAction SilentlyContinue
@@ -77,6 +129,7 @@ try {
 }
 
 
+# Disable telemetry and diagnostic services that phone home.
 Write-Log "=== Disabling All Telemetry Services ==="
 $telemetryServices = @(
     "DiagTrack",
@@ -107,6 +160,7 @@ foreach ($svc in $telemetryServices) {
 }
 
 
+# Disable location sensors and location-based permission stores.
 Write-Log "=== Disabling Location Tracking ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocation" -Value 1
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableWindowsLocationProvider" -Value 1
@@ -114,6 +168,7 @@ Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSe
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Value "Deny" -Type "String"
 
 
+# Block camera access for UWP/modern apps, keep microphone enabled for voice chat.
 Write-Log "=== Hardening Camera Privacy ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessCamera" -Value 2
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam" -Name "Value" -Value "Deny" -Type "String"
@@ -122,11 +177,13 @@ Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Capabil
 Write-Log "Camera blocked | Microphone enabled for gaming voice chat" "SUCCESS"
 
 
+# Disable Windows Hello biometrics and PIN logon for domain usage.
 Write-Log "=== Disabling Biometrics ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Biometrics" -Name "Enabled" -Value 0
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowDomainPINLogon" -Value 0
 
 
+# Remove OneDrive background sync and shell integration.
 Write-Log "=== Disabling OneDrive ==="
 try {
     taskkill /f /im OneDrive.exe 2>&1 | Out-Null
@@ -152,6 +209,7 @@ try {
 }
 
 
+# Disable Windows settings sync to reduce cloud footprint.
 Write-Log "=== Disabling Sync Settings ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\SettingSync" -Name "DisableSettingSync" -Value 2
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\SettingSync" -Name "DisableSettingSyncUserOverride" -Value 1
@@ -164,11 +222,13 @@ Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Setting
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" -Name "Enabled" -Value 0
 
 
+# Prevent Microsoft account sign-in integration (local account bias).
 Write-Log "=== Disabling Microsoft Account Integration ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\Accounts" -Name "AllowMicrosoftAccountConnection" -Value 0
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftAccount" -Name "DisableUserAuth" -Value 1
 
 
+# Disable consumer cloud content delivery and spotlight suggestions.
 Write-Log "=== Disabling Cloud Content ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -Value 1
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableCloudOptimizedContent" -Value 1
@@ -184,11 +244,13 @@ Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Content
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SystemPaneSuggestionsEnabled" -Value 0
 
 
+# Stop app suggestions and sync provider notifications.
 Write-Log "=== Disabling App Suggestions ==="
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SoftLandingEnabled" -Value 0
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSyncProviderNotifications" -Value 0
 
 
+# Disable typing/ink data collection used for personalization.
 Write-Log "=== Disabling Typing Data Collection ==="
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Value 1
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitTextCollection" -Value 1
@@ -196,49 +258,60 @@ Set-RegistryValue -Path "HKCU:\Software\Microsoft\InputPersonalization\TrainedDa
 Set-RegistryValue -Path "HKCU:\Software\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Value 0
 
 
+# Block handwriting data sharing.
 Write-Log "=== Disabling Handwriting Data Collection ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\TabletPC" -Name "PreventHandwritingDataSharing" -Value 1
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" -Name "PreventHandwritingErrorReports" -Value 1
 
 
+# Disable Microsoft experimentation/feature rollouts (A/B testing).
 Write-Log "=== Disabling Microsoft Experimentation ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\System" -Name "AllowExperimentation" -Value 0
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation" -Name "value" -Value 0
 
 
+# Deny UWP app access to account data and identity info.
 Write-Log "=== Disabling App Access to Account Info ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" -Name "Value" -Value "Deny" -Type "String"
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessAccountInfo" -Value 2
 
 
+# Deny app access to contacts and PIM data sources.
 Write-Log "=== Disabling App Access to Contacts ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessContacts" -Value 2
 
 
+# Deny app access to calendar entries.
 Write-Log "=== Disabling App Access to Calendar ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessCalendar" -Value 2
 
 
+# Deny app access to call history logs.
 Write-Log "=== Disabling App Access to Call History ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessCallHistory" -Value 2
 
 
+# Deny app access to email data.
 Write-Log "=== Disabling App Access to Email ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessEmail" -Value 2
 
 
+# Deny app access to notifications history.
 Write-Log "=== Disabling App Access to Notifications ==="
 Set-RegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsAccessNotifications" -Value 2
 
 
+# Prevent automatic map package downloads.
 Write-Log "=== Disabling Maps Auto-Update ==="
 Set-RegistryValue -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Value 0
 
 
+# Adds telemetry domains to hosts file; requires ownership/ACL changes.
 Write-Log "=== Advanced Hosts File Telemetry Blocking ==="
 try {
     $hostsFile = "$env:SystemRoot\System32\drivers\etc\hosts"
 
+    # Ownership and permissions are required for hardened builds or customized ACLs.
     Write-Log "Taking ownership of hosts file (required for X-Lite builds)..."
 
     $takeownResult = takeown.exe /F $hostsFile /A 2>&1
@@ -258,6 +331,7 @@ try {
     $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
     icacls.exe $hostsFile /grant "${currentUser}:F" 2>&1 | Out-Null
 
+    # DNS Client can keep the hosts file locked; stop it temporarily if running.
     Write-Log "Stopping DNS Client service to unlock hosts file..."
     $dnsService = Get-Service -Name "Dnscache" -ErrorAction SilentlyContinue
     $dnsWasRunning = $false
@@ -293,6 +367,7 @@ try {
         [System.IO.File]::WriteAllBytes($backupPath, $hostsBytes)
         Write-Log "Backed up hosts file to: $backupPath" "SUCCESS"
 
+        # Curated list of telemetry/ads endpoints to null-route.
         $telemetryDomains = @(
             "vortex.data.microsoft.com",
             "vortex-win.data.microsoft.com",
@@ -368,6 +443,7 @@ try {
             $newContent += ($newEntries -join "`r`n")
             $newContent += "`r`n"
 
+            # Preserve UTF-8 without BOM to avoid compatibility issues.
             $utf8NoBom = New-Object System.Text.UTF8Encoding $false
             [System.IO.File]::WriteAllText($hostsFile, $newContent, $utf8NoBom)
 
@@ -405,6 +481,7 @@ try {
 
 
 if ($EnableFirewallRules) {
+    # Optional: outbound firewall rules for known telemetry IPs.
     Write-Log "=== Creating Firewall Rules to Block Telemetry ==="
     try {
         $telemetryIPs = @(

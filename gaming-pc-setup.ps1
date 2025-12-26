@@ -1,3 +1,27 @@
+<#
+.SYNOPSIS
+    Main entry point for applying evidence-based Windows gaming optimizations.
+.DESCRIPTION
+    Loads core and optimization modules, collects basic system information, previews
+    planned changes, optionally asks for confirmation, creates a restore point, and
+    then executes each optimization section with per-section verification.
+    Generates a log file and a post-setup checklist on success.
+.PARAMETER DryRun
+    When set, the script prints intended actions and skips all system changes.
+.PARAMETER ConfigFile
+    Optional path to a JSON configuration file. This parameter is reserved for
+    future config wiring and is not consumed by this script today.
+.PARAMETER Profile
+    Optional profile name (e.g., competitive, balanced). This parameter is reserved
+    for future config wiring and is not consumed by this script today.
+.EXAMPLE
+    .\gaming-pc-setup.ps1
+.EXAMPLE
+    .\gaming-pc-setup.ps1 -DryRun
+.NOTES
+    Requires Administrator. Produces `gaming-pc-setup.log` and
+    `POST-SETUP-CHECKLIST.txt`. See module files for exact registry/service changes.
+#>
 #Requires -RunAsAdministrator
 
 
@@ -9,6 +33,7 @@ param(
 )
 
 
+# Resolve script root even when invoked from a different working directory.
 $ScriptRoot = $PSScriptRoot
 if (-not $ScriptRoot) {
     $ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -28,11 +53,13 @@ if ($DryRun) {
 
 Write-Host "Loading modules..." -ForegroundColor Cyan
 
+# Core infrastructure for logging, registry helpers, config, and menus.
 Import-Module (Join-Path $ScriptRoot "modules\core\logger.psm1") -Force -Global
 Import-Module (Join-Path $ScriptRoot "modules\core\registry.psm1") -Force -Global
 Import-Module (Join-Path $ScriptRoot "modules\core\config.psm1") -Force -Global
 Import-Module (Join-Path $ScriptRoot "modules\core\menu.psm1") -Force -Global
 
+# Optimization categories (system, performance, power, network, etc.).
 Import-Module (Join-Path $ScriptRoot "modules\optimizations\system.psm1") -Force -Global
 Import-Module (Join-Path $ScriptRoot "modules\optimizations\amd-x3d.psm1") -Force -Global
 Import-Module (Join-Path $ScriptRoot "modules\optimizations\performance.psm1") -Force -Global
@@ -48,6 +75,7 @@ Write-Host ""
 
 
 
+# Central log for all modules and sections.
 $logPath = Join-Path $ScriptRoot "gaming-pc-setup.log"
 Initialize-Logger -LogPath $logPath -ClearExisting $true
 
@@ -57,6 +85,17 @@ Write-Log "Dry run: $DryRun" "INFO"
 
 
 
+<#
+.SYNOPSIS
+    Collects a lightweight hardware/OS summary for logging and UI output.
+.DESCRIPTION
+    Queries CPU, total RAM, primary GPU, OS caption, and OS build using CIM.
+    This data is used for the console summary and for the post-setup checklist.
+.OUTPUTS
+    [hashtable] with keys CPU, RAM, GPU, OS, Build.
+.NOTES
+    Does not require admin privileges, but script overall does.
+#>
 function Get-SystemInfo {
     $cpu = (Get-CimInstance Win32_Processor).Name
     $totalRAM = [math]::Round((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1GB)
@@ -86,6 +125,7 @@ Write-Log "System: $($sysInfo.CPU) | $($sysInfo.RAM) | $($sysInfo.GPU)" "INFO"
 
 
 
+# Ordered list of optimization sections to execute.
 $sections = @(
     @{
         Name = "AMD X3D Optimizations"
@@ -201,7 +241,7 @@ Write-Host ""
 Write-Host "Starting optimizations..." -ForegroundColor Cyan
 Write-Host ""
 
-# Create a restore point before making any changes (safety feature)
+# Create a restore point before making any changes (safety feature).
 if (-not $DryRun) {
     Write-Host "Creating System Restore Point..." -ForegroundColor Yellow
     New-RestorePoint -Description "Pre-Gaming-PC-Setup-$(Get-Date -Format 'yyyyMMdd-HHmm')"
@@ -259,6 +299,7 @@ Write-Progress -Activity "Gaming PC Setup" -Completed
 if (-not $DryRun) {
     $checklistPath = Join-Path $ScriptRoot "POST-SETUP-CHECKLIST.txt"
 
+    # The checklist is a human-focused, post-setup reminder sheet.
     $checklistContent = @"
 ================================================================================
     GAMING PC SETUP - POST-INSTALLATION CHECKLIST
@@ -548,4 +589,3 @@ if (-not $DryRun) {
     Write-Host "DRY RUN complete. No changes were applied." -ForegroundColor Yellow
     Write-Host ""
 }
-

@@ -1,4 +1,14 @@
-﻿#Requires -RunAsAdministrator
+﻿<#
+.SYNOPSIS
+    AMD Ryzen X3D-specific optimizations and validation.
+.DESCRIPTION
+    Applies CPPC registry configuration and Game Bar settings that help Windows
+    schedule threads correctly on Ryzen X3D CPUs. Includes chipset driver checks
+    and rollback helpers.
+.NOTES
+    Requires Administrator. Intended only for supported X3D CPUs.
+#>
+#Requires -RunAsAdministrator
 
 
 
@@ -8,6 +18,14 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Test-X3DCpu {
+    <#
+    .SYNOPSIS
+        Detects whether the system CPU is a Ryzen X3D model.
+    .DESCRIPTION
+        Queries Win32_Processor and checks against known X3D model substrings.
+    .OUTPUTS
+        [bool] True if an X3D CPU is detected, else false.
+    #>
     try {
         $cpuInfo = Get-CimInstance Win32_Processor -ErrorAction Stop
         $isX3D = $cpuInfo.Name -like "*7900X3D*" -or $cpuInfo.Name -like "*7950X3D*" -or
@@ -28,6 +46,15 @@ function Test-X3DCpu {
 
 
 function Test-AMDChipsetDrivers {
+    <#
+    .SYNOPSIS
+        Verifies AMD chipset driver components required for X3D scheduling.
+    .DESCRIPTION
+        Checks for the 3D V-Cache Performance Optimizer and the PPM provisioning
+        driver using PnP device queries.
+    .OUTPUTS
+        [bool] True when required components are present.
+    #>
     try {
         Write-Log "Checking for AMD Chipset Drivers (required for X3D)..." "INFO"
 
@@ -60,6 +87,15 @@ function Test-AMDChipsetDrivers {
 
 
 function Test-X3DOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies that X3D-related registry settings are applied.
+    .DESCRIPTION
+        Ensures CPPC is enabled, HeteroPolicy overrides are removed, and Game Bar
+        overlay settings are disabled for lower overhead.
+    .OUTPUTS
+        [bool] True if all checks pass, else false.
+    #>
     $allPassed = $true
 
     Write-Log "Verifying AMD X3D optimizations..." "INFO"
@@ -102,6 +138,17 @@ function Test-X3DOptimizations {
 
 
 function Enable-CPPCOptimization {
+    <#
+    .SYNOPSIS
+        Enables CPPC registry settings for X3D scheduling.
+    .DESCRIPTION
+        Sets CppcEnable and removes HeteroPolicy overrides that conflict with
+        AMD X3D scheduling.
+    .OUTPUTS
+        None.
+    .NOTES
+        Backs up the parent registry key before modification.
+    #>
     $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Power"
 
     Backup-RegistryKey -Path $regPath
@@ -123,6 +170,15 @@ function Enable-CPPCOptimization {
 
 
 function Set-GameBarConfiguration {
+    <#
+    .SYNOPSIS
+        Disables Game Bar overlays while keeping scheduler hints.
+    .DESCRIPTION
+        Disables GameDVR capture settings to reduce overhead, but keeps Game Bar
+        detection enabled so the OS can apply gaming heuristics.
+    .OUTPUTS
+        None.
+    #>
     try {
         $gameBarPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR"
 
@@ -150,6 +206,15 @@ function Set-GameBarConfiguration {
 
 
 function Invoke-X3DOptimizations {
+    <#
+    .SYNOPSIS
+        Applies all AMD X3D optimizations.
+    .DESCRIPTION
+        Confirms the CPU is X3D, warns if chipset drivers are missing, then
+        enables CPPC optimizations and configures Game Bar settings.
+    .OUTPUTS
+        None.
+    #>
     if (-not (Test-X3DCpu)) {
         Write-Log "No AMD X3D CPU detected - skipping X3D optimizations" "INFO"
         return
@@ -192,6 +257,14 @@ function Invoke-X3DOptimizations {
 
 
 function Undo-X3DOptimizations {
+    <#
+    .SYNOPSIS
+        Reverts X3D-specific registry changes.
+    .DESCRIPTION
+        Restores backed up registry values for CPPC and Game Bar settings.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back AMD X3D optimizations..." "INFO"
 
     try {

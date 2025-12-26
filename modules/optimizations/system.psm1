@@ -1,4 +1,13 @@
-﻿#Requires -RunAsAdministrator
+﻿<#
+.SYNOPSIS
+    System-level optimizations and housekeeping.
+.DESCRIPTION
+    Applies page file sizing, fast startup changes, storage cleanup, UI tweaks,
+    input settings, and service trimming intended for gaming stability.
+.NOTES
+    Requires Administrator. Several changes require a reboot to take effect.
+#>
+#Requires -RunAsAdministrator
 
 
 
@@ -8,6 +17,14 @@ Import-Module (Join-Path $PSScriptRoot "..\core\registry.psm1") -Force -Global
 
 
 function Get-SystemRAM {
+    <#
+    .SYNOPSIS
+        Returns total system RAM in GB.
+    .DESCRIPTION
+        Queries Win32_PhysicalMemory and sums capacity to produce total RAM.
+    .OUTPUTS
+        [int] Total RAM in gigabytes, or 0 on failure.
+    #>
     try {
         $totalRAM = [math]::Round((Get-CimInstance Win32_PhysicalMemory -ErrorAction Stop |
             Measure-Object -Property Capacity -Sum).Sum / 1GB)
@@ -22,6 +39,15 @@ function Get-SystemRAM {
 
 
 function Test-SystemOptimizations {
+    <#
+    .SYNOPSIS
+        Verifies key system optimizations.
+    .DESCRIPTION
+        Checks page file policy, fast startup setting, and logs memory compression
+        state for visibility.
+    .OUTPUTS
+        [bool] True when checks pass, else false.
+    #>
     $allPassed = $true
 
     Write-Log "Verifying system optimizations..." "INFO"
@@ -80,6 +106,15 @@ function Test-SystemOptimizations {
 
 
 function Set-PageFile {
+    <#
+    .SYNOPSIS
+        Configures a fixed page file size on systems with sufficient RAM.
+    .DESCRIPTION
+        Disables automatic page file management and sets a fixed size based on
+        total RAM (4GB for 32GB+, 8GB for 16-31GB).
+    .OUTPUTS
+        None.
+    #>
     try {
         $totalRAM = Get-SystemRAM
 
@@ -129,6 +164,16 @@ function Set-PageFile {
 
 
 function Set-MemoryCompression {
+    <#
+    .SYNOPSIS
+        Toggles Windows memory compression (opt-in).
+    .DESCRIPTION
+        Disables memory compression only on high-RAM systems when requested.
+    .PARAMETER Disable
+        When true, attempts to disable memory compression.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Disable = $false
     )
@@ -155,6 +200,14 @@ function Set-MemoryCompression {
 
 
 function Disable-FastStartup {
+    <#
+    .SYNOPSIS
+        Disables Windows Fast Startup.
+    .DESCRIPTION
+        Writes HiberbootEnabled to 0 to force clean boots.
+    .OUTPUTS
+        None.
+    #>
     $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power"
 
     Backup-RegistryKey -Path $regPath
@@ -171,6 +224,14 @@ function Disable-FastStartup {
 
 
 function Disable-ExplorerAutoType {
+    <#
+    .SYNOPSIS
+        Disables Explorer automatic folder type detection.
+    .DESCRIPTION
+        Forces a generic folder type to reduce Explorer metadata churn.
+    .OUTPUTS
+        None.
+    #>
     try {
         $shellPath = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell"
         Backup-RegistryKey -Path $shellPath
@@ -184,6 +245,19 @@ function Disable-ExplorerAutoType {
 
 
 function Invoke-DiskCleanup {
+    <#
+    .SYNOPSIS
+        Runs disk cleanup when usage exceeds a threshold.
+    .DESCRIPTION
+        Executes cleanmgr and optional DISM ResetBase to reclaim disk space.
+        Can run DISM asynchronously with a toast notification on completion.
+    .PARAMETER Async
+        When true, runs DISM cleanup asynchronously.
+    .PARAMETER ThresholdPercent
+        Minimum disk usage percentage required to run cleanup.
+    .OUTPUTS
+        None.
+    #>
     param(
         [switch]$Async,
         [int]$ThresholdPercent = 90
@@ -251,6 +325,14 @@ function Invoke-DiskCleanup {
 
 
 function Invoke-TempPurge {
+    <#
+    .SYNOPSIS
+        Clears common temporary folders.
+    .DESCRIPTION
+        Removes files under %TEMP% and %WINDIR%\Temp with best-effort error handling.
+    .OUTPUTS
+        None.
+    #>
     try {
         $tempPaths = @("$env:TEMP","$env:WINDIR\Temp")
         foreach ($p in $tempPaths) {
@@ -267,6 +349,16 @@ function Invoke-TempPurge {
 
 
 function Set-ServiceTrimSafe {
+    <#
+    .SYNOPSIS
+        Sets select services to Manual to reduce background load.
+    .DESCRIPTION
+        Targets a curated list of non-essential services and stops them.
+    .PARAMETER Enable
+        When true, applies service trimming.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $true
     )
@@ -291,6 +383,17 @@ function Set-ServiceTrimSafe {
 
 
 function Disable-RazerAutoInstall {
+    <#
+    .SYNOPSIS
+        Disables Razer/OEM auto-install services and tasks.
+    .DESCRIPTION
+        Stops and disables Razer-related services and scheduled tasks that can
+        install software automatically.
+    .PARAMETER Enable
+        When true, applies the block.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$Enable = $true
     )
@@ -323,6 +426,10 @@ function New-RestorePoint {
     .DESCRIPTION
         Safety feature - creates a restore point so user can roll back if needed.
         Requires System Restore to be enabled on the system drive.
+    .PARAMETER Description
+        Restore point description string.
+    .OUTPUTS
+        [bool] True if created, false otherwise.
     #>
     param(
         [string]$Description = "Pre-Gaming-PC-Setup"
@@ -359,6 +466,10 @@ function Set-ClassicContextMenu {
     .DESCRIPTION
         Windows 11's new context menu is slower and requires extra clicks.
         This tweak restores the full classic menu for faster navigation.
+    .PARAMETER Enable
+        When true, enables the classic context menu on Windows 11.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -401,6 +512,10 @@ function Disable-StorageSense {
     .DESCRIPTION
         Storage Sense can cause background disk activity during gaming.
         Disabling it prevents unexpected cleanup operations.
+    .PARAMETER Enable
+        When true, disables Storage Sense.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -433,6 +548,10 @@ function Set-DisplayPerformance {
     .DESCRIPTION
         Disables animations, shadows, and other visual effects that consume GPU/CPU resources.
         Reduces visual overhead for slightly better gaming performance.
+    .PARAMETER Enable
+        When true, applies performance-oriented visual settings.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -477,6 +596,10 @@ function Enable-TaskbarEndTask {
     .DESCRIPTION
         Useful for quickly killing frozen games or unresponsive applications
         without needing to open Task Manager.
+    .PARAMETER Enable
+        When true, enables the taskbar End Task option.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -511,6 +634,10 @@ function Remove-ExplorerClutter {
     .DESCRIPTION
         Cleans up Explorer navigation for faster access to files.
         Only applies to Windows 11.
+    .PARAMETER Enable
+        When true, removes Home/Gallery entries.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -556,6 +683,10 @@ function Disable-MouseAcceleration {
     .DESCRIPTION
         Essential for competitive FPS players - ensures mouse movement
         is linear and predictable regardless of speed.
+    .PARAMETER Enable
+        When true, disables enhanced pointer precision.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -589,6 +720,10 @@ function Set-KeyboardResponse {
     .DESCRIPTION
         Sets keyboard repeat delay to minimum and repeat rate to maximum
         for faster key response in games.
+    .PARAMETER Enable
+        When true, applies the keyboard response settings.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -622,6 +757,10 @@ function Disable-USBSelectiveSuspend {
     .DESCRIPTION
         Prevents Windows from putting USB devices to sleep, which can
         cause input lag or disconnection issues with gaming peripherals.
+    .PARAMETER Enable
+        When true, disables USB selective suspend.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -670,6 +809,10 @@ function Set-AudioExclusiveMode {
     .DESCRIPTION
         Enables WASAPI exclusive mode hints and reduces audio buffer
         for lower latency audio in competitive games.
+    .PARAMETER Enable
+        When true, applies exclusive mode-related settings.
+    .OUTPUTS
+        None.
     #>
     param(
         [bool]$Enable = $true
@@ -704,6 +847,37 @@ function Set-AudioExclusiveMode {
 
 
 function Invoke-SystemOptimizations {
+    <#
+    .SYNOPSIS
+        Applies system optimization bundle.
+    .DESCRIPTION
+        Runs page file tuning, fast startup changes, cleanup, service trimming,
+        UI tweaks, and device-related settings as configured.
+    .PARAMETER DisableMemoryCompression
+        Disables memory compression when true (opt-in).
+    .PARAMETER DisableExplorerAutoType
+        Disables Explorer auto folder type detection when true.
+    .PARAMETER RunDiskCleanup
+        Runs Disk Cleanup and DISM ResetBase when true.
+    .PARAMETER RunTempPurge
+        Purges temp folders when true.
+    .PARAMETER ServiceTrimSafe
+        Trims select services when true.
+    .PARAMETER BlockRazer
+        Blocks Razer/OEM auto-installs when true.
+    .PARAMETER ClassicContextMenu
+        Enables the classic Windows 11 context menu when true.
+    .PARAMETER DisableStorageSense
+        Disables Storage Sense when true.
+    .PARAMETER DisplayPerformance
+        Applies visual performance settings when true.
+    .PARAMETER TaskbarEndTask
+        Enables taskbar End Task option when true.
+    .PARAMETER RemoveExplorerClutter
+        Removes Explorer Home/Gallery entries when true.
+    .OUTPUTS
+        None.
+    #>
     param(
         [bool]$DisableMemoryCompression = $false,
         [bool]$DisableExplorerAutoType = $true,
@@ -764,6 +938,15 @@ function Invoke-SystemOptimizations {
 
 
 function Undo-SystemOptimizations {
+    <#
+    .SYNOPSIS
+        Reverts system optimizations where possible.
+    .DESCRIPTION
+        Restores page file management, fast startup registry state, and other
+        backed up settings. Some changes still require reboot.
+    .OUTPUTS
+        None.
+    #>
     Write-Log "Rolling back system optimizations..." "INFO"
 
     try {
@@ -827,4 +1010,3 @@ Export-ModuleMember -Function @(
     'Invoke-SystemOptimizations',
     'Undo-SystemOptimizations'
 )
-
