@@ -69,12 +69,13 @@
     --space-2xl: 3rem;
     --space-3xl: 4rem;
 
-    --font-body: "Exo 2", system-ui, -apple-system, sans-serif;
-    --font-ui: "Rajdhani", "Exo 2", system-ui, sans-serif;
-    --font-display: "Orbitron", "Rajdhani", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", "Fira Code", monospace;
+    --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-body: var(--font-mono);
+    --font-ui: var(--font-mono);
+    --font-display: var(--font-mono);
+    --font-hero: "Oxanium", "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-    --font-logo: "Audiowide", var(--font-display);
+    --font-logo: var(--font-mono);
     --max-width: 1200px;
     --radius-sm: 6px;
     --radius: 10px;

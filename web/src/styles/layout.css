@@ -86,7 +86,7 @@
   }
 
   .value-body {
-    font-family: "Rajdhani", var(--font-mono), monospace;
+    font-family: var(--font-mono);
     font-size: clamp(1rem, 2vw, 1.15rem);
     line-height: 1.5;
     margin: 0;

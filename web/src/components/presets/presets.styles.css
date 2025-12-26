@@ -30,6 +30,7 @@
     /* Card aspect ratio */
     --card-aspect: 2.5 / 3.5;
     --card-radius: 5% / 3.5%;
+    --card-corner-shape: squircle;
   }
 
   /* ============================================
@@ -156,6 +157,7 @@
     transform-style: preserve-3d;
     will-change: transform, box-shadow;
     border-radius: var(--card-radius);
+    corner-shape: var(--card-corner-shape);
     aspect-ratio: var(--card-aspect);
 
     /* Enable pointer events for interaction */
@@ -197,6 +199,7 @@
     grid-area: 1 / 1;
     aspect-ratio: var(--card-aspect);
     border-radius: var(--card-radius);
+    corner-shape: inherit;
     transform-style: preserve-3d;
     pointer-events: none;
     overflow: hidden;
@@ -233,6 +236,7 @@
     z-index: 10;
     pointer-events: none;
     border-radius: inherit;
+    corner-shape: inherit;
     overflow: hidden;
 
     /* Rainbow gradient - DYNAMIC with calc() */
@@ -267,6 +271,7 @@
     grid-area: 1 / 1;
     transform: translateZ(1px);
     border-radius: var(--card-radius);
+    corner-shape: inherit;
   }
 
   /* Shine secondary layer with glitter */
@@ -308,6 +313,7 @@
     z-index: 11;
     pointer-events: none;
     border-radius: inherit;
+    corner-shape: inherit;
     overflow: hidden;
 
     /* Radial gradient follows pointer position */

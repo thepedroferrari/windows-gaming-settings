@@ -1255,6 +1255,7 @@ export function downloadFile(content: string, filename: string): void {
 export function setupDownload(controller?: CleanupController): void {
   const downloadBtn = document.getElementById('download-btn')
   const previewBtn = document.getElementById('preview-btn')
+  const previewBtnHero = document.getElementById('preview-btn-hero')
   const previewModal = document.getElementById('preview-modal') as HTMLDialogElement | null
   const closeModalBtn = document.getElementById('close-modal')
   const copyBtn = document.getElementById('copy-script')
@@ -1287,26 +1288,32 @@ export function setupDownload(controller?: CleanupController): void {
     })
   }
 
+  const openPreview = (): void => {
+    if (!previewModal) return
+
+    if (!viewer) {
+      viewer = createCodeViewer(document.getElementById('preview-viewer'), controller)
+    }
+
+    const current = getTrackedScript()
+    const previous = getPreviousScript()
+
+    viewer?.setContent({ current, previous })
+    viewer?.setMode('current')
+
+    const stats = computeStats(current)
+    if (linesEl) linesEl.textContent = `${stats.lines} lines`
+    if (sizeEl) sizeEl.textContent = `${stats.sizeKb} KB`
+
+    previewModal.showModal()
+  }
+
   if (previewBtn) {
-    addListener(previewBtn, 'click', () => {
-      if (!previewModal) return
+    addListener(previewBtn, 'click', openPreview)
+  }
 
-      if (!viewer) {
-        viewer = createCodeViewer(document.getElementById('preview-viewer'), controller)
-      }
-
-      const current = getTrackedScript()
-      const previous = getPreviousScript()
-
-      viewer?.setContent({ current, previous })
-      viewer?.setMode('current')
-
-      const stats = computeStats(current)
-      if (linesEl) linesEl.textContent = `${stats.lines} lines`
-      if (sizeEl) sizeEl.textContent = `${stats.sizeKb} KB`
-
-      previewModal.showModal()
-    })
+  if (previewBtnHero) {
+    addListener(previewBtnHero, 'click', openPreview)
   }
 
   if (closeModalBtn) {

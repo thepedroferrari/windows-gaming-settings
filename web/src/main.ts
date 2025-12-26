@@ -64,18 +64,16 @@ async function loadCatalog(): Promise<ValidatedCatalog> {
   }
 }
 
-function showError(message: string): void {
-  const banner = $id('error-banner')
-  const messageEl = $id('error-message')
-  if (banner && messageEl) {
-    messageEl.textContent = message
-    banner.hidden = false
-  }
-}
-
 function hideError(): void {
   const banner = $id('error-banner')
   if (banner) banner.hidden = true
+}
+
+function setSoftwareSectionVisible(isVisible: boolean): void {
+  const softwareSection = $id('software')
+  if (softwareSection) {
+    softwareSection.hidden = !isVisible
+  }
 }
 
 function setupErrorHandlers(controller: CleanupController): void {
@@ -95,8 +93,9 @@ async function handleRetry(): Promise<void> {
     store.setSoftware(catalog)
     renderSoftwareGrid()
     updateCategoryBadges()
-  } else if (loadState.error) {
-    showError(loadState.error)
+    setSoftwareSectionVisible(true)
+  } else {
+    setSoftwareSectionVisible(false)
   }
 }
 
@@ -106,15 +105,13 @@ async function init(): Promise<void> {
   setupErrorHandlers(appController)
 
   const catalog = await loadCatalog()
+  const hasCatalog = Object.keys(catalog).length > 0
   store.setSoftware(catalog)
-
-  if (loadState.error) {
-    showError(loadState.error)
-  }
 
   setupVisualEffects(appController)
   setupUI(appController)
   setupInteractions(appController)
+  setSoftwareSectionVisible(hasCatalog)
 
   updateSummary()
   document.dispatchEvent(new CustomEvent('script-change-request'))

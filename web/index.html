@@ -3,17 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RockTune — A Loadout Builder for Windows Gaming</title>
+    <title>
+      RockTune — Build Your Windows Gaming Loadout. Export the Script.
+    </title>
     <meta
       name="description"
-      content="Generate a personalized PowerShell script to tune Windows for gaming: debloat, reduce telemetry, install essentials, and apply optional performance upgrades."
+      content="RockTune is a cyberpunk loadout builder that generates a readable PowerShell script to debloat Windows, cut telemetry, tune performance/latency, and optionally install gaming essentials. No installer. No black box—preview anytime."
+    />
+    <meta
+      name="keywords"
+      content="windows gaming optimization script, powershell debloat windows 11, reduce windows telemetry, gaming loadout builder, winget gaming setup, timer resolution 0.5ms, input latency tuning"
+    />
+    <link rel="canonical" href="https://rocktune.pedroferrari.com/" />
+    <meta property="og:site_name" content="RockTune" />
+    <meta
+      property="og:title"
+      content="RockTune — Forge an Auditable Windows Gaming PowerShell Script"
+    />
+    <meta
+      property="og:description"
+      content="Pick a preset, hardware, and tweaks—RockTune forges a readable PowerShell script. Debloat, blackout telemetry, tune latency. Open source. Preview anytime."
+    />
+    <meta property="og:url" content="https://rocktune.pedroferrari.com/" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://rocktune.pedroferrari.com/og/rocktune-og-v1.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="RockTune cyberpunk UI — build a Windows gaming loadout and export a PowerShell script"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@thepedroferrari" />
+    <meta name="twitter:title" content="RockTune — Loadout in. Script out." />
+    <meta
+      name="twitter:description"
+      content="Open-source Windows gaming tuning. No installer. No mystery tweaks. Preview the PowerShell script anytime."
+    />
+    <meta
+      name="twitter:image"
+      content="https://rocktune.pedroferrari.com/og/rocktune-og-v1.png"
     />
     <meta name="author" content="Pedro Ferrari" />
     <meta name="theme-color" content="#050507" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&amp;family=Orbitron:wght@500;600;700;800;900&amp;family=Rajdhani:wght@400;500;600;700&amp;family=Audiowide:wght@700&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&amp;family=Oxanium:wght@400;600&amp;display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -89,7 +128,6 @@
       <div class="holo-content">
         <div class="holo-title-lockup">
           <h1 class="holo-logo" data-text="ROCKTUNE">ROCKTUNE</h1>
-          <div class="holo-subtitle">[ MAXIMUM FPS :: ZERO BLOAT ]</div>
         </div>
         <div class="cyber-terminal">
           <!-- Corner accents -->
@@ -110,6 +148,10 @@
             <div class="header-right">
               <span class="status-indicator"></span>
               <span class="header-status">ONLINE</span>
+              <span class="header-mode-group">
+                <span class="header-mode">MODE:</span>
+                <span class="header-mode-value">[ MAXIMUM FPS :: ZERO BLOAT ]</span>
+              </span>
               <span class="header-bracket">◣</span>
             </div>
           </div>
@@ -139,21 +181,25 @@
               </div>
             </div>
 
+            <div class="terminal-prompt">
+              <span class="prompt-path">C:\ROCKTUNE</span><span class="prompt-symbol">></span>
+              <span class="prompt-command">optimize.exe /mission-brief</span>
+            </div>
+
             <!-- Main terminal content -->
             <div class="terminal-body">
-              <div class="terminal-prompt">
-                <span class="prompt-path">C:\ROCKTUNE</span
-                ><span class="prompt-symbol">></span>
-                <span class="prompt-command">optimize.exe /mission-brief</span>
-              </div>
-
               <p class="terminal-tagline">
                 Your PC was built to game.<br />
-                <span
-                  class="highlight-text"
-                  data-text="WINDOWS WASN'T."
-                >
+                <span class="highlight-text" data-text="WINDOWS WASN'T.">
                   WINDOWS WASN'T.
+                </span>
+              </p>
+              <p class="terminal-subhead">
+                <span class="terminal-subhead-line">
+                  Force Windows into competitive gaming mode.
+                </span>
+                <span class="terminal-subhead-micro">
+                  No installer. No black box. Preview anytime.
                 </span>
               </p>
 
@@ -162,65 +208,110 @@
                   <span class="line-progress">■■■</span>
                   <span class="line-text">8 network settings</span>
                   <span class="line-dots"></span>
-                  <span class="result">LOWER PING</span>
+                  <span class="result">DIALED</span>
                 </span>
                 <span class="loading-line">
                   <span class="line-progress">■■■</span>
                   <span class="line-text">47 background services</span>
                   <span class="line-dots"></span>
-                  <span class="result">OPTIMIZED</span>
+                  <span class="result">TRIMMED</span>
                 </span>
                 <span class="loading-line">
                   <span class="line-progress">■■■</span>
                   <span class="line-text">12 telemetry endpoints</span>
                   <span class="line-dots"></span>
-                  <span class="result">BLOCKED</span>
+                  <span class="result">BLACKOUT</span>
                 </span>
                 <span class="loading-line">
                   <span class="line-progress">■■■</span>
                   <span class="line-text">Input latency 15.6ms → 0.5ms</span>
                   <span class="line-dots"></span>
-                  <span class="result">FIXED</span>
+                  <span class="result">FASTER</span>
                 </span>
                 <span class="loading-line success">
                   <span class="success-icon">◢◤</span>
                   LOADOUT READY
-                  <span class="cursor-blink">█</span>
                 </span>
               </div>
             </div>
           </div>
         </div>
         <div class="holo-actions">
-          <button
-            type="button"
-            id="quick-download-btn"
-            class="holo-btn holo-btn--safe"
-            data-text="DOWNLOAD_SAFE_MODE"
-          >
-            <span class="btn-text">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              DOWNLOAD_SAFE_MODE
-            </span>
-            <span class="glitch-layer"></span>
-            <span class="btn-scanlines"></span>
-          </button>
-          <a
-            href="#quick-start"
-            class="holo-btn holo-btn--secondary"
-            data-text="CUSTOMIZE"
-          >
-            <span class="btn-text">CUSTOMIZE →</span>
-            <span class="glitch-layer"></span>
-            <span class="btn-scanlines"></span>
-          </a>
+          <div class="holo-action">
+            <button
+              type="button"
+              id="quick-download-btn"
+              class="holo-btn holo-btn--safe"
+              data-text="DOWNLOAD_SAFE_MODE"
+              title="Conservative preset. Preview the script anytime."
+            >
+              <span class="btn-text">
+                <svg
+                  class="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                DOWNLOAD_SAFE_MODE
+              </span>
+              <span class="glitch-layer"></span>
+              <span class="btn-scanlines"></span>
+            </button>
+            <span class="holo-action-helper">Safe preset. No drama.</span>
+          </div>
+          <div class="holo-action">
+            <button
+              type="button"
+              id="preview-btn-hero"
+              class="holo-btn holo-btn--ghost"
+              data-text="VIEW_SCRIPT"
+              aria-label="View script preview"
+              title="See what runs. No surprises."
+            >
+              <span class="btn-text">
+                <svg
+                  class="btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                VIEW_SCRIPT
+              </span>
+              <span class="glitch-layer"></span>
+              <span class="btn-scanlines"></span>
+            </button>
+            <span class="holo-action-helper">See every command first.</span>
+          </div>
+          <div class="holo-action">
+            <a
+              href="#quick-start"
+              class="holo-btn holo-btn--secondary"
+              data-text="CUSTOMIZE"
+              title="Full control. Build your own loadout."
+            >
+              <span class="btn-text">CUSTOMIZE →</span>
+              <span class="glitch-layer"></span>
+              <span class="btn-scanlines"></span>
+            </a>
+            <span class="holo-action-helper">Dial it in. Pick your modules.</span>
+          </div>
         </div>
         <p class="quick-download-hint">
           Zero config • Safe tweaks only • Works on any PC
+        </p>
+        <p class="trust-strip">
+          OPEN SOURCE • SCRIPT-FIRST • AUDITABLE • PREVIEW ANYTIME
         </p>
       </div>
     </header>
@@ -2509,7 +2600,7 @@ This option shows BIOS instructions only.
         </div>
       </section>
 
-      <section id="software" class="step">
+      <section id="software" class="step" hidden>
         <div class="step-header">
           <div class="step-header__left">
             <h2><span class="step-num">4</span> Arsenal</h2>
