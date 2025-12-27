@@ -88,6 +88,41 @@ class Store {
     return this.#state.selectedSoftware.has(key)
   }
 
+  /**
+   * ES2024 Set.isSubsetOf() - Check if selection is subset of given keys
+   */
+  isSelectionSubsetOf(keys: readonly string[]): boolean {
+    return this.#state.selectedSoftware.isSubsetOf(new Set(keys))
+  }
+
+  /**
+   * ES2024 Set.isSupersetOf() - Check if selection contains all given keys
+   */
+  isSelectionSupersetOf(keys: readonly string[]): boolean {
+    return this.#state.selectedSoftware.isSupersetOf(new Set(keys))
+  }
+
+  /**
+   * ES2024 Set.intersection() - Get keys that are both selected and in given set
+   */
+  getSelectedIntersection(keys: readonly string[]): ReadonlySet<string> {
+    return this.#state.selectedSoftware.intersection(new Set(keys))
+  }
+
+  /**
+   * ES2024 Set.difference() - Get selected keys not in given set
+   */
+  getSelectedDifference(keys: readonly string[]): ReadonlySet<string> {
+    return this.#state.selectedSoftware.difference(new Set(keys))
+  }
+
+  /**
+   * ES2024 Set.symmetricDifference() - Get keys in one set but not both
+   */
+  getSymmetricDifference(keys: readonly string[]): ReadonlySet<string> {
+    return this.#state.selectedSoftware.symmetricDifference(new Set(keys))
+  }
+
   // ---------------------------------------------------------------------------
   // Mutations - All state changes notify subscribers
   // ---------------------------------------------------------------------------
@@ -111,6 +146,22 @@ class Store {
 
   setSelection(keys: readonly string[]): void {
     this.#state.selectedSoftware = new Set(keys)
+    this.#notify()
+  }
+
+  /**
+   * ES2024 Set.union() - Add keys to selection without removing existing
+   */
+  addToSelection(keys: readonly string[]): void {
+    this.#state.selectedSoftware = this.#state.selectedSoftware.union(new Set(keys))
+    this.#notify()
+  }
+
+  /**
+   * ES2024 Set.difference() - Remove keys from selection
+   */
+  removeFromSelection(keys: readonly string[]): void {
+    this.#state.selectedSoftware = this.#state.selectedSoftware.difference(new Set(keys))
     this.#notify()
   }
 

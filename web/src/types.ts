@@ -15,6 +15,16 @@ export type AnimationFrameId = Brand<number, 'AnimationFrameId'>
 export type TimeoutId = Brand<number, 'TimeoutId'>
 /** Branded ID for event listener cleanup tracking */
 export type ListenerId = Brand<symbol, 'ListenerId'>
+/** Branded type for HTML element IDs */
+export type HtmlId = Brand<string, 'HtmlId'>
+/** Branded type for CSS class names */
+export type CssClassName = Brand<string, 'CssClassName'>
+/** Branded type for preset identifiers */
+export type PresetId = Brand<string, 'PresetId'>
+/** Positive integer type (for counts, indices, etc.) */
+export type PositiveInt = Brand<number, 'PositiveInt'>
+/** Non-empty string type */
+export type NonEmptyString = Brand<string, 'NonEmptyString'>
 
 // Type constructors - zero runtime cost, compile-time safety
 export const asPackageKey = (key: string): PackageKey => key as PackageKey
@@ -22,6 +32,101 @@ export const asWingetId = (id: string): WingetId => id as WingetId
 export const asAnimationFrameId = (id: number): AnimationFrameId => id as AnimationFrameId
 export const asTimeoutId = (id: number): TimeoutId => id as TimeoutId
 export const asListenerId = (): ListenerId => Symbol('listener') as ListenerId
+export const asHtmlId = (id: string): HtmlId => id as HtmlId
+export const asCssClassName = (name: string): CssClassName => name as CssClassName
+export const asPresetId = (id: string): PresetId => id as PresetId
+export const asPositiveInt = (n: number): PositiveInt => {
+  if (n <= 0 || !Number.isInteger(n)) throw new RangeError('Must be a positive integer')
+  return n as PositiveInt
+}
+export const asNonEmptyString = (s: string): NonEmptyString => {
+  if (s.length === 0) throw new RangeError('String must be non-empty')
+  return s as NonEmptyString
+}
+
+// =============================================================================
+// Template Literal Types - Compile-time string validation
+// =============================================================================
+
+/** CSS variable name type: --variable-name */
+export type CssVarName = `--${string}`
+
+/** CSS variable reference: var(--variable-name) */
+export type CssVarRef<T extends CssVarName = CssVarName> = `var(${T})`
+
+/** CSS color variable names used in the app */
+export type AppCssVar =
+  | '--accent'
+  | '--accent-dim'
+  | '--bg'
+  | '--bg-card'
+  | '--bg-header'
+  | '--text'
+  | '--text-dim'
+  | '--border'
+  | '--success'
+  | '--warning'
+  | '--danger'
+
+/** Data attribute selector: [data-*] */
+export type DataSelector = `[data-${string}]`
+
+/** ID selector: #id */
+export type IdSelector = `#${string}`
+
+/** Class selector: .class */
+export type ClassSelector = `.${string}`
+
+/** Any valid CSS selector */
+export type CssSelector = IdSelector | ClassSelector | DataSelector | keyof HTMLElementTagNameMap
+
+/** Custom event names for RockTune app */
+export type AppEventName =
+  | 'script-change-request'
+  | 'software-selection-changed'
+  | 'preset-applied'
+  | 'filter-changed'
+  | 'search-changed'
+
+/** ISO date string type */
+export type ISODateString = `${number}-${number}-${number}T${number}:${number}:${number}${string}`
+
+// =============================================================================
+// Utility Types - Advanced TypeScript patterns
+// =============================================================================
+
+/** Make specific keys required */
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+
+/** Make specific keys optional */
+export type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+
+/** Extract keys of T that are of type U */
+export type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T]
+
+/** Strict extract - only exact matches */
+export type StrictExtract<T, U extends T> = Extract<T, U>
+
+/** Non-nullable version of a type */
+export type Defined<T> = Exclude<T, null | undefined>
+
+/** Make all properties mutable (remove readonly) */
+export type Mutable<T> = { -readonly [K in keyof T]: T[K] }
+
+/** Flatten intersection types for better IDE display */
+export type Flatten<T> = { [K in keyof T]: T[K] } & {}
+
+/** Get the value type of a Record/Map */
+export type ValueOf<T> = T[keyof T]
+
+/** Ensure exactly one property is set */
+export type ExactlyOne<T, K extends keyof T = keyof T> = K extends keyof T
+  ? { [P in K]: T[P] } & Partial<Record<Exclude<keyof T, K>, never>>
+  : never
+
+/** At least one property must be set */
+export type AtLeastOne<T, K extends keyof T = keyof T> = Partial<T> &
+  { [P in K]: Required<Pick<T, P>> }[K]
 
 export const CATEGORIES = [
   'launcher',

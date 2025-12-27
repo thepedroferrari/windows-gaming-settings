@@ -311,7 +311,8 @@ interface CardState {
 
 const cardStates = new Map<HTMLButtonElement, CardState>()
 
-function updatePresetBadges(presetName: PresetType, opts: string[]): void {
+function updatePresetBadges(presetName: PresetType, opts: readonly string[]): void {
+  // ES2024: Use Set for O(1) lookups
   const optsSet = new Set(opts)
   for (const label of $$<HTMLLabelElement>('label[data-opt]')) {
     const optValue = label.dataset.opt
@@ -339,20 +340,23 @@ function fadePresetBadge(optValue: string): void {
 export function applyPreset(presetName: PresetType): void {
   const preset = PRESETS[presetName]
 
-  const optsArray = preset.opts as readonly string[]
+  // ES2024: Use Set for efficient membership testing
+  const optsSet = new Set(preset.opts)
+  const softwareSet = new Set(preset.software)
+
   for (const cb of $$<HTMLInputElement>('input[name="opt"]')) {
-    cb.checked = optsArray.includes(cb.value)
+    cb.checked = optsSet.has(cb.value)
   }
 
-  updatePresetBadges(presetName, [...optsArray])
+  updatePresetBadges(presetName, preset.opts)
 
   store.setSelection([...preset.software])
 
-  // Update software card UI
+  // Update software card UI with Set.has() for O(1) lookup
   for (const card of $$('.software-card')) {
     const key = card.dataset.key
     if (!key) continue
-    const selected = preset.software.includes(key)
+    const selected = softwareSet.has(key)
     card.classList.toggle('selected', selected)
     card.setAttribute('aria-checked', String(selected))
     const action = card.querySelector('.back-action')
@@ -607,12 +611,16 @@ function populateCardStats(card: HTMLButtonElement): void {
   const softwareEl = card.querySelector<HTMLElement>('[data-stat="software"]')
   if (softwareEl) softwareEl.textContent = String(preset.software.length)
 
-  // Update optimization category stats
-  const presetOpts = preset.opts as readonly string[]
+  // ES2024: Use Set.intersection() for efficient category overlap calculation
+  const presetOptsSet = new Set(preset.opts)
+
   for (const [catKey, catConfig] of Object.entries(CATEGORY_OPTS)) {
     const el = card.querySelector<HTMLElement>(`[data-stat="${catKey}"]`)
     if (el) {
-      const enabled = catConfig.opts.filter((opt) => presetOpts.includes(opt)).length
+      const categoryOptsSet = new Set(catConfig.opts)
+      // ES2024 Set.intersection() - returns Set of common elements
+      const enabledOpts = presetOptsSet.intersection(categoryOptsSet)
+      const enabled = enabledOpts.size
       const total = catConfig.opts.length
       el.textContent = `${enabled}/${total}`
       el.dataset.enabled = String(enabled)

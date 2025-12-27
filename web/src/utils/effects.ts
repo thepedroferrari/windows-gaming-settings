@@ -85,9 +85,10 @@ export function setupProgressNav(controller?: CleanupController): void {
 
   const progressObserver = new IntersectionObserver(
     (entries) => {
+      // ES2023: Use toSorted() for immutable sort (doesn't mutate filtered array)
       const visible = entries
         .filter((e) => e.isIntersecting)
-        .sort((a, b) => {
+        .toSorted((a, b) => {
           const aTop = a.boundingClientRect.top
           const bTop = b.boundingClientRect.top
           return Math.abs(aTop) - Math.abs(bTop)
@@ -114,8 +115,9 @@ function handleEdgeCases(
   updateActiveNav: (id: string) => void,
   controller?: CleanupController,
 ): void {
-  const firstSection = sections[0]
-  const lastSection = sections[sections.length - 1]
+  // ES2023: Use at() for safe index access with negative indices
+  const firstSection = sections.at(0)
+  const lastSection = sections.at(-1) // More expressive than sections[sections.length - 1]
 
   let ticking = false
   const scheduleFrame = (cb: FrameRequestCallback): number =>
@@ -135,9 +137,9 @@ function handleEdgeCases(
       const scrollBottom = scrollTop + window.innerHeight
       const docHeight = document.documentElement.scrollHeight
 
-      if (scrollTop < 100 && firstSection) {
+      if (scrollTop < 100 && firstSection?.id) {
         updateActiveNav(firstSection.id)
-      } else if (scrollBottom >= docHeight - 50 && lastSection) {
+      } else if (scrollBottom >= docHeight - 50 && lastSection?.id) {
         updateActiveNav(lastSection.id)
       }
 
