@@ -1,5 +1,6 @@
 {
   "nodeModulesDir": "auto",
+  "unstable": ["fmt-component"],
   "tasks": {
     "dev": "deno run -A npm:vite",
     "build": "deno run -A npm:vite build",
@@ -19,6 +20,8 @@
   },
   "imports": {
     "diff": "npm:diff@^5.1.0",
-    "zod": "npm:zod@^3.23.0"
+    "zod": "npm:zod@^3.23.0",
+    "svelte": "npm:svelte@^5",
+    "@sveltejs/vite-plugin-svelte": "npm:@sveltejs/vite-plugin-svelte@^4"
   }
 }
