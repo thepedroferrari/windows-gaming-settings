@@ -10,7 +10,7 @@ A modern, interactive web application that generates personalized PowerShell scr
 - **Software installation** — Integrates with `winget` to install gaming essentials (Steam, Discord, OBS, etc.)
 - **Performance tuning** — Applies registry tweaks, power plans, timer resolution, and other gaming-focused optimizations
 - **Privacy controls** — Optional privacy hardening tiers (safe → moderate → aggressive)
-- **User-friendly interface** — Visual card-based selection with presets (Competitive, Streaming, Balanced, Minimal)
+- **User-friendly interface** — Visual card-based selection with presets (Pro Gamer, Streaming, Balanced, Minimal)
 
 ## 🛠️ Tech Stack
 
@@ -125,7 +125,7 @@ Netlify will:
 - **Search** — Real-time search across names, descriptions, categories
 - **Grid/List view** — Toggle between card grid and compact list
 - **Presets** — Quick-load configurations:
-  - **Competitive** — Maximum FPS, all performance opts
+  - **Pro Gamer** — Maximum FPS, all performance opts
   - **Streaming** — Balanced for gaming + OBS
   - **Balanced** — Safe defaults for most users
   - **Minimal** — Essential only

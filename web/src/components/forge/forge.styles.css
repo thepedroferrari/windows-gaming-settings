@@ -1,0 +1,129 @@
+@layer components {
+  /* ============================================
+     FORGE SECTION
+     ============================================ */
+
+  .forge-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--space-lg);
+    padding: 0.5rem 0.75rem;
+    background: color-mix(in oklch, var(--safe) 8%, transparent);
+    border: 1px solid color-mix(in oklch, var(--safe) 30%, transparent);
+    border-radius: 0;
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+    width: fit-content;
+  }
+
+  .forge-status-indicator {
+    width: 8px;
+    height: 8px;
+    background: var(--safe);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--safe);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .forge-status-text {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--safe);
+    text-transform: uppercase;
+  }
+
+  .download-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .download-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--bg-primary);
+    background: linear-gradient(135deg, var(--cyber-yellow), var(--accent));
+    border: none;
+    border-radius: 0;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 4px 20px color-mix(in oklch, var(--cyber-yellow) 40%, transparent),
+      0 0 30px color-mix(in oklch, var(--cyber-yellow) 20%, transparent);
+  }
+
+  .download-btn .btn-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .download-btn .glitch-layer,
+  .download-btn .btn-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .download-btn .btn-scanlines {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.05) 2px,
+      rgba(0, 0, 0, 0.05) 4px
+    );
+  }
+}

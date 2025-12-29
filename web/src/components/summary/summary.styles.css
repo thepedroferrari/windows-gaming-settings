@@ -104,81 +104,81 @@
       background: var(--cyber-yellow);
       box-shadow: 0 0 6px var(--cyber-yellow-glow);
     }
+  }
 
-    &--tl {
-      top: 28px;
-      left: 8px;
+  .summary-corner--tl {
+    top: 28px;
+    left: 8px;
 
-      &::before {
-        width: 10px;
-        height: 2px;
-        top: 0;
-        left: 0;
-      }
-
-      &::after {
-        width: 2px;
-        height: 10px;
-        top: 0;
-        left: 0;
-      }
+    &::before {
+      width: 10px;
+      height: 2px;
+      top: 0;
+      left: 0;
     }
 
-    &--tr {
-      top: 28px;
-      right: 8px;
+    &::after {
+      width: 2px;
+      height: 10px;
+      top: 0;
+      left: 0;
+    }
+  }
 
-      &::before {
-        width: 10px;
-        height: 2px;
-        top: 0;
-        right: 0;
-      }
+  .summary-corner--tr {
+    top: 28px;
+    right: 8px;
 
-      &::after {
-        width: 2px;
-        height: 10px;
-        top: 0;
-        right: 0;
-      }
+    &::before {
+      width: 10px;
+      height: 2px;
+      top: 0;
+      right: 0;
     }
 
-    &--bl {
-      bottom: 8px;
-      left: 20px;
+    &::after {
+      width: 2px;
+      height: 10px;
+      top: 0;
+      right: 0;
+    }
+  }
 
-      &::before {
-        width: 10px;
-        height: 2px;
-        bottom: 0;
-        left: 0;
-      }
+  .summary-corner--bl {
+    bottom: 8px;
+    left: 20px;
 
-      &::after {
-        width: 2px;
-        height: 10px;
-        bottom: 0;
-        left: 0;
-      }
+    &::before {
+      width: 10px;
+      height: 2px;
+      bottom: 0;
+      left: 0;
     }
 
-    &--br {
-      bottom: 20px;
-      right: 8px;
+    &::after {
+      width: 2px;
+      height: 10px;
+      bottom: 0;
+      left: 0;
+    }
+  }
 
-      &::before {
-        width: 10px;
-        height: 2px;
-        bottom: 0;
-        right: 0;
-      }
+  .summary-corner--br {
+    bottom: 20px;
+    right: 8px;
 
-      &::after {
-        width: 2px;
-        height: 10px;
-        bottom: 0;
-        right: 0;
-      }
+    &::before {
+      width: 10px;
+      height: 2px;
+      bottom: 0;
+      right: 0;
+    }
+
+    &::after {
+      width: 2px;
+      height: 10px;
+      bottom: 0;
+      right: 0;
     }
   }
 

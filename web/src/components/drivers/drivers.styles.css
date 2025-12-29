@@ -74,27 +74,13 @@
       }
     }
 
-    &--mobo,
-    &--monitor {
-      opacity: 1;
-      pointer-events: auto;
-      border-color: var(--border-light);
-    }
-
-    &--mobo {
-      grid-column: span 1;
-    }
-
-    &--monitor {
-      grid-column: span 2;
-    }
   }
 
-  .driver-card.driver-card--mobo,
-  .driver-card.driver-card--monitor {
+  .driver-card--mobo {
     opacity: 1;
     pointer-events: auto;
     border-color: var(--border-light);
+    grid-column: span 1;
 
     &:hover {
       border-color: var(--cyber-yellow);

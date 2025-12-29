@@ -235,10 +235,10 @@
       transition: opacity 0.3s ease;
       z-index: 10;
     }
+  }
 
-    .software-card:hover &::after {
-      opacity: 1;
-    }
+  .software-card:hover .software-card-inner::after {
+    opacity: 1;
   }
 
   .software-card-front,
@@ -277,15 +277,16 @@
       transform 0.25s var(--ease-out-expo),
       border-color 0.3s ease,
       box-shadow 0.3s ease;
+  }
 
-    .software-card:hover & {
-      border-color: var(--neon-electric-dim);
-      box-shadow:
-        inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 6%, transparent),
-        inset 0 -1px 0 color-mix(in oklch, oklch(0 0 0) 10%, transparent),
-        0 4px 24px color-mix(in oklch, oklch(0 0 0) 20%, transparent),
-        0 0 15px var(--neon-electric-glow);
-    }
+  .software-card:hover .software-card-front,
+  .software-card:hover .software-card-back {
+    border-color: var(--neon-electric-dim);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 6%, transparent),
+      inset 0 -1px 0 color-mix(in oklch, oklch(0 0 0) 10%, transparent),
+      0 4px 24px color-mix(in oklch, oklch(0 0 0) 20%, transparent),
+      0 0 15px var(--neon-electric-glow);
   }
 
   .software-card-scanlines {
@@ -303,10 +304,10 @@
     z-index: 15;
     transition: opacity 0.3s ease;
     animation: cyberScanlines var(--cyber-scanline-speed) linear infinite;
+  }
 
-    .software-card:hover & {
-      opacity: 0.4;
-    }
+  .software-card:hover .software-card-scanlines {
+    opacity: 0.4;
   }
 
   .software-card-front {
@@ -328,18 +329,18 @@
       transition: transform 0.6s ease;
       pointer-events: none;
     }
+  }
 
-    .software-card:hover &::before,
-    .software-card:focus &::before,
-    .software-card:focus-within &::before {
-      transform: translateX(100%);
-    }
+  .software-card:hover .software-card-front::before,
+  .software-card:focus .software-card-front::before,
+  .software-card:focus-within .software-card-front::before {
+    transform: translateX(100%);
+  }
 
-    .software-card:hover &,
-    .software-card:focus &,
-    .software-card:focus-within & {
-      opacity: 0;
-    }
+  .software-card:hover .software-card-front,
+  .software-card:focus .software-card-front,
+  .software-card:focus-within .software-card-front {
+    opacity: 0;
   }
 
   .software-card-back {
@@ -372,12 +373,12 @@
       pointer-events: none;
       animation: cyberDataStream 20s linear infinite;
     }
+  }
 
-    .software-card:hover &,
-    .software-card:focus &,
-    .software-card:focus-within & {
-      opacity: 1;
-    }
+  .software-card:hover .software-card-back,
+  .software-card:focus .software-card-back,
+  .software-card:focus-within .software-card-back {
+    opacity: 1;
   }
 
   .software-card .logo {
@@ -433,18 +434,18 @@
       color: oklch(0.5 0.1 220);
       opacity: 0.7;
     }
+  }
 
-    .software-card:hover & svg,
-    .software-card:hover & img,
-    .software-card:focus & svg,
-    .software-card:focus & img {
-      color: var(--text-primary);
-      opacity: 1;
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 4px var(--neon-cyan-glow))
-        drop-shadow(0 0 8px var(--neon-magenta-glow))
-        drop-shadow(0 2px 4px color-mix(in oklch, oklch(0 0 0) 20%, transparent));
-    }
+  .software-card:hover .logo svg,
+  .software-card:hover .logo img,
+  .software-card:focus .logo svg,
+  .software-card:focus .logo img {
+    color: var(--text-primary);
+    opacity: 1;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 4px var(--neon-cyan-glow))
+      drop-shadow(0 0 8px var(--neon-magenta-glow))
+      drop-shadow(0 2px 4px color-mix(in oklch, oklch(0 0 0) 20%, transparent));
   }
 
   .software-card .name {
@@ -455,14 +456,14 @@
     z-index: 1;
     line-height: 1.2;
     transition: text-shadow 0.2s ease;
+  }
 
-    .software-card:hover & {
-      text-shadow:
-        -1px 0 var(--neon-cyan),
-        1px 0 var(--neon-magenta),
-        0 0 8px var(--neon-electric-glow);
-      animation: cyberChromaticSplit 0.8s ease-in-out infinite;
-    }
+  .software-card:hover .name {
+    text-shadow:
+      -1px 0 var(--neon-cyan),
+      1px 0 var(--neon-magenta),
+      0 0 8px var(--neon-electric-glow);
+    animation: cyberChromaticSplit 0.8s ease-in-out infinite;
   }
 
   .software-card-corner {
@@ -483,11 +484,11 @@
       background: var(--neon-cyan);
       box-shadow: 0 0 6px var(--neon-cyan-glow);
     }
+  }
 
-    .software-card:hover & {
-      opacity: 1;
-      animation: cyberCornerPulse var(--cyber-pulse-speed) ease-in-out infinite;
-    }
+  .software-card:hover .software-card-corner {
+    opacity: 1;
+    animation: cyberCornerPulse var(--cyber-pulse-speed) ease-in-out infinite;
   }
 
   .software-card-corner--tl {
@@ -507,10 +508,10 @@
       top: 0;
       left: 0;
     }
+  }
 
-    .software-card:hover & {
-      transform: translate(-2px, -2px);
-    }
+  .software-card:hover .software-card-corner--tl {
+    transform: translate(-2px, -2px);
   }
 
   .software-card-corner--tr {
@@ -530,10 +531,10 @@
       top: 0;
       right: 0;
     }
+  }
 
-    .software-card:hover & {
-      transform: translate(2px, -2px);
-    }
+  .software-card:hover .software-card-corner--tr {
+    transform: translate(2px, -2px);
   }
 
   .software-card-corner--bl {
@@ -553,10 +554,10 @@
       bottom: 0;
       left: 0;
     }
+  }
 
-    .software-card:hover & {
-      transform: translate(-2px, 2px);
-    }
+  .software-card:hover .software-card-corner--bl {
+    transform: translate(-2px, 2px);
   }
 
   .software-card-corner--br {
@@ -576,10 +577,10 @@
       bottom: 0;
       right: 0;
     }
+  }
 
-    .software-card:hover & {
-      transform: translate(2px, 2px);
-    }
+  .software-card:hover .software-card-corner--br {
+    transform: translate(2px, 2px);
   }
 
   .software-card-back .back-name {
@@ -634,18 +635,18 @@
       transform: translateX(-100%);
       transition: transform 0.4s ease;
     }
+  }
 
-    .software-card:hover &:hover {
-      transform: scale(1.08);
-      background: linear-gradient(135deg, var(--neon-cyan-dim), var(--neon-magenta-dim));
-      border-color: var(--neon-cyan);
-      box-shadow:
-        0 0 12px var(--neon-cyan-glow),
-        0 0 24px var(--neon-magenta-glow);
+  .software-card:hover .back-action:hover {
+    transform: scale(1.08);
+    background: linear-gradient(135deg, var(--neon-cyan-dim), var(--neon-magenta-dim));
+    border-color: var(--neon-cyan);
+    box-shadow:
+      0 0 12px var(--neon-cyan-glow),
+      0 0 24px var(--neon-magenta-glow);
 
-      &::before {
-        transform: translateX(100%);
-      }
+    &::before {
+      transform: translateX(100%);
     }
   }
 
@@ -657,5 +658,13 @@
     transform: scale(0);
     animation: ripple 0.6s ease-out;
     pointer-events: none;
+  }
+
+  /* Empty state for software grid */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-dim);
   }
 }

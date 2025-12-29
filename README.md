@@ -2,7 +2,7 @@
 
 **A loadout builder for Windows gaming.**
 
-Windows ships as a general-purpose OS: services, telemetry, power policies, overlays, background noise. RockTune treats that as the battlefield. You choose the fight (competitive / streaming / balanced / minimal), then forge a script that strips distractions and tunes the machine toward one goal: **games first**.
+Windows ships as a general-purpose OS: services, telemetry, power policies, overlays, background noise. RockTune treats that as the battlefield. You choose the fight (pro / streaming / balanced / benchmarking), then forge a script that strips distractions and tunes the machine toward one goal: **games first**.
 
 Security and convenience are acknowledged, but never hidden — risky upgrades are explicit, optional, and labeled like they should be.
 

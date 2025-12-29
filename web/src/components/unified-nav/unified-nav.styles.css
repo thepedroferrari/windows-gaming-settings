@@ -1,281 +1,317 @@
-/* Unified Navigation - combines status bar and step navigation */
-.unified-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 44px;
-  padding: 0 var(--space-lg);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklch, oklch(0.08 0.02 280) 98%, transparent) 0%,
-    color-mix(in oklch, oklch(0.06 0.015 285) 95%, transparent) 100%
-  );
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  border-bottom: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border));
-  box-shadow:
-    0 2px 20px color-mix(in oklch, oklch(0 0 0) 40%, transparent),
-    inset 0 -1px 0 color-mix(in oklch, oklch(1 0 0) 3%, transparent);
-}
+@layer components {
+  /* ==========================================================================
+     UNIFIED NAVIGATION
+     Fixed top navigation bar with status indicator, section links, and GitHub badge
+     ========================================================================== */
 
-.unified-nav__status {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  min-width: 90px;
-}
+  .unified-nav {
+    /* Component-level custom properties */
+    --nav-height: 44px;
+    --nav-height-mobile: 40px;
+    --nav-accent: var(--accent);
+    --nav-safe: var(--safe);
+    --nav-clip: polygon(
+      6px 0, 100% 0, 100% calc(100% - 6px),
+      calc(100% - 6px) 100%, 0 100%, 0 6px
+    );
+    --nav-clip-sm: polygon(
+      4px 0, 100% 0, 100% calc(100% - 4px),
+      calc(100% - 4px) 100%, 0 100%, 0 4px
+    );
+    --nav-transition: 200ms var(--ease-out-expo);
 
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--safe);
-  border-radius: 50%;
-  box-shadow:
-    0 0 6px var(--safe),
-    0 0 12px color-mix(in oklch, var(--safe) 40%, transparent);
-  animation: statusPulse 2s ease-in-out infinite;
-}
+    /* Fixed positioning */
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 1000;
 
-@keyframes statusPulse {
-  0%,
-  100% {
-    opacity: 1;
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    block-size: var(--nav-height);
+    padding-inline: var(--space-lg);
+
+    /* Visual styling */
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, oklch(0.08 0.02 280) 98%, transparent) 0%,
+      color-mix(in oklch, oklch(0.06 0.015 285) 95%, transparent) 100%
+    );
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border-block-end: 1px solid color-mix(in oklch, var(--nav-accent) 25%, var(--border));
     box-shadow:
-      0 0 6px var(--safe),
-      0 0 12px color-mix(in oklch, var(--safe) 40%, transparent);
+      0 2px 20px color-mix(in oklch, oklch(0 0 0) 40%, transparent),
+      inset 0 -1px 0 color-mix(in oklch, oklch(1 0 0) 3%, transparent);
   }
-  50% {
-    opacity: 0.7;
+
+  /* --------------------------------------------------------------------------
+     Status Indicator
+     -------------------------------------------------------------------------- */
+  .unified-nav__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-inline-size: 90px;
+  }
+
+  .status-dot {
+    inline-size: 8px;
+    block-size: 8px;
+    background: var(--nav-safe);
+    border-radius: 50%;
     box-shadow:
-      0 0 10px var(--safe),
-      0 0 20px color-mix(in oklch, var(--safe) 60%, transparent);
+      0 0 6px var(--nav-safe),
+      0 0 12px color-mix(in oklch, var(--nav-safe) 40%, transparent);
+    animation: statusPulse 2s ease-in-out infinite;
   }
-}
 
-.status-label {
-  font-family: var(--font-display);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--safe);
-  text-shadow: 0 0 8px color-mix(in oklch, var(--safe) 40%, transparent);
-}
+  .status-label {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--nav-safe);
+    text-shadow: 0 0 8px color-mix(in oklch, var(--nav-safe) 40%, transparent);
+  }
 
-.unified-nav__links {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 3px;
-  background: color-mix(in oklch, oklch(0 0 0) 20%, transparent);
-  border-radius: 0;
-  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-}
+  /* --------------------------------------------------------------------------
+     Navigation Links
+     -------------------------------------------------------------------------- */
+  .unified-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    background: color-mix(in oklch, oklch(0 0 0) 20%, transparent);
+    clip-path: var(--nav-clip);
+  }
 
-.nav-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  font-family: var(--font-display);
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-hint);
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 0;
-  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-  transition: all 0.2s var(--ease-out-expo);
-  white-space: nowrap;
-  position: relative;
-}
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 6px;
+    padding-inline: 12px;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-hint);
+    background: transparent;
+    border: 1px solid transparent;
+    clip-path: var(--nav-clip-sm);
+    transition: var(--nav-transition);
+    transition-property: color, background, border-color, box-shadow, text-shadow;
+    white-space: nowrap;
+    position: relative;
 
-.nav-link:hover {
-  color: var(--text-primary);
-  background: color-mix(in oklch, var(--accent) 12%, transparent);
-  border-color: color-mix(in oklch, var(--accent) 25%, transparent);
-}
+    &:hover {
+      color: var(--text-primary);
+      background: color-mix(in oklch, var(--nav-accent) 12%, transparent);
+      border-color: color-mix(in oklch, var(--nav-accent) 25%, transparent);
+    }
 
-.nav-link[aria-current="true"],
-.nav-link.active {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-  border-color: var(--accent);
-  color: white;
-  box-shadow:
-    0 0 10px var(--accent-glow),
-    inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 15%, transparent);
-  text-shadow: 0 1px 2px color-mix(in oklch, oklch(0 0 0) 40%, transparent);
-}
+    &[aria-current="true"],
+    &.active {
+      background: linear-gradient(135deg, var(--nav-accent) 0%, var(--accent-dim) 100%);
+      border-color: var(--nav-accent);
+      color: white;
+      box-shadow:
+        0 0 10px var(--accent-glow),
+        inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 15%, transparent);
+      text-shadow: 0 1px 2px color-mix(in oklch, oklch(0 0 0) 40%, transparent);
 
-.nav-link[aria-current="true"]::after,
-.nav-link.active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 20%;
-  right: 20%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-hover), transparent);
-}
+      &::after {
+        content: "";
+        position: absolute;
+        inset-block-end: 0;
+        inset-inline: 20%;
+        block-size: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent-hover), transparent);
+      }
+    }
+  }
 
-.unified-nav__id {
-  min-width: 90px;
-  text-align: right;
-}
+  /* --------------------------------------------------------------------------
+     GitHub Badge
+     -------------------------------------------------------------------------- */
+  .unified-nav__id {
+    min-inline-size: 90px;
+    text-align: end;
+  }
 
-/* GitHub Badge - Bright Neon Beacon */
-.id-badge {
-  --badge-neon: oklch(0.75 0.18 195); /* Bright cyan */
-  --badge-glow: oklch(0.65 0.2 195 / 60%);
+  .id-badge {
+    --badge-neon: oklch(0.75 0.18 195);
+    --badge-glow: oklch(0.65 0.2 195 / 60%);
 
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--badge-neon);
-  padding: 5px 12px;
-  background: color-mix(in oklch, var(--badge-neon) 12%, transparent);
-  border: 1px solid var(--badge-neon);
-  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-  text-decoration: none;
-  text-shadow: 0 0 8px var(--badge-glow);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.25s var(--ease-out-expo);
-  box-shadow:
-    0 0 8px var(--badge-glow),
-    0 0 16px color-mix(in oklch, var(--badge-neon) 25%, transparent),
-    inset 0 0 12px color-mix(in oklch, var(--badge-neon) 8%, transparent);
-  animation: badgeGlow 3s ease-in-out infinite;
-}
-
-@keyframes badgeGlow {
-  0%,
-  100% {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding-block: 5px;
+    padding-inline: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--badge-neon);
+    background: color-mix(in oklch, var(--badge-neon) 12%, transparent);
+    border: 1px solid var(--badge-neon);
+    clip-path: var(--nav-clip);
+    text-decoration: none;
+    text-shadow: 0 0 8px var(--badge-glow);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s var(--ease-out-expo);
     box-shadow:
       0 0 8px var(--badge-glow),
       0 0 16px color-mix(in oklch, var(--badge-neon) 25%, transparent),
       inset 0 0 12px color-mix(in oklch, var(--badge-neon) 8%, transparent);
+    animation: badgeGlow 3s ease-in-out infinite;
+
+    /* Animated scan line effect */
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      inline-size: 50%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        color-mix(in oklch, var(--badge-neon) 40%, transparent) 50%,
+        transparent 100%
+      );
+      opacity: 0;
+      animation: badgeScan 4s ease-in-out infinite;
+    }
+
+    & .github-icon {
+      inline-size: 14px;
+      block-size: 14px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 4px var(--badge-glow));
+      transition: filter 200ms;
+    }
   }
-  50% {
+
+  a.id-badge:hover {
+    color: oklch(0.95 0.05 195);
+    background: color-mix(in oklch, var(--badge-neon) 25%, transparent);
+    border-color: oklch(0.85 0.2 195);
     box-shadow:
-      0 0 12px var(--badge-glow),
-      0 0 24px color-mix(in oklch, var(--badge-neon) 40%, transparent),
-      inset 0 0 16px color-mix(in oklch, var(--badge-neon) 12%, transparent);
-  }
-}
+      0 0 16px var(--badge-glow),
+      0 0 32px color-mix(in oklch, var(--badge-neon) 50%, transparent),
+      inset 0 0 20px color-mix(in oklch, var(--badge-neon) 15%, transparent);
+    text-shadow: 0 0 12px var(--badge-neon);
+    transform: scale(1.02);
 
-/* Animated scan line effect */
-.id-badge::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in oklch, var(--badge-neon) 40%, transparent) 50%,
-    transparent 100%
-  );
-  width: 50%;
-  opacity: 0;
-  animation: badgeScan 4s ease-in-out infinite;
-}
-
-@keyframes badgeScan {
-  0%,
-  80%,
-  100% {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-  85%,
-  95% {
-    opacity: 1;
-  }
-  90% {
-    transform: translateX(300%);
-  }
-}
-
-.id-badge .github-icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  filter: drop-shadow(0 0 4px var(--badge-glow));
-  transition: filter 0.2s;
-}
-
-a.id-badge:hover .github-icon {
-  filter: drop-shadow(0 0 8px var(--badge-neon));
-}
-
-a.id-badge:hover {
-  color: oklch(0.95 0.05 195);
-  background: color-mix(in oklch, var(--badge-neon) 25%, transparent);
-  border-color: oklch(0.85 0.2 195);
-  box-shadow:
-    0 0 16px var(--badge-glow),
-    0 0 32px color-mix(in oklch, var(--badge-neon) 50%, transparent),
-    inset 0 0 20px color-mix(in oklch, var(--badge-neon) 15%, transparent);
-  text-shadow: 0 0 12px var(--badge-neon);
-  transform: scale(1.02);
-}
-
-/* Add top padding to body when nav is present */
-body:has(.unified-nav) {
-  padding-top: 44px;
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .unified-nav {
-    padding: 0 var(--space-sm);
+    & .github-icon {
+      filter: drop-shadow(0 0 8px var(--badge-neon));
+    }
   }
 
-  .unified-nav__status,
-  .unified-nav__id {
-    display: none;
+  /* --------------------------------------------------------------------------
+     Animations
+     -------------------------------------------------------------------------- */
+  @keyframes statusPulse {
+    0%, 100% {
+      opacity: 1;
+      box-shadow:
+        0 0 6px var(--nav-safe),
+        0 0 12px color-mix(in oklch, var(--nav-safe) 40%, transparent);
+    }
+    50% {
+      opacity: 0.7;
+      box-shadow:
+        0 0 10px var(--nav-safe),
+        0 0 20px color-mix(in oklch, var(--nav-safe) 60%, transparent);
+    }
   }
 
-  .unified-nav__links {
-    width: 100%;
-    justify-content: center;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  @keyframes badgeGlow {
+    0%, 100% {
+      box-shadow:
+        0 0 8px var(--badge-glow),
+        0 0 16px color-mix(in oklch, var(--badge-neon) 25%, transparent),
+        inset 0 0 12px color-mix(in oklch, var(--badge-neon) 8%, transparent);
+    }
+    50% {
+      box-shadow:
+        0 0 12px var(--badge-glow),
+        0 0 24px color-mix(in oklch, var(--badge-neon) 40%, transparent),
+        inset 0 0 16px color-mix(in oklch, var(--badge-neon) 12%, transparent);
+    }
   }
 
-  .unified-nav__links::-webkit-scrollbar {
-    display: none;
+  @keyframes badgeScan {
+    0%, 80%, 100% {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    85%, 95% {
+      opacity: 1;
+    }
+    90% {
+      transform: translateX(300%);
+    }
   }
 
-  .nav-link {
-    padding: 6px 10px;
-    font-size: 0.6rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .unified-nav {
-    height: 40px;
-  }
-
+  /* --------------------------------------------------------------------------
+     Body Offset
+     -------------------------------------------------------------------------- */
   body:has(.unified-nav) {
-    padding-top: 40px;
+    padding-block-start: var(--nav-height);
   }
 
-  .nav-link {
-    padding: 5px 8px;
-    font-size: 0.55rem;
+  /* --------------------------------------------------------------------------
+     Responsive
+     -------------------------------------------------------------------------- */
+  @media (max-width: 768px) {
+    .unified-nav {
+      padding-inline: var(--space-sm);
+    }
+
+    .unified-nav__status,
+    .unified-nav__id {
+      display: none;
+    }
+
+    .unified-nav__links {
+      inline-size: 100%;
+      justify-content: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .nav-link {
+      padding-block: 6px;
+      padding-inline: 10px;
+      font-size: 0.6rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .unified-nav {
+      block-size: var(--nav-height-mobile);
+    }
+
+    body:has(.unified-nav) {
+      padding-block-start: var(--nav-height-mobile);
+    }
+
+    .nav-link {
+      padding-block: 5px;
+      padding-inline: 8px;
+      font-size: 0.55rem;
+    }
   }
 }
