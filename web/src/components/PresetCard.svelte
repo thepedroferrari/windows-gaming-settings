@@ -58,7 +58,7 @@
     riskLevel === "low"
       ? preset === "gamer" || preset === "streamer"
         ? "Safe"
-        : preset === "pro_gamer"
+        : preset === "competitive_gamer"
         ? "Low risk"
         : riskLabels[riskLevel]
       : riskLabels[riskLevel],

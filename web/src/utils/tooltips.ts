@@ -1,11 +1,18 @@
 /**
- * Rich Tooltip System
+ * Rich Tooltip System - Self-contained Svelte Action
+ *
  * Supports markdown-like formatting in tooltips:
  * - **bold** for emphasis
  * - ⚠️ prefix for warnings
  * - ✓ prefix for benefits
  * - Lines starting with "- " become list items
  * - Empty line creates paragraph break
+ *
+ * Usage:
+ * ```svelte
+ * <button use:tooltip={'Click to submit'}>Submit</button>
+ * <label use:tooltip={`**Bold** text\n- List item`}>Info</label>
+ * ```
  */
 
 const TOOLTIP_ID = 'rich-tooltip'
@@ -22,11 +29,10 @@ const config: TooltipConfig = {
   offset: 8,
 }
 
-let showTimeout: ReturnType<typeof setTimeout> | null = null
-let hideTimeout: ReturnType<typeof setTimeout> | null = null
-let currentTrigger: HTMLElement | null = null
-
-function createTooltipElement(): HTMLElement {
+/**
+ * Get or create the shared tooltip element
+ */
+function getTooltipElement(): HTMLElement {
   const existing = document.getElementById(TOOLTIP_ID)
   if (existing) return existing
 
@@ -38,6 +44,9 @@ function createTooltipElement(): HTMLElement {
   return el
 }
 
+/**
+ * Parse rich markdown-like content to HTML
+ */
 function parseRichContent(raw: string): string {
   const lines = raw.split('\n')
   const parts: string[] = []
@@ -87,10 +96,16 @@ function parseRichContent(raw: string): string {
   return parts.join('')
 }
 
+/**
+ * Format inline markdown (bold)
+ */
 function formatInline(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 }
 
+/**
+ * Position the tooltip relative to the trigger element
+ */
 function positionTooltip(tooltip: HTMLElement, trigger: HTMLElement): void {
   const triggerRect = trigger.getBoundingClientRect()
   const tooltipRect = tooltip.getBoundingClientRect()
@@ -119,9 +134,11 @@ function positionTooltip(tooltip: HTMLElement, trigger: HTMLElement): void {
   tooltip.style.left = `${left + window.scrollX}px`
 }
 
-function showTooltip(trigger: HTMLElement): void {
-  const tooltip = createTooltipElement()
-  const content = trigger.dataset.tooltip || ''
+/**
+ * Show the tooltip for a given trigger
+ */
+function showTooltipFor(trigger: HTMLElement, content: string): void {
+  const tooltip = getTooltipElement()
 
   if (!content) return
 
@@ -137,119 +154,124 @@ function showTooltip(trigger: HTMLElement): void {
 
   tooltip.classList.add('tt-visible')
   tooltip.setAttribute('aria-hidden', 'false')
-  currentTrigger = trigger
 
   requestAnimationFrame(() => {
     positionTooltip(tooltip, trigger)
   })
 }
 
-function hideTooltip(): void {
+/**
+ * Hide the tooltip
+ */
+function hideTooltipElement(): void {
   const tooltip = document.getElementById(TOOLTIP_ID)
   if (tooltip) {
     tooltip.classList.remove('tt-visible')
     tooltip.setAttribute('aria-hidden', 'true')
   }
-  currentTrigger = null
 }
 
-function clearTimeouts(): void {
-  if (showTimeout) {
-    clearTimeout(showTimeout)
-    showTimeout = null
-  }
-  if (hideTimeout) {
-    clearTimeout(hideTimeout)
-    hideTimeout = null
-  }
-}
-
-function handleMouseEnter(e: Event): void {
-  const target = e.target
-  if (!(target instanceof Element)) return
-
-  const trigger = target.closest('[data-tooltip]') as HTMLElement | null
-  if (!trigger) return
-
-  if (hideTimeout) {
-    clearTimeout(hideTimeout)
-    hideTimeout = null
-  }
-
-  if (currentTrigger === trigger) return
-
-  showTimeout = setTimeout(() => showTooltip(trigger), config.showDelay)
-}
-
-function handleMouseLeave(): void {
-  if (showTimeout) {
-    clearTimeout(showTimeout)
-    showTimeout = null
-  }
-
-  hideTimeout = setTimeout(() => hideTooltip(), config.hideDelay)
-}
-
-function handleFocusIn(e: Event): void {
-  const target = e.target
-  if (!(target instanceof Element)) return
-
-  const trigger = target.closest('[data-tooltip]') as HTMLElement | null
-  if (trigger) showTooltip(trigger)
-}
-
-function handleFocusOut(): void {
-  hideTooltip()
-}
+// ============================================================================
+// Self-contained Svelte Action
+// ============================================================================
 
 /**
- * Setup document-level tooltip event delegation.
- * Call once at app initialization.
- */
-export function setupRichTooltips(): void {
-  createTooltipElement()
-
-  // Hide tooltip immediately on click/tap to prevent sticky tooltips after selection
-  const pointerDownHandler = (): void => {
-    clearTimeouts()
-    hideTooltip()
-  }
-
-  document.addEventListener('mouseenter', handleMouseEnter, { capture: true })
-  document.addEventListener('mouseleave', handleMouseLeave, { capture: true })
-  document.addEventListener('focusin', handleFocusIn)
-  document.addEventListener('focusout', handleFocusOut)
-  document.addEventListener('pointerdown', pointerDownHandler)
-
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (currentTrigger) {
-        const tooltip = document.getElementById(TOOLTIP_ID)
-        if (tooltip) positionTooltip(tooltip, currentTrigger)
-      }
-    },
-    { passive: true },
-  )
-}
-
-/**
- * Svelte action for tooltips.
- * Usage: <button use:tooltip={'Click to submit'}>Submit</button>
- * Or with rich content: <button use:tooltip={`**Bold** text\n- List item`}>Info</button>
+ * Svelte action for tooltips - SELF-CONTAINED
+ *
+ * Each element using this action manages its own event listeners.
+ * No global setup required.
+ *
+ * Usage:
+ * ```svelte
+ * <button use:tooltip={'Click to submit'}>Submit</button>
+ * <label use:tooltip={`**Bold** text\n- List item`}>Info</label>
+ * ```
  */
 export function tooltip(node: HTMLElement, content: string) {
+  let showTimeout: ReturnType<typeof setTimeout> | null = null
+  let hideTimeout: ReturnType<typeof setTimeout> | null = null
+  let currentContent = content
+  let isActive = false
+
+  function show() {
+    if (isActive) return
+    isActive = true
+    showTooltipFor(node, currentContent)
+  }
+
+  function hide() {
+    if (!isActive) return
+    isActive = false
+    hideTooltipElement()
+  }
+
+  function clearTimeouts() {
+    if (showTimeout) {
+      clearTimeout(showTimeout)
+      showTimeout = null
+    }
+    if (hideTimeout) {
+      clearTimeout(hideTimeout)
+      hideTimeout = null
+    }
+  }
+
+  function handleMouseEnter() {
+    clearTimeouts()
+    showTimeout = setTimeout(show, config.showDelay)
+  }
+
+  function handleMouseLeave() {
+    clearTimeouts()
+    hideTimeout = setTimeout(hide, config.hideDelay)
+  }
+
+  function handleFocusIn() {
+    clearTimeouts()
+    show()
+  }
+
+  function handleFocusOut() {
+    clearTimeouts()
+    hide()
+  }
+
+  function handlePointerDown() {
+    // Hide immediately on click to prevent sticky tooltips
+    clearTimeouts()
+    hide()
+  }
+
+  // Set up event listeners
+  node.addEventListener('mouseenter', handleMouseEnter)
+  node.addEventListener('mouseleave', handleMouseLeave)
+  node.addEventListener('focusin', handleFocusIn)
+  node.addEventListener('focusout', handleFocusOut)
+  node.addEventListener('pointerdown', handlePointerDown)
+
+  // Also set data-tooltip for CSS fallback
   node.dataset.tooltip = content
 
   return {
     update(newContent: string) {
+      currentContent = newContent
       node.dataset.tooltip = newContent
+      if (isActive) {
+        showTooltipFor(node, newContent)
+      }
     },
     destroy() {
+      clearTimeouts()
+      hide()
+
+      // Clean up event listeners
+      node.removeEventListener('mouseenter', handleMouseEnter)
+      node.removeEventListener('mouseleave', handleMouseLeave)
+      node.removeEventListener('focusin', handleFocusIn)
+      node.removeEventListener('focusout', handleFocusOut)
+      node.removeEventListener('pointerdown', handlePointerDown)
+
       delete node.dataset.tooltip
-      if (currentTrigger === node) {
-        hideTooltip()
-      }
     },
   }
 }

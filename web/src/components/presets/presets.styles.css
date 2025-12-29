@@ -43,14 +43,15 @@
 
   /* ============================================
      PRESETS CONTAINER
+     Free from constraints - let cards breathe
      ============================================ */
   .presets {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-xl);
+    gap: var(--space-2xl, 3rem);
     padding: var(--space-xl) var(--space-lg);
     perspective: 1200px;
-    max-width: 1000px;
+    /* No max-width - cards should be free and bigger */
     margin: 0 auto;
   }
 
@@ -796,7 +797,6 @@
       gap: var(--space-lg);
       padding-left: var(--space-md);
       padding-right: var(--space-md);
-      max-width: 900px;
     }
 
     .preset-card__title {
@@ -812,7 +812,6 @@
     .presets {
       grid-template-columns: repeat(2, 1fr);
       gap: var(--space-lg);
-      max-width: 500px;
     }
   }
 

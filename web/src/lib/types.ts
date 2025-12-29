@@ -28,20 +28,6 @@ export type CssVarName = `--${string}`
 /** CSS variable reference: var(--variable-name) */
 export type CssVarRef<T extends CssVarName = CssVarName> = `var(${T})`
 
-/** CSS color variable names used in the app */
-export type AppCssVar =
-  | '--accent'
-  | '--accent-dim'
-  | '--bg'
-  | '--bg-card'
-  | '--bg-header'
-  | '--text'
-  | '--text-dim'
-  | '--border'
-  | '--success'
-  | '--warning'
-  | '--danger'
-
 /** Data attribute selector: [data-*] */
 export type DataSelector = `[data-${string}]`
 
@@ -336,7 +322,7 @@ export interface AppState {
 
 export const PRESET_TYPES = {
   BENCHMARKER: 'benchmarker',
-  PRO_GAMER: 'pro_gamer',
+  COMPETITIVE_GAMER: 'competitive_gamer',
   STREAMER: 'streamer',
   GAMER: 'gamer',
 } as const satisfies Record<string, string>

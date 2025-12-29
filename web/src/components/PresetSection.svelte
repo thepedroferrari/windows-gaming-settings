@@ -1,7 +1,15 @@
 <script lang="ts">
   import PresetCards from './PresetCards.svelte'
-  import { app, setActivePreset, setSelection, setRecommendedPackages, clearRecommendedPackages, setFilter } from '$lib/state.svelte'
-  import type { PresetType } from '$lib/types'
+  import {
+    app,
+    setActivePreset,
+    setSelection,
+    setRecommendedPackages,
+    clearRecommendedPackages,
+    setFilter,
+    setOptimizations,
+  } from '$lib/state.svelte'
+  import type { PresetType, OptimizationKey } from '$lib/types'
   import type { PresetConfig } from '$lib/presets'
   import { FILTER_ALL, FILTER_RECOMMENDED } from '$lib/types'
 
@@ -9,12 +17,7 @@
 
   function applyOptimizations(keys: readonly string[]) {
     if (keys.length === 0) return
-    const inputs = document.querySelectorAll<HTMLInputElement>('input[name="opt"]')
-    const presetSet = new Set(keys)
-    inputs.forEach((input) => {
-      input.checked = presetSet.has(input.value)
-      input.dispatchEvent(new Event('change', { bubbles: true }))
-    })
+    setOptimizations(keys as OptimizationKey[])
   }
 
   function handlePresetSelect(preset: PresetType, config: PresetConfig) {

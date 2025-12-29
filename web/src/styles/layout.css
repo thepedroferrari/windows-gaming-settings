@@ -1,4 +1,93 @@
 @layer layout {
+  /* ============================================
+     MAIN CONTAINER
+     ============================================ */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    padding-top: 48px; /* Account for fixed nav */
+  }
+
+  /* ============================================
+     STEP SECTIONS
+     ============================================ */
+  .step {
+    padding: var(--space-xl) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step:last-child {
+    border-bottom: none;
+  }
+
+  .step h2 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+  }
+
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-right: 0.5rem;
+    background: var(--accent);
+    color: var(--bg-primary);
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: 50%;
+  }
+
+  .step-desc {
+    margin: 0 0 var(--space-md) 0;
+    color: var(--text-dim);
+    font-size: 0.875rem;
+  }
+
+  .step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .step-header__left h2 {
+    margin: 0 0 0.25rem 0;
+  }
+
+  .step-header__right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  /* Arsenal section padding */
+  .step--arsenal {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+  }
+
+  /* Loading and error states */
+  .loading-state,
+  .error-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-dim);
+  }
+
+  .error-state button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
   header {
     text-align: center;
     padding: 0;

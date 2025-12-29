@@ -46,11 +46,4 @@
   {/if}
 </div>
 
-<style>
-  .empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 2rem;
-    color: var(--text-dim);
-  }
-</style>
+<!-- Styles are in software-card.styles.css (layer: components) -->

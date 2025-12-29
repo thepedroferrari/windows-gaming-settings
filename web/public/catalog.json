@@ -531,6 +531,34 @@
     "icon": "steelseries",
     "desc": "Engine for SteelSeries keyboards, mice, and headsets."
   },
+  "armourycrate": {
+    "id": "ASUS.ArmouryCrate",
+    "name": "ASUS Armoury Crate",
+    "category": "rgb",
+    "icon": "asus",
+    "desc": "Control ASUS ROG peripherals and Aura Sync RGB."
+  },
+  "delldisplaymanager": {
+    "id": "Dell.DisplayManager",
+    "name": "Dell Display Manager",
+    "category": "utility",
+    "icon": "dell",
+    "desc": "Configure Dell monitor settings and presets."
+  },
+  "lgonscreencontrol": {
+    "id": "LG.OnScreenControl",
+    "name": "LG OnScreen Control",
+    "category": "utility",
+    "icon": "lg",
+    "desc": "Adjust LG monitor settings from Windows."
+  },
+  "hpdisplaycenter": {
+    "id": "HP.DisplayCenter",
+    "name": "HP Display Center",
+    "category": "utility",
+    "icon": "hp",
+    "desc": "Control HP monitor brightness and color."
+  },
   "nzxtcam": {
     "id": "NZXT.CAM",
     "name": "NZXT CAM",

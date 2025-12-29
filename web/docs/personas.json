@@ -6,9 +6,9 @@
   },
   "personas": [
     {
-      "id": "pro_gamer",
-      "display_name": "Pro Gamer",
-      "card_badge": "PRO_GAMER",
+      "id": "competitive_gamer",
+      "display_name": "Competitive Gamer",
+      "card_badge": "EPIC",
       "card_icon": "bolt",
       "card_blurb": "For ranked FPS. Latency first. Minimal overhead.",
       "risk": "low",
@@ -84,9 +84,9 @@
     {
       "id": "gamer",
       "display_name": "Gamer",
-      "card_badge": "GAMER",
+      "card_badge": "RECOMMENDED",
       "card_icon": "scales",
-      "card_blurb": "For most players. Smooth, stable, no drama.",
+      "card_blurb": "For most players. Smooth and stable.",
       "risk": "low",
       "intensity": 0.50,
       "overhead_label": "Low",
@@ -114,10 +114,6 @@
         {
           "key": "playnite",
           "reason": "Unifies libraries across launchers (cleaner daily workflow)."
-        },
-        {
-          "key": "7zip",
-          "reason": "Needed constantly (mods, downloads, archives)."
         },
         {
           "key": "vcredist",
@@ -160,7 +156,7 @@
     {
       "id": "streamer",
       "display_name": "Streamer",
-      "card_badge": "STREAMER",
+      "card_badge": "RARE",
       "card_icon": "cast",
       "card_blurb": "For creators. Clean captures, smooth frametimes.",
       "risk": "low",
@@ -235,7 +231,7 @@
     {
       "id": "benchmarker",
       "display_name": "Benchmarker",
-      "card_badge": "BENCHMARKER",
+      "card_badge": "LEGENDARY",
       "card_icon": "diamond",
       "card_blurb": "For benchmarkers. Max control. Measure everything.",
       "risk": "high",

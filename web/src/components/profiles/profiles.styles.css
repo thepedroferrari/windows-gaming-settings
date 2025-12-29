@@ -1,7 +1,13 @@
 @layer components {
+  /* ============================================
+     PROFILE ACTIONS
+     ============================================ */
   .profile-actions {
     display: flex;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
   }
+
+  /* .btn-secondary is defined in forge.styles.css - shared across components */
+  /* .btn-icon is defined in forge.styles.css - shared across components */
 }

@@ -37,19 +37,13 @@
     flex-wrap: wrap;
     gap: 6px;
     margin-bottom: var(--space-md);
-    --filter-delay-start: 30ms;
-    --filter-delay-step: 30ms;
 
-    /* Staggered entrance animation */
+    /* Staggered entrance animation - delays set via inline style in Svelte */
     & .filter {
       opacity: 0;
       transform: translateY(8px);
       animation: filterEnter 0.4s var(--ease-out-expo) forwards;
-      animation-delay: calc(
-        var(--filter-delay-start) +
-        (sibling-index() - 1) *
-        var(--filter-delay-step)
-      );
+      /* animation-delay set via style:animation-delay in Filters.svelte */
     }
   }
 

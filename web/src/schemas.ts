@@ -44,6 +44,8 @@ export const PeripheralTypeSchema = z
     PERIPHERAL_TYPES.RAZER,
     PERIPHERAL_TYPES.CORSAIR,
     PERIPHERAL_TYPES.STEELSERIES,
+    PERIPHERAL_TYPES.ASUS,
+    PERIPHERAL_TYPES.WOOTING,
   ])
   .describe('Peripheral manufacturer for software recommendations')
 
@@ -159,10 +161,6 @@ export function isParseSuccess<T>(result: ParseResult<T>): result is ParseSucces
   return result.success
 }
 
-export function isParseFailure<T>(result: ParseResult<T>): result is ParseFailure {
-  return !result.success
-}
-
 export function validateCatalog(data: unknown): ValidatedCatalog {
   return SoftwareCatalogSchema.parse(data)
 }
@@ -194,13 +192,6 @@ export function safeParsePackage(data: unknown): ParseResult<ValidatedPackage> {
   return result.success
     ? { success: true, data: result.data }
     : { success: false, error: result.error }
-}
-
-export function isCatalogEntry(value: unknown): value is [string, ValidatedPackage] {
-  if (!Array.isArray(value) || value.length !== 2) return false
-  const [key, pkg] = value
-  if (typeof key !== 'string') return false
-  return SoftwarePackageSchema.safeParse(pkg).success
 }
 
 export function isValidCatalog(value: unknown): value is ValidatedCatalog {

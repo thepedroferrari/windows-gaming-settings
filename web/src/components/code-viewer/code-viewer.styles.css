@@ -1,16 +1,45 @@
 @layer components {
+  /* ==========================================================================
+     CODE VIEWER
+     A tabbed code display component with Current/Diff/Edit views
+     ========================================================================== */
+
   .code-viewer {
+    /* Component-level custom properties */
+    --cv-accent: var(--cyber-yellow);
+    --cv-accent-glow: var(--cyber-yellow-glow);
+    --cv-accent-dim: var(--cyber-yellow-dim);
+    --cv-clip: polygon(
+      12px 0, 100% 0, 100% calc(100% - 12px),
+      calc(100% - 12px) 100%, 0 100%, 0 12px
+    );
+    --cv-clip-sm: polygon(
+      6px 0, 100% 0, 100% calc(100% - 6px),
+      calc(100% - 6px) 100%, 0 100%, 0 6px
+    );
+    --cv-clip-xs: polygon(
+      4px 0, 100% 0, 100% calc(100% - 4px),
+      calc(100% - 4px) 100%, 0 100%, 0 4px
+    );
+    --cv-transition: 150ms ease;
+    --cv-glow: 0 0 12px color-mix(in oklch, var(--cv-accent) 25%, transparent);
+
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-sm);
+
+    /* Layered background effect */
     background:
       radial-gradient(
-        120% 140% at 20% 20%,
-        color-mix(in oklch, var(--cyber-yellow) 10%, transparent),
+        ellipse 120% 140% at 20% 20%,
+        color-mix(in oklch, var(--cv-accent) 10%, transparent),
         transparent 55%
       ),
       radial-gradient(
-        140% 160% at 80% 0%,
+        ellipse 140% 160% at 80% 0%,
         color-mix(in oklch, var(--accent) 12%, transparent),
         transparent 60%
       ),
@@ -19,23 +48,19 @@
         color-mix(in oklch, oklch(0.1 0.02 285) 96%, transparent),
         color-mix(in oklch, oklch(0.08 0.02 285) 98%, transparent)
       );
-    border: 1px solid color-mix(in oklch, var(--cyber-yellow) 20%, var(--glass-border));
-    border-left: 3px solid var(--cyber-yellow);
-    border-radius: 0;
-    clip-path: var(--clip-cyber-lg);
-    padding: var(--space-sm);
+
+    border: 1px solid color-mix(in oklch, var(--cv-accent) 20%, var(--glass-border));
+    border-inline-start-width: 3px;
+    border-inline-start-color: var(--cv-accent);
+    clip-path: var(--cv-clip);
+    backdrop-filter: blur(16px);
+
     box-shadow:
       0 20px 60px color-mix(in oklch, oklch(0 0 0) 55%, transparent),
-      0 0 30px color-mix(in oklch, var(--cyber-yellow) 8%, transparent),
+      0 0 30px color-mix(in oklch, var(--cv-accent) 8%, transparent),
       inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 5%, transparent);
-    backdrop-filter: blur(16px);
-    position: relative;
-    overflow: hidden;
 
-    &.modal {
-      max-height: 70vh;
-    }
-
+    /* Sheen overlay */
     &::after {
       content: "";
       position: absolute;
@@ -51,6 +76,9 @@
     }
   }
 
+  /* --------------------------------------------------------------------------
+     Toolbar
+     -------------------------------------------------------------------------- */
   .cv-toolbar {
     display: flex;
     align-items: center;
@@ -60,149 +88,65 @@
   }
 
   .cv-tab {
+    padding-block: 0.35rem;
+    padding-inline: 0.75rem;
     border: 1px solid var(--border-light);
     background: color-mix(in oklch, oklch(1 0 0) 2%, transparent);
     color: var(--text-primary);
-    padding: 0.35rem 0.75rem;
-    border-radius: 0;
-    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-    font-size: 0.75rem;
     font-family: var(--font-mono);
+    font-size: 0.75rem;
     letter-spacing: 0.03em;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    clip-path: var(--cv-clip-sm);
     backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition: var(--cv-transition);
+    transition-property: color, border-color, background, transform, box-shadow;
 
     &:hover {
-      border-color: var(--cyber-yellow);
-      color: var(--cyber-yellow);
+      border-color: var(--cv-accent);
+      color: var(--cv-accent);
       transform: translateY(-1px);
-      box-shadow: 0 0 12px color-mix(in oklch, var(--cyber-yellow) 20%, transparent);
+      box-shadow: var(--cv-glow);
     }
 
     &.active {
       background: linear-gradient(
         135deg,
-        color-mix(in oklch, var(--cyber-yellow) 25%, transparent),
-        color-mix(in oklch, var(--cyber-yellow) 15%, transparent)
+        color-mix(in oklch, var(--cv-accent) 25%, transparent),
+        color-mix(in oklch, var(--cv-accent) 15%, transparent)
       );
-      border-color: var(--cyber-yellow);
-      color: var(--cyber-yellow);
+      border-color: var(--cv-accent);
+      color: var(--cv-accent);
+      text-shadow: 0 0 8px var(--cv-accent-glow);
       box-shadow:
-        0 0 20px color-mix(in oklch, var(--cyber-yellow) 30%, transparent),
-        inset 0 0 10px color-mix(in oklch, var(--cyber-yellow) 10%, transparent);
-      text-shadow: 0 0 8px var(--cyber-yellow-glow);
+        0 0 20px color-mix(in oklch, var(--cv-accent) 30%, transparent),
+        inset 0 0 10px color-mix(in oklch, var(--cv-accent) 10%, transparent);
     }
   }
 
   .cv-pill {
-    margin-left: auto;
-    padding: 0.2rem 0.6rem;
-    border-radius: 0;
-    clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-    background: color-mix(in oklch, var(--cyber-yellow) 8%, transparent);
-    border: 1px solid color-mix(in oklch, var(--cyber-yellow) 20%, transparent);
-    font-size: 0.68rem;
+    margin-inline-start: auto;
+    padding-block: 0.2rem;
+    padding-inline: 0.6rem;
+    background: color-mix(in oklch, var(--cv-accent) 8%, transparent);
+    border: 1px solid color-mix(in oklch, var(--cv-accent) 20%, transparent);
     font-family: var(--font-mono);
-    color: var(--cyber-yellow-dim);
+    font-size: 0.68rem;
+    color: var(--cv-accent-dim);
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    clip-path: var(--cv-clip-xs);
   }
 
-  .cv-body {
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: 0;
-    clip-path: var(--clip-cyber-md);
-    background: var(--bg-primary);
-    overflow: hidden;
-    min-height: 260px;
-    box-shadow: inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 4%, transparent);
-  }
-
-  .cv-pane {
-    display: none;
-    margin: 0;
-    padding: var(--space-md);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    line-height: 1.55;
-    color: var(--text-secondary);
-    white-space: pre;
-    overflow: auto;
-    max-height: 48vh;
-
-    &.active {
-      display: block;
-    }
-  }
-
-  .cv-edit {
-    width: 100%;
-    height: 100%;
-    min-height: 260px;
-    resize: vertical;
-    background: color-mix(in oklch, oklch(0 0 0) 35%, transparent);
-    color: var(--text-primary);
-    border: none;
-    outline: none;
-  }
-
-  .cv-diff {
-    white-space: pre-wrap;
-    background:
-      radial-gradient(
-        140% 120% at 20% 30%,
-        color-mix(in oklch, var(--accent) 8%, transparent),
-        transparent 45%
-      ), var(--bg-primary);
-  }
-
-  .cv-line {
-    display: grid;
-    grid-template-columns: 44px 44px 1fr;
-    gap: var(--space-xs);
-    padding: 2px 0;
-    align-items: flex-start;
-
-    &.diff-focus {
-      background: color-mix(in oklch, var(--accent) 15%, transparent);
-      box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 40%, transparent);
-      animation: diff-pulse 0.3s ease-out;
-    }
-  }
-
-  .cv-ln {
-    font-size: 0.72rem;
-    color: var(--text-hint);
-    text-align: right;
-    user-select: none;
-  }
-
-  .cv-code {
-    white-space: pre-wrap;
-  }
-
-  .diff-added {
-    background: color-mix(in oklch, oklch(0.65 0.2 145) 8%, transparent);
-    border-left: 2px solid color-mix(in oklch, oklch(0.65 0.2 145) 65%, transparent);
-  }
-
-  .diff-removed {
-    background: color-mix(in oklch, var(--risky) 8%, transparent);
-    border-left: 2px solid color-mix(in oklch, var(--risky) 65%, transparent);
-  }
-
-  .diff-unchanged {
-    border-left: 2px solid transparent;
-  }
-
+  /* --------------------------------------------------------------------------
+     Diff Navigation
+     -------------------------------------------------------------------------- */
   .cv-nav {
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    margin-left: auto;
-    margin-right: var(--space-xs);
+    margin-inline-start: auto;
+    margin-inline-end: var(--space-xs);
 
     &[hidden] {
       display: none;
@@ -210,30 +154,30 @@
   }
 
   .cv-nav-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
+    --size: 24px;
+    display: grid;
+    place-items: center;
+    inline-size: var(--size);
+    block-size: var(--size);
     padding: 0;
     border: 1px solid var(--border);
     background: color-mix(in oklch, oklch(1 0 0) 2%, transparent);
-    border-radius: 0;
-    clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
     color: var(--text-secondary);
+    clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: var(--cv-transition);
+    transition-property: color, border-color, background, box-shadow;
 
     & svg {
-      width: 14px;
-      height: 14px;
+      inline-size: 14px;
+      block-size: 14px;
     }
 
     &:hover:not(:disabled) {
-      background: color-mix(in oklch, var(--cyber-yellow) 15%, transparent);
-      border-color: var(--cyber-yellow);
-      color: var(--cyber-yellow);
-      box-shadow: 0 0 8px color-mix(in oklch, var(--cyber-yellow) 25%, transparent);
+      background: color-mix(in oklch, var(--cv-accent) 15%, transparent);
+      border-color: var(--cv-accent);
+      color: var(--cv-accent);
+      box-shadow: 0 0 8px color-mix(in oklch, var(--cv-accent) 25%, transparent);
     }
 
     &:disabled {
@@ -243,32 +187,184 @@
   }
 
   .cv-nav-count {
+    min-inline-size: 32px;
     font-size: 0.7rem;
     font-weight: 500;
     color: var(--text-secondary);
-    min-width: 32px;
     text-align: center;
   }
 
+  /* --------------------------------------------------------------------------
+     Code Body
+     -------------------------------------------------------------------------- */
+  .cv-body {
+    position: relative;
+    min-block-size: 260px;
+    border: 1px solid var(--border);
+    background: var(--bg-primary);
+    clip-path: var(--clip-cyber-md);
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 4%, transparent);
+  }
+
+  .cv-pane {
+    display: none;
+    margin: 0;
+    padding: var(--space-md);
+    max-block-size: 48vh;
+    overflow: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    white-space: pre;
+
+    &.active {
+      display: block;
+    }
+  }
+
+  .cv-edit {
+    inline-size: 100%;
+    block-size: 100%;
+    min-block-size: 260px;
+    padding: var(--space-md);
+    border: none;
+    outline: none;
+    resize: vertical;
+    background: color-mix(in oklch, oklch(0 0 0) 35%, transparent);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  /* --------------------------------------------------------------------------
+     Diff View
+     -------------------------------------------------------------------------- */
+  .cv-diff {
+    white-space: pre-wrap;
+    background:
+      radial-gradient(
+        ellipse 140% 120% at 20% 30%,
+        color-mix(in oklch, var(--accent) 8%, transparent),
+        transparent 45%
+      ),
+      var(--bg-primary);
+  }
+
+  .cv-line {
+    display: grid;
+    grid-template-columns: 44px 44px 1fr;
+    gap: var(--space-xs);
+    padding-block: 2px;
+    align-items: start;
+
+    &.diff-focus {
+      background: color-mix(in oklch, var(--accent) 15%, transparent);
+      box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 40%, transparent);
+    }
+  }
+
+  .cv-ln {
+    font-size: 0.72rem;
+    color: var(--text-hint);
+    text-align: end;
+    user-select: none;
+  }
+
+  .cv-code {
+    white-space: pre-wrap;
+  }
+
+  /* Diff line states */
+  .diff-added {
+    background: color-mix(in oklch, oklch(0.65 0.2 145) 8%, transparent);
+    border-inline-start: 2px solid color-mix(in oklch, oklch(0.65 0.2 145) 65%, transparent);
+  }
+
+  .diff-removed {
+    background: color-mix(in oklch, var(--risky) 8%, transparent);
+    border-inline-start: 2px solid color-mix(in oklch, var(--risky) 65%, transparent);
+  }
+
+  .diff-unchanged {
+    border-inline-start: 2px solid transparent;
+  }
+
+  /* --------------------------------------------------------------------------
+     Footer
+     -------------------------------------------------------------------------- */
   .cv-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 var(--space-sm);
-    color: var(--text-hint);
+    padding-inline: var(--space-sm);
     font-size: 0.78rem;
+    color: var(--text-hint);
+    position: relative;
     z-index: 1;
   }
 
   .cv-stats {
     display: flex;
-    gap: var(--space-sm);
     align-items: center;
+    gap: var(--space-sm);
   }
 
   .cv-actions {
     display: flex;
-    gap: var(--space-xs);
     align-items: center;
+    gap: var(--space-xs);
+  }
+
+  /* --------------------------------------------------------------------------
+     Action Buttons
+     -------------------------------------------------------------------------- */
+  .cv-actions :where(.btn-secondary, .download-btn) {
+    /* Reset and base styles */
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 0.4rem;
+    padding-inline: 0.85rem;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    clip-path: var(--cv-clip-xs);
+    cursor: pointer;
+    transition: var(--cv-transition);
+    transition-property: color, background, border-color, box-shadow;
+  }
+
+  .cv-actions .btn-secondary {
+    color: var(--text-secondary);
+    background: color-mix(in oklch, oklch(1 0 0) 4%, transparent);
+    border: 1px solid var(--border);
+
+    &:hover {
+      background: color-mix(in oklch, var(--cv-accent) 12%, transparent);
+      border-color: var(--cv-accent);
+      color: var(--cv-accent);
+    }
+  }
+
+  .cv-actions .download-btn {
+    color: oklch(0.12 0.02 90);
+    background: var(--cv-accent);
+    border: 1px solid var(--cv-accent);
+
+    &:hover {
+      background: color-mix(in oklch, var(--cv-accent) 85%, oklch(0.15 0 0));
+      box-shadow: 0 0 10px color-mix(in oklch, var(--cv-accent) 35%, transparent);
+    }
+
+    /* Hide broken shimmer effect */
+    & .shimmer {
+      display: none;
+    }
   }
 }
