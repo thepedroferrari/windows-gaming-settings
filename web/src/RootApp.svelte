@@ -110,7 +110,7 @@
 <main class="container" id="main-content">
   <!-- Step 0: Presets / Quick Start -->
   <section id="quick-start" class="step">
-    <h2><span class="step-num">0</span> Quick Start</h2>
+    <h2>Quick Start</h2>
     <p class="step-desc">Choose a preset or build your own loadout below</p>
     <PresetSection />
   </section>

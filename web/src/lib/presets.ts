@@ -1,4 +1,5 @@
 import personasDoc from '../../docs/personas.json'
+import { getOptimizationsForProfile, type ProfileId } from './optimizations'
 import type { OptimizationKey, PackageKey, PresetType } from './types'
 
 export interface PresetConfig {
@@ -10,6 +11,7 @@ export interface PresetMeta {
   readonly label: string
   readonly subtitle: string
   readonly description: string
+  readonly traits: readonly string[]
   readonly rarity: 'legendary' | 'epic' | 'rare' | 'uncommon' | 'common'
   readonly intensity: number
   readonly risk: 'low' | 'medium' | 'high'
@@ -66,116 +68,6 @@ const rarityByBadge: Record<string, PresetMeta['rarity']> = {
   COMMON: 'common',
 }
 
-/**
- * Curated optimization sets per preset based on their philosophy
- */
-const PRESET_OPTIMIZATIONS: Record<string, readonly OptimizationKey[]> = {
-  // Competitive Gamer: Aggressive latency + fps focused for competitive gaming
-  competitive_gamer: [
-    // Input latency
-    'timer',
-    'mouse_accel',
-    'keyboard_response',
-    'usb_suspend',
-    'usb_power',
-    // Display latency
-    'gamedvr',
-    'fso_disable',
-    'multiplane_overlay',
-    'display_perf',
-    // Network latency
-    'nagle',
-    'network_throttling',
-    // System overhead reduction
-    'background_apps',
-    'notifications_off',
-    'copilot_disable',
-    // Power for max clocks
-    'ultimate_perf',
-    // DPC latency
-    'msi_mode',
-    'interrupt_affinity',
-  ],
-
-  // Gamer: Conservative safe set, stability over maximum performance
-  gamer: [
-    'power_plan',
-    'fastboot',
-    'temp_purge',
-    'storage_sense',
-    'explorer_speed',
-    'background_apps',
-    'notifications_off',
-    'classic_menu',
-  ],
-
-  // Streamer: Capture-safe optimizations (NO gamedvr/game_bar - needed for capture)
-  streamer: [
-    'power_plan',
-    'audio_enhancements',
-    'usb_power',
-    'pcie_power',
-    'temp_purge',
-    'storage_sense',
-    'display_perf',
-    'notifications_off',
-  ],
-
-  // Benchmarker: Maximum control - all safe + caution + most risky optimizations
-  benchmarker: [
-    // Safe tier
-    'pagefile',
-    'fastboot',
-    'timer',
-    'power_plan',
-    'usb_power',
-    'pcie_power',
-    'dns',
-    'nagle',
-    'audio_enhancements',
-    'gamedvr',
-    'background_apps',
-    'edge_debloat',
-    'copilot_disable',
-    'explorer_speed',
-    'temp_purge',
-    'restore_point',
-    'classic_menu',
-    'storage_sense',
-    'display_perf',
-    'end_task',
-    'explorer_cleanup',
-    'notifications_off',
-    'ps7_telemetry',
-    'multiplane_overlay',
-    'mouse_accel',
-    'usb_suspend',
-    'keyboard_response',
-    // Caution tier
-    'msi_mode',
-    'hpet',
-    'game_bar',
-    'hags',
-    'fso_disable',
-    'ultimate_perf',
-    'services_trim',
-    'disk_cleanup',
-    'wpbt_disable',
-    'qos_gaming',
-    'network_throttling',
-    'interrupt_affinity',
-    'process_mitigation',
-    // Risky tier (experimental)
-    'privacy_tier1',
-    'privacy_tier2',
-    'bloatware',
-    'ipv4_prefer',
-    'teredo_disable',
-    'audio_exclusive',
-    'tcp_optimizer',
-  ],
-} as const
-
 function toIntensity(value: number): number {
   if (value <= 1) return Math.round(value * 100)
   return Math.round(value)
@@ -183,7 +75,7 @@ function toIntensity(value: number): number {
 
 function toPresetConfig(persona: PersonaRaw): PresetConfig {
   return {
-    opts: PRESET_OPTIMIZATIONS[persona.id] ?? [],
+    opts: getOptimizationsForProfile(persona.id as ProfileId),
     software: persona.recommended_software.map((item) => item.key as PackageKey),
   }
 }
@@ -193,6 +85,7 @@ function toPresetMeta(persona: PersonaRaw): PresetMeta {
     label: persona.display_name,
     subtitle: persona.mindset,
     description: persona.card_blurb,
+    traits: persona.constraints.slice(0, 2),
     rarity: rarityByBadge[persona.card_badge] ?? 'common',
     intensity: toIntensity(persona.intensity),
     risk: persona.risk,

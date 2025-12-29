@@ -31,7 +31,9 @@
       <PresetCard
         {preset}
         label={meta.label}
+        subtitle={meta.subtitle}
         description={meta.description}
+        traits={meta.traits}
         rarity={meta.rarity}
         intensity={meta.intensity}
         riskLevel={meta.risk}

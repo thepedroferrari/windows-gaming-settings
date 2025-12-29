@@ -322,7 +322,7 @@ export interface AppState {
 
 export const PRESET_TYPES = {
   BENCHMARKER: 'benchmarker',
-  COMPETITIVE_GAMER: 'competitive_gamer',
+  PRO_GAMER: 'pro_gamer',
   STREAMER: 'streamer',
   GAMER: 'gamer',
 } as const satisfies Record<string, string>

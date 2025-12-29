@@ -948,3 +948,203 @@ export function findOptimization(key: OptimizationKey): OptimizationDef | undefi
 export function getDefaultOptimizations(): OptimizationKey[] {
   return OPTIMIZATIONS.filter((opt) => opt.defaultChecked).map((opt) => opt.key)
 }
+
+// =============================================================================
+// Profile → Optimization Matrix
+// =============================================================================
+
+/** Profile types for optimization matrix */
+export type ProfileId = 'minimal_default' | 'gamer' | 'streamer' | 'pro_gamer' | 'benchmarker'
+
+/**
+ * Profile → Optimization matrix
+ * Defines which optimizations are enabled by default for each profile.
+ * minimal_default is the internal baseline (not a visible preset).
+ */
+export const PROFILE_OPTIMIZATIONS: Record<ProfileId, readonly OptimizationKey[]> = {
+  // Internal baseline - safe essentials only
+  minimal_default: [
+    'pagefile',
+    'fastboot',
+    'restore_point',
+    'power_plan',
+    'usb_power',
+    'pcie_power',
+    'audio_enhancements',
+  ],
+
+  // Gamer: Conservative safe set, stability over maximum performance
+  gamer: [
+    'pagefile',
+    'fastboot',
+    'restore_point',
+    'power_plan',
+    'usb_power',
+    'pcie_power',
+    'dns',
+    'nagle',
+    'gamedvr',
+    'background_apps',
+    'edge_debloat',
+    'copilot_disable',
+    'audio_enhancements',
+    'timer', // Safe, significant FPS benefit
+    'end_task', // QoL, no downside
+  ],
+
+  // Streamer: Capture-safe optimizations (NO gamedvr - needed for capture)
+  streamer: [
+    'pagefile',
+    'fastboot',
+    'restore_point',
+    'power_plan',
+    'usb_power',
+    'pcie_power',
+    'dns',
+    'nagle',
+    'edge_debloat',
+    'copilot_disable',
+    'audio_enhancements',
+    // Note: gamedvr NOT included - streamers need capture
+  ],
+
+  // Pro Gamer: Aggressive latency + fps focused for competitive gaming
+  pro_gamer: [
+    'pagefile',
+    'fastboot',
+    'timer',
+    'restore_point',
+    'notifications_off',
+    'power_plan',
+    'usb_power',
+    'pcie_power',
+    'usb_suspend',
+    'dns',
+    'nagle',
+    'mouse_accel',
+    'display_perf',
+    'gamedvr',
+    'background_apps',
+    'edge_debloat',
+    'copilot_disable',
+    'audio_enhancements',
+    'msi_mode',
+    'fso_disable',
+    'ultimate_perf',
+    'services_trim',
+    'wpbt_disable',
+    'qos_gaming',
+    'network_throttling',
+    'interrupt_affinity',
+    'keyboard_response', // Essential for competitive
+    'end_task', // QoL, no downside
+    // Note: hags removed (mixed results, benchmarker only)
+  ],
+
+  // Benchmarker: Maximum control - all safe + caution + most risky
+  benchmarker: [
+    // Safe tier
+    'pagefile',
+    'fastboot',
+    'timer',
+    'explorer_speed',
+    'temp_purge',
+    'restore_point',
+    'classic_menu',
+    'storage_sense',
+    'end_task',
+    'explorer_cleanup',
+    'notifications_off',
+    'ps7_telemetry',
+    'power_plan',
+    'usb_power',
+    'pcie_power',
+    'usb_suspend',
+    'dns',
+    'nagle',
+    'mouse_accel',
+    'keyboard_response',
+    'display_perf',
+    'multiplane_overlay',
+    'gamedvr',
+    'background_apps',
+    'edge_debloat',
+    'copilot_disable',
+    'audio_enhancements',
+    // Caution tier
+    'msi_mode',
+    'hpet',
+    'hags',
+    'fso_disable',
+    'ultimate_perf',
+    'services_trim',
+    'disk_cleanup',
+    'wpbt_disable',
+    'qos_gaming',
+    'network_throttling',
+    'interrupt_affinity',
+    // Risky tier (selected)
+    'privacy_tier1',
+    'privacy_tier2',
+    'privacy_tier3',
+    'bloatware',
+    'ipv4_prefer',
+    'teredo_disable',
+    'native_nvme',
+    'smt_disable',
+    'audio_exclusive',
+    'tcp_optimizer',
+  ],
+} as const
+
+/** Gate definitions for confirmation dialogs */
+export const OPTIMIZATION_GATES = {
+  /** Optimizations requiring double confirmation before applying */
+  doubleConfirm: new Set<OptimizationKey>([
+    'msi_mode',
+    'hpet',
+    'hags',
+    'fso_disable',
+    'ultimate_perf',
+    'services_trim',
+    'disk_cleanup',
+    'wpbt_disable',
+    'qos_gaming',
+    'network_throttling',
+    'interrupt_affinity',
+    'privacy_tier1',
+    'privacy_tier2',
+    'privacy_tier3',
+    'bloatware',
+    'ipv4_prefer',
+    'teredo_disable',
+    'native_nvme',
+    'smt_disable',
+    'audio_exclusive',
+    'tcp_optimizer',
+  ]),
+
+  /** Optimizations requiring manual opt-in (never auto-selected) */
+  manualOptIn: new Set<OptimizationKey>([
+    'process_mitigation',
+    'core_isolation_off',
+  ]),
+
+  /** UI phrase for acceptance */
+  acceptPhrase: 'I ACCEPT THE RISK',
+} as const
+
+/** Get optimizations for a profile */
+export function getOptimizationsForProfile(profile: ProfileId): readonly OptimizationKey[] {
+  return PROFILE_OPTIMIZATIONS[profile] ?? []
+}
+
+/** Check if optimization requires double confirmation */
+export function requiresDoubleConfirm(key: OptimizationKey): boolean {
+  return OPTIMIZATION_GATES.doubleConfirm.has(key)
+}
+
+/** Check if optimization is manual opt-in only */
+export function isManualOptInOnly(key: OptimizationKey): boolean {
+  return OPTIMIZATION_GATES.manualOptIn.has(key)
+}

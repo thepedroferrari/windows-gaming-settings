@@ -13,20 +13,20 @@ display_name = "Pro Gamer"
 card_badge = "PRO_GAMER"
 card_icon = "bolt"
 # UI copy (short + punchy)
-card_blurb = "For ranked FPS. Latency first. Minimal overhead."
+card_blurb = "Lean preset for consistent input and frametimes with minimal overhead. Built for players who prioritize control."
 # Behavior knobs
 risk = "low"
 intensity = 0.90
-mindset = "ranked / tournament"
+mindset = "Match Focus"
 primary_goals = [
-  "lower perceived input latency",
-  "reduce background noise (services + overlays)",
-  "stable frametimes",
-  "fast, repeatable setup",
+  "Latency-first input tuning",
+  "Background noise stripped",
+  "Stable frametimes",
+  "Match-ready setup",
 ]
 constraints = [
-  "avoid heavyweight background apps",
-  "avoid excessive overlays unless needed",
+  "keep background apps light",
+  "overlays only when needed",
 ]
 
 [[persona.recommended_software]]
@@ -83,19 +83,19 @@ id = "gamer"
 display_name = "Gamer"
 card_badge = "GAMER"
 card_icon = "scales"
-card_blurb = "For most players. Smooth and stable."
+card_blurb = "Balanced preset that smooths stutter without stripping features. Easy daily driver for most playstyles."
 risk = "low"
 intensity = 0.50
-mindset = "daily driver / single-player + multiplayer"
+mindset = "Everyday Play"
 primary_goals = [
-  "reduce stutter + hitching",
-  "keep system stable",
-  "keep features working (store, game pass, peripherals)",
-  "easy setup",
+  "Smooth frametimes",
+  "Keep features working",
+  "Stable daily driver",
+  "Quick setup",
 ]
 constraints = [
-  "prefer reversible tweaks",
-  "avoid breaking Xbox/Game Pass and common drivers",
+  "reversible changes only",
+  "keeps Xbox/Game Pass working",
 ]
 
 [[persona.recommended_software]]
@@ -148,19 +148,19 @@ id = "streamer"
 display_name = "Streamer"
 card_badge = "STREAMER"
 card_icon = "cast"
-card_blurb = "For creators. Clean captures, smooth frametimes."
+card_blurb = "Stabilizes capture and audio while keeping performance steady for live sessions. Built for creators who want fewer surprises."
 risk = "low"
 intensity = 0.40
-mindset = "capture-first"
+mindset = "Creator Ready"
 primary_goals = [
-  "smooth capture + stable frametimes",
-  "clean audio (no noise, no crackle)",
-  "predictable CPU/GPU load",
-  "fast scene/stream control",
+  "Capture-safe performance",
+  "Clean audio chain",
+  "Stable frametimes",
+  "Fast scene control",
 ]
 constraints = [
-  "avoid breaking capture devices",
-  "avoid aggressive debloat that impacts drivers/services",
+  "protect capture devices",
+  "avoid aggressive debloat",
 ]
 
 [[persona.recommended_software]]
@@ -217,17 +217,17 @@ id = "benchmarker"
 display_name = "Benchmarker"
 card_badge = "BENCHMARKER"
 card_icon = "diamond"
-card_blurb = "For benchmarkers. Max control. Measure everything."
+card_blurb = "Maximum control for repeatable runs and deep telemetry. Built to measure, compare, and tune."
 risk = "high"
 intensity = 1.0
-mindset = "data / experimentation"
+mindset = "Lab Mode"
 primary_goals = [
-  "reproducible before/after runs",
-  "frametime capture + analysis",
-  "stress testing for stability",
-  "clean driver + clean background state",
+  "Repeatable test runs",
+  "Full telemetry logging",
+  "Stress for stability",
+  "Clean baseline",
 ]
-constraints = ["expects breakage risk", "wants tools, logs, and receipts"]
+constraints = ["expect breakage risk", "log everything"]
 
 [[persona.recommended_software]]
 key = "capframex"

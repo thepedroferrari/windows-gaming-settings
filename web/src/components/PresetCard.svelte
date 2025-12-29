@@ -21,12 +21,14 @@
   interface Props {
     preset: PresetType;
     label: string;
+    subtitle?: string;
     description?: string;
     rarity?: "legendary" | "epic" | "rare" | "uncommon" | "common";
     intensity?: number;
     riskLevel?: "low" | "medium" | "high";
     overheadLabel?: string;
     latencyLabel?: string;
+    traits?: readonly string[];
     softwareCount: number;
     optimizationCount?: number;
     active?: boolean;
@@ -36,12 +38,14 @@
   let {
     preset,
     label,
+    subtitle = "",
     description = "",
     rarity = "common",
     intensity = 50,
     riskLevel = "low",
     overheadLabel = "",
     latencyLabel = "",
+    traits = [],
     softwareCount,
     optimizationCount = 0,
     active = false,
@@ -58,7 +62,7 @@
     riskLevel === "low"
       ? preset === "gamer" || preset === "streamer"
         ? "Safe"
-        : preset === "competitive_gamer"
+        : preset === "pro_gamer"
         ? "Low risk"
         : riskLabels[riskLevel]
       : riskLabels[riskLevel],
@@ -258,10 +262,29 @@
         <h3 class="preset-card__title">{label}</h3>
       </div>
 
-      <!-- Description (merged with mindset) -->
-      {#if description}
-        <p class="preset-card__desc">{description}</p>
-      {/if}
+      <div class="preset-card__body">
+        {#if subtitle}
+          <div class="preset-card__subtitle">
+            <span class="subtitle-label">Mode</span>
+            <span class="subtitle-value">{subtitle}</span>
+          </div>
+        {/if}
+
+        {#if description}
+          <p class="preset-card__desc">{description}</p>
+        {/if}
+
+        {#if traits.length}
+          <div class="preset-card__traits">
+            <span class="traits-label">Guardrails</span>
+            <ul class="traits-list">
+              {#each traits as trait (trait)}
+                <li>{trait}</li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
+      </div>
 
       <!-- Decorative intensity bar -->
       <div class="preset-card__bar">
@@ -464,8 +487,8 @@
     border: 2px solid oklch(1 0 0 / 0.15);
     display: grid;
     grid-template-rows: auto 1fr auto auto;
-    padding: 0.75rem 0.6rem;
-    gap: 0.5rem;
+    padding: 0.6rem 0.5rem;
+    gap: 0.45rem;
     transform: translate3d(0, 0, 0.01px);
     backface-visibility: hidden;
     isolation: isolate;
@@ -525,40 +548,114 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.45rem 0.25rem 0;
+    padding: 0.7rem 0.5rem 0.1rem;
     z-index: 2;
     position: relative;
+  }
+
+  .preset-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0 0.4rem;
+    min-height: 0;
   }
 
   .preset-card__title {
-    font-family: var(--font-display, inherit);
-    font-size: clamp(0.9rem, 1.4vw, 1.1rem);
-    font-weight: 800;
-    letter-spacing: 0.04em;
+    font-family: var(--font-display);
+    font-size: clamp(0.95rem, 1.7vw, 1.35rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--card-glow);
     text-shadow:
-      0 2px 10px oklch(0 0 0 / 0.7),
-      0 0 16px color-mix(in oklch, var(--card-glow) 35%, transparent);
+      0 0 14px color-mix(in oklch, var(--card-glow) 45%, transparent),
+      0 6px 20px oklch(0 0 0 / 0.6);
     margin: 0;
     text-align: center;
-    line-height: 1.1;
+    line-height: 1.05;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+
+  .preset-card__subtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: oklch(1 0 0 / 0.55);
+    font-weight: 600;
+  }
+
+  .preset-card__subtitle .subtitle-label {
+    color: var(--card-glow);
+    font-weight: 700;
+  }
+
+  .preset-card__subtitle .subtitle-value {
+    color: oklch(1 0 0 / 0.7);
   }
 
   .preset-card__desc {
-    font-size: 0.85rem;
+    font-size: 0.72rem;
     font-weight: 500;
-    line-height: 1.4;
-    color: oklch(1 0 0 / 0.8);
+    line-height: 1.5;
+    color: oklch(1 0 0 / 0.86);
     text-align: left;
-    padding: 0.5rem 0.25rem;
+    padding: 0.45rem 0.5rem;
     margin: 0;
-    background: transparent;
-    border: none;
-    border-top: 1px solid oklch(1 0 0 / 0.08);
-    border-bottom: 1px solid oklch(1 0 0 / 0.08);
+    background: oklch(0 0 0 / 0.35);
+    border-radius: 4px;
+    border: 1px solid oklch(1 0 0 / 0.08);
     z-index: 2;
     position: relative;
-    flex: 1;
+    text-wrap: pretty;
+  }
+
+  .preset-card__traits {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.45rem 0.5rem 0.4rem;
+    background: oklch(0 0 0 / 0.25);
+    border-radius: 4px;
+    border: 1px solid oklch(1 0 0 / 0.06);
+  }
+
+  .traits-label {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--card-glow);
+    font-weight: 700;
+  }
+
+  .traits-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .traits-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.6rem;
+    color: oklch(1 0 0 / 0.78);
+    letter-spacing: 0.02em;
+  }
+
+  .traits-list li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+    background: linear-gradient(135deg, var(--card-glow) 0%, transparent 100%);
+    box-shadow: 0 0 6px color-mix(in oklch, var(--card-glow) 50%, transparent);
+    flex-shrink: 0;
   }
 
   /* Decorative bar (cool factor only) */
@@ -831,9 +928,22 @@
   }
 
   /* Responsive */
+  @media (max-width: 1100px) {
+    .preset-card__title {
+      font-size: 1rem;
+      letter-spacing: 0.07em;
+    }
+    .preset-card__desc {
+      font-size: 0.65rem;
+    }
+    .traits-list li {
+      font-size: 0.58rem;
+    }
+  }
+
   @media (max-width: 640px) {
     .preset-card__front {
-      padding: 0.5rem 0.4rem;
+      padding: 0.35rem;
       gap: 0.35rem;
     }
     .preset-card__header {
@@ -841,11 +951,21 @@
     }
     .preset-card__title {
       font-size: 0.85rem;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.06em;
+    }
+    .preset-card__subtitle {
+      font-size: 0.5rem;
+      letter-spacing: 0.1em;
     }
     .preset-card__desc {
-      font-size: 0.75rem;
-      padding: 0.35rem 0.2rem;
+      font-size: 0.65rem;
+      padding: 0.35rem;
+    }
+    .preset-card__traits {
+      padding: 0.35rem;
+    }
+    .traits-list li {
+      font-size: 0.55rem;
     }
     .preset-card__stats {
       padding: 0.4rem;
