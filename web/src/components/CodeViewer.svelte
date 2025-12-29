@@ -206,10 +206,10 @@
 </script>
 
 <div class="code-viewer">
-  <div class="cv-toolbar">
+  <div class="toolbar">
     <button
       type="button"
-      class="cv-tab"
+      class="tab"
       class:active={activeMode === 'current'}
       onclick={() => handleTabClick('current')}
     >
@@ -217,7 +217,7 @@
     </button>
     <button
       type="button"
-      class="cv-tab"
+      class="tab"
       class:active={activeMode === 'diff'}
       onclick={() => handleTabClick('diff')}
     >
@@ -225,7 +225,7 @@
     </button>
     <button
       type="button"
-      class="cv-tab"
+      class="tab"
       class:active={activeMode === 'edit'}
       onclick={() => handleTabClick('edit')}
     >
@@ -233,10 +233,10 @@
     </button>
 
     {#if showNav}
-      <div class="cv-nav">
+      <div class="nav">
         <button
           type="button"
-          class="cv-nav-btn"
+          class="nav-btn"
           title="Previous change"
           onclick={() => navigateDiff('prev')}
         >
@@ -244,10 +244,10 @@
             <polyline points="18 15 12 9 6 15" />
           </svg>
         </button>
-        <span class="cv-nav-count">{diffIndex + 1}/{diffTargets.length}</span>
+        <span class="nav-count">{diffIndex + 1}/{diffTargets.length}</span>
         <button
           type="button"
-          class="cv-nav-btn"
+          class="nav-btn"
           title="Next change"
           onclick={() => navigateDiff('next')}
         >
@@ -258,33 +258,33 @@
       </div>
     {/if}
 
-    <div class="cv-pill">{pillLabel}</div>
+    <div class="pill">{pillLabel}</div>
   </div>
 
-  <div class="cv-body">
+  <div class="body">
     <!-- Current View -->
-    <pre class="cv-pane" class:active={activeMode === 'current'}>{script || '// No script generated'}</pre>
+    <pre class="pane" class:active={activeMode === 'current'}>{script || '// No script generated'}</pre>
 
     <!-- Diff View -->
-    <div class="cv-pane cv-diff" class:active={activeMode === 'diff'} bind:this={diffPaneEl}>
+    <div class="pane diff" class:active={activeMode === 'diff'} bind:this={diffPaneEl}>
       {#each diffLines$ as line, index (index)}
         <div
-          class="cv-line"
+          class="line"
           class:diff-added={line.type === 'added'}
           class:diff-removed={line.type === 'removed'}
           class:diff-unchanged={line.type === 'unchanged'}
           class:diff-focus={diffTargets[diffIndex]?.index === index}
         >
-          <span class="cv-ln">{line.oldLineNum ?? ''}</span>
-          <span class="cv-ln">{line.newLineNum ?? ''}</span>
-          <span class="cv-code">{line.content}</span>
+          <span class="ln">{line.oldLineNum ?? ''}</span>
+          <span class="ln">{line.newLineNum ?? ''}</span>
+          <span class="code">{line.content}</span>
         </div>
       {/each}
     </div>
 
     <!-- Edit View -->
     <textarea
-      class="cv-pane cv-edit"
+      class="pane edit"
       class:active={activeMode === 'edit'}
       spellcheck="false"
       value={editContent}
@@ -294,13 +294,13 @@
     ></textarea>
   </div>
 
-  <div class="cv-footer">
-    <div class="cv-stats">
+  <div class="footer">
+    <div class="stats">
       <span>{lines} lines</span>
       <span>{sizeKb} KB</span>
     </div>
     {#if showActions}
-      <div class="cv-actions">
+      <div class="actions">
         <button type="button" class="btn-secondary" onclick={handleCopy}>
           {copyText}
         </button>

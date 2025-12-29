@@ -153,33 +153,31 @@ export function getHasSelection(): boolean {
 export function getFiltered(): [PackageKey, SoftwarePackage][] {
   const searchLower = app.search.toLowerCase()
 
-  return Object.entries(app.software).filter(
-    (entry): entry is [PackageKey, SoftwarePackage] => {
-      const [key, pkg] = entry
-      if (!isPackageKey(app.software, key)) return false
+  return Object.entries(app.software).filter((entry): entry is [PackageKey, SoftwarePackage] => {
+    const [key, pkg] = entry
+    if (!isPackageKey(app.software, key)) return false
 
-      // Filter by category, selection, or recommended
-      let matchesFilter: boolean
-      if (isFilterAll(app.filter)) {
-        matchesFilter = true
-      } else if (isFilterSelected(app.filter)) {
-        matchesFilter = app.selected.has(key)
-      } else if (isFilterRecommended(app.filter)) {
-        matchesFilter = app.recommendedPackages.has(key)
-      } else {
-        matchesFilter = pkg.category === app.filter
-      }
+    // Filter by category, selection, or recommended
+    let matchesFilter: boolean
+    if (isFilterAll(app.filter)) {
+      matchesFilter = true
+    } else if (isFilterSelected(app.filter)) {
+      matchesFilter = app.selected.has(key)
+    } else if (isFilterRecommended(app.filter)) {
+      matchesFilter = app.recommendedPackages.has(key)
+    } else {
+      matchesFilter = pkg.category === app.filter
+    }
 
-      // Filter by search term
-      const matchesSearch =
-        !app.search ||
-        pkg.name.toLowerCase().includes(searchLower) ||
-        pkg.desc?.toLowerCase().includes(searchLower) ||
-        pkg.category.toLowerCase().includes(searchLower)
+    // Filter by search term
+    const matchesSearch =
+      !app.search ||
+      pkg.name.toLowerCase().includes(searchLower) ||
+      pkg.desc?.toLowerCase().includes(searchLower) ||
+      pkg.category.toLowerCase().includes(searchLower)
 
-      return matchesFilter && matchesSearch
-    },
-  )
+    return matchesFilter && matchesSearch
+  })
 }
 
 /** Category counts for filter badges */

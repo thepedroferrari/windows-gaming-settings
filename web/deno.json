@@ -7,6 +7,7 @@
     "preview": "deno run -A npm:vite preview",
     "lint": "deno run -A npm:@biomejs/biome check ./src ./scripts",
     "format": "deno run -A npm:@biomejs/biome format --write ./src ./scripts",
+    "purge:report": "deno run -A ./scripts/purgecss.ts",
     "check": "deno run -A npm:svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "deno run -A npm:svelte-check --tsconfig ./tsconfig.json --watch",
     "validate": "deno task lint && deno task check && deno task build",

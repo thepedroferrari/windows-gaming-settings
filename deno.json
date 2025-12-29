@@ -1,6 +1,7 @@
 {
   "tasks": {
     "lint": "cd web && deno task lint",
-    "format": "cd web && deno task format"
+    "format": "cd web && deno task format",
+    "purge:report": "cd web && deno task purge:report"
   }
 }

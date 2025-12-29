@@ -1,101 +1,102 @@
 @layer components {
-  /* ============================================
-     PRE-FLIGHT CHECKS
-     ============================================ */
-  .preflight-section {
-    margin-bottom: var(--space-lg);
-  }
+  
 
-  .preflight-title {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin: 0 0 var(--space-md) 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
+  @scope (.preflight-section) {
+    :scope {
+      margin-block-end: var(--space-lg);
+    }
 
-  .preflight-icon {
-    width: 20px;
-    height: 20px;
-    color: var(--accent);
-  }
+    .title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin: 0 0 var(--space-md) 0;
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
 
-  .preflight-items {
-    display: grid;
-    gap: var(--space-sm);
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
+    .icon {
+      inline-size: var(--icon-lg);
+      block-size: var(--icon-lg);
+      color: var(--cyber-yellow);
+    }
 
-  .preflight-card {
-    padding: var(--space-md);
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 0;
-    clip-path: var(--clip-cyber-sm);
-  }
+    .items {
+      display: grid;
+      gap: var(--space-sm);
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
 
-  .preflight-card h4 {
-    margin: var(--space-xs) 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
+    .card {
+      padding: var(--space-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      clip-path: var(--clip-cyber-sm);
 
-  .preflight-card p {
-    margin: 0 0 var(--space-sm) 0;
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    line-height: 1.4;
-  }
+      & h4 {
+        margin: var(--space-xs) 0;
+        font-size: var(--text-base);
+        font-weight: 600;
+        color: var(--text-primary);
+      }
 
-  .prereq-badge {
-    display: inline-block;
-    padding: 0.15rem 0.5rem;
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: 2px;
-  }
+      & p {
+        margin: 0 0 var(--space-sm) 0;
+        font-size: var(--text-sm);
+        color: var(--text-dim);
+        line-height: var(--leading-normal);
+      }
+    }
 
-  .prereq-badge.required {
-    background: color-mix(in oklch, var(--risky) 20%, transparent);
-    color: var(--risky);
-    border: 1px solid color-mix(in oklch, var(--risky) 40%, transparent);
-  }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wide);
+      border-radius: 2px;
 
-  .prereq-badge.recommended {
-    background: color-mix(in oklch, var(--safe) 20%, transparent);
-    color: var(--safe);
-    border: 1px solid color-mix(in oklch, var(--safe) 40%, transparent);
-  }
+      &.required {
+        background: var(--risky-bg);
+        color: var(--risky);
+        border: 1px solid color-mix(in oklch, var(--risky) 50%, transparent);
+      }
 
-  .prereq-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--accent);
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 0;
-    clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
+      &.recommended {
+        background: var(--safe-bg);
+        color: var(--safe);
+        border: 1px solid color-mix(in oklch, var(--safe) 50%, transparent);
+      }
+    }
 
-  .prereq-link:hover {
-    background: color-mix(in oklch, var(--accent) 10%, transparent);
-    border-color: var(--accent);
-  }
+    .link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-md);
+      font-family: var(--font-mono);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--cyber-yellow);
+      background: color-mix(in oklch, var(--cyber-yellow) 12%, transparent);
+      border: 1px solid color-mix(in oklch, var(--cyber-yellow) 40%, transparent);
+      clip-path: var(--clip-cyber-xs);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--duration-fast) ease;
 
-  .prereq-link svg {
-    width: 14px;
-    height: 14px;
+      &:hover {
+        background: color-mix(in oklch, var(--cyber-yellow) 20%, transparent);
+        border-color: var(--cyber-yellow);
+        box-shadow: var(--glow-sm) color-mix(in oklch, var(--cyber-yellow) 35%, transparent);
+      }
+
+      & svg {
+        inline-size: var(--icon-sm);
+        block-size: var(--icon-sm);
+      }
+    }
   }
 }

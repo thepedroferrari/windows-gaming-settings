@@ -29,21 +29,23 @@
   let hardwareLabel = $derived(`${cpuLabel} + ${gpuLabel}`)
 </script>
 
-<div id="summary" class="summary">
-  <span class="summary-corner summary-corner--tl"></span>
-  <span class="summary-corner summary-corner--tr"></span>
-  <span class="summary-corner summary-corner--bl"></span>
-  <span class="summary-corner summary-corner--br"></span>
-  <div class="summary-item">
-    <div id="summary-hardware" class="summary-value">{hardwareLabel}</div>
-    <div class="summary-label">Core</div>
-  </div>
-  <div class="summary-item">
-    <div id="summary-opts" class="summary-value">{optimizationCount}</div>
-    <div class="summary-label">Upgrades</div>
-  </div>
-  <div class="summary-item">
-    <div id="summary-software" class="summary-value">{softwareCount}</div>
-    <div class="summary-label">Arsenal</div>
+<div class="summary-shell">
+  <div id="summary" class="summary">
+    <span class="corner corner--tl"></span>
+    <span class="corner corner--tr"></span>
+    <span class="corner corner--bl"></span>
+    <span class="corner corner--br"></span>
+    <div class="item">
+      <div id="summary-hardware" class="value">{hardwareLabel}</div>
+      <div class="label">Core</div>
+    </div>
+    <div class="item">
+      <div id="summary-opts" class="value">{optimizationCount}</div>
+      <div class="label">Upgrades</div>
+    </div>
+    <div class="item">
+      <div id="summary-software" class="value">{softwareCount}</div>
+      <div class="label">Arsenal</div>
+    </div>
   </div>
 </div>

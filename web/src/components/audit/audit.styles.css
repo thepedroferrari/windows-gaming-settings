@@ -1,225 +1,240 @@
 @layer components {
-  .audit-panel {
-    position: fixed;
-    right: -480px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 520px;
-    max-height: 76vh;
-    background: linear-gradient(
-      135deg,
-      color-mix(in oklch, oklch(0.12 0.02 285) 95%, transparent) 0%,
-      color-mix(in oklch, oklch(0.1 0.02 285) 98%, transparent) 100%
-    );
-    backdrop-filter: blur(20px);
-    border: 1px solid color-mix(in oklch, var(--cyber-yellow) 20%, var(--glass-border));
-    border-right: none;
-    border-left: 3px solid var(--cyber-yellow);
-    border-radius: 0;
-    box-shadow:
-      -10px 0 50px color-mix(in oklch, oklch(0 0 0) 50%, transparent),
-      0 0 40px color-mix(in oklch, var(--cyber-yellow) 10%, transparent),
-      inset 1px 0 0 color-mix(in oklch, oklch(1 0 0) 5%, transparent);
-    transition:
-      right 0.4s var(--ease-out-expo),
-      opacity 0.3s ease-out;
-    z-index: 100;
-    display: flex;
-    overflow: visible;
+  
 
-    &.open {
-      right: 0;
-    }
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 16px;
-      height: 16px;
-      background: linear-gradient(135deg, var(--bg-primary) 50%, transparent 50%);
-      z-index: 10;
-    }
-
-    /* Hide on initial load - show after scroll */
-    opacity: 0;
-    pointer-events: none;
-
-    &.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-  }
-
-  .audit-toggle {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translate(-100%, -50%);
-    width: 48px;
-    height: 64px;
-    background: var(--bg-secondary);
-    border: 1px solid color-mix(in oklch, var(--cyber-yellow) 30%, var(--border-light));
-    border-right: none;
-    border-radius: 0;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-    color: var(--cyber-yellow);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-
-    &:hover {
-      background: color-mix(in oklch, var(--cyber-yellow) 10%, var(--bg-tertiary));
-      color: var(--cyber-yellow);
-      box-shadow: -4px 0 20px color-mix(in oklch, var(--cyber-yellow) 25%, transparent);
-    }
-
-    & svg {
-      width: 20px;
-      height: 20px;
-      transition: transform 0.3s;
-    }
-
-    .audit-panel.open & svg {
-      transform: rotate(180deg);
-    }
-  }
-
-  .audit-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .audit-header {
-    padding: var(--space-md) var(--space-lg);
-    border-bottom: 1px solid color-mix(in oklch, var(--cyber-yellow) 15%, var(--border));
-    background: linear-gradient(
-      90deg,
-      color-mix(in oklch, var(--cyber-yellow) 8%, transparent) 0%,
-      transparent 60%
-    );
-    position: relative;
-
-    &::before {
-      content: "◢";
-      position: absolute;
-      left: var(--space-sm);
-      top: 50%;
+  @scope (.audit-panel) {
+    :scope {
+      position: fixed;
+      inset-inline-end: -480px;
+      inset-block-start: 50%;
       transform: translateY(-50%);
-      font-size: 0.5rem;
-      color: var(--cyber-yellow);
-      opacity: 0.5;
+      inline-size: 520px;
+      max-block-size: 76vh;
+      background: linear-gradient(
+        135deg,
+        color-mix(in oklch, oklch(0.12 0.02 285) 95%, transparent) 0%,
+        color-mix(in oklch, oklch(0.1 0.02 285) 98%, transparent) 100%
+      );
+      backdrop-filter: blur(20px);
+      border: 1px solid color-mix(in oklch, var(--cyber-yellow) 20%, var(--glass-border));
+      border-inline-end: none;
+      border-inline-start: 3px solid var(--cyber-yellow);
+      box-shadow:
+        -10px 0 50px var(--black-50),
+        0 0 40px color-mix(in oklch, var(--cyber-yellow) 10%, transparent),
+        inset 1px 0 0 var(--white-5);
+      transition:
+        right 0.4s var(--ease-out-expo),
+        opacity var(--duration-slow) ease-out;
+      z-index: 100;
+      display: flex;
+      overflow: visible;
+
+      
+      opacity: 0;
+      pointer-events: none;
+
+      &.open {
+        inset-inline-end: 0;
+      }
+
+      &.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      
+      &::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        inline-size: 16px;
+        block-size: 16px;
+        background: linear-gradient(135deg, var(--bg-primary) 50%, transparent 50%);
+        z-index: 10;
+      }
     }
 
-    & h3 {
-      font-family: var(--font-display);
-      margin: 0;
-      margin-left: var(--space-sm);
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--cyber-yellow);
-      text-shadow: 0 0 10px var(--cyber-yellow-glow);
-    }
-  }
-
-  .audit-hint {
-    font-size: 0.75rem;
-    color: var(--text-hint);
-  }
-
-  .audit-code {
-    flex: 1;
-    margin: 0;
-    padding: var(--space-md);
-    overflow: auto;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    line-height: 1.5;
-    color: var(--text-secondary);
-    background: var(--bg-primary);
-    white-space: pre;
-  }
-
-  .audit-stats {
-    display: flex;
-    justify-content: space-between;
-    padding: var(--space-sm) var(--space-md);
-    font-size: 0.7rem;
-    color: var(--text-hint);
-    border-top: 1px solid var(--border);
-    background: var(--bg-tertiary);
-  }
-
-  .error-banner {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    padding: var(--space-md) var(--space-lg);
-    background: linear-gradient(
-      135deg,
-      color-mix(in oklch, var(--risky) 18%, var(--bg-secondary)) 0%,
-      color-mix(in oklch, var(--risky) 10%, var(--bg-secondary)) 100%
-    );
-    border: 1px solid color-mix(in oklch, var(--risky) 50%, transparent);
-    border-top: 3px solid var(--risky);
-    border-radius: 0;
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% calc(100% - 12px),
-      calc(100% - 12px) 100%,
-      12px 100%,
-      0 calc(100% - 12px)
-    );
-    backdrop-filter: blur(16px);
-    box-shadow:
-      0 4px 30px color-mix(in oklch, var(--risky) 25%, transparent),
-      0 0 60px color-mix(in oklch, var(--risky) 10%, transparent);
-    animation: slideDown 0.3s var(--ease-out-expo);
-
-    &::before {
-      content: "◢ ALERT";
+    .audit-toggle {
       position: absolute;
-      top: -1px;
-      left: 0;
-      background: var(--risky);
-      color: white;
+      inset-inline-start: 0;
+      inset-block-start: 50%;
+      transform: translate(-100%, -50%);
+      inline-size: 48px;
+      block-size: 64px;
+      background: var(--bg-secondary);
+      border: 1px solid color-mix(in oklch, var(--cyber-yellow) 30%, var(--border-light));
+      border-inline-end: none;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+      color: var(--cyber-yellow);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--duration-normal);
+
+      &:hover {
+        background: color-mix(in oklch, var(--cyber-yellow) 10%, var(--bg-tertiary));
+        color: var(--cyber-yellow);
+        box-shadow: -4px 0 20px color-mix(in oklch, var(--cyber-yellow) 25%, transparent);
+      }
+
+      & svg {
+        inline-size: var(--icon-lg);
+        block-size: var(--icon-lg);
+        transition: transform var(--duration-slow);
+      }
+
+      :scope.open & svg {
+        transform: rotate(180deg);
+      }
+    }
+
+    .audit-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .audit-header {
+      padding: var(--space-md) var(--space-lg);
+      border-block-end: 1px solid color-mix(in oklch, var(--cyber-yellow) 15%, var(--border));
+      background: linear-gradient(
+        90deg,
+        color-mix(in oklch, var(--cyber-yellow) 8%, transparent) 0%,
+        transparent 60%
+      );
+      position: relative;
+
+      &::before {
+        content: "\25E2"; 
+        position: absolute;
+        inset-inline-start: var(--space-sm);
+        inset-block-start: 50%;
+        transform: translateY(-50%);
+        font-size: var(--text-3xs);
+        color: var(--cyber-yellow);
+        opacity: 0.5;
+      }
+
+      & h3 {
+        font-family: var(--font-display);
+        margin: 0;
+        margin-inline-start: var(--space-sm);
+        font-size: var(--text-base);
+        font-weight: 700;
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--cyber-yellow);
+        text-shadow: var(--glow-sm) var(--cyber-yellow-glow);
+      }
+    }
+
+    .hint {
+      font-size: var(--text-sm);
+      color: var(--text-hint);
+    }
+
+    .code {
+      flex: 1;
+      margin: 0;
+      padding: var(--space-md);
+      overflow: auto;
       font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      padding: 0.15rem 0.5rem;
-      clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 100%, 0 100%);
+      font-size: var(--text-xs);
+      line-height: var(--leading-normal);
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      white-space: pre;
     }
 
-    &[hidden] {
-      display: none;
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--text-xs);
+      color: var(--text-hint);
+      border-block-start: 1px solid var(--border);
+      background: var(--bg-tertiary);
     }
   }
 
-  .error-icon {
-    width: 20px;
-    height: 20px;
-    color: var(--risky);
-    flex-shrink: 0;
-    animation: alertPulse 1.5s ease-in-out infinite;
+  
+
+  @scope (.error-banner) {
+    :scope {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline-start: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      background: linear-gradient(
+        135deg,
+        color-mix(in oklch, var(--risky) 18%, var(--bg-secondary)) 0%,
+        color-mix(in oklch, var(--risky) 10%, var(--bg-secondary)) 100%
+      );
+      border: 1px solid color-mix(in oklch, var(--risky) 50%, transparent);
+      border-block-start: 3px solid var(--risky);
+      clip-path: polygon(
+        0 0,
+        100% 0,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        12px 100%,
+        0 calc(100% - 12px)
+      );
+      backdrop-filter: blur(16px);
+      box-shadow:
+        0 4px 30px color-mix(in oklch, var(--risky) 25%, transparent),
+        0 0 60px color-mix(in oklch, var(--risky) 10%, transparent);
+      animation: slideDown var(--duration-slow) var(--ease-out-expo);
+
+      
+      &::before {
+        content: "\25E2 ALERT"; 
+        position: absolute;
+        inset-block-start: -1px;
+        inset-inline-start: 0;
+        background: var(--risky);
+        color: white;
+        font-family: var(--font-mono);
+        font-size: var(--text-2xs);
+        font-weight: 700;
+        letter-spacing: var(--tracking-wider);
+        padding: 0.15rem 0.5rem;
+        clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 100%, 0 100%);
+      }
+
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    .icon {
+      inline-size: var(--icon-lg);
+      block-size: var(--icon-lg);
+      color: var(--risky);
+      flex-shrink: 0;
+      animation: alertPulse 1.5s ease-in-out infinite;
+    }
+
+    .message {
+      font-size: var(--text-sm);
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+    }
+
   }
 
+  
   @keyframes alertPulse {
-    0%,
-    100% {
+    0%, 100% {
       filter: drop-shadow(0 0 4px transparent);
     }
     50% {
@@ -227,54 +242,14 @@
     }
   }
 
-  #error-message {
-    font-size: 0.85rem;
-    font-family: var(--font-mono);
-    color: var(--text-primary);
-    letter-spacing: 0.02em;
-  }
-
-  .error-retry {
-    padding: var(--space-xs) var(--space-md);
-    background: var(--risky);
-    color: white;
-    border: none;
-    border-radius: 0;
-    clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &:hover {
-      background: var(--risky-dim);
-      transform: scale(1.05);
-      box-shadow: 0 0 16px color-mix(in oklch, var(--risky) 50%, transparent);
+  @keyframes slideDown {
+    from {
+      transform: translateX(-50%) translateY(-100%);
+      opacity: 0;
     }
-  }
-
-  .error-dismiss {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: 1px solid color-mix(in oklch, var(--risky) 30%, transparent);
-    border-radius: 0;
-    clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
-    color: var(--text-secondary);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &:hover {
-      background: color-mix(in oklch, var(--risky) 20%, transparent);
-      border-color: var(--risky);
-      color: var(--risky);
+    to {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
   }
 }

@@ -1,128 +1,248 @@
 @layer components {
-  /* ============================================
-     CSS VARIABLES (set by JavaScript)
-     ============================================ */
-  .preset-card {
-    --pointer-x: 50%;
-    --pointer-y: 50%;
-    --pointer-from-center: 0;
-    --pointer-from-top: 0.5;
-    --pointer-from-left: 0.5;
-    --card-opacity: 0;
-    --rotate-x: 0deg;
-    --rotate-y: 0deg;
-    --background-x: 50%;
-    --background-y: 50%;
-    --card-scale: 1;
+  
 
-    /* Rarity colors - overridden per rarity */
-    --card-glow: hsl(175, 100%, 90%);
-    --card-edge: hsl(47, 100%, 78%);
+  
+  @scope (.step--quickstart) {
+    :scope {
+      padding-block-start: var(--space-2xl);
+    }
 
-    /* Sunpillar rainbow colors for shine */
-    --sunpillar-1: hsl(2, 100%, 73%);
-    --sunpillar-2: hsl(53, 100%, 69%);
-    --sunpillar-3: hsl(93, 100%, 69%);
-    --sunpillar-4: hsl(176, 100%, 76%);
-    --sunpillar-5: hsl(228, 100%, 74%);
-    --sunpillar-6: hsl(283, 100%, 73%);
+    .quickstart-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+      margin-block-end: var(--space-md);
+      position: relative;
+    }
 
-    /* Card aspect ratio */
-    --card-aspect: 2.5 / 3.5;
-    --card-radius: 5% / 3.5%;
-    --card-corner-shape: squircle;
+    .quickstart-title-wrap {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quickstart-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      line-height: 1.1;
+
+      
+      background: linear-gradient(135deg,
+          var(--text-primary) 0%,
+          var(--cyber-yellow) 25%,
+          var(--accent) 50%,
+          var(--cyber-yellow) 75%,
+          var(--text-primary) 100%);
+      background-size: 200% 200%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+
+      
+      filter: drop-shadow(0 0 20px color-mix(in oklch, var(--cyber-yellow) 30%, transparent));
+
+      
+      animation: quickstartGradientShift 8s ease-in-out infinite;
+    }
+
+    .quickstart-subtitle {
+      margin: var(--space-sm) 0 0 0;
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    
+    .quickstart-accent {
+      position: relative;
+      flex: 1;
+      max-inline-size: 200px;
+      block-size: 2px;
+      background: linear-gradient(90deg,
+          var(--cyber-yellow),
+          var(--accent),
+          transparent);
+      opacity: 0.6;
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset-block-start: -4px;
+        inline-size: 100%;
+        block-size: 10px;
+        background: linear-gradient(90deg,
+            color-mix(in oklch, var(--cyber-yellow) 20%, transparent),
+            color-mix(in oklch, var(--accent) 15%, transparent),
+            transparent);
+        filter: blur(4px);
+      }
+
+      
+      &::after {
+        content: "";
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-start: 0;
+        inline-size: 8px;
+        block-size: 8px;
+        background: var(--cyber-yellow);
+        transform: translateY(-50%) rotate(45deg);
+        box-shadow: 0 0 12px var(--cyber-yellow);
+      }
+
+      &.quickstart-accent--left {
+        transform: scaleX(-1);
+      }
+    }
   }
 
-  /* ============================================
-     PRESETS CONTAINER WRAPPER
-     ============================================ */
+  @keyframes quickstartGradientShift {
+
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  
   .presets-scroll-container {
-    width: 100%;
+    container-type: inline-size;
+    container-name: presets;
+    inline-size: 100%;
     padding: var(--space-sm) 0 var(--space-lg);
   }
 
-  /* ============================================
-     PRESETS CONTAINER
-     Free from constraints - let cards breathe
-     ============================================ */
   .presets {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-2xl, 3rem);
+    gap: var(--space-2xl);
     padding: var(--space-xl) var(--space-lg);
     perspective: 1200px;
-    /* No max-width - cards should be free and bigger */
     margin: 0 auto;
-  }
 
-  /* ============================================
-     CARD BASE
-     ============================================ */
-  .preset-card {
-    all: unset;
-    display: block;
-    width: 100%;
-    aspect-ratio: var(--card-aspect);
-    cursor: pointer;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-    contain: layout style;
+    
+    &:has(.preset-card.active) .preset-card:not(.active) {
+      filter: grayscale(0.5) brightness(0.7);
+      transform: scale(0.94);
+      opacity: 0.75;
+      transition:
+        filter var(--duration-slow) ease,
+        transform var(--duration-slow) ease,
+        opacity var(--duration-slow) ease;
 
-    /* Hardware acceleration */
-    transform: translate3d(0, 0, 0.01px);
-    will-change: transform;
-    transform-style: preserve-3d;
-    will-change: transform, z-index;
-
-    /* Z-index for hover state */
-    z-index: calc(var(--card-scale) * 2);
-
-    &.interacting {
-      z-index: calc(var(--card-scale) * 120);
-    }
-
-    &.active {
-      z-index: calc(var(--card-scale) * 100);
-      transform: translate3d(0, 0, 0.01px) scale(1.03);
-      transition: transform 0.3s var(--ease-out-expo);
-
-      /* Keep hover effect active on selected card */
-      --card-opacity: 0.6;
+      &:hover {
+        filter: grayscale(0) brightness(1);
+        transform: scale(1);
+        opacity: 1;
+      }
     }
   }
 
-  /* ============================================
-     SELECTED/UNSELECTED STATES
-     ============================================ */
-  .presets:has(.preset-card.active) .preset-card:not(.active) {
-    filter: grayscale(0.5) brightness(0.7);
-    transform: scale(0.94);
-    opacity: 0.75;
-    transition:
-      filter 0.3s ease,
-      transform 0.3s ease,
-      opacity 0.3s ease;
+  
+  @scope (.preset-card) {
+    :scope {
+      
+      --pointer-x: 50%;
+      --pointer-y: 50%;
+      --pointer-from-center: 0;
+      --pointer-from-top: 0.5;
+      --pointer-from-left: 0.5;
+      --card-opacity: 0;
+      --rotate-x: 0deg;
+      --rotate-y: 0deg;
+      --background-x: 50%;
+      --background-y: 50%;
+      --card-scale: 1;
 
-    &:hover {
-      filter: grayscale(0) brightness(1);
-      transform: scale(1);
-      opacity: 1;
+      
+      --card-glow: hsl(175, 100%, 90%);
+      --card-edge: hsl(47, 100%, 78%);
+
+      
+      --sunpillar-1: hsl(2, 100%, 73%);
+      --sunpillar-2: hsl(53, 100%, 69%);
+      --sunpillar-3: hsl(93, 100%, 69%);
+      --sunpillar-4: hsl(176, 100%, 76%);
+      --sunpillar-5: hsl(228, 100%, 74%);
+      --sunpillar-6: hsl(283, 100%, 73%);
+
+      
+      --card-aspect: 2.5 / 3.5;
+      --card-radius: 5% / 3.5%;
+      --card-corner-shape: squircle;
+
+      
+      all: unset;
+      display: block;
+      inline-size: 100%;
+      aspect-ratio: var(--card-aspect);
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      contain: layout style;
+
+      
+      transform: translate3d(0, 0, 0.01px);
+      will-change: transform, z-index;
+      transform-style: preserve-3d;
+
+      
+      z-index: calc(var(--card-scale) * 2);
+
+      &.interacting {
+        z-index: calc(var(--card-scale) * 120);
+      }
+
+      &.active {
+        z-index: calc(var(--card-scale) * 100);
+        transform: translate3d(0, 0, 0.01px) scale(1.03);
+        transition: transform var(--duration-slow) var(--ease-out-expo);
+        --card-opacity: 0.6;
+      }
+
+      
+      &:hover,
+      &:focus-visible {
+        --pointer-x: 40%;
+        --pointer-y: 35%;
+        --pointer-from-center: 0.5;
+        --pointer-from-top: 0.35;
+        --pointer-from-left: 0.4;
+        --card-opacity: 1;
+        --background-x: 45%;
+        --background-y: 40%;
+      }
+
+      &.active .preset-card__rotator {
+        box-shadow:
+          0 0 4px 0px white,
+          0 0 4px 2px var(--card-edge),
+          0 0 16px 4px var(--card-glow),
+          0px 10px 20px -5px black,
+          0 0 50px -20px var(--card-glow),
+          0 0 60px -10px var(--card-glow),
+          0 0 120px 30px color-mix(in oklch, var(--card-glow) 20%, transparent);
+        animation: card-pulse 2.5s ease-in-out infinite;
+      }
     }
   }
 
-  .preset-card.active .preset-card__rotator {
-    box-shadow:
-      0 0 4px 0px white,
-      0 0 4px 2px var(--card-edge),
-      0 0 16px 4px var(--card-glow),
-      0px 10px 20px -5px black,
-      0 0 50px -20px var(--card-glow),
-      0 0 60px -10px var(--card-glow),
-      0 0 120px 30px color-mix(in oklch, var(--card-glow) 20%, transparent);
-    animation: card-pulse 2.5s ease-in-out infinite;
-  }
+  
 
   @keyframes card-pulse {
+
     0%,
     100% {
       box-shadow:
@@ -134,6 +254,7 @@
         0 0 60px -10px var(--card-glow),
         0 0 120px 30px color-mix(in oklch, var(--card-glow) 20%, transparent);
     }
+
     50% {
       box-shadow:
         0 0 6px 1px white,
@@ -146,9 +267,7 @@
     }
   }
 
-  /* ============================================
-     CARD ROTATOR (3D Transform Container)
-     ============================================ */
+  
   .preset-card__rotator {
     width: 100%;
     height: 100%;
@@ -161,14 +280,14 @@
     corner-shape: var(--card-corner-shape);
     aspect-ratio: var(--card-aspect);
 
-    /* Enable pointer events for interaction */
+    
     pointer-events: auto;
     touch-action: none;
 
-    /* 3D rotation from spring */
+    
     transform: rotateY(var(--rotate-x)) rotateX(var(--rotate-y));
 
-    /* Box shadow transitions */
+    
     transition:
       box-shadow 0.4s ease,
       opacity 0.33s ease-out;
@@ -193,8 +312,8 @@
       0 0 50px -20px var(--card-glow);
   }
 
-  /* All children fill the grid cell */
-  .preset-card__rotator > * {
+  
+  .preset-card__rotator>* {
     width: 100%;
     display: grid;
     grid-area: 1 / 1;
@@ -206,9 +325,7 @@
     overflow: hidden;
   }
 
-  /* ============================================
-     CARD FRONT (Content Container)
-     ============================================ */
+  
   .preset-card__front {
     position: relative;
     background-color: #040712;
@@ -228,9 +345,7 @@
     isolation: isolate;
   }
 
-  /* ============================================
-     CARD SHINE LAYER (Holographic Effect)
-     ============================================ */
+  
   .preset-card__shine {
     position: absolute;
     inset: 0;
@@ -240,24 +355,21 @@
     corner-shape: inherit;
     overflow: hidden;
 
-    /* Rainbow gradient - DYNAMIC with calc() */
-    background-image: linear-gradient(
-      115deg,
-      transparent 10%,
-      var(--sunpillar-1) 28%,
-      var(--sunpillar-2) 38%,
-      var(--sunpillar-3) 48%,
-      var(--sunpillar-4) 58%,
-      var(--sunpillar-5) 68%,
-      var(--sunpillar-6) 78%,
-      transparent 90%
-    );
+    
+    background-image: linear-gradient(115deg,
+        transparent 10%,
+        var(--sunpillar-1) 28%,
+        var(--sunpillar-2) 38%,
+        var(--sunpillar-3) 48%,
+        var(--sunpillar-4) 58%,
+        var(--sunpillar-5) 68%,
+        var(--sunpillar-6) 78%,
+        transparent 90%);
 
     background-size: 200% 200%;
-    background-position: calc(50% + (var(--pointer-from-left) - 0.5) * 100%)
-      calc(50% + (var(--pointer-from-top) - 0.5) * 100%);
+    background-position: calc(50% + (var(--pointer-from-left) - 0.5) * 100%) calc(50% + (var(--pointer-from-top) - 0.5) * 100%);
 
-    /* Subtle holographic effect */
+    
     filter: brightness(calc(var(--pointer-from-center) * 0.15 + 0.45)) contrast(1.2) saturate(0.7);
     mix-blend-mode: color-dodge;
 
@@ -275,20 +387,18 @@
     corner-shape: inherit;
   }
 
-  /* Shine secondary layer with glitter */
+  
   .preset-card__shine::after {
     background-image:
       url("/textures/sparkles.gif"), url("/textures/holo.png"),
-      linear-gradient(
-        125deg,
+      linear-gradient(125deg,
         var(--sunpillar-6) 0%,
         var(--sunpillar-1) 17%,
         var(--sunpillar-2) 33%,
         var(--sunpillar-3) 50%,
         var(--sunpillar-4) 67%,
         var(--sunpillar-5) 83%,
-        var(--sunpillar-6) 100%
-      );
+        var(--sunpillar-6) 100%);
 
     background-blend-mode: soft-light, overlay;
     background-size:
@@ -305,9 +415,7 @@
     opacity: calc(var(--card-opacity) * 0.4);
   }
 
-  /* ============================================
-     CARD GLARE LAYER (Light Reflection)
-     ============================================ */
+  
   .preset-card__glare {
     position: absolute;
     inset: 0;
@@ -317,13 +425,11 @@
     corner-shape: inherit;
     overflow: hidden;
 
-    /* Radial gradient follows pointer position */
-    background-image: radial-gradient(
-      farthest-corner circle at var(--pointer-x) var(--pointer-y),
-      hsla(0, 0%, 100%, 0.8) 10%,
-      hsla(0, 0%, 100%, 0.65) 20%,
-      hsla(0, 0%, 0%, 0.5) 90%
-    );
+    
+    background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y),
+        hsla(0, 0%, 100%, 0.8) 10%,
+        hsla(0, 0%, 100%, 0.65) 20%,
+        hsla(0, 0%, 0%, 0.5) 90%);
 
     mix-blend-mode: overlay;
     opacity: var(--card-opacity);
@@ -331,7 +437,7 @@
     will-change: transform, opacity, background-image, background-position;
   }
 
-  /* CSS-only hover fallback - shows effect when hovering */
+  
   .preset-card:hover,
   .preset-card:focus-visible {
     --pointer-x: 40%;
@@ -344,17 +450,19 @@
     --background-y: 40%;
   }
 
-  /* Animated shimmer for idle state */
+  
   .preset-card:not(:hover):not(.interacting) .preset-card__shine {
     animation: shimmer 5s ease-in-out infinite;
     opacity: 0.08;
   }
 
   @keyframes shimmer {
+
     0%,
     100% {
       background-position: 30% 30%;
     }
+
     50% {
       background-position: 70% 70%;
     }
@@ -365,9 +473,7 @@
     transform: rotateY(var(--rotate-x, 0deg)) rotateX(var(--rotate-y, 0deg));
   }
 
-  /* ============================================
-     CARD CONTENT ELEMENTS
-     ============================================ */
+  
   .preset-card__header {
     display: flex;
     justify-content: center;
@@ -383,47 +489,6 @@
     gap: 0.45rem;
     padding: 0 0.4rem;
     min-height: 0;
-  }
-
-  .preset-card__rarity {
-    font-size: 0.55rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 3px 8px;
-    border-radius: 3px;
-    background: rgba(0, 0, 0, 0.6);
-    color: var(--card-glow);
-    border: 1px solid color-mix(in oklch, var(--card-glow) 50%, transparent);
-    backdrop-filter: blur(4px);
-  }
-
-  .preset-card__type-icon {
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(
-      ellipse at center,
-      color-mix(in oklch, var(--card-glow) 25%, transparent),
-      transparent 70%
-    );
-    border-radius: 6px;
-    padding: 5px;
-    border: none;
-
-    & svg {
-      width: 100%;
-      height: 100%;
-      stroke: var(--card-glow);
-      fill: none;
-      filter: drop-shadow(0 0 8px var(--card-glow));
-    }
-  }
-
-  .preset-card__art {
-    display: none;
   }
 
   .preset-card__title {
@@ -468,7 +533,7 @@
     color: rgba(255, 255, 255, 0.7);
   }
 
-  /* Description - human readable explanation */
+  
   .preset-card__desc {
     font-size: 0.72rem;
     font-weight: 500;
@@ -529,67 +594,30 @@
     flex-shrink: 0;
   }
 
-  /* Intensity bar - visual representation of preset aggressiveness */
-  .preset-card__intensity {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 0.35rem 0.5rem;
-    z-index: 2;
-    position: relative;
-  }
-
-  .intensity-label {
-    font-size: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.5);
-    font-weight: 600;
-  }
-
-  .intensity-bar {
+  
+  .preset-card__bar {
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    background: oklch(1 0 0 / 0.1);
+    border-radius: var(--radius-xs, 3px);
     overflow: hidden;
     position: relative;
+    z-index: 2;
+    margin: var(--space-2xs, 0.25rem) 0;
   }
 
-  .intensity-fill {
+  .bar-fill {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: var(--fill, 50%);
-    background: linear-gradient(90deg, var(--safe) 0%, var(--caution) 50%, var(--risky) 100%);
-    border-radius: 3px;
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg,
+        var(--safe, oklch(0.75 0.15 175)) 0%,
+        var(--caution, oklch(0.82 0.18 85)) 50%,
+        var(--risky, oklch(0.72 0.18 10)) 100%);
+    border-radius: var(--radius-xs, 3px);
+    transition: width var(--transition-gentle, 0.3s ease);
     box-shadow: 0 0 8px color-mix(in oklch, var(--card-glow) 50%, transparent);
-  }
-
-  /* Risk level indicator below intensity bar */
-  .risk-label {
-    font-size: 0.5rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    text-align: right;
-    margin-top: 2px;
-  }
-
-  .risk-label--low {
-    color: var(--safe);
-    text-shadow: 0 0 6px color-mix(in oklch, var(--safe) 40%, transparent);
-  }
-
-  .risk-label--medium {
-    color: var(--caution);
-    text-shadow: 0 0 6px color-mix(in oklch, var(--caution) 40%, transparent);
-  }
-
-  .risk-label--high {
-    color: var(--risky);
-    text-shadow: 0 0 6px color-mix(in oklch, var(--risky) 40%, transparent);
   }
 
   .preset-card__stats {
@@ -613,37 +641,38 @@
     gap: 0.5rem;
   }
 
-  .stat-cat {
-    font-size: 0.6rem;
+  
+  .stat-label {
+    font-size: var(--text-xs, 0.6rem);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.06em;
+    color: oklch(1 0 0 / 0.6);
     font-weight: 600;
   }
 
-  .stat-val {
-    font-size: 0.65rem;
+  .stat-value {
+    font-size: var(--text-sm, 0.75rem);
     font-weight: 700;
     color: var(--card-glow);
     font-family: var(--font-mono);
     text-shadow: 0 0 8px color-mix(in oklch, var(--card-glow) 40%, transparent);
+    text-align: right;
   }
 
-  .preset-card__software {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.25rem 0.4rem;
-    margin-top: 0.2rem;
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    z-index: 2;
-    position: relative;
+  
+  .stat-value--risk-low {
+    color: var(--safe, oklch(0.75 0.15 175));
+    text-shadow: 0 0 6px color-mix(in oklch, var(--safe) 40%, transparent);
+  }
 
-    .stat-cat {
-      color: rgba(255, 255, 255, 0.7);
-    }
+  .stat-value--risk-medium {
+    color: var(--caution, oklch(0.82 0.18 85));
+    text-shadow: 0 0 6px color-mix(in oklch, var(--caution) 40%, transparent);
+  }
+
+  .stat-value--risk-high {
+    color: var(--risky, oklch(0.72 0.18 10));
+    text-shadow: 0 0 6px color-mix(in oklch, var(--risky) 40%, transparent);
   }
 
   .preset-card:hover .preset-card__details,
@@ -653,37 +682,7 @@
     opacity: 1;
   }
 
-  .preset-card__opts-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 0.55rem;
-    color: rgba(255, 255, 255, 0.7);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.2rem;
-
-    & li {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 2px 6px;
-      border-radius: 3px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      white-space: nowrap;
-    }
-  }
-
-  .preset-card__more {
-    display: block;
-    font-size: 0.5rem;
-    color: rgba(255, 255, 255, 0.4);
-    text-align: center;
-    margin-top: 0.25rem;
-    font-style: italic;
-  }
-
-  /* ============================================
-     RARITY: LEGENDARY (Overkill - Gold/Orange)
-     ============================================ */
+  
   .preset-card[data-rarity="legendary"] {
     --card-glow: hsl(40, 100%, 65%);
     --card-edge: hsl(45, 100%, 70%);
@@ -703,12 +702,6 @@
         linear-gradient(180deg, rgba(255, 150, 50, 0.06) 0%, rgba(0, 0, 0, 0.5) 100%);
     }
 
-    & .preset-card__rarity {
-      background: linear-gradient(135deg, rgba(255, 180, 80, 0.5), rgba(255, 140, 60, 0.5));
-      color: hsl(45, 100%, 88%);
-      text-shadow: 0 0 10px hsl(40, 100%, 55%);
-    }
-
     & .preset-card__shine {
       filter: brightness(calc(var(--pointer-from-center) * 0.35 + 0.6)) contrast(1.6) saturate(1);
     }
@@ -718,9 +711,7 @@
     }
   }
 
-  /* ============================================
-     RARITY: EPIC (Pro Gamer - Purple/Violet)
-     ============================================ */
+  
   .preset-card[data-rarity="epic"] {
     --card-glow: hsl(280, 80%, 70%);
     --card-edge: hsl(270, 80%, 75%);
@@ -736,12 +727,6 @@
       border-color: hsl(280, 60%, 45%);
     }
 
-    & .preset-card__rarity {
-      background: linear-gradient(135deg, rgba(180, 100, 255, 0.4), rgba(140, 80, 200, 0.4));
-      color: hsl(280, 100%, 88%);
-      text-shadow: 0 0 8px hsl(280, 80%, 60%);
-    }
-
     & .preset-card__shine {
       filter: brightness(calc(var(--pointer-from-center) * 0.35 + 0.6)) contrast(1.6) saturate(1);
     }
@@ -751,9 +736,7 @@
     }
   }
 
-  /* ============================================
-     RARITY: RARE (Streaming - Blue)
-     ============================================ */
+  
   .preset-card[data-rarity="rare"] {
     --card-glow: hsl(210, 90%, 70%);
     --card-edge: hsl(200, 90%, 70%);
@@ -769,11 +752,6 @@
       border-color: hsl(210, 60%, 40%);
     }
 
-    & .preset-card__rarity {
-      background: rgba(80, 140, 220, 0.4);
-      color: hsl(210, 90%, 85%);
-    }
-
     & .preset-card__shine {
       filter: brightness(calc(var(--pointer-from-center) * 0.35 + 0.6)) contrast(1.6) saturate(1);
     }
@@ -783,9 +761,7 @@
     }
   }
 
-  /* ============================================
-     RARITY: UNCOMMON
-     ============================================ */
+  
   .preset-card[data-rarity="uncommon"] {
     --card-glow: hsl(150, 70%, 60%);
     --card-edge: hsl(140, 60%, 55%);
@@ -801,11 +777,6 @@
       border-color: hsl(150, 50%, 30%);
     }
 
-    & .preset-card__rarity {
-      background: rgba(80, 180, 100, 0.3);
-      color: hsl(150, 70%, 75%);
-    }
-
     & .preset-card__shine {
       filter: brightness(calc(var(--pointer-from-center) * 0.3 + 0.55)) contrast(1.5) saturate(0.9);
     }
@@ -815,9 +786,7 @@
     }
   }
 
-  /* ============================================
-     RARITY: COMMON (No holographic)
-     ============================================ */
+  
   .preset-card[data-rarity="common"] {
     --card-glow: hsl(0, 0%, 60%);
     --card-edge: hsl(0, 0%, 50%);
@@ -827,19 +796,11 @@
       border-color: rgba(255, 255, 255, 0.12);
     }
 
-    & .preset-card__rarity {
-      background: rgba(255, 255, 255, 0.1);
-      color: hsl(0, 0%, 70%);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
     & .preset-card__shine {
-      background-image: linear-gradient(
-        115deg,
-        transparent 40%,
-        rgba(255, 255, 255, 0.15) 50%,
-        transparent 60%
-      );
+      background-image: linear-gradient(115deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.15) 50%,
+          transparent 60%);
       filter: brightness(0.8) contrast(1) saturate(0);
       mix-blend-mode: overlay;
     }
@@ -853,10 +814,8 @@
     }
   }
 
-  /* ============================================
-     RESPONSIVE
-     ============================================ */
-  @media (max-width: 1100px) {
+  
+  @container presets (width <=1100px) {
     .presets {
       gap: var(--space-lg);
       padding-left: var(--space-md);
@@ -877,14 +836,14 @@
     }
   }
 
-  @media (max-width: 900px) {
+  @container presets (width <=900px) {
     .presets {
       grid-template-columns: repeat(2, 1fr);
       gap: var(--space-lg);
     }
   }
 
-  @media (max-width: 640px) {
+  @container presets (width <=640px) {
     .presets {
       grid-template-columns: repeat(2, 1fr);
       gap: var(--space-md);
@@ -924,17 +883,6 @@
       gap: 0.15rem;
     }
 
-    .stat-cat {
-      font-size: 0.5rem;
-    }
-
-    .stat-val {
-      font-size: 0.55rem;
-    }
-
-    .preset-card__software {
-      padding: 0.25rem 0.35rem;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -949,9 +897,7 @@
     }
   }
 
-  /* ============================================
-     UTILITY CLASSES (preserved from original)
-     ============================================ */
+  
   .preset-badge {
     font-size: 0.6rem;
     font-weight: 600;
@@ -1015,114 +961,7 @@
     flex-shrink: 0;
   }
 
-  .info-btn {
-    width: 18px;
-    height: 18px;
-    padding: 0;
-    margin-left: auto;
-    background: color-mix(in oklch, oklch(1 0 0) 10%, transparent);
-    border: 1px solid color-mix(in oklch, oklch(1 0 0) 15%, transparent);
-    border-radius: 50%;
-    color: var(--text-secondary);
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    anchor-name: --help-anchor;
-
-    &:hover {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-      transform: scale(1.1);
-    }
-  }
-
-  .help-popover {
-    position: fixed;
-    position-anchor: --help-anchor;
-    inset: unset;
-    top: anchor(bottom);
-    left: anchor(center);
-    translate: -50% 8px;
-    max-width: 320px;
-    padding: var(--space-lg);
-    background: color-mix(in oklch, oklch(0.12 0.02 285) 95%, transparent);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid color-mix(in oklch, oklch(1 0 0) 10%, transparent);
-    border-radius: var(--radius);
-    box-shadow: 0 20px 60px color-mix(in oklch, oklch(0 0 0) 50%, transparent);
-    color: var(--text-primary);
-    opacity: 1;
-    transform: translateY(0);
-    transition:
-      opacity 0.15s ease-out,
-      transform 0.15s ease-out,
-      overlay 0.15s ease-out allow-discrete,
-      display 0.15s ease-out allow-discrete;
-
-    @starting-style {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
-
-    &::backdrop {
-      background: color-mix(in oklch, oklch(0 0 0) 50%, transparent);
-      backdrop-filter: blur(4px);
-      opacity: 1;
-      transition:
-        opacity 0.15s ease-out,
-        overlay 0.15s ease-out allow-discrete,
-        display 0.15s ease-out allow-discrete;
-
-      @starting-style {
-        opacity: 0;
-      }
-    }
-
-    & h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: var(--space-md);
-      color: var(--accent-hover);
-    }
-
-    & p {
-      font-size: 0.85rem;
-      line-height: 1.6;
-      margin-bottom: var(--space-sm);
-      color: var(--text-secondary);
-    }
-
-    & kbd {
-      display: inline-block;
-      padding: 0.15rem 0.4rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-primary);
-    }
-
-    & .tip {
-      margin-top: var(--space-md);
-      padding: var(--space-sm) var(--space-md);
-      background: var(--accent-glow);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-size: 0.8rem;
-      color: var(--accent-hover);
-    }
-  }
-
-  /* ============================================
-     PRESET ACTION BUTTONS
-     ============================================ */
+  
   .preset-actions {
     display: flex;
     justify-content: center;
@@ -1141,6 +980,7 @@
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

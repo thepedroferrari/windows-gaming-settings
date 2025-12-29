@@ -29,12 +29,15 @@
 </script>
 
 <section id="generate" class="step step--forge">
-  <h2><span class="step-num">5</span> Forge Script</h2>
-  <p class="step-desc">Your personalized loadout is ready</p>
-
-  <div class="forge-status">
-    <span class="forge-status-indicator"></span>
-    <span class="forge-status-text">SYSTEM READY</span>
+  <div class="header-row">
+    <div class="header-left">
+      <h2><span class="step-num">5</span> Forge Script</h2>
+      <p class="step-desc">Your personalized loadout is ready</p>
+    </div>
+    <div class="status">
+      <span class="indicator"></span>
+      <span class="text">SYSTEM READY</span>
+    </div>
   </div>
 
   <Summary />
@@ -42,15 +45,15 @@
   <PreflightChecks />
   <ProfileActions />
 
-  <div class="download-actions">
+  <div class="actions">
     <button
       type="button"
-      class="btn-secondary"
+      class="btn-preview"
       title="Preview the generated PowerShell script"
       onclick={handlePreview}
     >
       <svg
-        class="btn-icon"
+        class="icon"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -66,13 +69,13 @@
 
     <button
       type="button"
-      class="download-btn download-btn--forge"
+      class="btn-forge"
       title="Download the generated PowerShell script"
       onclick={handleDownload}
     >
-      <span class="btn-text">
+      <span class="text">
         <svg
-          class="btn-icon"
+          class="icon"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -86,8 +89,8 @@
         </svg>
         FORGE
       </span>
-      <span class="glitch-layer"></span>
-      <span class="btn-scanlines"></span>
+      <span class="glitch"></span>
+      <span class="scanlines"></span>
     </button>
   </div>
 </section>

@@ -1,129 +1,173 @@
 @layer components {
-  /* ============================================
-     FORGE SECTION
-     ============================================ */
+  
 
-  .forge-status {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: var(--space-lg);
-    padding: 0.5rem 0.75rem;
-    background: color-mix(in oklch, var(--safe) 8%, transparent);
-    border: 1px solid color-mix(in oklch, var(--safe) 30%, transparent);
-    border-radius: 0;
-    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-    width: fit-content;
+  @scope (.step--forge) {
+    
+    .header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-md);
+      margin-block-end: var(--space-md);
+    }
+
+    .header-left {
+      flex: 1;
+
+      & h2 {
+        margin: 0;
+      }
+
+      & .step-desc {
+        margin: var(--space-xs) 0 0 0;
+      }
+    }
+
+    
+    .status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      background: var(--safe-10);
+      border: 1px solid var(--safe-30);
+      clip-path: var(--clip-cyber-xs);
+      flex-shrink: 0;
+
+      .indicator {
+        inline-size: 8px;
+        block-size: 8px;
+        background: var(--safe);
+        border-radius: var(--radius-full);
+        box-shadow: var(--glow-sm) var(--safe);
+        animation: forgeStatusPulse var(--anim-normal) ease-in-out infinite;
+      }
+
+      .text {
+        font-family: var(--font-display);
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wider);
+        color: var(--safe);
+        text-transform: uppercase;
+      }
+    }
+
+    
+    .actions {
+      display: flex;
+      gap: var(--space-md);
+      align-items: stretch;
+      margin-block-start: var(--space-lg);
+    }
+
+    
+    .btn-preview {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-xl);
+      font-family: var(--font-display);
+      font-size: var(--text-md);
+      font-weight: 600;
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      clip-path: var(--clip-cyber-sm);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      transition-property: background, border-color, color, box-shadow;
+
+      &:hover {
+        background: var(--bg-hover);
+        border-color: var(--accent);
+        color: var(--accent);
+        box-shadow: var(--glow-sm) color-mix(in oklch, var(--accent) 25%, transparent);
+      }
+
+      .icon {
+        inline-size: var(--icon-md);
+        block-size: var(--icon-md);
+      }
+    }
+
+    
+    .btn-forge {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      flex: 1;
+      min-inline-size: 280px;
+      padding: var(--space-lg) var(--space-2xl);
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--bg-primary);
+      background: linear-gradient(135deg, var(--cyber-yellow) 0%, var(--cyber-yellow-dim) 100%);
+      border: none;
+      clip-path: var(--clip-cyber-md);
+      cursor: pointer;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+      transition-property: transform, box-shadow;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow:
+          0 8px 32px var(--cyber-yellow-40),
+          0 0 48px var(--cyber-yellow-20);
+      }
+
+      &:active {
+        transform: translateY(-1px) scale(0.99);
+      }
+
+      .text {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        position: relative;
+        z-index: 1;
+
+        .icon {
+          inline-size: var(--icon-lg);
+          block-size: var(--icon-lg);
+        }
+      }
+
+      .glitch,
+      .scanlines {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .scanlines {
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          oklch(0 0 0 / 0.05) 2px,
+          oklch(0 0 0 / 0.05) 4px
+        );
+      }
+    }
   }
 
-  .forge-status-indicator {
-    width: 8px;
-    height: 8px;
-    background: var(--safe);
-    border-radius: 50%;
-    box-shadow: 0 0 8px var(--safe);
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-glow {
-    0%,
-    100% {
+  
+  @keyframes forgeStatusPulse {
+    0%, 100% {
       opacity: 1;
     }
     50% {
       opacity: 0.5;
     }
-  }
-
-  .forge-status-text {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--safe);
-    text-transform: uppercase;
-  }
-
-  .download-actions {
-    display: flex;
-    gap: var(--space-sm);
-    align-items: center;
-  }
-
-  .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 0;
-    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .btn-secondary:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .btn-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .download-btn {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--bg-primary);
-    background: linear-gradient(135deg, var(--cyber-yellow), var(--accent));
-    border: none;
-    border-radius: 0;
-    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.2s ease;
-  }
-
-  .download-btn:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      0 4px 20px color-mix(in oklch, var(--cyber-yellow) 40%, transparent),
-      0 0 30px color-mix(in oklch, var(--cyber-yellow) 20%, transparent);
-  }
-
-  .download-btn .btn-text {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    position: relative;
-    z-index: 1;
-  }
-
-  .download-btn .glitch-layer,
-  .download-btn .btn-scanlines {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .download-btn .btn-scanlines {
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.05) 2px,
-      rgba(0, 0, 0, 0.05) 4px
-    );
   }
 }

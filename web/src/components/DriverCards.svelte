@@ -14,7 +14,7 @@
 
 <div class="driver-warning">
   <svg
-    class="warning-icon"
+    class="icon"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -28,7 +28,7 @@
     <path d="M12 9v4" />
     <circle cx="12" cy="17" r="0.5" fill="currentColor" />
   </svg>
-  <div class="warning-content">
+  <div class="content">
     <strong>Critical for stability & performance</strong>
     <span
       >Outdated drivers can cause crashes, stuttering, and break optimizations.
@@ -40,12 +40,12 @@
 <div id="driver-cards" class="driver-cards">
   {#each visibleCards as card (card.id)}
     <div
-      class="driver-card"
-      class:driver-card--mobo={card.badge === 'mobo'}
+      class="card"
+      class:card--mobo={card.badge === 'mobo'}
       class:active={true}
       data-driver={card.id}
     >
-      <span class="driver-badge {card.badge}">{card.badge.toUpperCase()}</span>
+      <span class="badge {card.badge}">{card.badge.toUpperCase()}</span>
       <h4>{card.title}</h4>
       <p>{card.description}</p>
       {#if card.links.length === 1}
@@ -53,7 +53,7 @@
           {card.links[0].label} ↗
         </a>
       {:else}
-        <div class="mobo-links">
+        <div class="links">
           {#each card.links as link}
             <a href={link.url} target="_blank" rel="noopener">{link.label} ↗</a>
           {/each}

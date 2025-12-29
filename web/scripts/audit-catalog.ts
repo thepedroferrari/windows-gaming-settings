@@ -1,9 +1,5 @@
 import { existsSync } from 'https://deno.land/std@0.220.0/fs/mod.ts'
-import {
-  formatZodErrors,
-  isParseSuccess,
-  safeParseCatalog,
-} from '../src/schemas.ts'
+import { formatZodErrors, isParseSuccess, safeParseCatalog } from '../src/schemas.ts'
 import { MONITOR_TO_PACKAGE, PERIPHERAL_TO_PACKAGE } from '../src/lib/script-generator.ts'
 
 type CatalogEntry = {
@@ -82,11 +78,7 @@ async function main(): Promise<void> {
   const parsed = safeParseCatalog(rawCatalog)
 
   if (!isParseSuccess(parsed)) {
-    pushIssue(
-      issues,
-      'error',
-      `Catalog schema invalid: ${formatZodErrors(parsed.error, 6)}`,
-    )
+    pushIssue(issues, 'error', `Catalog schema invalid: ${formatZodErrors(parsed.error, 6)}`)
   } else {
     const catalog = parsed.data as CatalogJson
 

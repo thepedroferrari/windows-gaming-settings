@@ -1,172 +1,148 @@
 @layer components {
-  /* ==========================================================================
-     PREVIEW MODAL
-     A fullscreen dialog for script preview with cyberpunk aesthetics
-     ========================================================================== */
+  
 
-  .preview-modal {
-    /* Component-level custom properties */
-    --pm-accent: var(--cyber-yellow);
-    --pm-accent-glow: var(--cyber-yellow-glow);
-    --pm-danger: var(--risky);
-    --pm-clip: polygon(
-      12px 0, 100% 0, 100% calc(100% - 12px),
-      calc(100% - 12px) 100%, 0 100%, 0 12px
-    );
-    --pm-clip-sm: polygon(
-      4px 0, 100% 0, 100% calc(100% - 4px),
-      calc(100% - 4px) 100%, 0 100%, 0 4px
-    );
-    --pm-clip-xs: polygon(
-      2px 0, 100% 0, 100% calc(100% - 2px),
-      calc(100% - 2px) 100%, 0 100%, 0 2px
-    );
-    --pm-transition: 150ms ease;
+  @scope (.preview-modal) {
+    :scope {
+      
+      --pm-clip: var(--clip-cyber-md);
+      --pm-clip-sm: var(--clip-cyber-xs);
+      --pm-clip-xs: var(--clip-cyber-2xs);
 
-    /* Centering - fixed position with transform */
-    position: fixed;
-    inset-block-start: 50%;
-    inset-inline-start: 50%;
-    transform: translate(-50%, -50%);
+      
+      position: fixed;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      transform: translate(-50%, -50%);
 
-    /* Dimensions */
-    inline-size: min(90vw, 900px);
-    max-block-size: 85vh;
-    padding: 0;
-    margin: 0;
+      
+      inline-size: min(90vw, 900px);
+      max-block-size: 85vh;
+      padding: 0;
+      margin: 0;
 
-    /* Visual styling */
-    border: 1px solid var(--border);
-    clip-path: var(--pm-clip);
-    background: var(--bg-card);
-    color: var(--text-primary);
-    overflow: hidden;
+      
+      border: 1px solid var(--border);
+      clip-path: var(--pm-clip);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      overflow: hidden;
 
-    /* Layout - flex column, dialog handles visibility */
-    flex-direction: column;
-  }
+      
+      flex-direction: column;
 
-  /* Override UA stylesheet display:none with flex when open */
-  .preview-modal[open] {
-    display: flex;
-  }
+      
+      &[open] {
+        display: flex;
+      }
 
-  .preview-modal::backdrop {
-    background: oklch(0 0 0 / 75%);
-    backdrop-filter: blur(4px);
-  }
-
-  /* --------------------------------------------------------------------------
-     Header
-     -------------------------------------------------------------------------- */
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-block: var(--space-sm);
-    padding-inline: var(--space-md);
-    border-block-end: 1px solid color-mix(in oklch, var(--pm-accent) 25%, var(--border));
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklch, var(--pm-accent) 8%, var(--bg-header)) 0%,
-      var(--bg-header) 100%
-    );
-  }
-
-  .modal-header h3 {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--pm-accent);
-    text-shadow: 0 0 12px var(--pm-accent-glow);
-  }
-
-  .header-icon {
-    color: var(--pm-accent);
-    margin-inline-end: 0.5rem;
-  }
-
-  /* --------------------------------------------------------------------------
-     Close Button
-     -------------------------------------------------------------------------- */
-  .modal-close {
-    display: grid;
-    place-items: center;
-    inline-size: 28px;
-    block-size: 28px;
-    padding: 0;
-    border: 1px solid var(--border);
-    background: color-mix(in oklch, oklch(1 0 0) 3%, transparent);
-    color: var(--text-secondary);
-    cursor: pointer;
-    clip-path: var(--pm-clip-sm);
-    transition: var(--pm-transition);
-    transition-property: color, background, border-color, box-shadow;
-
-    & svg {
-      inline-size: 14px;
-      block-size: 14px;
+      &::backdrop {
+        background: var(--black-75);
+        backdrop-filter: blur(4px);
+      }
     }
 
-    &:hover {
-      background: color-mix(in oklch, var(--pm-danger) 15%, transparent);
-      border-color: var(--pm-danger);
-      color: var(--pm-danger);
-      box-shadow: 0 0 8px color-mix(in oklch, var(--pm-danger) 30%, transparent);
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--space-sm);
+      padding-inline: var(--space-md);
+      border-block-end: 1px solid color-mix(in oklch, var(--cyber-yellow) 25%, var(--border));
+      background: linear-gradient(
+        180deg,
+        color-mix(in oklch, var(--cyber-yellow) 8%, var(--bg-header)) 0%,
+        var(--bg-header) 100%
+      );
+
+      & h3 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: var(--text-sm);
+        font-weight: 700;
+        letter-spacing: var(--tracking-wider);
+        color: var(--cyber-yellow);
+        text-shadow: var(--glow-sm) var(--cyber-yellow-glow);
+      }
     }
-  }
 
-  /* --------------------------------------------------------------------------
-     Body
-     -------------------------------------------------------------------------- */
-  .modal-body {
-    flex: 1;
-    padding: var(--space-sm);
-    overflow: auto;
-  }
+    .header-icon {
+      color: var(--cyber-yellow);
+      margin-inline-end: var(--space-xs);
+    }
 
-  /* --------------------------------------------------------------------------
-     Footer
-     -------------------------------------------------------------------------- */
-  .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    padding-block: var(--space-xs);
-    padding-inline: var(--space-md);
-    font-size: 0.7rem;
-    color: var(--text-hint);
-    background: color-mix(in oklch, var(--bg-primary) 80%, transparent);
-    border-block-start: 1px solid var(--border);
-  }
+    
+    .close {
+      display: grid;
+      place-items: center;
+      inline-size: 28px;
+      block-size: 28px;
+      padding: 0;
+      border: 1px solid var(--border);
+      background: var(--white-3);
+      color: var(--text-secondary);
+      cursor: pointer;
+      clip-path: var(--pm-clip-sm);
+      transition: var(--transition-quick);
+      transition-property: color, background, border-color, box-shadow;
 
-  .footer-label {
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
+      & svg {
+        inline-size: var(--icon-xs);
+        block-size: var(--icon-xs);
+      }
 
-  .footer-step {
-    color: var(--text-dim);
-  }
+      &:hover {
+        background: color-mix(in oklch, var(--risky) 15%, transparent);
+        border-color: var(--risky);
+        color: var(--risky);
+        box-shadow: var(--glow-sm) color-mix(in oklch, var(--risky) 30%, transparent);
+      }
+    }
 
-  .footer-arrow {
-    color: var(--text-hint);
-    opacity: 0.6;
-  }
+    
+    .body {
+      flex: 1;
+      padding: var(--space-sm);
+      overflow: auto;
+    }
 
-  .modal-footer code {
-    display: inline-flex;
-    align-items: center;
-    padding-block: 0.1rem;
-    padding-inline: 0.4rem;
-    background: color-mix(in oklch, var(--accent) 10%, transparent);
-    border: 1px solid color-mix(in oklch, var(--accent) 25%, transparent);
-    clip-path: var(--pm-clip-xs);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--accent);
+    
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding-block: var(--space-sm);
+      padding-inline: var(--space-md);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      background: var(--black-80);
+      border-block-start: 1px solid var(--border);
+
+      & code,
+      & .run-step {
+        display: inline-flex;
+        align-items: center;
+        padding-block: 0.25rem;
+        padding-inline: 0.6rem;
+        background: color-mix(in oklch, var(--cyber-yellow) 12%, transparent);
+        border: 1px solid color-mix(in oklch, var(--cyber-yellow) 40%, transparent);
+        clip-path: var(--pm-clip-xs);
+        font-family: var(--font-mono);
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--cyber-yellow);
+      }
+    }
+
+    .label {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .arrow {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
   }
 }

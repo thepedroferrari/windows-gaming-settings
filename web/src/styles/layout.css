@@ -1,17 +1,18 @@
 @layer layout {
-  /* ============================================
-     MAIN CONTAINER
-     ============================================ */
+  /* Offset anchor jumps for the fixed nav bar. */
+  html {
+    scroll-padding-top: var(--nav-height);
+  }
+
+  
   .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 var(--space-md);
-    padding-top: 48px; /* Account for fixed nav */
+    padding-top: 48px; 
   }
 
-  /* ============================================
-     STEP SECTIONS
-     ============================================ */
+  
   .step {
     padding: var(--space-xl) 0;
     border-bottom: 1px solid var(--border);
@@ -64,13 +65,13 @@
     gap: var(--space-sm);
   }
 
-  /* Arsenal section padding */
+  
   .step--arsenal {
     padding-left: var(--space-sm);
     padding-right: var(--space-sm);
   }
 
-  /* Loading and error states */
+  
   .loading-state,
   .error-state {
     text-align: center;
@@ -113,14 +114,6 @@
     }
   }
 
-  .value-prop {
-    padding: 0 var(--space-md) var(--space-lg);
-    display: flex;
-    justify-content: center;
-    animation: fadeIn 0.8s var(--ease-out-expo) 0.6s forwards;
-    opacity: 0;
-  }
-
   .mission-brief {
     max-width: 700px;
     width: 100%;
@@ -132,7 +125,7 @@
     backdrop-filter: blur(4px);
     box-shadow: 0 0 30px -10px color-mix(in oklch, var(--accent) 10%, transparent);
 
-    /* Tech corners */
+    
     &::before {
       content: "";
       position: absolute;
@@ -156,60 +149,12 @@
     }
   }
 
-  .value-headline {
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin: 0 0 var(--space-md);
-    color: var(--text-primary);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5ch;
-
-    & .text-highlight {
-      color: var(--accent);
-      text-shadow: 0 0 15px color-mix(in oklch, var(--accent) 40%, transparent);
-    }
-  }
-
-  .value-body {
-    font-family: var(--font-mono);
-    font-size: clamp(1rem, 2vw, 1.15rem);
-    line-height: 1.5;
-    margin: 0;
-    color: var(--text-secondary);
-    font-weight: 500;
-
-    & strong {
-      color: var(--text-primary);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-  }
-
-  .value-perks {
-    display: block;
-    color: var(--accent);
-    font-size: 0.9em;
-    letter-spacing: 0.02em;
-    opacity: 0.9;
-    border-top: 1px dashed color-mix(in oklch, var(--text-secondary) 20%, transparent);
-    padding-top: var(--space-sm);
-    margin-top: var(--space-xs);
-  }
-
   @media (max-width: 600px) {
     .mission-brief {
       padding: var(--space-md);
       border-left-width: 1px;
     }
 
-    .value-headline {
-      flex-direction: column;
-      gap: 0;
-    }
   }
 
   main {
@@ -245,10 +190,6 @@
     margin-bottom: var(--space-md);
   }
 
-  .upgrades-grid--danger {
-    margin-top: var(--space-lg);
-  }
-
   .core-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -280,6 +221,12 @@
     min-width: 0;
   }
 
+  @media (max-width: 480px) {
+    html {
+      scroll-padding-top: var(--nav-height-mobile, 40px);
+    }
+  }
+
   @media (max-width: 1024px) {
     .peripherals-grid {
       grid-template-columns: 1fr;
@@ -290,18 +237,10 @@
     }
   }
 
-  .driver-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
-  }
-
   @media (max-width: 768px) {
     .upgrades-grid,
     .core-grid,
-    .peripheral-columns,
-    .monitor-columns,
-    .driver-grid {
+    .peripheral-columns {
       grid-template-columns: 1fr;
     }
   }

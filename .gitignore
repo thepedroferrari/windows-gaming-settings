@@ -49,3 +49,8 @@ web/dist/
 web/node_modules/
 web/.vite/
 web/deno.lock
+
+# PurgeCSS reports
+web/purge-report.json
+web/purge-report.summary.json
+web/purge-checklist.md

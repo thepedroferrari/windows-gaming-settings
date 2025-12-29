@@ -76,9 +76,9 @@
   oncancel={handleCancel}
   onkeydown={handleKeydown}
 >
-  <div class="modal-header">
+  <div class="header">
     <h3><span class="header-icon">◢</span> SCRIPT PREVIEW</h3>
-    <button type="button" class="modal-close" aria-label="Close" onclick={handleClose}>
+    <button type="button" class="close" aria-label="Close" onclick={handleClose}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18" />
         <line x1="6" y1="6" x2="18" y2="18" />
@@ -86,7 +86,7 @@
     </button>
   </div>
 
-  <div class="modal-body">
+  <div class="body">
     <CodeViewer
       script={activeScript}
       previousScript={app.script.previous}
@@ -98,12 +98,12 @@
     />
   </div>
 
-  <div class="modal-footer">
-    <span class="footer-label">To run:</span>
-    <span class="footer-step">Right-click</span>
-    <span class="footer-arrow">→</span>
+  <div class="footer">
+    <span class="label">To run:</span>
+    <code>Right-click</code>
+    <span class="arrow">→</span>
     <code>Run with PowerShell</code>
-    <span class="footer-arrow">→</span>
+    <span class="arrow">→</span>
     <code>Yes</code>
   </div>
 </dialog>

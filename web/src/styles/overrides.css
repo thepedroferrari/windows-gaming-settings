@@ -1,5 +1,6 @@
 @layer overrides {
   @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -15,55 +16,16 @@
     padding: var(--space-xl) 0;
     margin-top: var(--space-sm);
     border-radius: 0;
-    background:
-      radial-gradient(
-        900px 360px at 10% -20%,
-        color-mix(in oklch, var(--neon-cyan) 12%, transparent),
-        transparent 60%
-      ),
-      radial-gradient(
-        740px 420px at 90% 0%,
-        color-mix(in oklch, var(--accent) 14%, transparent),
-        transparent 60%
-      ),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0));
-    box-shadow:
-      0 20px 50px -45px rgba(0, 0, 0, 0.85),
-      inset 0 0 0 1px color-mix(in oklch, oklch(1 0 0) 4%, transparent);
     clip-path: none;
+    overflow: visible;
   }
 
   #quick-start.step::before,
   #quick-start.step::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-    z-index: 0;
+    content: none;
   }
 
-  #quick-start.step::before {
-    inset: 0;
-    clip-path: var(--clip-cyber-lg);
-    border: 1px solid color-mix(in oklch, var(--accent) 18%, var(--border));
-    border-top: 2px solid color-mix(in oklch, var(--neon-cyan) 40%, transparent);
-  }
-
-  #quick-start.step::after {
-    top: 16px;
-    left: 50%;
-    width: 140px;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      var(--neon-cyan) 0%,
-      color-mix(in oklch, var(--neon-magenta) 35%, transparent) 55%,
-      transparent 100%
-    );
-    transform: translateX(-50%) skewX(-18deg);
-    box-shadow: 0 0 12px var(--neon-cyan-glow);
-  }
-
-  #quick-start.step > * {
+  #quick-start.step>* {
     position: relative;
     z-index: 1;
   }
@@ -90,18 +52,15 @@
     top: -0.45rem;
     width: 1.6rem;
     height: 2px;
-    background: linear-gradient(
-      90deg,
-      var(--neon-cyan) 0%,
-      color-mix(in oklch, var(--neon-cyan) 45%, transparent) 60%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg,
+        var(--neon-cyan) 0%,
+        color-mix(in oklch, var(--neon-cyan) 45%, transparent) 60%,
+        transparent 100%);
     transform: translateX(-50%) skewX(-25deg);
     box-shadow: 0 0 8px var(--neon-cyan-glow);
   }
 
   #quick-start.step h2 {
-    position: relative;
     isolation: isolate;
     font-family: var(--font-display);
     font-size: clamp(1.45rem, 1.8vw, 1.9rem);
@@ -109,52 +68,13 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: rgba(245, 247, 255, 0.92);
-    text-align: center;
-    width: 100%;
+    width: fit-content;
     margin-left: auto;
     margin-right: auto;
     text-shadow:
       0 0 10px color-mix(in oklch, var(--neon-cyan) 35%, transparent),
       0 0 24px color-mix(in oklch, var(--accent) 20%, transparent);
     text-wrap: balance;
-  }
-
-  #quick-start.step h2::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: min(460px, 90%);
-    height: 2.4rem;
-    transform: translate(-50%, -50%) skewX(-10deg);
-    background: repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(7, 10, 22, 0.45) 2px,
-      rgba(7, 10, 22, 0.45) 3px
-    );
-    border-top: 1px solid color-mix(in oklch, var(--neon-cyan) 18%, transparent);
-    border-bottom: 1px solid color-mix(in oklch, var(--neon-magenta) 16%, transparent);
-    opacity: 0.45;
-    z-index: -1;
-  }
-
-  #quick-start.step h2::after {
-    content: "";
-    display: block;
-    width: 80px;
-    height: 2px;
-    margin: 0.45rem auto 0;
-    background: linear-gradient(
-      90deg,
-      var(--neon-cyan) 0%,
-      color-mix(in oklch, var(--neon-cyan) 40%, transparent) 60%,
-      transparent 100%
-    );
-    opacity: 0.85;
-    transform: skewX(-28deg);
-    box-shadow: 0 0 12px var(--neon-cyan-glow);
   }
 
   @media (max-width: 900px) {

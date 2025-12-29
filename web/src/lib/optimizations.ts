@@ -1139,10 +1139,7 @@ export const OPTIMIZATION_GATES = {
   ]),
 
   /** Optimizations requiring manual opt-in (never auto-selected) */
-  manualOptIn: new Set<OptimizationKey>([
-    'process_mitigation',
-    'core_isolation_off',
-  ]),
+  manualOptIn: new Set<OptimizationKey>(['process_mitigation', 'core_isolation_off']),
 
   /** UI phrase for acceptance */
   acceptPhrase: 'I ACCEPT THE RISK',

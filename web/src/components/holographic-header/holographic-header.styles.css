@@ -1,4 +1,6 @@
-/* @property for animatable gradient hue - Kevin Powell technique */
+ 
+
+
 @property --term-hue {
   syntax: "<angle>";
   initial-value: 280deg;
@@ -12,33 +14,32 @@
 }
 
 @layer components {
-  /* ============================================
-     HOLOGRAPHIC CONSOLE HEADER
-     ============================================ */
+  
+  @scope (.holo-console) {
+    :scope {
+      --holo-primary: var(--cyber-yellow);
+      --holo-primary-dim: var(--cyber-yellow-dim);
+      --holo-glow: var(--cyber-yellow-glow);
+      --holo-bg: color-mix(in oklch, var(--bg-primary) 80%, black);
+      --holo-grid: color-mix(in oklch, var(--holo-primary) 10%, transparent);
 
-  .holo-console {
-    --holo-primary: var(--cyber-yellow);
-    --holo-primary-dim: var(--cyber-yellow-dim);
-    --holo-glow: var(--cyber-yellow-glow);
-    --holo-bg: color-mix(in oklch, var(--bg-primary) 80%, black);
-    --holo-grid: color-mix(in oklch, var(--holo-primary) 10%, transparent);
-
-    position: relative;
-    width: 100%;
-    min-height: min(78vh, 840px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-xl) var(--space-md) var(--space-lg);
-    overflow: hidden;
-    background: var(--holo-bg);
-    border-bottom: 1px solid color-mix(in oklch, var(--holo-primary) 20%, transparent);
-    isolation: isolate;
+      position: relative;
+      inline-size: 100%;
+      min-block-size: min(78vh, 840px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xl) var(--space-md) var(--space-lg);
+      overflow: hidden;
+      background: var(--holo-bg);
+      border-block-end: 1px solid color-mix(in oklch, var(--holo-primary) 20%, transparent);
+      isolation: isolate;
+    }
   }
 
-  /* ============================================
-     BACKGROUND LAYERS
-     ============================================ */
+  
+
+  
 
   .holo-grid-bg {
     position: absolute;
@@ -80,53 +81,18 @@
     mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
   }
 
-  /* ============================================
-     CONTENT CONTAINER
-     ============================================ */
+  
 
   .holo-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--space-md);
-    /* Tighter spacing between logo/terminal/CTAs */
+    
     width: 100%;
     max-width: var(--max-width);
     position: relative;
     z-index: 1;
-  }
-
-  /* ============================================
-     STATUS BAR
-     ============================================ */
-
-  .holo-status-bar {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 800px;
-    padding: var(--space-xs) var(--space-md);
-    border-top: 1px solid color-mix(in oklch, var(--holo-primary) 30%, transparent);
-    border-bottom: 1px solid color-mix(in oklch, var(--holo-primary) 30%, transparent);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--holo-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    background: color-mix(in oklch, var(--holo-primary) 5%, transparent);
-    backdrop-filter: blur(4px);
-  }
-
-  .status-text::before {
-    content: "";
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: var(--safe);
-    margin-right: 8px;
-    border-radius: 50%;
-    box-shadow: 0 0 6px var(--safe);
-    animation: blink 2s infinite;
   }
 
   @keyframes blink {
@@ -140,9 +106,7 @@
     }
   }
 
-  /* ============================================
-     TITLE LOCKUP
-     ============================================ */
+  
 
   .holo-title-lockup {
     text-align: center;
@@ -155,10 +119,10 @@
     color: transparent;
     -webkit-text-stroke: 2px var(--holo-primary);
     text-shadow: 0 0 10px var(--holo-glow);
-    /* Reduced glow - logo frames, doesn't compete */
+    
     position: relative;
     margin: 0 0 var(--space-md) 0;
-    /* Added bottom spacing - logo and terminal are separate */
+    
     line-height: 1;
     letter-spacing: 0.05em;
     animation: glitch-skew 3s infinite linear alternate-reverse;
@@ -191,19 +155,7 @@
     animation: glitch-anim-2 3s infinite linear alternate-reverse;
   }
 
-  .holo-subtitle {
-    font-family: var(--font-mono);
-    color: var(--text-secondary);
-    font-size: clamp(0.8rem, 2vw, 1rem);
-    letter-spacing: 0.3em;
-    margin-top: var(--space-sm);
-    text-transform: uppercase;
-  }
-
-  /* ============================================
-     CYBERPUNK TERMINAL - Hacker Console 2077
-     The Crown Jewel - og:image worthy
-     ============================================ */
+  
 
   .cyber-terminal {
     --term-neon: var(--holo-primary);
@@ -236,14 +188,14 @@
       0 calc(100% - 12px)
     );
 
-    /* Animated CRT phosphor gradient background */
-    /* Inner vignette for depth */
+    
+    
     background:
       radial-gradient(
         ellipse 120% 100% at 50% 0%,
         transparent 30%,
         oklch(0.03 0.02 var(--term-hue) / 70%) 100%
-        /* Reduced from 80% - less haze */
+        
       ),
       radial-gradient(
         circle at 12% 12%,
@@ -255,7 +207,7 @@
         color-mix(in oklch, var(--term-cyan) 22%, transparent) 0%,
         transparent 45%
       ),
-      /* Subtle color gradient that shifts */ linear-gradient(
+       linear-gradient(
         165deg,
         oklch(0.1 0.045 var(--term-hue)) 0%,
         oklch(0.06 0.03 calc(var(--term-hue) + 20deg)) 40%,
@@ -263,20 +215,20 @@
         oklch(0.08 0.04 var(--term-hue)) 100%
       );
 
-    /* Slow hue rotation for living feel */
+    
     animation: termHueShift 30s linear infinite;
 
-    /* Multi-layer neon glow */
-    /* Outer glow - large diffuse */ box-shadow:
+    
+     box-shadow:
       0 0 60px oklch(0.5 0.2 var(--term-hue) / calc(var(--glow-intensity) * 0.3)),
-      /* Mid glow - medium */ 0 0 30px
+       0 0 30px
       oklch(0.6 0.25 var(--term-hue) / calc(var(--glow-intensity) * 0.5)),
-      /* Inner glow - tight */ 0 0 15px
+       0 0 15px
       oklch(0.7 0.3 var(--term-hue) / calc(var(--glow-intensity) * 0.7)),
-      /* Bottom reflection */ 0 20px 40px oklch(0.3 0.15 var(--term-hue) / 0.2);
+       0 20px 40px oklch(0.3 0.15 var(--term-hue) / 0.2);
     border: 1px solid color-mix(in oklch, var(--term-neon) 20%, oklch(0.1 0.02 var(--term-hue)));
 
-    /* Neon border frame */
+    
     &::before {
       content: "";
       position: absolute;
@@ -298,15 +250,15 @@
         glowIntensity 4s ease-in-out infinite;
     }
 
-    /* Inner solid background */
+    
     &::after {
       content: "";
       position: absolute;
       inset: 2px;
-      /* Top highlight */
+      
       background:
         linear-gradient(180deg, oklch(0.16 0.04 var(--term-hue) / 40%) 0%, transparent 30%),
-        /* Base color */ oklch(0.06 0.025 var(--term-hue));
+         oklch(0.06 0.025 var(--term-hue));
       clip-path: inherit;
       z-index: -1;
     }
@@ -348,7 +300,7 @@
     }
   }
 
-  /* Corner accents - HUD style with enhanced glow */
+  
   .terminal-corner {
     position: absolute;
     width: 24px;
@@ -447,9 +399,7 @@
     }
   }
 
-  /* ============================================
-     CYBERPUNK HEADER BAR
-     ============================================ */
+  
 
   .terminal-header {
     display: flex;
@@ -587,9 +537,7 @@
     text-shadow: 0 0 12px var(--term-cyan-glow);
   }
 
-  /* ============================================
-     TERMINAL SCREEN
-     ============================================ */
+  
 
   .terminal-screen {
     padding: 0 0 var(--space-sm);
@@ -616,7 +564,7 @@
       radial-gradient(
         circle at 50% 35%,
         oklch(0.2 0.06 var(--term-hue) / 30%) 0%,
-        /* Reduced from 35% - less milky haze */ transparent 55%
+         transparent 55%
       ),
       linear-gradient(
         180deg,
@@ -631,24 +579,24 @@
       inset 0 0 80px oklch(0.15 0.06 var(--term-hue) / 22%),
       0 0 0 1px color-mix(in oklch, var(--term-neon) 8%, transparent);
 
-    /* CRT inner bloom/glow effect */
+    
     &::before {
       content: "";
       position: absolute;
       inset: 0;
-      /* Top inner glow - phosphor bloom */
+      
       background:
         radial-gradient(
           ellipse 100% 40% at 50% 0%,
           oklch(0.4 0.15 var(--term-hue) / 15%) 0%,
           transparent 70%
         ),
-        /* Bottom inner glow */ radial-gradient(
+         radial-gradient(
           ellipse 100% 30% at 50% 100%,
           oklch(0.3 0.1 calc(var(--term-hue) + 30deg) / 10%) 0%,
           transparent 60%
         ),
-        /* Side glows - subtle */ radial-gradient(
+         radial-gradient(
           ellipse 30% 60% at 0% 50%,
           oklch(0.3 0.1 var(--term-hue) / 8%) 0%,
           transparent 70%
@@ -686,14 +634,14 @@
       z-index: 2;
     }
 
-    /* Content needs to be above the glow */
+    
     & > * {
       position: relative;
       z-index: 3;
     }
   }
 
-  /* Noise texture overlay - enhanced */
+  
   .screen-noise {
     position: absolute;
     inset: 0;
@@ -715,7 +663,7 @@
     }
   }
 
-  /* Animated scanline - reduced for text clarity */
+  
   .screen-scanline {
     position: absolute;
     inset: 0;
@@ -730,7 +678,7 @@
     pointer-events: none;
     z-index: 14;
     opacity: 0.12;
-    /* Reduced from 0.3 - visible on panel, not on letters */
+    
   }
 
   @keyframes scanlineMove {
@@ -743,9 +691,7 @@
     }
   }
 
-  /* ============================================
-     GLITCHY BOOT SEQUENCE
-     ============================================ */
+  
 
   .terminal-boot {
     position: absolute;
@@ -778,7 +724,7 @@
     }
   }
 
-  /* Glitch rain effect */
+  
   .glitch-rain {
     position: absolute;
     inset: 0;
@@ -900,9 +846,7 @@
     }
   }
 
-  /* ============================================
-     TERMINAL BODY - Main Content
-     ============================================ */
+  
 
   .terminal-body {
     display: flex;
@@ -930,7 +874,7 @@
     }
   }
 
-  /* Windows-style prompt */
+  
   .terminal-prompt {
     position: relative;
     margin: var(--space-xs) var(--space-sm) 0;
@@ -966,9 +910,7 @@
     font-weight: 500;
   }
 
-  /* ============================================
-     HERO TAGLINE
-     ============================================ */
+  
 
   .terminal-tagline {
     font-family: var(--font-hero);
@@ -982,7 +924,7 @@
     text-shadow:
       0 0 8px color-mix(in oklch, var(--term-neon) 15%, transparent),
       0 0 3.2px color-mix(in oklch, var(--term-neon) 10%, transparent);
-    /* Reduced glow by 20% more - surgical crispness */
+    
   }
 
   .terminal-tagline .highlight-text {
@@ -993,15 +935,15 @@
     letter-spacing: 0.03em;
     line-height: 1.1;
     color: var(--risky);
-    /* Token-based alarm red */
+    
     text-shadow:
       0 0 10px color-mix(in oklch, var(--risky) 25%, transparent),
-      /* Soft glow */ 0 0 22px color-mix(in oklch, var(--risky) 35%, transparent),
-      /* Medium glow */ 0 0 44px color-mix(in oklch, var(--risky) 45%, transparent);
-    /* Strong bloom */
-    /* 3-layer glow for verdict salience - token-aligned */
+       0 0 22px color-mix(in oklch, var(--risky) 35%, transparent),
+       0 0 44px color-mix(in oklch, var(--risky) 45%, transparent);
+    
+    
     animation: headlineFlicker 0.16s cubic-bezier(0.25, 0, 0.75, 1) 0.5s 1;
-    /* 160ms flicker at 500ms - sharp snap */
+    
     filter: contrast(1.1);
   }
 
@@ -1011,7 +953,7 @@
 
   .terminal-subhead {
     margin: 8px auto 0;
-    /* Reduced from 14px - tighter mission block */
+    
     text-align: center;
     color: oklch(0.88 0.02 280);
     font-family: var(--font-mono);
@@ -1032,7 +974,7 @@
   .terminal-subhead-micro {
     display: block;
     margin-top: 4px;
-    /* Reduced from 8px - micro detail stays close */
+    
     color: oklch(0.9 0.02 280);
     font-size: clamp(13px, 1.1vw, 16px);
     font-weight: 400;
@@ -1048,15 +990,15 @@
 
     25% {
       opacity: 0.85;
-      /* Quick dip */
+      
       filter: brightness(0.92);
     }
 
     50% {
       opacity: 1;
-      /* Snap back */
+      
       filter: brightness(1.08);
-      /* Slight overshoot */
+      
     }
 
     100% {
@@ -1065,7 +1007,7 @@
     }
   }
 
-  /* Periodic verdict flicker - single burst only (triggered by JS) */
+  
   @keyframes verdictFlickerOnce {
     0% {
       opacity: 1;
@@ -1091,7 +1033,7 @@
     }
 
     45% {
-      /* Chromatic split - only during flicker */
+      
       text-shadow:
         -1px 0 color-mix(in oklch, var(--neon-cyan) 60%, transparent),
         1px 0 color-mix(in oklch, var(--neon-magenta) 55%, transparent),
@@ -1101,7 +1043,7 @@
     }
 
     60% {
-      /* Return to normal glow */
+      
       text-shadow:
         0 0 10px color-mix(in oklch, var(--risky) 25%, transparent),
         0 0 22px color-mix(in oklch, var(--risky) 35%, transparent),
@@ -1114,13 +1056,13 @@
     }
   }
 
-  /* Flicker trigger class (added by JS) */
+  
   .highlight-text.is-flicker {
     animation: verdictFlickerOnce 260ms steps(1) 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    /* Disable verdict flicker for reduced motion preference */
+    
     .highlight-text.is-flicker {
       animation: none;
     }
@@ -1147,9 +1089,7 @@
     }
   }
 
-  /* ============================================
-     LOADING LINES - Cyber Style
-     ============================================ */
+  
 
   .terminal-loading {
     display: flex;
@@ -1159,14 +1099,14 @@
     border-top: 1px solid color-mix(in oklch, var(--term-neon) 20%, transparent);
     margin-top: 0;
     background: transparent;
-    /* Clean, no color shifting */
+    
     position: relative;
-    /* For pseudo-elements */
+    
     --loading-line-delay-start: 3.5s;
     --loading-line-delay-step: 0.7s;
   }
 
-  /* Subtle scanlines overlay on status section */
+  
   .terminal-loading::before {
     content: "";
     position: absolute;
@@ -1175,13 +1115,13 @@
       0deg,
       transparent 0px,
       color-mix(in oklch, oklch(0 0 0) 8%, transparent) 1px,
-      /* Very subtle scanlines */ transparent 2px
+       transparent 2px
     );
     pointer-events: none;
     z-index: 1;
   }
 
-  /* Imperceptible shimmer effect */
+  
   .terminal-loading::after {
     content: "";
     position: absolute;
@@ -1189,14 +1129,14 @@
     background: radial-gradient(
       ellipse at center,
       color-mix(in oklch, var(--neon-cyan) 2%, transparent) 0%,
-      /* Almost imperceptible */ transparent 60%
+       transparent 60%
     );
     pointer-events: none;
     z-index: 2;
     animation: subtleShimmer 8s ease-in-out infinite;
   }
 
-  /* Ensure content appears above pseudo-elements */
+  
   .terminal-loading > * {
     position: relative;
     z-index: 3;
@@ -1210,7 +1150,7 @@
     gap: 12px;
     font-size: 0.95rem;
     color: oklch(0.96 0.02 280);
-    /* +7% more - effortless scanning */
+    
     animation-delay: calc(
       var(--loading-line-delay-start) +
       (sibling-index() - 1) *
@@ -1248,7 +1188,7 @@
 
   .line-progress {
     color: oklch(0.82 0.16 175);
-    /* Brighter cyan-green */
+    
     font-size: 0.7rem;
     letter-spacing: 2px;
     text-shadow: 0 0 8px color-mix(in oklch, oklch(0.82 0.16 175) 60%, transparent);
@@ -1285,14 +1225,14 @@
 
   .loading-line .result {
     color: oklch(0.82 0.16 175);
-    /* Brighter cyan-green */
+    
     font-weight: 700;
     font-size: 0.85rem;
     letter-spacing: 0.08em;
     text-shadow:
       0 0 12px color-mix(in oklch, oklch(0.82 0.16 175) 80%, transparent),
-      /* Stronger glow */ 0 0 4px color-mix(in oklch, oklch(0.82 0.16 175) 60%, transparent);
-    /* Inner glow */
+       0 0 4px color-mix(in oklch, oklch(0.82 0.16 175) 60%, transparent);
+    
   }
 
   .loading-line.success {
@@ -1322,9 +1262,7 @@
     }
   }
 
-  /* ============================================
-     ACTIONS
-     ============================================ */
+  
 
   .holo-actions {
     display: flex;
@@ -1333,7 +1271,7 @@
     justify-content: center;
     align-items: center;
     margin-top: var(--space-sm);
-    /* Pull CTAs closer to terminal */
+    
   }
 
   .holo-action {
@@ -1347,7 +1285,7 @@
     font-family: var(--font-mono);
     font-size: 0.72rem;
     color: color-mix(in oklch, var(--text-secondary) 70%, oklch(0.95 0 0));
-    /* +15% contrast */
+    
     letter-spacing: 0.06em;
     text-transform: none;
     text-align: center;
@@ -1395,7 +1333,7 @@
     flex-shrink: 0;
   }
 
-  /* RECOMMENDED badge for buttons */
+  
   .holo-btn .btn-badge {
     display: inline-block;
     margin-left: var(--space-xs);
@@ -1411,7 +1349,7 @@
     vertical-align: middle;
   }
 
-  /* Chromatic aberration pseudo-elements */
+  
   .holo-btn::before,
   .holo-btn::after {
     content: attr(data-text);
@@ -1464,7 +1402,7 @@
     text-shadow: none;
   }
 
-  /* Glitch flicker effect overlay */
+  
   .holo-btn .glitch-layer {
     position: absolute;
     inset: 0;
@@ -1623,7 +1561,7 @@
     }
   }
 
-  /* Scanline overlay on button */
+  
   .holo-btn .btn-scanlines {
     position: absolute;
     inset: 0;
@@ -1654,18 +1592,16 @@
     }
   }
 
-  /* ============================================
-     HOLO BUTTON VARIANTS
-     ============================================ */
+  
 
-  /* Safe Mode Button - teal accent, refined size */
+  
   .holo-btn--safe {
     --btn-color: oklch(0.7 0.16 175);
     --btn-glow: oklch(0.6 0.18 175 / 60%);
     border-color: var(--btn-color);
     color: var(--btn-color);
     background: color-mix(in oklch, var(--btn-color) 8%, transparent);
-    /* Reduced from 1.1rem/lg+2xl to more compact */
+    
     font-size: 0.95rem;
     padding: var(--space-sm) var(--space-xl);
     gap: var(--space-xs);
@@ -1717,7 +1653,7 @@
     );
   }
 
-  /* Secondary/Customize button - with glitch personality */
+  
   .holo-btn--secondary {
     --btn-accent: var(--holo-primary);
     --btn-accent-glow: var(--holo-glow);
@@ -1745,7 +1681,7 @@
     text-shadow: 0 0 10px var(--holo-glow);
   }
 
-  /* Restore glitch layers for secondary */
+  
   .holo-btn--secondary::before,
   .holo-btn--secondary::after {
     display: block;
@@ -1789,13 +1725,13 @@
     box-shadow:
       0 0 15px var(--btn-accent-glow),
       inset 0 0 10px color-mix(in oklch, var(--btn-accent) 8%, transparent);
-    /* Chromatic aberration text effect */
+    
     text-shadow:
       -1px 0 oklch(0.7 0.2 25 / 50%),
       1px 0 oklch(0.7 0.2 200 / 50%);
   }
 
-  /* Quick download hint text - with safe green glow */
+  
   .quick-download-hint {
     --hint-color: oklch(0.65 0.15 175);
     width: 100%;
@@ -1828,7 +1764,7 @@
 
   .trust-strip .trust-link {
     color: inherit;
-    /* Match trust-strip text */
+    
     text-decoration: none;
     transition: all 0.2s;
     border-bottom: 1px solid color-mix(in oklch, var(--term-neon) 40%, transparent);
@@ -1840,9 +1776,7 @@
     text-shadow: 0 0 10px color-mix(in oklch, var(--term-cyan) 60%, transparent);
   }
 
-  /* ============================================
-     GLITCH ANIMATIONS
-     ============================================ */
+  
 
   @keyframes glitch-skew {
     0% {
@@ -1930,9 +1864,7 @@
     }
   }
 
-  /* ============================================
-     RESPONSIVE
-     ============================================ */
+  
 
   @media (max-width: 768px) {
     .holo-console {
@@ -1942,15 +1874,6 @@
 
     .holo-logo {
       -webkit-text-stroke: 1px var(--holo-primary);
-    }
-
-    .holo-status-bar {
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-xs);
-      border-bottom: none;
-      background: transparent;
-      backdrop-filter: none;
     }
 
     .header-right {
@@ -1967,18 +1890,12 @@
       font-size: 0.6rem;
     }
 
-    .terminal-text {
-      font-size: 1rem;
-    }
   }
 }
 
-/* ============================================
-   🔥 LEGENDARY CRT EFFECTS - Codrops Quality
-   Lucas Bebber + Cyberpunk Aesthetics
-   ============================================ */
 
-/* 1. HEAVY SCANLINES - Screen Door Pattern */
+
+
 .terminal-screen {
   position: relative;
 }
@@ -1987,21 +1904,21 @@
   content: "";
   position: absolute;
   inset: 0;
-  /* Subtle scanline pattern - visible but not overpowering */
+  
   background:
     repeating-linear-gradient(
       0deg,
       transparent 0px,
       color-mix(in oklch, oklch(0 0 0) 15%, transparent) 1px,
-      /* Much lighter scanlines */ transparent 2px,
+       transparent 2px,
       color-mix(in oklch, oklch(0 0 0) 5%, transparent) 3px,
-      /* Very subtle secondary */ transparent 4px
+       transparent 4px
     ),
-    /* Subtle vignette - just at edges */ radial-gradient(
+     radial-gradient(
       ellipse at center,
       transparent 30%,
       color-mix(in oklch, oklch(0 0 0) 5%, transparent) 70%,
-      /* Reduced from 0.08 - less fog */ color-mix(in oklch, oklch(0 0 0) 15%, transparent) 100% /* Reduced from 0.2 - CRT glass feel */
+       color-mix(in oklch, oklch(0 0 0) 15%, transparent) 100% 
     );
   pointer-events: none;
   z-index: 1000;
@@ -2018,7 +1935,7 @@
   }
 }
 
-/* 2. AUTHENTIC CRT SCAN BEAM - Thin Electron Sweep */
+
 .terminal-screen::before {
   content: "";
   position: absolute;
@@ -2028,18 +1945,18 @@
     transparent 0%,
     transparent 49.5%,
     color-mix(in oklch, oklch(1 0 0) 60%, transparent) 49.8%,
-    /* Thin bright line */ color-mix(in oklch, var(--neon-cyan) 80%, transparent) 50%,
-    /* Peak at 1-2px */ color-mix(in oklch, oklch(1 0 0) 60%, transparent) 50.2%,
-    /* Thin bright line */ transparent 50.5%,
+     color-mix(in oklch, var(--neon-cyan) 80%, transparent) 50%,
+     color-mix(in oklch, oklch(1 0 0) 60%, transparent) 50.2%,
+     transparent 50.5%,
     transparent 100%
   );
   pointer-events: none;
   z-index: 1001;
   animation: crtSweepScan 14s linear infinite;
   mix-blend-mode: color-dodge;
-  /* Authentic CRT pixel inversion */
+  
   opacity: 0.15;
-  /* Subtle, barely perceptible beam */
+  
 }
 
 @keyframes crtSweepScan {
@@ -2052,18 +1969,18 @@
   }
 }
 
-/* 3. RGB CHROMATIC ABERRATION - REMOVED FOR CRISP TEXT */
-/* Design team: "Panel can be dirty, glyph edges must be crisp" */
+
+
 .terminal-body,
 .terminal-tagline,
 .terminal-subhead {
   text-shadow:
-    0 0 20px currentColor, /* Keep glow */
+    0 0 20px currentColor, 
     0 0 8px currentColor;
-  /* Keep inner glow */
+  
 }
 
-/* Extra glow for highlighted text - RGB fringing removed for crispness */
+
 .terminal-tagline .highlight-text {
   text-shadow:
     0 0 40px color-mix(in oklch, var(--term-danger) 60%, transparent),
@@ -2071,13 +1988,13 @@
     0 0 10px color-mix(in oklch, var(--term-danger) 40%, transparent);
 }
 
-/* 4. PHOSPHOR GLOW - Multi-Layer Drop-Shadows */
+
 .terminal-body {
   filter: contrast(1.12) brightness(1.08) drop-shadow(0 0 3px currentColor)
     drop-shadow(0 0 8px currentColor);
 }
 
-/* 5. SCREEN FLICKER - Random Brightness Dips */
+
 @keyframes crtFlicker {
   0%,
   100% {
@@ -2120,11 +2037,11 @@
   animation: crtFlicker 12s infinite;
 }
 
-/* 6. NOISE TEXTURE - Subtle for text clarity */
-/* Design team: overlays should be visible on panel, not on letters */
+
+
 .screen-noise {
   opacity: 0.03 !important;
-  /* Reduced for crisp text */
+  
 }
 
 @keyframes noiseFlicker {
@@ -2138,7 +2055,7 @@
   }
 }
 
-/* 7. GLASS REFLECTION - Screen Shine */
+
 .cyber-terminal {
   position: relative;
 }
@@ -2159,16 +2076,16 @@
   mix-blend-mode: soft-light;
 }
 
-/* 8. ENHANCED BLOOM GLOW - Multi-Radius Box-Shadows */
+
 .cyber-terminal {
-  /* Tight inner glow */ box-shadow:
+   box-shadow:
     inset 0 0 20px var(--term-neon-glow),
-    /* Medium glow */ 0 0 40px color-mix(in oklch, var(--term-neon) 30%, transparent),
-    /* Large diffuse glow */ 0 0 80px color-mix(in oklch, var(--term-neon) 20%, transparent),
-    /* Massive outer bloom */ 0 0 160px color-mix(in oklch, var(--term-neon) 10%, transparent);
+     0 0 40px color-mix(in oklch, var(--term-neon) 30%, transparent),
+     0 0 80px color-mix(in oklch, var(--term-neon) 20%, transparent),
+     0 0 160px color-mix(in oklch, var(--term-neon) 10%, transparent);
 }
 
-/* 9. ACCESSIBILITY - Respect User Preferences */
+
 @media (prefers-reduced-motion: reduce) {
   .terminal-screen::before,
   .terminal-screen::after {
@@ -2180,6 +2097,4 @@
   }
 }
 
-/* ============================================
-   END LEGENDARY CRT EFFECTS
-   ============================================ */
+

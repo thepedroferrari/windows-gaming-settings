@@ -171,12 +171,12 @@
     ></span>
   {/each}
 
-  <div class="software-card-inner">
-    <div class="software-card-scanlines"></div>
-    <div class="software-card-corner software-card-corner--tl"></div>
-    <div class="software-card-corner software-card-corner--tr"></div>
-    <div class="software-card-corner software-card-corner--bl"></div>
-    <div class="software-card-corner software-card-corner--br"></div>
+  <div class="inner">
+    <div class="scanlines"></div>
+    <div class="corner corner--tl"></div>
+    <div class="corner corner--tr"></div>
+    <div class="corner corner--bl"></div>
+    <div class="corner corner--br"></div>
 
     {#snippet logoIcon()}
       {#if logoType === 'sprite'}
@@ -204,7 +204,7 @@
       {/if}
     {/snippet}
 
-    <div class="software-card-front">
+    <div class="front">
       <div class="logo">
         {@render logoIcon()}
       </div>
@@ -213,7 +213,7 @@
       <span class="list-category">{pkg.category}</span>
     </div>
 
-    <div class="software-card-back">
+    <div class="back">
       <span class="back-name">{pkg.name}</span>
       <span class="back-desc">{pkg.desc ?? 'No description available.'}</span>
       <span class="back-category">{pkg.category}</span>

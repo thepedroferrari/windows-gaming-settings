@@ -98,8 +98,8 @@ function toPresetMeta(persona: PersonaRaw): PresetMeta {
   }
 }
 
-const presetPersonas = personas.filter(
-  (persona): persona is PersonaRaw & { id: PresetType } => isPresetType(persona.id),
+const presetPersonas = personas.filter((persona): persona is PersonaRaw & { id: PresetType } =>
+  isPresetType(persona.id),
 )
 
 export const PRESET_ORDER: PresetType[] = presetPersonas.map((persona) => persona.id)

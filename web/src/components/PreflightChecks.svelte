@@ -35,9 +35,9 @@
 
 {#if visibleChecks.length > 0}
   <div class="preflight-section">
-    <h3 class="preflight-title">
+    <h3 class="title">
       <svg
-        class="preflight-icon"
+        class="icon"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -49,10 +49,10 @@
       Pre-Flight Check
     </h3>
 
-    <div class="preflight-items">
+    <div class="items">
       {#each visibleChecks as check (check.id)}
-        <div class="preflight-card">
-          <span class="prereq-badge {check.badge}">{check.badge}</span>
+        <div class="card">
+          <span class="badge {check.badge}">{check.badge}</span>
           <h4>{check.title}</h4>
           <p>{check.description}</p>
 
@@ -61,7 +61,7 @@
               href={check.action.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="prereq-link"
+              class="link"
             >
               {check.action.label}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -71,7 +71,7 @@
               </svg>
             </a>
           {:else if check.action.type === 'copy'}
-            <button type="button" class="prereq-link" onclick={() => handleCopy(check)}>
+            <button type="button" class="link" onclick={() => handleCopy(check)}>
               {copyFeedback[check.id] || check.action.label}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />

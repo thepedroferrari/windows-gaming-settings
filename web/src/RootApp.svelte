@@ -109,9 +109,15 @@
 <!-- Main Content -->
 <main class="container" id="main-content">
   <!-- Step 0: Presets / Quick Start -->
-  <section id="quick-start" class="step">
-    <h2>Quick Start</h2>
-    <p class="step-desc">Choose a preset or build your own loadout below</p>
+  <section id="quick-start" class="step step--quickstart">
+    <div class="quickstart-header">
+      <div class="quickstart-accent quickstart-accent--left"></div>
+      <div class="quickstart-title-wrap">
+        <h2 class="quickstart-title">Quick Start</h2>
+        <p class="quickstart-subtitle">Choose a preset or build your own loadout below</p>
+      </div>
+      <div class="quickstart-accent quickstart-accent--right"></div>
+    </div>
     <PresetSection />
   </section>
 
