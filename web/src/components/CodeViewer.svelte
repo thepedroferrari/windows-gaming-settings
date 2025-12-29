@@ -151,10 +151,10 @@
     isEditing = false
   }
 
-  function handleEditInput(event: Event) {
-    const target = event.target as HTMLTextAreaElement
-    editContent = target.value
-    onEdit?.(target.value)
+  function handleEditInput(event: Event & { currentTarget: HTMLTextAreaElement }) {
+    const { value } = event.currentTarget
+    editContent = value
+    onEdit?.(value)
   }
 
   function navigateDiff(direction: 'prev' | 'next') {

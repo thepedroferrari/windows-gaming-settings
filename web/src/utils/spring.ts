@@ -25,6 +25,15 @@ export interface SpringValue {
   o?: number // opacity
 }
 
+type SpringAxis = 'x' | 'y' | 'o'
+type SpringVector = Record<SpringAxis, number>
+
+const SPRING_AXES = ['x', 'y', 'o'] as const satisfies readonly SpringAxis[]
+
+function toSpringVector(value: SpringValue): SpringVector {
+  return { x: value.x, y: value.y, o: value.o ?? 0 }
+}
+
 // Default spring configurations for common use cases
 export const SPRING_PRESETS = {
   /** Snappy interaction response */
@@ -39,9 +48,9 @@ export const SPRING_PRESETS = {
 
 export class Spring {
   // ES2022 Private class fields - true encapsulation
-  #target: SpringValue
-  #current: SpringValue
-  #velocity: SpringValue
+  #target: SpringVector
+  #current: SpringVector
+  #velocity: SpringVector
   #stiffness: number
   #damping: number
 
@@ -52,8 +61,8 @@ export class Spring {
   }
 
   constructor(initialValue: SpringValue, config: SpringConfig = SPRING_PRESETS.INTERACTIVE) {
-    this.#target = { ...initialValue }
-    this.#current = { ...initialValue }
+    this.#target = toSpringVector(initialValue)
+    this.#current = toSpringVector(initialValue)
     this.#velocity = { x: 0, y: 0, o: 0 }
     this.#stiffness = config.stiffness ?? SPRING_PRESETS.INTERACTIVE.stiffness
     this.#damping = config.damping ?? SPRING_PRESETS.INTERACTIVE.damping
@@ -93,9 +102,9 @@ export class Spring {
    * @param options.hard - If true, snap immediately without animation
    */
   set(target: SpringValue, options?: { soft?: boolean; hard?: boolean }): void {
-    this.#target = { ...target }
+    this.#target = toSpringVector(target)
     if (options?.hard) {
-      this.#current = { ...target }
+      this.#current = toSpringVector(target)
       this.#velocity = { x: 0, y: 0, o: 0 }
     }
   }
@@ -105,19 +114,14 @@ export class Spring {
    * Call this in requestAnimationFrame loop
    */
   update(): SpringValue {
-    const keys = ['x', 'y', 'o'] as const
-
-    for (const key of keys) {
+    for (const key of SPRING_AXES) {
       const targetVal = this.#target[key]
       const currentVal = this.#current[key]
 
-      if (targetVal !== undefined && currentVal !== undefined) {
-        const delta = targetVal - currentVal
-        const newVelocity =
-          ((this.#velocity[key] ?? 0) + delta * this.#stiffness) * (1 - this.#damping)
-        this.#velocity[key] = newVelocity
-        ;(this.#current as unknown as Record<string, number>)[key] = currentVal + newVelocity
-      }
+      const delta = targetVal - currentVal
+      const newVelocity = (this.#velocity[key] + delta * this.#stiffness) * (1 - this.#damping)
+      this.#velocity[key] = newVelocity
+      this.#current[key] = currentVal + newVelocity
     }
 
     return this.#current
@@ -140,8 +144,8 @@ export class Spring {
    * Reset spring to initial state with new config
    */
   reset(value: SpringValue, config?: SpringConfig): void {
-    this.#target = { ...value }
-    this.#current = { ...value }
+    this.#target = toSpringVector(value)
+    this.#current = toSpringVector(value)
     this.#velocity = { x: 0, y: 0, o: 0 }
     if (config) {
       this.#stiffness = config.stiffness ?? this.#stiffness

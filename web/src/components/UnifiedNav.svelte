@@ -32,15 +32,15 @@
     const sections = NAV_LINKS.map((link) => {
       const id = link.href.replace('#', '')
       return document.getElementById(id)
-    }).filter(Boolean) as HTMLElement[]
+    }).filter((section): section is HTMLElement => section instanceof HTMLElement)
 
     if (sections.length === 0) return
 
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const index = sections.indexOf(entry.target as HTMLElement)
+          if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+            const index = sections.indexOf(entry.target)
             if (index !== -1) {
               activeStep = index
             }

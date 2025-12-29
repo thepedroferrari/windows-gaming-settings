@@ -5,9 +5,11 @@
  * Scripts work offline without network dependencies.
  */
 
+import { isPackageKey } from './types'
 import type {
   HardwareProfile,
   MonitorSoftwareType,
+  OptimizationKey,
   PackageKey,
   PeripheralType,
   SoftwareCatalog,
@@ -15,26 +17,26 @@ import type {
 
 export type SelectionState = {
   hardware: HardwareProfile
-  optimizations: string[]
+  optimizations: OptimizationKey[]
   packages: PackageKey[]
   missingPackages: string[]
 }
 
 /** Map peripheral types to catalog package keys */
-const PERIPHERAL_TO_PACKAGE: Record<PeripheralType, PackageKey | null> = {
-  logitech: 'logitechghub' as PackageKey,
-  razer: 'razersynapse' as PackageKey,
-  corsair: 'icue' as PackageKey,
-  steelseries: 'steelseriesgg' as PackageKey,
-  asus: 'armourycrate' as PackageKey,
-  wooting: 'wooting' as PackageKey,
+export const PERIPHERAL_TO_PACKAGE: Record<PeripheralType, string | null> = {
+  logitech: 'logitechghub',
+  razer: 'razersynapse',
+  corsair: 'icue',
+  steelseries: 'steelseriesgg',
+  asus: 'armourycrate',
+  wooting: 'wooting',
 }
 
 /** Map monitor software types to catalog package keys */
-const MONITOR_TO_PACKAGE: Record<MonitorSoftwareType, PackageKey | null> = {
-  dell: 'delldisplaymanager' as PackageKey,
-  lg: 'lgonscreencontrol' as PackageKey,
-  hp: 'hpdisplaycenter' as PackageKey,
+export const MONITOR_TO_PACKAGE: Record<MonitorSoftwareType, string | null> = {
+  dell: 'delldisplaymanager',
+  lg: 'lgonscreencontrol',
+  hp: 'hpdisplaycenter',
 }
 
 export type ScriptGeneratorOptions = {
@@ -79,14 +81,14 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
 
   for (const peripheral of hardware.peripherals) {
     const pkgKey = PERIPHERAL_TO_PACKAGE[peripheral]
-    if (pkgKey && pkgKey in catalog) {
+    if (pkgKey && isPackageKey(catalog, pkgKey)) {
       allPackages.add(pkgKey)
     }
   }
 
   for (const monitor of hardware.monitorSoftware) {
     const pkgKey = MONITOR_TO_PACKAGE[monitor]
-    if (pkgKey && pkgKey in catalog) {
+    if (pkgKey && isPackageKey(catalog, pkgKey)) {
       allPackages.add(pkgKey)
     }
   }

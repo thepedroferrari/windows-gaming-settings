@@ -22,21 +22,15 @@
     isGpuType,
     isPeripheralType,
     isMonitorSoftwareType,
-    type HardwareProfile,
+    isOptimizationKey,
+    isPackageKey,
     type PackageKey,
-    type OptimizationKey,
+    type SavedProfile,
   } from '$lib/types'
   import { downloadJson } from '../utils/download'
+  import { isParseSuccess, safeParseProfile, type ValidatedProfile } from '../schemas'
 
   let fileInputEl: HTMLInputElement | null = null
-
-  interface SavedProfile {
-    version: string
-    created: string
-    hardware: HardwareProfile
-    optimizations: string[]
-    software: string[]
-  }
 
   function buildProfile(): SavedProfile {
     return {
@@ -64,8 +58,13 @@
 
     try {
       const text = await file.text()
-      const profile = JSON.parse(text) as SavedProfile
-      applyProfile(profile)
+      const result = safeParseProfile(JSON.parse(text))
+      if (!isParseSuccess(result)) {
+        console.error('[RockTune] Failed to load profile:', result.error)
+        alert('Failed to load profile. Please check the file format.')
+        return
+      }
+      applyProfile(result.data)
       // Script auto-updates reactively via generateCurrentScript()
     } catch (error) {
       console.error('[RockTune] Failed to load profile:', error)
@@ -77,7 +76,7 @@
     }
   }
 
-  function applyProfile(profile: SavedProfile): void {
+  function applyProfile(profile: ValidatedProfile): void {
     // Apply hardware
     if (profile.hardware?.cpu && isCpuType(profile.hardware.cpu)) {
       setCpu(profile.hardware.cpu)
@@ -97,15 +96,14 @@
     setMonitorSoftware(validMonitorSoftware)
 
     // Apply optimizations
-    if (Array.isArray(profile.optimizations)) {
-      setOptimizations(profile.optimizations as OptimizationKey[])
-    }
+    const validOptimizations = profile.optimizations.filter(isOptimizationKey)
+    setOptimizations(validOptimizations)
 
     // Apply software selection
-    if (Array.isArray(profile.software)) {
-      const validSoftware = profile.software.filter((key) => key in app.software)
-      setSelection(validSoftware as PackageKey[])
-    }
+    const validSoftware = profile.software.filter((key): key is PackageKey =>
+      isPackageKey(app.software, key),
+    )
+    setSelection(validSoftware)
   }
 </script>
 

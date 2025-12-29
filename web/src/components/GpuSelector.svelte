@@ -5,11 +5,13 @@
 
   import { app, setGpu } from '$lib/state.svelte'
   import { GPU_OPTIONS } from '$lib/hardware'
-  import type { GpuType } from '$lib/types'
+  import { isGpuType } from '$lib/types'
 
-  function handleChange(event: Event) {
-    const target = event.target as HTMLInputElement
-    setGpu(target.value as GpuType)
+  function handleChange(event: Event & { currentTarget: HTMLInputElement }) {
+    const { value } = event.currentTarget
+    if (isGpuType(value)) {
+      setGpu(value)
+    }
   }
 </script>
 

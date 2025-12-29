@@ -1,5 +1,12 @@
 import { z } from 'zod'
-import { CATEGORIES, CPU_TYPES, GPU_TYPES, PERIPHERAL_TYPES, PROFILE_VERSION } from './lib/types'
+import {
+  CATEGORIES,
+  CPU_TYPES,
+  GPU_TYPES,
+  MONITOR_SOFTWARE_TYPES,
+  PERIPHERAL_TYPES,
+  PROFILE_VERSION,
+} from './lib/types'
 
 /**
  * Package key schema - branded string for catalog keys
@@ -8,8 +15,11 @@ import { CATEGORIES, CPU_TYPES, GPU_TYPES, PERIPHERAL_TYPES, PROFILE_VERSION } f
 export const PackageKeySchema = z
   .string()
   .min(1, 'Package key cannot be empty')
-  .regex(/^[a-z0-9-]+$/, 'Package key must be lowercase alphanumeric with hyphens')
-  .describe('Unique lowercase identifier for a software package')
+  .regex(
+    /^[a-z0-9._-]+$/,
+    'Package key must be lowercase alphanumeric with dots, hyphens, or underscores',
+  )
+  .describe('Unique lowercase identifier for a software package (dots, hyphens, or underscores)')
   .brand<'PackageKey'>()
 
 /**
@@ -48,6 +58,10 @@ export const PeripheralTypeSchema = z
     PERIPHERAL_TYPES.WOOTING,
   ])
   .describe('Peripheral manufacturer for software recommendations')
+
+export const MonitorSoftwareTypeSchema = z
+  .enum([MONITOR_SOFTWARE_TYPES.DELL, MONITOR_SOFTWARE_TYPES.LG, MONITOR_SOFTWARE_TYPES.HP])
+  .describe('Monitor software brand for auto-install recommendations')
 
 /**
  * Trimmed non-empty string - removes whitespace and validates
@@ -112,7 +126,7 @@ export const SoftwareCatalogSchema = z
           .map(([k, v]) => [k.toLowerCase(), v]),
       )
     },
-    z.record(z.string().min(1), SoftwarePackageSchema),
+    z.record(PackageKeySchema, SoftwarePackageSchema),
   )
   .describe('Complete software catalog with package definitions')
 
@@ -126,6 +140,12 @@ export const HardwareProfileSchema = z
       .refine((arr) => new Set(arr).size === arr.length, 'Duplicate peripherals are not allowed')
       .default([])
       .describe('Selected peripheral manufacturers'),
+    monitorSoftware: z
+      .array(MonitorSoftwareTypeSchema)
+      .max(3, 'Maximum 3 monitor software entries allowed')
+      .refine((arr) => new Set(arr).size === arr.length, 'Duplicate monitor software not allowed')
+      .default([])
+      .describe('Selected monitor software brands'),
   })
   .describe('Hardware configuration for optimization targeting')
 

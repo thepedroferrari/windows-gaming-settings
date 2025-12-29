@@ -100,8 +100,10 @@ export const CATEGORIES = [
 
 export type Category = (typeof CATEGORIES)[number]
 
+const CATEGORY_VALUES: readonly string[] = CATEGORIES
+
 export function isCategory(value: unknown): value is Category {
-  return typeof value === 'string' && CATEGORIES.includes(value as Category)
+  return typeof value === 'string' && CATEGORY_VALUES.includes(value)
 }
 
 export interface SoftwarePackage {
@@ -128,6 +130,8 @@ export const CPU_TYPES = {
 
 export type CpuType = (typeof CPU_TYPES)[keyof typeof CPU_TYPES]
 
+const CPU_TYPE_VALUES = Object.values(CPU_TYPES)
+
 export const GPU_TYPES = {
   NVIDIA: 'nvidia',
   AMD: 'amd',
@@ -135,6 +139,8 @@ export const GPU_TYPES = {
 } as const satisfies Record<string, string>
 
 export type GpuType = (typeof GPU_TYPES)[keyof typeof GPU_TYPES]
+
+const GPU_TYPE_VALUES = Object.values(GPU_TYPES)
 
 export const PERIPHERAL_TYPES = {
   LOGITECH: 'logitech',
@@ -147,6 +153,8 @@ export const PERIPHERAL_TYPES = {
 
 export type PeripheralType = (typeof PERIPHERAL_TYPES)[keyof typeof PERIPHERAL_TYPES]
 
+const PERIPHERAL_TYPE_VALUES = Object.values(PERIPHERAL_TYPES)
+
 export const MONITOR_SOFTWARE_TYPES = {
   DELL: 'dell',
   LG: 'lg',
@@ -156,6 +164,8 @@ export const MONITOR_SOFTWARE_TYPES = {
 export type MonitorSoftwareType =
   (typeof MONITOR_SOFTWARE_TYPES)[keyof typeof MONITOR_SOFTWARE_TYPES]
 
+const MONITOR_SOFTWARE_VALUES = Object.values(MONITOR_SOFTWARE_TYPES)
+
 export interface HardwareProfile {
   readonly cpu: CpuType
   readonly gpu: GpuType
@@ -164,24 +174,19 @@ export interface HardwareProfile {
 }
 
 export function isCpuType(value: unknown): value is CpuType {
-  return typeof value === 'string' && Object.values(CPU_TYPES).includes(value as CpuType)
+  return typeof value === 'string' && CPU_TYPE_VALUES.includes(value)
 }
 
 export function isGpuType(value: unknown): value is GpuType {
-  return typeof value === 'string' && Object.values(GPU_TYPES).includes(value as GpuType)
+  return typeof value === 'string' && GPU_TYPE_VALUES.includes(value)
 }
 
 export function isPeripheralType(value: unknown): value is PeripheralType {
-  return (
-    typeof value === 'string' && Object.values(PERIPHERAL_TYPES).includes(value as PeripheralType)
-  )
+  return typeof value === 'string' && PERIPHERAL_TYPE_VALUES.includes(value)
 }
 
 export function isMonitorSoftwareType(value: unknown): value is MonitorSoftwareType {
-  return (
-    typeof value === 'string' &&
-    Object.values(MONITOR_SOFTWARE_TYPES).includes(value as MonitorSoftwareType)
-  )
+  return typeof value === 'string' && MONITOR_SOFTWARE_VALUES.includes(value)
 }
 
 export const VIEW_MODES = {
@@ -296,20 +301,22 @@ export type SafeOptimization = (typeof SAFE_OPTIMIZATIONS)[keyof typeof SAFE_OPT
 export type CautionOptimization = (typeof CAUTION_OPTIMIZATIONS)[keyof typeof CAUTION_OPTIMIZATIONS]
 export type RiskyOptimization = (typeof RISKY_OPTIMIZATIONS)[keyof typeof RISKY_OPTIMIZATIONS]
 
+const SAFE_OPTIMIZATION_VALUES = Object.values(SAFE_OPTIMIZATIONS)
+const CAUTION_OPTIMIZATION_VALUES = Object.values(CAUTION_OPTIMIZATIONS)
+const OPTIMIZATION_KEY_VALUES = Object.values(OPTIMIZATION_KEYS)
+
 export function getOptimizationTier(key: OptimizationKey): OptimizationTier {
-  if (Object.values(SAFE_OPTIMIZATIONS).includes(key as SafeOptimization)) {
+  if (SAFE_OPTIMIZATION_VALUES.includes(key)) {
     return OPTIMIZATION_TIERS.SAFE
   }
-  if (Object.values(CAUTION_OPTIMIZATIONS).includes(key as CautionOptimization)) {
+  if (CAUTION_OPTIMIZATION_VALUES.includes(key)) {
     return OPTIMIZATION_TIERS.CAUTION
   }
   return OPTIMIZATION_TIERS.RISKY
 }
 
 export function isOptimizationKey(value: unknown): value is OptimizationKey {
-  return (
-    typeof value === 'string' && Object.values(OPTIMIZATION_KEYS).includes(value as OptimizationKey)
-  )
+  return typeof value === 'string' && OPTIMIZATION_KEY_VALUES.includes(value)
 }
 
 export interface AppState {
@@ -329,6 +336,17 @@ export const PRESET_TYPES = {
 
 export type PresetType = (typeof PRESET_TYPES)[keyof typeof PRESET_TYPES]
 
+const PRESET_TYPE_VALUES = Object.values(PRESET_TYPES)
+
+export function isPresetType(value: unknown): value is PresetType {
+  return typeof value === 'string' && PRESET_TYPE_VALUES.includes(value)
+}
+
+const PACKAGE_KEY_PATTERN = /^[a-z0-9._-]+$/
+
+export function isPackageKeyValue(value: unknown): value is PackageKey {
+  return typeof value === 'string' && value.length > 0 && PACKAGE_KEY_PATTERN.test(value)
+}
 export interface Preset {
   readonly name: PresetType
   readonly hardware: Partial<HardwareProfile>

@@ -1,6 +1,8 @@
+import { z } from 'zod'
 import personasDoc from '../../docs/personas.json'
-import { getOptimizationsForProfile, type ProfileId } from './optimizations'
-import type { OptimizationKey, PackageKey, PresetType } from './types'
+import { PackageKeySchema } from '../schemas'
+import { getOptimizationsForProfile, PROFILE_IDS } from './optimizations'
+import { isPresetType, type OptimizationKey, type PackageKey, type PresetType } from './types'
 
 export interface PresetConfig {
   readonly opts: readonly OptimizationKey[]
@@ -25,39 +27,41 @@ export interface RecommendedPreset {
   readonly software: readonly PackageKey[]
 }
 
-interface PersonaSoftware {
-  readonly key: string
-  readonly reason: string
-}
+const PersonaSoftwareSchema = z.object({
+  key: PackageKeySchema,
+  reason: z.string(),
+})
 
-interface PersonaDoc {
-  readonly meta: {
-    readonly version: string
-    readonly source: string
-    readonly philosophy: string
-  }
-  readonly personas: readonly PersonaRaw[]
-}
+const PersonaSchema = z.object({
+  id: z.enum(PROFILE_IDS),
+  display_name: z.string(),
+  card_badge: z.string(),
+  card_icon: z.string(),
+  card_blurb: z.string(),
+  risk: z.enum(['low', 'medium', 'high']),
+  intensity: z.number(),
+  overhead_label: z.string(),
+  latency_label: z.string(),
+  mindset: z.string(),
+  primary_goals: z.array(z.string()),
+  constraints: z.array(z.string()),
+  recommended_software: z.array(PersonaSoftwareSchema),
+  optional_software: z.array(PersonaSoftwareSchema),
+  avoid_software: z.array(PersonaSoftwareSchema),
+})
 
-interface PersonaRaw {
-  readonly id: string
-  readonly display_name: string
-  readonly card_badge: string
-  readonly card_icon: string
-  readonly card_blurb: string
-  readonly risk: 'low' | 'medium' | 'high'
-  readonly intensity: number
-  readonly overhead_label: string
-  readonly latency_label: string
-  readonly mindset: string
-  readonly primary_goals: readonly string[]
-  readonly constraints: readonly string[]
-  readonly recommended_software: readonly PersonaSoftware[]
-  readonly optional_software: readonly PersonaSoftware[]
-  readonly avoid_software: readonly PersonaSoftware[]
-}
+const PersonaDocSchema = z.object({
+  meta: z.object({
+    version: z.string(),
+    source: z.string(),
+    philosophy: z.string(),
+  }),
+  personas: z.array(PersonaSchema),
+})
 
-const personaSource = personasDoc as PersonaDoc
+type PersonaRaw = z.infer<typeof PersonaSchema>
+
+const personaSource = PersonaDocSchema.parse(personasDoc)
 const personas = personaSource.personas
 
 const rarityByBadge: Record<string, PresetMeta['rarity']> = {
@@ -75,8 +79,8 @@ function toIntensity(value: number): number {
 
 function toPresetConfig(persona: PersonaRaw): PresetConfig {
   return {
-    opts: getOptimizationsForProfile(persona.id as ProfileId),
-    software: persona.recommended_software.map((item) => item.key as PackageKey),
+    opts: getOptimizationsForProfile(persona.id),
+    software: persona.recommended_software.map((item) => item.key),
   }
 }
 
@@ -94,15 +98,19 @@ function toPresetMeta(persona: PersonaRaw): PresetMeta {
   }
 }
 
-export const PRESET_ORDER: PresetType[] = personas.map((persona) => persona.id as PresetType)
+const presetPersonas = personas.filter(
+  (persona): persona is PersonaRaw & { id: PresetType } => isPresetType(persona.id),
+)
+
+export const PRESET_ORDER: PresetType[] = presetPersonas.map((persona) => persona.id)
 
 export const PRESETS = Object.fromEntries(
-  personas.map((persona) => [persona.id, toPresetConfig(persona)]),
-) as Record<PresetType, PresetConfig>
+  presetPersonas.map((persona) => [persona.id, toPresetConfig(persona)]),
+)
 
 export const PRESET_META = Object.fromEntries(
-  personas.map((persona) => [persona.id, toPresetMeta(persona)]),
-) as Record<PresetType, PresetMeta>
+  presetPersonas.map((persona) => [persona.id, toPresetMeta(persona)]),
+)
 
 export function getRecommendedPreset(preset: PresetType | null): RecommendedPreset | null {
   if (!preset) return null

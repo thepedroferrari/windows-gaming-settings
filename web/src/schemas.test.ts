@@ -229,12 +229,12 @@ describe('Schema Validation', () => {
     })
 
     it('should reject missing required fields', () => {
-      const missingVersion = { ...validProfile }
-      delete (missingVersion as Record<string, unknown>).version
+      const missingVersion: Record<string, unknown> = { ...validProfile }
+      delete missingVersion.version
       assertEquals(isParseSuccess(safeParseProfile(missingVersion)), false)
 
-      const missingHardware = { ...validProfile }
-      delete (missingHardware as Record<string, unknown>).hardware
+      const missingHardware: Record<string, unknown> = { ...validProfile }
+      delete missingHardware.hardware
       assertEquals(isParseSuccess(safeParseProfile(missingHardware)), false)
     })
   })

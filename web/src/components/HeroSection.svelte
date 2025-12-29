@@ -11,10 +11,10 @@
 
   import { onMount } from 'svelte'
   import { app, openPreviewModal } from '$lib/state.svelte'
-  import { buildScript } from '$lib/script-generator'
+  import { buildScript, type SelectionState } from '$lib/script-generator'
   import { getDefaultOptimizations } from '$lib/optimizations'
   import { downloadText } from '../utils/download'
-  import { CPU_TYPES, GPU_TYPES, type PackageKey } from '$lib/types'
+  import { CPU_TYPES, GPU_TYPES } from '$lib/types'
 
   // Verdict element ref for flicker effect
   let verdictEl: HTMLElement | undefined = $state()
@@ -64,16 +64,16 @@
    */
   function handleSafeDownload() {
     // Build a minimal "safe" selection state
-    const safeSelection = {
+    const safeSelection: SelectionState = {
       hardware: {
         cpu: CPU_TYPES.INTEL, // Generic safe default
         gpu: GPU_TYPES.NVIDIA, // Most common
-        peripherals: [] as const,
-        monitorSoftware: [] as const,
+        peripherals: [],
+        monitorSoftware: [],
       },
       optimizations: getDefaultOptimizations(),
-      packages: [] as PackageKey[], // No software, just optimizations
-      missingPackages: [] as string[],
+      packages: [], // No software, just optimizations
+      missingPackages: [],
     }
 
     // Generate and download the safe script directly (not from current state)

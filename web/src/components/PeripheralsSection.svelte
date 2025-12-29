@@ -12,16 +12,20 @@
     PERIPHERAL_LINKS,
     MONITOR_LINKS,
   } from '$lib/peripherals'
-  import type { PeripheralType, MonitorSoftwareType } from '$lib/types'
+  import { isMonitorSoftwareType, isPeripheralType } from '$lib/types'
 
-  function handlePeripheralChange(event: Event) {
-    const target = event.target as HTMLInputElement
-    togglePeripheral(target.value as PeripheralType)
+  function handlePeripheralChange(event: Event & { currentTarget: HTMLInputElement }) {
+    const { value } = event.currentTarget
+    if (isPeripheralType(value)) {
+      togglePeripheral(value)
+    }
   }
 
-  function handleMonitorChange(event: Event) {
-    const target = event.target as HTMLInputElement
-    toggleMonitorSoftware(target.value as MonitorSoftwareType)
+  function handleMonitorChange(event: Event & { currentTarget: HTMLInputElement }) {
+    const { value } = event.currentTarget
+    if (isMonitorSoftwareType(value)) {
+      toggleMonitorSoftware(value)
+    }
   }
 </script>
 

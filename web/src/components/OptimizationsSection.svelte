@@ -40,8 +40,7 @@
     [OPTIMIZATION_TIERS.RISKY]: 'Risky',
   }
 
-  function handleWizardToggle(event: Event) {
-    const target = event.target as HTMLInputElement
+  function handleWizardToggle() {
     toggleWizardMode()
   }
 </script>

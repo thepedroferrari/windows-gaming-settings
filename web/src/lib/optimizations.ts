@@ -954,7 +954,21 @@ export function getDefaultOptimizations(): OptimizationKey[] {
 // =============================================================================
 
 /** Profile types for optimization matrix */
-export type ProfileId = 'minimal_default' | 'gamer' | 'streamer' | 'pro_gamer' | 'benchmarker'
+export const PROFILE_IDS = [
+  'minimal_default',
+  'gamer',
+  'streamer',
+  'pro_gamer',
+  'benchmarker',
+] as const
+
+export type ProfileId = (typeof PROFILE_IDS)[number]
+
+const PROFILE_ID_VALUES: readonly string[] = PROFILE_IDS
+
+export function isProfileId(value: unknown): value is ProfileId {
+  return typeof value === 'string' && PROFILE_ID_VALUES.includes(value)
+}
 
 /**
  * Profile → Optimization matrix

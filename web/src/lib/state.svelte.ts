@@ -28,6 +28,7 @@ import {
   isFilterAll,
   isFilterRecommended,
   isFilterSelected,
+  isPackageKey,
   VIEW_MODES,
 } from './types'
 
@@ -79,30 +80,35 @@ const DEFAULT_UI: UIState = {
   wizardMode: false,
 }
 
+const DEFAULT_CATALOG: SoftwareCatalog = {}
+const DEFAULT_ACTIVE_PRESET: PresetType | null = null
+const DEFAULT_FILTER: FilterValue = FILTER_ALL
+const DEFAULT_VIEW: ViewMode = VIEW_MODES.GRID
+
 export const app = $state({
   /** Software catalog loaded from catalog.json */
-  software: {} as SoftwareCatalog,
+  software: DEFAULT_CATALOG,
 
   /** Currently selected packages */
   selected: new Set<PackageKey>(),
 
   /** Current filter: 'all', 'selected', 'recommended', or a category */
-  filter: FILTER_ALL as FilterValue,
+  filter: DEFAULT_FILTER,
 
   /** Search query */
   search: '',
 
   /** View mode: 'grid' or 'list' */
-  view: VIEW_MODES.GRID as ViewMode,
+  view: DEFAULT_VIEW,
 
   /** Recommended packages from active preset (for 'recommended' filter) */
   recommendedPackages: new Set<PackageKey>(),
 
   /** Active preset selection (if any) */
-  activePreset: null as PresetType | null,
+  activePreset: DEFAULT_ACTIVE_PRESET,
 
   /** Hardware profile (CPU, GPU, peripherals) */
-  hardware: { ...DEFAULT_HARDWARE } as HardwareProfile,
+  hardware: { ...DEFAULT_HARDWARE },
 
   /** Currently enabled optimizations */
   optimizations: new Set<OptimizationKey>(),
@@ -114,10 +120,10 @@ export const app = $state({
   monitorSoftware: new Set<MonitorSoftwareType>(),
 
   /** Script generation and preview state */
-  script: { ...DEFAULT_SCRIPT } as ScriptState,
+  script: { ...DEFAULT_SCRIPT },
 
   /** UI state for modals and panels */
-  ui: { ...DEFAULT_UI } as UIState,
+  ui: { ...DEFAULT_UI },
 
   /** Number of enabled optimizations (derived from optimizations.size) */
   optimizationCount: 0,
@@ -147,28 +153,33 @@ export function getHasSelection(): boolean {
 export function getFiltered(): [PackageKey, SoftwarePackage][] {
   const searchLower = app.search.toLowerCase()
 
-  return Object.entries(app.software).filter(([key, pkg]) => {
-    // Filter by category, selection, or recommended
-    let matchesFilter: boolean
-    if (isFilterAll(app.filter)) {
-      matchesFilter = true
-    } else if (isFilterSelected(app.filter)) {
-      matchesFilter = app.selected.has(key as PackageKey)
-    } else if (isFilterRecommended(app.filter)) {
-      matchesFilter = app.recommendedPackages.has(key as PackageKey)
-    } else {
-      matchesFilter = pkg.category === app.filter
-    }
+  return Object.entries(app.software).filter(
+    (entry): entry is [PackageKey, SoftwarePackage] => {
+      const [key, pkg] = entry
+      if (!isPackageKey(app.software, key)) return false
 
-    // Filter by search term
-    const matchesSearch =
-      !app.search ||
-      pkg.name.toLowerCase().includes(searchLower) ||
-      pkg.desc?.toLowerCase().includes(searchLower) ||
-      pkg.category.toLowerCase().includes(searchLower)
+      // Filter by category, selection, or recommended
+      let matchesFilter: boolean
+      if (isFilterAll(app.filter)) {
+        matchesFilter = true
+      } else if (isFilterSelected(app.filter)) {
+        matchesFilter = app.selected.has(key)
+      } else if (isFilterRecommended(app.filter)) {
+        matchesFilter = app.recommendedPackages.has(key)
+      } else {
+        matchesFilter = pkg.category === app.filter
+      }
 
-    return matchesFilter && matchesSearch
-  }) as [PackageKey, SoftwarePackage][]
+      // Filter by search term
+      const matchesSearch =
+        !app.search ||
+        pkg.name.toLowerCase().includes(searchLower) ||
+        pkg.desc?.toLowerCase().includes(searchLower) ||
+        pkg.category.toLowerCase().includes(searchLower)
+
+      return matchesFilter && matchesSearch
+    },
+  )
 }
 
 /** Category counts for filter badges */
@@ -230,9 +241,8 @@ export function setSoftware(catalog: SoftwareCatalog): void {
   // Pre-select packages marked as selected in catalog
   const preSelected = new Set<PackageKey>()
   for (const [key, pkg] of Object.entries(catalog)) {
-    if (pkg.selected) {
-      preSelected.add(key as PackageKey)
-    }
+    if (!isPackageKey(catalog, key)) continue
+    if (pkg.selected) preSelected.add(key)
   }
 
   const mergedSelection = new Set<PackageKey>()
@@ -273,8 +283,8 @@ export function setView(view: ViewMode): void {
 /**
  * Set recommended packages (from active preset)
  */
-export function setRecommendedPackages(keys: readonly string[]): void {
-  app.recommendedPackages = new Set(keys as PackageKey[])
+export function setRecommendedPackages(keys: readonly PackageKey[]): void {
+  app.recommendedPackages = new Set(keys)
 }
 
 /**

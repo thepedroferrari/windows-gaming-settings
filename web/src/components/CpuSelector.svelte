@@ -5,11 +5,13 @@
 
   import { app, setCpu } from '$lib/state.svelte'
   import { CPU_OPTIONS } from '$lib/hardware'
-  import type { CpuType } from '$lib/types'
+  import { isCpuType } from '$lib/types'
 
-  function handleChange(event: Event) {
-    const target = event.target as HTMLInputElement
-    setCpu(target.value as CpuType)
+  function handleChange(event: Event & { currentTarget: HTMLInputElement }) {
+    const { value } = event.currentTarget
+    if (isCpuType(value)) {
+      setCpu(value)
+    }
   }
 </script>
 

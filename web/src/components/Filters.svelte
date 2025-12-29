@@ -10,6 +10,7 @@
     clearRecommendedPackages,
   } from '$lib/state.svelte'
   import type { FilterValue } from '$lib/types'
+  import type { RecommendedPreset } from '$lib/presets'
   import {
     CATEGORIES,
     FILTER_ALL,
@@ -21,11 +22,7 @@
 
   // Props for recommended filter (from presets)
   interface Props {
-    recommendedPreset?: {
-      name: string
-      displayName: string
-      software: readonly string[]
-    } | null
+    recommendedPreset?: RecommendedPreset | null
   }
 
   let { recommendedPreset = null }: Props = $props()

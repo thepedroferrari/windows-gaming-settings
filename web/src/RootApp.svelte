@@ -69,7 +69,7 @@
       throw new Error(`Invalid catalog format: ${formatZodErrors(result.error)}`)
     }
 
-    return result.data as unknown as SoftwareCatalog
+    return result.data
   }
 
   async function hydrateCatalog() {
