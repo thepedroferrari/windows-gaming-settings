@@ -1,9 +1,9 @@
-import { PurgeCSS } from "npm:purgecss@6.0.0"
-import { expandGlob } from "https://deno.land/std@0.220.0/fs/expand_glob.ts"
-import { fromFileUrl } from "https://deno.land/std@0.220.0/path/from_file_url.ts"
-import { relative } from "https://deno.land/std@0.220.0/path/relative.ts"
+import { expandGlob } from 'https://deno.land/std@0.220.0/fs/expand_glob.ts'
+import { fromFileUrl } from 'https://deno.land/std@0.220.0/path/from_file_url.ts'
+import { relative } from 'https://deno.land/std@0.220.0/path/relative.ts'
+import { PurgeCSS } from 'npm:purgecss@6.0.0'
 
-const webRoot = fromFileUrl(new URL("..", import.meta.url))
+const webRoot = fromFileUrl(new URL('..', import.meta.url))
 
 async function glob(pattern: string): Promise<string[]> {
   const matches: string[] = []
@@ -13,25 +13,25 @@ async function glob(pattern: string): Promise<string[]> {
   return matches
 }
 
-const content = await glob("src/**/*.{svelte,ts,js,html}")
-const css = [...(await glob("src/**/*.css")), fromFileUrl(new URL("../style.css", import.meta.url))]
+const content = await glob('src/**/*.{svelte,ts,js,html}')
+const css = [...(await glob('src/**/*.css')), fromFileUrl(new URL('../style.css', import.meta.url))]
 
 const dynamicClassTokens = [
-  "skip-link",
-  "tier-safe",
-  "tier-caution",
-  "tier-risky",
-  "tier-safe-field",
-  "tier-caution-field",
-  "tier-risky-field",
-  "stat-value--risk-low",
-  "stat-value--risk-medium",
-  "stat-value--risk-high",
-  "required",
-  "recommended",
-  "cpu",
-  "gpu",
-  "mobo",
+  'skip-link',
+  'tier-safe',
+  'tier-caution',
+  'tier-risky',
+  'tier-safe-field',
+  'tier-caution-field',
+  'tier-risky-field',
+  'stat-value--risk-low',
+  'stat-value--risk-medium',
+  'stat-value--risk-high',
+  'required',
+  'recommended',
+  'cpu',
+  'gpu',
+  'mobo',
 ]
 
 const dynamicAttributeTokens = [
@@ -92,8 +92,8 @@ const results = await new PurgeCSS().purge({
   content: [
     ...content,
     {
-      raw: [...dynamicAttributeTokens, ...dynamicClassTokens].join(" "),
-      extension: "html",
+      raw: [...dynamicAttributeTokens, ...dynamicClassTokens].join(' '),
+      extension: 'html',
     },
   ],
   css,
@@ -120,7 +120,7 @@ let totalSimpleRejected = 0
 for (const item of results) {
   const rejected = item.rejected ?? []
   totalRejected += rejected.length
-  const filePath = item.file ?? item.css ?? "unknown"
+  const filePath = item.file ?? item.css ?? 'unknown'
   const relativePath = relative(webRoot, filePath)
   const simpleRejected = rejected.filter((selector) => simpleClassSelectorRe.test(selector))
   totalSimpleRejected += simpleRejected.length
@@ -141,21 +141,21 @@ const summary = {
 }
 
 await Deno.writeTextFile(
-  fromFileUrl(new URL("../purge-report.json", import.meta.url)),
+  fromFileUrl(new URL('../purge-report.json', import.meta.url)),
   JSON.stringify(results, null, 2),
 )
 
 await Deno.writeTextFile(
-  fromFileUrl(new URL("../purge-report.summary.json", import.meta.url)),
+  fromFileUrl(new URL('../purge-report.summary.json', import.meta.url)),
   JSON.stringify(summary, null, 2),
 )
 
 console.log(
   [
-    "PurgeCSS summary:",
+    'PurgeCSS summary:',
     `- Total rejected selectors: ${totalRejected}`,
     `- Simple class selectors rejected: ${totalSimpleRejected}`,
     `- High-confidence unused class selectors: ${highConfidenceSet.size}`,
-    "See web/purge-report.summary.json for details.",
-  ].join("\n"),
+    'See web/purge-report.summary.json for details.',
+  ].join('\n'),
 )

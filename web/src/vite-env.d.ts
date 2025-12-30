@@ -34,3 +34,7 @@ declare module 'diff' {
   }
   export function diffLines(oldStr: string, newStr: string): Change[]
 }
+
+// Build-time constants injected by Vite
+declare const __BUILD_COMMIT__: string
+declare const __BUILD_DATE__: string
