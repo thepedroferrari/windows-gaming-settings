@@ -76,29 +76,61 @@
   <PreflightChecks />
   <ProfileActions />
 
-  <!-- Trust Zone -->
-  <div class="trust-zone">
-    <div class="trust-badges">
-      <span class="trust-badge">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <!-- Transparency Section -->
+  <div class="transparency-zone">
+    <!-- Decorative corners -->
+    <span class="corner corner--tl"></span>
+    <span class="corner corner--tr"></span>
+    <span class="corner corner--bl"></span>
+    <span class="corner corner--br"></span>
+
+    <div class="transparency-header">
+      <span class="header-line"></span>
+      <span class="header-text">[ TRANSPARENCY ]</span>
+      <span class="header-line"></span>
+    </div>
+
+    <div class="transparency-grid">
+      <div class="transparency-item">
+        <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
-        100% Open Source
-      </span>
-      <span class="trust-badge">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="item-text">
+          <span class="item-title">Open Source</span>
+          <span class="item-desc">Audit every line on GitHub</span>
+        </div>
+      </div>
+      <div class="transparency-item">
+        <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
           <circle cx="12" cy="12" r="3" />
         </svg>
-        Preview Before Download
-      </span>
-      <span class="trust-badge">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="item-text">
+          <span class="item-title">Preview First</span>
+          <span class="item-desc">Read before you run</span>
+        </div>
+      </div>
+      <div class="transparency-item">
+        <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <div class="item-text">
+          <span class="item-title">No Tracking</span>
+          <span class="item-desc">Zero data collected</span>
+        </div>
+      </div>
+      <div class="transparency-item">
+        <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <rect x="3" y="11" width="18" height="11" rx="2" />
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
-        No Hidden Downloads
-      </span>
+        <div class="item-text">
+          <span class="item-title">Self-Contained</span>
+          <span class="item-desc">No hidden downloads</span>
+        </div>
+      </div>
     </div>
 
     <div class="actions">
@@ -108,15 +140,7 @@
         title="Preview the generated PowerShell script"
         onclick={handlePreview}
       >
-        <svg
-          class="icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
           <circle cx="12" cy="12" r="3" />
         </svg>
@@ -130,88 +154,104 @@
         onclick={handleDownload}
       >
         <span class="text">
-          <svg
-            class="icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
           Download
         </span>
-        <span class="glitch"></span>
         <span class="scanlines"></span>
       </button>
     </div>
 
     {#if checksum}
-      <div class="verification-section">
-        <div class="checksum-row">
-          <div class="checksum-label">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
-            <span>SHA256</span>
-          </div>
-          <code class="checksum-hash" title={checksum}>{checksum.slice(0, 16)}...{checksum.slice(-8)}</code>
-          <button
-            type="button"
-            class="checksum-copy"
-            title={copied ? 'Copied!' : 'Copy full hash'}
-            onclick={handleCopyHash}
-          >
-            {#if copied}
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m9 12 2 2 4-4" />
-              </svg>
-              <span class="copy-label">Copied</span>
-            {:else}
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>
-              <span class="copy-label">Copy</span>
-            {/if}
-          </button>
-          <button
-            type="button"
-            class="checksum-help"
-            title="How to verify"
-            onclick={toggleVerifyTip}
-          >
-            How to verify?
-          </button>
+      <div class="verification-block">
+        <div class="hash-header">
+          <svg class="hash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          <span class="hash-label">SHA-256 Checksum</span>
         </div>
 
-        <div class="build-info">
-          <span>Build:</span>
-          <a
-            href="https://github.com/thepedroferrari/windows-gaming-settings/tree/{__BUILD_COMMIT__}"
-            target="_blank"
-            rel="noopener"
-            class="commit-link"
-          >
-            {__BUILD_COMMIT__}
-          </a>
-          <span class="build-date">({__BUILD_DATE__})</span>
+        <div class="hash-display">
+          <code class="hash-value" title={checksum}>{checksum}</code>
+          <div class="hash-actions">
+            <button
+              type="button"
+              class="hash-btn"
+              title={copied ? 'Copied!' : 'Copy hash'}
+              onclick={handleCopyHash}
+            >
+              {#if copied}
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+                Copied
+              {:else}
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy Hash
+              {/if}
+            </button>
+            <button
+              type="button"
+              class="hash-btn hash-btn--verify"
+              class:active={showVerifyTip}
+              title="How to verify"
+              onclick={toggleVerifyTip}
+            >
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              How to Verify
+            </button>
+          </div>
         </div>
 
         {#if showVerifyTip}
-          <div class="verify-tip">
-            <p><strong>Verify your download:</strong></p>
-            <code>Get-FileHash .\rocktune-setup.ps1 | Select-Object Hash</code>
-            <p class="verify-note">Compare the output with the hash above. If they match, the file is authentic.</p>
+          <div class="verify-panel">
+            <div class="verify-step">
+              <span class="step-num">1</span>
+              <div class="step-content">
+                <p class="step-label">Run in PowerShell (same folder as download):</p>
+                <code class="step-command">Get-FileHash .\rocktune-setup.ps1 -Algorithm SHA256 | Select-Object -ExpandProperty Hash</code>
+              </div>
+            </div>
+            <div class="verify-step">
+              <span class="step-num">2</span>
+              <div class="step-content">
+                <p class="step-label">Expected output:</p>
+                <code class="step-expected">{checksum}</code>
+              </div>
+            </div>
+            <p class="verify-result">If they match exactly, your file is authentic and unmodified.</p>
           </div>
         {/if}
       </div>
     {/if}
+
+    <div class="provenance">
+      <a
+        href="https://github.com/thepedroferrari/windows-gaming-settings/tree/{__BUILD_COMMIT__}"
+        target="_blank"
+        rel="noopener"
+        class="provenance-link"
+      >
+        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        <span class="provenance-commit">{__BUILD_COMMIT__}</span>
+        <span class="provenance-date">{__BUILD_DATE__}</span>
+      </a>
+      <span class="provenance-divider">·</span>
+      <span class="provenance-notice">No data collected</span>
+    </div>
   </div>
 </section>
 
