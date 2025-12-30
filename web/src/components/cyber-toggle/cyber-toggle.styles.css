@@ -33,6 +33,10 @@
     overflow: hidden;
   }
 
+  .cyber-toggle-track {
+    transform: translateX(0);
+  }
+
   .cyber-toggle-input:focus + .cyber-toggle-label {
     border-color: var(--cyber-yellow);
   }
@@ -51,13 +55,28 @@
   }
 
   .pixel-row {
-    transition: transform 0.15s ease-out;
+    transition: transform 0.22s var(--ease-out-back);
   }
 
   .pixel-row rect {
     fill: var(--border-light);
     transition: fill 0.3s ease;
   }
+
+  .cyber-toggle-input:checked + .cyber-toggle-label .pixel-row {
+    transform: translateX(34px);
+  }
+
+  .pixel-row:nth-child(1) { transition-delay: 0ms; }
+  .pixel-row:nth-child(2) { transition-delay: 10ms; }
+  .pixel-row:nth-child(3) { transition-delay: 20ms; }
+  .pixel-row:nth-child(4) { transition-delay: 30ms; }
+  .pixel-row:nth-child(5) { transition-delay: 40ms; }
+  .pixel-row:nth-child(6) { transition-delay: 30ms; }
+  .pixel-row:nth-child(7) { transition-delay: 20ms; }
+  .pixel-row:nth-child(8) { transition-delay: 10ms; }
+  .pixel-row:nth-child(9) { transition-delay: 0ms; }
+  .pixel-row:nth-child(10) { transition-delay: 0ms; }
 
   .cyber-toggle-input:checked + .cyber-toggle-label .pixel-row rect {
     fill: var(--cyber-yellow);
