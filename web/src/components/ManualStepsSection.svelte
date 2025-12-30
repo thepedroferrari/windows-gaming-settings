@@ -121,7 +121,17 @@
   }
 
   // Type for all possible item types
-  type AnyItem = ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck | TroubleshootingItem | GameLaunchItem | StreamingTroubleshootItem | DiagnosticTool;
+  type AnyItem =
+    | ManualStepItem
+    | SettingItem
+    | SoftwareSettingItem
+    | BrowserSettingItem
+    | RgbSettingItem
+    | PreflightCheck
+    | TroubleshootingItem
+    | GameLaunchItem
+    | StreamingTroubleshootItem
+    | DiagnosticTool;
 
   // Type guards for rendering
   function isManualStepItem(item: AnyItem): item is ManualStepItem {
@@ -129,7 +139,13 @@
   }
 
   function isSettingItem(item: AnyItem): item is SettingItem {
-    return "setting" in item && "value" in item && !("path" in item) && !("browser" in item) && !("software" in item);
+    return (
+      "setting" in item &&
+      "value" in item &&
+      !("path" in item) &&
+      !("browser" in item) &&
+      !("software" in item)
+    );
   }
 
   function isSoftwareSettingItem(item: AnyItem): item is SoftwareSettingItem {
@@ -156,8 +172,15 @@
     return "game" in item && "platform" in item && "notes" in item;
   }
 
-  function isStreamingTroubleshootItem(item: AnyItem): item is StreamingTroubleshootItem {
-    return "problem" in item && "solution" in item && "why" in item && !("causes" in item);
+  function isStreamingTroubleshootItem(
+    item: AnyItem,
+  ): item is StreamingTroubleshootItem {
+    return (
+      "problem" in item &&
+      "solution" in item &&
+      "why" in item &&
+      !("causes" in item)
+    );
   }
 
   function isDiagnosticTool(item: AnyItem): item is DiagnosticTool {
@@ -228,7 +251,13 @@
   <div class="manual-steps__header">
     <div class="manual-steps__title-row">
       <h3 class="manual-steps__title">
-        <svg class="manual-steps__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          class="manual-steps__icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <path d="M9 11l3 3L22 4" />
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
         </svg>
@@ -246,10 +275,22 @@
       <button type="button" class="manual-steps__btn" onclick={collapseAll}>
         Collapse All
       </button>
-      <button type="button" class="manual-steps__btn manual-steps__btn--print" onclick={handlePrint}>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button
+        type="button"
+        class="manual-steps__btn manual-steps__btn--print"
+        onclick={handlePrint}
+      >
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <path d="M6 9V2h12v7" />
-          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+          <path
+            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+          />
           <rect x="6" y="14" width="12" height="8" />
         </svg>
         Print
@@ -259,131 +300,185 @@
 
   <div class="manual-steps__groups">
     {#each filteredGroups as group (group.id)}
-      {@const isExpanded = expandedGroups.has(group.id)}
-      {@const itemCount = group.sections.reduce((sum, s) => sum + s.items.length, 0)}
+      {@const itemCount = group.sections.reduce(
+        (sum, s) => sum + s.items.length,
+        0,
+      )}
 
-      <div class="manual-steps__group" class:expanded={isExpanded}>
-        <button
-          type="button"
-          class="manual-steps__group-header"
-          onclick={() => toggleGroup(group.id)}
-          aria-expanded={isExpanded}
-        >
-          <svg class="manual-steps__group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <details
+        class="manual-steps__group"
+        open={expandedGroups.has(group.id)}
+        ontoggle={(e) => {
+          const target = e.currentTarget as HTMLDetailsElement;
+          if (target.open && !expandedGroups.has(group.id)) {
+            expandedGroups = new Set([...expandedGroups, group.id]);
+          } else if (!target.open && expandedGroups.has(group.id)) {
+            const next = new Set(expandedGroups);
+            next.delete(group.id);
+            expandedGroups = next;
+          }
+        }}
+      >
+        <summary class="manual-steps__group-header">
+          <svg
+            class="manual-steps__group-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d={getGroupIcon(group.id)} />
           </svg>
           <span class="manual-steps__group-title">{group.title}</span>
           <span class="manual-steps__group-count">{itemCount}</span>
-          <svg class="manual-steps__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            class="manual-steps__chevron"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="m6 9 6 6 6-6" />
           </svg>
-        </button>
+        </summary>
 
-        {#if isExpanded}
-          <div class="manual-steps__group-content">
-            {#each group.sections as section (section.id)}
-              {@const progress = getProgress(section.id, section.items)}
-              <div class="manual-steps__section">
-                <div class="manual-steps__section-header">
-                  <h4 class="manual-steps__section-title">{section.title}</h4>
-                  <div class="manual-steps__progress">
-                    <div class="manual-steps__progress-bar">
-                      <div
-                        class="manual-steps__progress-fill"
-                        style:width="{progress.percent}%"
-                        class:complete={progress.percent === 100}
-                      ></div>
-                    </div>
-                    <span class="manual-steps__progress-text">
-                      {progress.completed}/{progress.total}
-                    </span>
-                  </div>
-                  {#if progress.completed > 0}
-                    <button
-                      type="button"
-                      class="manual-steps__reset-btn"
-                      title="Reset section progress"
-                      onclick={() => handleResetSection(section.id)}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                        <path d="M3 3v5h5" />
-                      </svg>
-                    </button>
-                  {/if}
+        <div class="manual-steps__group-content">
+          {#each group.sections as section (section.id)}
+            {@const progress = getProgress(section.id, section.items)}
+            <div class="manual-steps__section">
+              <div class="manual-steps__section-header">
+                <h4 class="manual-steps__section-title">{section.title}</h4>
+                <div class="manual-steps__progress">
+                  <progress
+                    class="manual-steps__progress-meter"
+                    class:complete={progress.percent === 100}
+                    value={progress.completed}
+                    max={progress.total}
+                  ></progress>
+                  <span class="manual-steps__progress-text">
+                    {progress.completed}/{progress.total}
+                  </span>
                 </div>
-                {#if section.description}
-                  <p class="manual-steps__section-desc">{section.description}</p>
-                {/if}
-                {#if section.location}
-                  <p class="manual-steps__section-location">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                      <circle cx="12" cy="10" r="3" />
+                {#if progress.completed > 0}
+                  <button
+                    type="button"
+                    class="manual-steps__reset-btn"
+                    title="Reset section progress"
+                    onclick={() => handleResetSection(section.id)}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+                      />
+                      <path d="M3 3v5h5" />
                     </svg>
-                    {section.location}
-                  </p>
+                  </button>
                 {/if}
+              </div>
+              {#if section.description}
+                <p class="manual-steps__section-desc">{section.description}</p>
+              {/if}
+              {#if section.location}
+                <p class="manual-steps__section-location">
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {section.location}
+                </p>
+              {/if}
 
-                <ul class="manual-steps__items">
-                  {#each section.items as item}
-                    {@const itemId = createItemId(item as unknown as Record<string, unknown>)}
-                    {@const itemDone = isDone(section.id, itemId)}
-                    <li class="manual-steps__item" class:completed={itemDone}>
-                      <label class="manual-steps__checkbox-label">
-                        <input
-                          type="checkbox"
-                          class="manual-steps__checkbox-input"
-                          checked={itemDone}
-                          onchange={() => handleCheckbox(section.id, itemId)}
-                        />
-                        <span class="manual-steps__checkbox-custom"></span>
-                      </label>
+              <ul class="manual-steps__items">
+                {#each section.items as item}
+                  {@const itemId = createItemId(
+                    item as unknown as Record<string, unknown>,
+                  )}
+                  {@const itemDone = isDone(section.id, itemId)}
+                  <li class="manual-steps__item" class:completed={itemDone}>
+                    <label class="manual-steps__item-label">
+                      <input
+                        type="checkbox"
+                        class="manual-steps__checkbox"
+                        checked={itemDone}
+                        onchange={() => handleCheckbox(section.id, itemId)}
+                      />
+                      <span class="manual-steps__checkbox-visual"></span>
                       <div class="manual-steps__item-content">
                         {#if isManualStepItem(item)}
                           <div class="manual-steps__item-main">
                             <span class="manual-steps__step">{item.step}</span>
-                            <span class="manual-steps__check">{item.check}</span>
+                            <span class="manual-steps__check">{item.check}</span
+                            >
                           </div>
                           <p class="manual-steps__why">{item.why}</p>
                         {:else if isSettingItem(item)}
                           <div class="manual-steps__item-main">
-                            <span class="manual-steps__setting">{item.setting}</span>
-                            <span class="manual-steps__value">{item.value}</span>
+                            <span class="manual-steps__setting"
+                              >{item.setting}</span
+                            >
+                            <span class="manual-steps__value">{item.value}</span
+                            >
                           </div>
                           <p class="manual-steps__why">{item.why}</p>
                         {:else if isSoftwareSettingItem(item)}
                           <div class="manual-steps__item-main">
                             <span class="manual-steps__path">{item.path}</span>
-                            <span class="manual-steps__value">{item.value}</span>
+                            <span class="manual-steps__value">{item.value}</span
+                            >
                           </div>
                           <p class="manual-steps__why">{item.why}</p>
                         {:else if isBrowserSettingItem(item)}
                           <div class="manual-steps__item-main">
-                            <span class="manual-steps__browser">{item.browser}</span>
-                            <span class="manual-steps__path">{item.path} &gt; {item.setting}</span>
-                            <span class="manual-steps__value">{item.value}</span>
+                            <span class="manual-steps__browser"
+                              >{item.browser}</span
+                            >
+                            <span class="manual-steps__path"
+                              >{item.path} &gt; {item.setting}</span
+                            >
+                            <span class="manual-steps__value">{item.value}</span
+                            >
                           </div>
                           <p class="manual-steps__why">{item.why}</p>
                         {:else if isRgbSettingItem(item)}
                           <div class="manual-steps__item-main">
-                            <span class="manual-steps__software">{item.software}</span>
-                            <span class="manual-steps__action">{item.action}</span>
+                            <span class="manual-steps__software"
+                              >{item.software}</span
+                            >
+                            <span class="manual-steps__action"
+                              >{item.action}</span
+                            >
                           </div>
                           <p class="manual-steps__why">{item.why}</p>
                         {:else if isPreflightCheck(item)}
                           <div class="manual-steps__item-main">
-                            <span class="manual-steps__check-question">{item.check}</span>
+                            <span class="manual-steps__check-question"
+                              >{item.check}</span
+                            >
                           </div>
                           <p class="manual-steps__how">
-                            <strong>How:</strong> {item.how}
+                            <strong>How:</strong>
+                            {item.how}
                           </p>
                           <p class="manual-steps__fail">
-                            <strong>If not:</strong> {item.fail}
+                            <strong>If not:</strong>
+                            {item.fail}
                           </p>
                         {:else if isTroubleshootingItem(item)}
                           <div class="manual-steps__item-main">
-                            <span class="manual-steps__problem">{item.problem}</span>
+                            <span class="manual-steps__problem"
+                              >{item.problem}</span
+                            >
                           </div>
                           <div class="manual-steps__causes">
                             <strong>Possible causes:</strong>
@@ -394,31 +489,62 @@
                             </ul>
                           </div>
                           <p class="manual-steps__quickfix">
-                            <strong>Quick fix:</strong> {item.quickFix}
+                            <strong>Quick fix:</strong>
+                            {item.quickFix}
                           </p>
                         {:else if isGameLaunchItem(item)}
                           <div class="manual-steps__game-header">
-                            <span class="manual-steps__game-name">{item.game}</span>
-                            <span class="manual-steps__game-platform">{item.platform}</span>
+                            <span class="manual-steps__game-name"
+                              >{item.game}</span
+                            >
+                            <span class="manual-steps__game-platform"
+                              >{item.platform}</span
+                            >
                           </div>
                           {#if item.launchOptions}
                             <div class="manual-steps__launch-options">
-                              <code class="manual-steps__launch-code">{item.launchOptions}</code>
+                              <code class="manual-steps__launch-code"
+                                >{item.launchOptions}</code
+                              >
                               <button
                                 type="button"
                                 class="manual-steps__copy-btn"
                                 class:copied={copiedId === item.game}
-                                onclick={() => copyLaunchOptions(item.launchOptions!, item.game)}
+                                onclick={() =>
+                                  copyLaunchOptions(
+                                    item.launchOptions!,
+                                    item.game,
+                                  )}
                               >
                                 {#if copiedId === item.game}
-                                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <svg
+                                    class="icon"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                  >
                                     <path d="M20 6L9 17l-5-5" />
                                   </svg>
                                   Copied!
                                 {:else}
-                                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" />
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                  <svg
+                                    class="icon"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                  >
+                                    <rect
+                                      x="9"
+                                      y="9"
+                                      width="13"
+                                      height="13"
+                                      rx="2"
+                                    />
+                                    <path
+                                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                    />
                                   </svg>
                                   Copy
                                 {/if}
@@ -432,84 +558,105 @@
                           </ul>
                         {:else if isStreamingTroubleshootItem(item)}
                           <div class="manual-steps__item-main">
-                            <span class="manual-steps__problem">{item.problem}</span>
+                            <span class="manual-steps__problem"
+                              >{item.problem}</span
+                            >
                           </div>
                           <p class="manual-steps__solution">
-                            <strong>Solution:</strong> {item.solution}
+                            <strong>Solution:</strong>
+                            {item.solution}
                           </p>
                           <p class="manual-steps__why">{item.why}</p>
                         {:else if isDiagnosticTool(item)}
                           <div class="manual-steps__item-main">
-                            <span class="manual-steps__tool-name">{item.tool}</span>
+                            <span class="manual-steps__tool-name"
+                              >{item.tool}</span
+                            >
                             {#if item.arsenalKey}
-                              <span class="manual-steps__arsenal-badge" title="Available in Arsenal">Arsenal</span>
+                              <span
+                                class="manual-steps__arsenal-badge"
+                                title="Available in Arsenal">Arsenal</span
+                              >
                             {/if}
                           </div>
                           <p class="manual-steps__tool-use">{item.use}</p>
                         {/if}
                       </div>
-                    </li>
-                  {/each}
-                </ul>
+                    </label>
+                  </li>
+                {/each}
+              </ul>
 
-                {#if section.note}
-                  <p class="manual-steps__note">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="16" x2="12" y2="12" />
-                      <line x1="12" y1="8" x2="12.01" y2="8" />
-                    </svg>
-                    {section.note}
-                  </p>
-                {/if}
-              </div>
-            {/each}
-
-            <!-- Video Resources -->
-            {#if group.videos && group.videos.length > 0}
-              <div class="manual-steps__videos">
-                <h4 class="manual-steps__videos-title">
-                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="23 7 16 12 23 17 23 7" />
-                    <rect x="1" y="5" width="15" height="14" rx="2" />
+              {#if section.note}
+                <p class="manual-steps__note">
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
                   </svg>
-                  Learn More
-                </h4>
-                <div class="manual-steps__videos-grid">
-                  {#each group.videos as video (video.id)}
-                    <a
-                      href={getYouTubeUrl(video.videoId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="video-card"
-                    >
-                      <div class="video-card__thumbnail">
-                        <img
-                          src={getYouTubeThumbnail(video.videoId)}
-                          alt={video.title}
-                          loading="lazy"
-                        />
-                        <div class="video-card__play">
-                          <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </div>
+                  {section.note}
+                </p>
+              {/if}
+            </div>
+          {/each}
+
+          <!-- Video Resources -->
+          {#if group.videos && group.videos.length > 0}
+            <div class="manual-steps__videos">
+              <h4 class="manual-steps__videos-title">
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polygon points="23 7 16 12 23 17 23 7" />
+                  <rect x="1" y="5" width="15" height="14" rx="2" />
+                </svg>
+                Learn More
+              </h4>
+              <div class="manual-steps__videos-grid">
+                {#each group.videos as video (video.id)}
+                  <a
+                    href={getYouTubeUrl(video.videoId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="video-card"
+                  >
+                    <div class="video-card__thumbnail">
+                      <img
+                        src={getYouTubeThumbnail(video.videoId)}
+                        alt={video.title}
+                        loading="lazy"
+                      />
+                      <div class="video-card__play">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
                       </div>
-                      <div class="video-card__info">
-                        <span class="video-card__title">{video.title}</span>
-                        <span class="video-card__creator">{video.creator}</span>
-                        {#if video.description}
-                          <span class="video-card__desc">{video.description}</span>
-                        {/if}
-                      </div>
-                    </a>
-                  {/each}
-                </div>
+                    </div>
+                    <div class="video-card__info">
+                      <span class="video-card__title">{video.title}</span>
+                      <span class="video-card__creator">{video.creator}</span>
+                      {#if video.description}
+                        <span class="video-card__desc">{video.description}</span
+                        >
+                      {/if}
+                    </div>
+                  </a>
+                {/each}
               </div>
-            {/if}
-          </div>
-        {/if}
-      </div>
+            </div>
+          {/if}
+        </div>
+      </details>
     {/each}
   </div>
 </div>

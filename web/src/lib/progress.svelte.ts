@@ -166,17 +166,23 @@ export function getProgressData(): ProgressData {
 
 /**
  * Create a unique item ID from item properties
- * Used to generate stable IDs for items without explicit IDs
+ * Prefers explicit `id` field, falls back to deriving from content
  */
 export function createItemId(item: Record<string, unknown>): string {
-  // Use the first string property as the ID base
+  // Prefer explicit ID (semantic, stable, collision-free)
+  if (typeof item.id === 'string') {
+    return item.id
+  }
+
+  // Fallback: derive from first matching property (legacy behavior)
   const keys = ['setting', 'step', 'check', 'problem', 'game', 'tool', 'path', 'software', 'browser']
   for (const key of keys) {
     if (typeof item[key] === 'string') {
       return slugify(item[key] as string)
     }
   }
-  // Fallback to hash of stringified item
+
+  // Last resort: hash of stringified item
   return hashCode(JSON.stringify(item))
 }
 

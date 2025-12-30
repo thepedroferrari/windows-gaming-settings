@@ -31,6 +31,7 @@
   import PeripheralsSection from './components/PeripheralsSection.svelte'
   import OptimizationsSection from './components/OptimizationsSection.svelte'
   import ForgeSection from './components/ForgeSection.svelte'
+  import ManualStepsSection from './components/ManualStepsSection.svelte'
 
   // Arsenal section components
   import SoftwareGrid from './components/SoftwareGrid.svelte'
@@ -187,6 +188,11 @@
 
   <!-- Step 5: Forge Script -->
   <ForgeSection />
+
+  <!-- Step 6: Manual Guide -->
+  <section id="manual-guide" class="step step--manual-guide">
+    <ManualStepsSection />
+  </section>
 </main>
 
 <!-- Global UI Components -->

@@ -23,6 +23,7 @@
     { href: '#optimizations', label: 'Tweaks', step: 3 },
     { href: '#software', label: 'Software', step: 4 },
     { href: '#generate', label: 'Forge', step: 5 },
+    { href: '#manual-guide', label: 'Guide', step: 6 },
   ]
 
   let activeStep = $state(0)
@@ -91,7 +92,20 @@
     {/each}
   </div>
 
-  <div class="github">
+  <div class="nav-actions">
+    <a
+      href="#generate"
+      class="download-link"
+      title="Jump to download section"
+    >
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </svg>
+      Download
+    </a>
+
     <a
       href="https://github.com/thepedroferrari/windows-gaming-settings/tree/{__BUILD_COMMIT__}"
       target="_blank"

@@ -156,82 +156,111 @@
   <!-- LUDICROUS Tier Section -->
   <div class="ludicrous-section">
     {#if app.ui.ludicrousAcknowledged}
-      <!-- Show LUDICROUS optimizations after acknowledgment -->
-      <div class="ludicrous-unlocked">
-        <div class="ludicrous-intro">
-          <div class="ludicrous-header">
-            <div class="ludicrous-header-badges">
-              <span class="tier tier-ludicrous">Ludicrous</span>
-              <span class="ludicrous-warning-badge">Security Disabled</span>
+      <!-- Unified LUDICROUS Placard V2 -->
+      <article class="ludicrous-placard-v2">
+        <header class="placard-header-grid">
+          <div class="placard-header-left">
+            <div class="placard-header-badges">
+              <mark class="placard-id">ADVISORY-LUDICROUS-001</mark>
+              <mark class="placard-kicker">CRITICAL RISK</mark>
             </div>
-            <div class="ludicrous-header-title">Danger Zone: Security Mitigations Off</div>
+            <h2>Danger Zone: Security Mitigations Off</h2>
           </div>
-          <p class="ludicrous-header-copy">
-            These switches disable CPU and kernel protections and can expose memory. Use only for offline
-            benchmarking and re-enable after testing.
-          </p>
+          <div class="placard-header-right">
+            <h3>Benchmark Mode Safety Net</h3>
+            <p class="placard-desc">
+              KERNEL MITIGATIONS DISABLED. TREAT SYSTEM AS DISPOSABLE AND OFFLINE ONLY.
+            </p>
+          </div>
+          <svg class="placard-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </header>
+
+        <div class="placard-blocks-horizontal">
+          <section class="placard-block">
+            <h3>Before You Flip</h3>
+            <dl class="placard-list">
+              <div class="placard-item">
+                <dt>01</dt>
+                <dd>Create a restore point or full image backup</dd>
+              </div>
+              <div class="placard-item">
+                <dt>02</dt>
+                <dd>Disconnect internet, Bluetooth, and external storage</dd>
+              </div>
+              <div class="placard-item">
+                <dt>03</dt>
+                <dd>Use a clean, dedicated benchmark user or install</dd>
+              </div>
+              <div class="placard-item">
+                <dt>04</dt>
+                <dd>Have recovery media ready (USB)</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="placard-block">
+            <h3>Rules While Enabled</h3>
+            <dl class="placard-list">
+              <div class="placard-item">
+                <dt>A</dt>
+                <dd>No browsing, email, chat, or logins</dd>
+              </div>
+              <div class="placard-item">
+                <dt>B</dt>
+                <dd>No mods, overlays, or third-party executables</dd>
+              </div>
+              <div class="placard-item">
+                <dt>C</dt>
+                <dd>Run only the benchmark, then exit</dd>
+              </div>
+              <div class="placard-item">
+                <dt>D</dt>
+                <dd>Monitor temps and stability; stop on errors</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="placard-block">
+            <h3>Rollback Plan</h3>
+            <dl class="placard-list">
+              <div class="placard-item">
+                <dt>REC</dt>
+                <dd>Re-enable mitigations immediately after testing</dd>
+              </div>
+              <div class="placard-item">
+                <dt>REB</dt>
+                <dd>Reboot and verify VBS/HVCI status</dd>
+              </div>
+              <div class="placard-item">
+                <dt>UPD</dt>
+                <dd>Run Windows Update before daily use</dd>
+              </div>
+              <div class="placard-item">
+                <dt>RST</dt>
+                <dd>If anything looks off, restore from backup</dd>
+              </div>
+            </dl>
+          </section>
         </div>
-        <div class="upgrades-grid upgrades-grid--ludicrous">
+
+        <div class="placard-opts-grid">
           {#each getCategoriesForTier(OPTIMIZATION_TIERS.LUDICROUS) as category}
-            {@const opts = getOptimizationsByTierAndCategory(OPTIMIZATION_TIERS.LUDICROUS, category)}
-            {#if opts.length > 0}
-              <fieldset class="tier-ludicrous-field">
-                <legend>
-                  <span class="tier tier-ludicrous">{TIER_LABELS[OPTIMIZATION_TIERS.LUDICROUS]}</span>
-                  {CATEGORY_LABELS[category]}
-                </legend>
-                {#each opts as opt (opt.key)}
-                  <OptimizationCheckbox {opt} />
-                {/each}
-              </fieldset>
-            {/if}
+            {#each getOptimizationsByTierAndCategory(OPTIMIZATION_TIERS.LUDICROUS, category) as opt (opt.key)}
+              <div class="placard-opt-cell">
+                <OptimizationCheckbox {opt} />
+              </div>
+            {/each}
           {/each}
-          <aside class="ludicrous-info">
-            <div class="ludicrous-info-header">
-              <span class="ludicrous-info-kicker">Risk Advisory</span>
-              <h4>Benchmark Mode Safety Net</h4>
-              <p>
-                These switches remove CPU and kernel mitigations. Treat this OS as disposable and offline
-                only. If you cannot meet every item below, keep them off.
-              </p>
-            </div>
-            <div class="ludicrous-info-grid">
-              <section class="ludicrous-info-card">
-                <h5>Before You Flip</h5>
-                <ul>
-                  <li>Create a restore point or full image backup</li>
-                  <li>Disconnect internet, Bluetooth, and external storage</li>
-                  <li>Use a clean, dedicated benchmark user or install</li>
-                  <li>Have recovery media ready (USB)</li>
-                </ul>
-              </section>
-              <section class="ludicrous-info-card">
-                <h5>Rules While Enabled</h5>
-                <ul>
-                  <li>No browsing, email, chat, or logins</li>
-                  <li>No mods, overlays, or third-party executables</li>
-                  <li>Run only the benchmark, then exit</li>
-                  <li>Monitor temps and stability; stop on errors</li>
-                </ul>
-              </section>
-              <section class="ludicrous-info-card">
-                <h5>Rollback Plan</h5>
-                <ul>
-                  <li>Re-enable mitigations immediately after testing</li>
-                  <li>Reboot and verify VBS/HVCI status</li>
-                  <li>Run Windows Update before daily use</li>
-                  <li>If anything looks off, restore from backup</li>
-                </ul>
-              </section>
-            </div>
-            <div class="ludicrous-info-footer">
-              <span class="ludicrous-info-pill">Offline only</span>
-              <span class="ludicrous-info-pill">Expect breakage</span>
-              <span class="ludicrous-info-pill">Rollback required</span>
-            </div>
-          </aside>
         </div>
-      </div>
+
+        <footer class="placard-footer-v2">
+          <mark>OFFLINE ONLY</mark>
+          <mark>EXPECT BREAKAGE</mark>
+          <mark>ROLLBACK REQUIRED</mark>
+        </footer>
+      </article>
     {:else}
       <!-- Show unlock button before acknowledgment -->
       <div class="ludicrous-locked">

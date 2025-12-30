@@ -124,10 +124,45 @@
       }
     }
 
-    
-    .github {
-      min-inline-size: 90px;
-      text-align: end;
+    /* Actions section */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-inline-size: 180px;
+      justify-content: flex-end;
+    }
+
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding-block: 5px;
+      padding-inline: var(--space-sm);
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: var(--tracking-normal);
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--cyber-yellow);
+      background: color-mix(in oklch, var(--cyber-yellow) 12%, transparent);
+      border: 1px solid var(--cyber-yellow);
+      clip-path: var(--nav-clip);
+      transition: all var(--transition-smooth);
+
+      .icon {
+        inline-size: var(--icon-xs);
+        block-size: var(--icon-xs);
+        flex-shrink: 0;
+      }
+
+      &:hover {
+        color: oklch(0.95 0.15 90);
+        background: color-mix(in oklch, var(--cyber-yellow) 25%, transparent);
+        box-shadow: var(--glow-md) color-mix(in oklch, var(--cyber-yellow) 40%, transparent);
+        transform: scale(1.02);
+      }
     }
 
     .badge {
@@ -255,7 +290,7 @@
       padding-inline: var(--space-sm);
 
       .status,
-      .github {
+      .nav-actions {
         display: none;
       }
 
