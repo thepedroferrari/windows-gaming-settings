@@ -396,6 +396,32 @@ function generateSystemOpts(selected: Set<string>): string[] {
     lines.push('Write-OK "PS7 telemetry disabled"')
   }
 
+  // accessibility_shortcuts - Disable Sticky Keys, Filter Keys, Toggle Keys
+  if (selected.has('accessibility_shortcuts')) {
+    lines.push('# Disable accessibility shortcuts (Sticky/Filter/Toggle Keys)')
+    lines.push(
+      'Set-Reg "HKCU:\\Control Panel\\Accessibility\\StickyKeys" "Flags" "506" "String"',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\Control Panel\\Accessibility\\Keyboard Response" "Flags" "122" "String"',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\Control Panel\\Accessibility\\ToggleKeys" "Flags" "58" "String"',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\Control Panel\\Accessibility\\MouseKeys" "Flags" "58" "String"',
+    )
+    lines.push('Write-OK "Accessibility shortcuts disabled (no more Sticky Keys popup)"')
+  }
+
+  // services_search_off - Set Windows Search to Manual
+  if (selected.has('services_search_off')) {
+    lines.push('# Disable Windows Search indexing')
+    lines.push('Stop-Service WSearch -Force -EA SilentlyContinue')
+    lines.push('Set-Service WSearch -StartupType Manual -EA SilentlyContinue')
+    lines.push('Write-OK "Windows Search set to Manual (stops disk indexing)"')
+  }
+
   return lines
 }
 
@@ -938,6 +964,24 @@ function generateAudioOpts(selected: Set<string>): string[] {
     lines.push('# Configure audio exclusive mode (disable system sounds)')
     lines.push('Set-Reg "HKCU:\\AppEvents\\Schemes" "(Default)" ".None" "String"')
     lines.push('Write-OK "System sounds disabled for exclusive mode"')
+  }
+
+  // audio_communications - Disable volume ducking during Discord/Teams calls
+  if (selected.has('audio_communications')) {
+    lines.push('# Disable volume ducking during communications')
+    lines.push('Set-Reg "HKCU:\\Software\\Microsoft\\Multimedia\\Audio" "UserDuckingPreference" 3')
+    lines.push('Write-OK "Volume ducking disabled (full volume during calls)"')
+  }
+
+  // audio_system_sounds - Mute all Windows sounds
+  if (selected.has('audio_system_sounds')) {
+    lines.push('# Disable all Windows system sounds')
+    lines.push('Set-Reg "HKCU:\\AppEvents\\Schemes" "(Default)" ".None" "String"')
+    lines.push('# Also disable individual sound events')
+    lines.push(
+      'Get-ChildItem "HKCU:\\AppEvents\\Schemes\\Apps" -Recurse | Where-Object {$_.PSChildName -eq ".Current"} | ForEach-Object { Set-ItemProperty -Path $_.PSPath -Name "(Default)" -Value "" -EA SilentlyContinue }',
+    )
+    lines.push('Write-OK "Windows system sounds muted"')
   }
 
   return lines

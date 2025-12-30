@@ -279,6 +279,10 @@ const SAFE_OPTIMIZATIONS = {
   SPOTLIGHT_DISABLE: 'spotlight_disable',
   FEEDBACK_DISABLE: 'feedback_disable',
   CLIPBOARD_SYNC: 'clipboard_sync',
+  // New GAP 16-17 optimizations
+  ACCESSIBILITY_SHORTCUTS: 'accessibility_shortcuts',
+  AUDIO_COMMUNICATIONS: 'audio_communications',
+  AUDIO_SYSTEM_SOUNDS: 'audio_system_sounds',
 } as const
 
 const CAUTION_OPTIMIZATIONS = {
@@ -303,6 +307,8 @@ const CAUTION_OPTIMIZATIONS = {
   TIMER_REGISTRY: 'timer_registry',
   RSC_DISABLE: 'rsc_disable',
   SYSMAIN_DISABLE: 'sysmain_disable',
+  // New GAP 15 - Services
+  SERVICES_SEARCH_OFF: 'services_search_off',
 } as const
 
 const RISKY_OPTIMIZATIONS = {

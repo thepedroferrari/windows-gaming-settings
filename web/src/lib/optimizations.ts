@@ -430,6 +430,23 @@ const SAFE_INPUT: readonly OptimizationDef[] = [
 ✓ Personal preference setting`,
     defaultChecked: false,
   },
+  {
+    key: OPTIMIZATION_KEYS.ACCESSIBILITY_SHORTCUTS,
+    tier: OPTIMIZATION_TIERS.SAFE,
+    category: 'input',
+    label: 'Disable Accessibility Shortcuts',
+    hint: 'No Sticky Keys popup mid-game',
+    tooltip: `**Disable Accessibility Shortcuts** — ESSENTIAL for gaming
+
+- **Sticky Keys** — 5 shifts = popup. Deadly mid-clutch.
+- **Filter Keys** — Holding keys triggers popup
+- **Toggle Keys** — Caps Lock beeps
+
+✓ Prevents game-interrupting popups
+✓ Nothing worse than Sticky Keys during a clutch
+✓ Safe to disable for gaming`,
+    defaultChecked: false,
+  },
 ]
 
 /** Safe Display optimizations */
@@ -681,6 +698,38 @@ const SAFE_AUDIO: readonly OptimizationDef[] = [
 ✓ Cleaner audio for external DACs
 ✓ Better for competitive gaming`,
     defaultChecked: true,
+  },
+  {
+    key: OPTIMIZATION_KEYS.AUDIO_COMMUNICATIONS,
+    tier: OPTIMIZATION_TIERS.SAFE,
+    category: 'audio',
+    label: 'No Volume Ducking',
+    hint: 'Keep volume during Discord calls',
+    tooltip: `**No Volume Ducking** — fix communication volume drop
+
+- Windows "Communications" tab setting
+- Stops volume reducing when Discord/Teams calls
+- Sets "Do nothing" for communications activity
+
+✓ Keeps game audio at 100% during voice chat
+✓ Essential for competitive gaming with comms`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.AUDIO_SYSTEM_SOUNDS,
+    tier: OPTIMIZATION_TIERS.SAFE,
+    category: 'audio',
+    label: 'Mute System Sounds',
+    hint: 'No Windows beeps/chimes',
+    tooltip: `**Mute System Sounds** — silent Windows
+
+- Sets sound scheme to "No Sounds"
+- No notification chimes
+- No error beeps
+
+✓ Zero audio interruptions during gaming
+✓ Clean soundscape for competitive`,
+    defaultChecked: false,
   },
 ]
 
@@ -990,6 +1039,22 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
 ⚠ Better for gaming-only PCs`,
     defaultChecked: false,
   },
+  {
+    key: OPTIMIZATION_KEYS.SERVICES_SEARCH_OFF,
+    tier: OPTIMIZATION_TIERS.CAUTION,
+    category: 'system',
+    label: 'Windows Search Off',
+    hint: 'Stop disk indexing spikes',
+    tooltip: `**Windows Search Off** — disable indexing service
+
+- Sets WSearch service to Manual
+- Stops constant disk I/O from indexing
+- Search still works (just slower first time)
+
+⚠ File search will be slower initially
+⚠ Start menu search may be less responsive`,
+    defaultChecked: false,
+  },
 ]
 
 /** Risky-tier optimizations */
@@ -1251,6 +1316,7 @@ const PROFILE_OPTIMIZATIONS: Record<ProfileId, readonly OptimizationKey[]> = {
     'edge_debloat',
     'copilot_disable',
     'audio_enhancements',
+    'audio_communications', // No volume ducking during Discord calls
     'timer', // Safe, significant FPS benefit
     'end_task', // QoL, no downside
     'game_mode', // Windows Game Mode - safe
@@ -1271,6 +1337,7 @@ const PROFILE_OPTIMIZATIONS: Record<ProfileId, readonly OptimizationKey[]> = {
     'edge_debloat',
     'copilot_disable',
     'audio_enhancements',
+    'audio_communications', // No volume ducking during Discord calls
     'game_mode', // Windows Game Mode - safe
     'delivery_opt', // Disable P2P updates - frees bandwidth for streaming
     'feedback_disable', // No interruptions during stream
@@ -1298,10 +1365,14 @@ const PROFILE_OPTIMIZATIONS: Record<ProfileId, readonly OptimizationKey[]> = {
     'edge_debloat',
     'copilot_disable',
     'audio_enhancements',
+    'audio_communications', // No volume ducking during Discord calls
+    'audio_system_sounds', // Mute Windows sounds - zero interruptions
+    'accessibility_shortcuts', // ESSENTIAL: No Sticky Keys popup mid-clutch
     'msi_mode',
     'fso_disable',
     'ultimate_perf',
     'services_trim',
+    'services_search_off', // Stop disk indexing spikes
     'wpbt_disable',
     'qos_gaming',
     'network_throttling',
@@ -1343,6 +1414,7 @@ const PROFILE_OPTIMIZATIONS: Record<ProfileId, readonly OptimizationKey[]> = {
     'nagle',
     'mouse_accel',
     'keyboard_response',
+    'accessibility_shortcuts', // Disable Sticky/Filter/Toggle Keys
     'display_perf',
     'multiplane_overlay',
     'gamedvr',
@@ -1350,6 +1422,8 @@ const PROFILE_OPTIMIZATIONS: Record<ProfileId, readonly OptimizationKey[]> = {
     'edge_debloat',
     'copilot_disable',
     'audio_enhancements',
+    'audio_communications', // No volume ducking during calls
+    'audio_system_sounds', // Mute Windows sounds
     // New PS module parity - Safe tier
     'game_mode',
     'min_processor_state',
@@ -1369,6 +1443,7 @@ const PROFILE_OPTIMIZATIONS: Record<ProfileId, readonly OptimizationKey[]> = {
     'fso_disable',
     'ultimate_perf',
     'services_trim',
+    'services_search_off', // Stop disk indexing
     'disk_cleanup',
     'wpbt_disable',
     'qos_gaming',
