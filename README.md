@@ -149,6 +149,16 @@ cd windows-gaming-settings
 .\extreme-privacy.ps1
 ```
 
+### Preview / Profile Flags
+```powershell
+# Preview changes without applying
+.\gaming-pc-setup.ps1 -DryRun
+
+# Reserved for future config wiring (accepted but currently no-op)
+.\gaming-pc-setup.ps1 -Profile competitive
+.\gaming-pc-setup.ps1 -ConfigFile .\path\config.json
+```
+
 ### Before Gaming: Timer Tool
 ```powershell
 # Simple: Run and keep it open while gaming
@@ -163,12 +173,18 @@ cd windows-gaming-settings
 
 ---
 
+## 🌐 Web UI (Optional)
+
+The `web/` app provides a visual loadout builder (hardware selection, presets, audit panel, diff/preview, and transparency callouts). See [web/README.md](web/README.md) for setup and dev tasks.
+
+---
+
 ## 🛡️ Safety Features
 
 - ✅ Automatic registry backups (timestamped)
 - ✅ Idempotent (safe to run multiple times)
 - ✅ Error handling (continues on failures)
-- ✅ Detailed logging
+- ✅ Detailed logging (`gaming-pc-setup.log`) and post-setup checklist (`POST-SETUP-CHECKLIST.txt`)
 - ✅ System restore point recommended
 
 ---
@@ -214,6 +230,7 @@ cd windows-gaming-settings
 ## 📖 Documentation
 
 - **[DRIVER-LINKS.md](DRIVER-LINKS.md)** - Official driver downloads & BIOS settings
+- **[web/README.md](web/README.md)** - Web UI setup and development
 
 ---
 

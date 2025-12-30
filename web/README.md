@@ -1,6 +1,6 @@
 # RockTune Web — Loadout Builder for Windows Gaming
 
-A modern, interactive web application that generates personalized PowerShell scripts to optimize Windows for gaming. Built with Deno, Vite, and TypeScript.
+A modern, interactive web application that generates personalized PowerShell scripts to optimize Windows for gaming. Built with Deno, Vite, Svelte 5, and TypeScript.
 
 ## 🎯 Project Goals
 
@@ -11,15 +11,23 @@ A modern, interactive web application that generates personalized PowerShell scr
 - **Performance tuning** — Applies registry tweaks, power plans, timer resolution, and other gaming-focused optimizations
 - **Privacy controls** — Optional privacy hardening tiers (safe → moderate → aggressive)
 - **User-friendly interface** — Visual card-based selection with presets (Pro Gamer, Streaming, Balanced, Minimal)
+- **Transparency & review** — Preflight checks, audit panel, and diff/preview before export
 
 ## 🛠️ Tech Stack
 
 - **Runtime**: [Deno](https://deno.com/) — Modern JavaScript/TypeScript runtime
 - **Build Tool**: [Vite](https://vitejs.dev/) — Fast development and production builds
+- **UI**: [Svelte 5](https://svelte.dev/) — Component-based UI with runes
 - **Language**: TypeScript — Type-safe code with strict mode
+- **Schema validation**: [Zod](https://zod.dev/) — Runtime validation for catalog/profile data
 - **Linting/Formatting**: [Biome](https://biomejs.dev/) — Fast formatter and linter
-- **Dependencies**:
+- **Tooling**: Knip (dead code), PurgeCSS (style audits)
+- **Key npm deps**:
   - `diff` (npm) — For code diff visualization in audit panel
+
+## 🌐 Browser Support
+
+- Chromium-based browsers (Chrome, Edge). Firefox is not supported due to modern CSS features like `oklch`, `color-mix`, and `@scope`.
 
 ## 📁 Project Structure
 
@@ -27,30 +35,24 @@ A modern, interactive web application that generates personalized PowerShell scr
 web/
 ├── src/
 │   ├── main.ts              # Entry point, initializes app
-│   ├── state.ts             # Centralized state management
-│   ├── types.ts             # TypeScript interfaces
-│   ├── components/
-│   │   ├── cards.ts         # Software card rendering & interaction
-│   │   ├── filters.ts       # Category filtering & search
-│   │   ├── presets.ts       # Preset configurations
-│   │   ├── summary.ts        # Hardware summary & form listeners
-│   │   ├── script-generator.ts  # PowerShell script generation
-│   │   ├── profiles.ts      # Save/load profile functionality
-│   │   ├── audit.ts         # Live code audit panel
-│   │   └── code-viewer.ts   # Diff viewer component
-│   ├── utils/
-│   │   ├── dom.ts           # DOM utility functions
-│   │   └── effects.ts       # Visual effects (cursor glow, scroll animations)
-│   └── lib/
-│       └── diff.ts          # Diff library wrapper
-├── public/
-│   ├── catalog.json         # Software catalog data
-│   └── icons/               # SVG icons for software
+│   ├── RootApp.svelte       # App shell + layout
+│   ├── lib/                 # State, data, script generation
+│   │   ├── state.svelte.ts  # Svelte runes store
+│   │   ├── optimizations.ts # Optimization data
+│   │   ├── presets.ts       # Preset logic
+│   │   └── types.ts         # Shared types
+│   ├── components/          # Svelte UI + scoped styles
+│   ├── styles/              # Tokens, layout, utilities
+│   ├── schemas.ts           # Zod schemas
+│   └── utils/               # Download, checksum, helpers
+├── scripts/                 # Build + audit scripts (purgecss, catalog audit)
+├── public/                  # catalog + icons
 ├── index.html               # Main HTML entry point
-├── style.css                # All styles (no CSS framework)
+├── style.css                # Global styles + layer imports
 ├── deno.json                # Deno configuration & tasks
 ├── vite.config.ts           # Vite build configuration
-└── biome.json               # Biome linter/formatter config
+├── biome.json               # Biome linter/formatter config
+└── knip.json                # Dead-code detection config
 ```
 
 ## 🚀 Getting Started
@@ -80,18 +82,33 @@ web/
 # Development server
 deno task dev
 
-# Production build
-deno task build
+# Typecheck + Svelte diagnostics
+deno task check
 
-# Preview production build
+# Lint / format
+deno task lint
+deno task format
+
+# Dead-code + unused exports
+deno task knip
+
+# CSS audit (unused selectors)
+deno task purge:report
+
+# Full validation (lint + check + knip + build)
+deno task validate
+
+# Production build / preview
+deno task build
 deno task preview
 
-# Lint code
-deno task lint
-
-# Format code
-deno task format
+# Tests
+deno task test
 ```
+
+## 🧰 Tooling Notes
+
+- `web/package.json` exists only to support knip's Svelte parsing; runtime/build still use Deno with npm specifiers.
 
 ## 🏗️ Build & Deployment
 
@@ -135,7 +152,7 @@ Netlify will:
 - **Hardware-aware** — Adapts optimizations based on CPU/GPU selection
 - **Live preview** — See generated PowerShell script in real-time
 - **Diff view** — Compare script changes as you modify selections
-- **Validation** — Checks for common generation errors
+- **Preflight checks** — Warns about missing drivers/settings before download
 - **Download** — Export as `.ps1` file ready to run
 
 ### Profile Management
@@ -144,6 +161,12 @@ Netlify will:
 - **Load profiles** — Import saved configurations
 - **Version tracking** — Profiles include version metadata
 
+### Transparency & Trust
+
+- **Audit panel** — Live diff view of the script as you toggle options
+- **Checksum** — SHA256 hash for verifying downloads
+- **No tracking** — Client-only generation with explicit transparency cues
+
 ## 🔧 Architecture Decisions
 
 ### Why Deno?
@@ -151,7 +174,7 @@ Netlify will:
 - **No Node.js** — Modern runtime with built-in TypeScript support
 - **Security** — Explicit permissions model
 - **Fast** — Built on V8 with Rust tooling
-- **Native npm support** — Can use npm packages without `node_modules`
+- **Native npm support** — Uses npm specifiers; `node_modules` may be created via `nodeModulesDir: auto`
 
 ### Why Vite?
 
@@ -159,18 +182,17 @@ Netlify will:
 - **Optimized builds** — Tree-shaking, code splitting, minification
 - **TypeScript support** — Native TS compilation without extra config
 
+### Why Svelte 5?
+
+- **Component clarity** — Keeps UI structure close to styles and behavior
+- **Reactivity** — Runes-based state (`$state`, `$derived`) for predictable updates
+- **Lean runtime** — Small runtime overhead with fast renders
+
 ### Why TypeScript?
 
 - **Type safety** — Catches errors at compile time
 - **Better DX** — Autocomplete, refactoring, documentation
 - **Maintainability** — Self-documenting code with types
-
-### Why No Framework?
-
-- **Simplicity** — Vanilla TypeScript is sufficient for this app
-- **Performance** — No framework overhead
-- **Bundle size** — Smaller final bundle
-- **Learning** — Easier for contributors to understand
 
 ## 🐛 Troubleshooting
 
@@ -199,7 +221,7 @@ If port 9010 is taken, Vite will automatically use the next available port.
 
 ## 📝 Code Style
 
-- **Formatting**: Biome (2 spaces, single quotes, no semicolons)
+- **Formatting**: Biome (2 spaces, single quotes, semicolons as needed)
 - **Linting**: Biome recommended rules
 - **TypeScript**: Strict mode enabled
 - **Naming**: PascalCase for types/interfaces, camelCase for functions/variables
@@ -211,7 +233,7 @@ Run `deno task format` before committing.
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Run `deno task lint` and `deno task format`
+4. Run `deno task validate`
 5. Test locally with `deno task dev`
 6. Submit a pull request
 
