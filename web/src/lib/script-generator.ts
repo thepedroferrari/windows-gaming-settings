@@ -422,6 +422,38 @@ function generateSystemOpts(selected: Set<string>): string[] {
     lines.push('Write-OK "Windows Search set to Manual (stops disk indexing)"')
   }
 
+  // input_buffer - Increase mouse/keyboard buffer size
+  if (selected.has('input_buffer')) {
+    lines.push('# Increase input buffer size (for high polling rate devices)')
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters" "MouseDataQueueSize" 32',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters" "KeyboardDataQueueSize" 32',
+    )
+    lines.push('Write-OK "Input buffer size increased (prevents drops at 8000Hz)"')
+  }
+
+  // filesystem_perf - NTFS performance optimizations
+  if (selected.has('filesystem_perf')) {
+    lines.push('# NTFS filesystem performance optimizations')
+    lines.push('fsutil behavior set disablelastaccess 1 >$null 2>&1')
+    lines.push('fsutil behavior set disable8dot3 1 >$null 2>&1')
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem" "NtfsMemoryUsage" 2',
+    )
+    lines.push('Write-OK "Filesystem performance optimized"')
+  }
+
+  // dwm_perf - DWM compositor optimizations
+  if (selected.has('dwm_perf')) {
+    lines.push('# DWM compositor performance optimizations')
+    lines.push('Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\DWM" "AccentColorInactive" 1')
+    lines.push('Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\DWM" "ColorPrevalence" 0')
+    lines.push('Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\DWM" "EnableAeroPeek" 0')
+    lines.push('Write-OK "DWM performance optimized"')
+  }
+
   return lines
 }
 
@@ -524,16 +556,61 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
     lines.push('}')
   }
 
-  // core_isolation_off - Disable VBS/HVCI
+  // core_isolation_off - Disable VBS/HVCI (LUDICROUS TIER)
   if (selected.has('core_isolation_off')) {
-    lines.push('# Disable Core Isolation (VBS/HVCI)')
+    lines.push('# ⚠️ LUDICROUS: Disable Core Isolation (VBS/HVCI)')
+    lines.push('Write-Host "  [!!] DANGER: Disabling Core Isolation" -ForegroundColor Red')
     lines.push(
       'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard" "EnableVirtualizationBasedSecurity" 0',
     )
     lines.push(
       'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity" "Enabled" 0',
     )
-    lines.push('Write-OK "Core Isolation disabled (security reduced, reboot required)"')
+    lines.push('Write-OK "Core Isolation disabled (SECURITY REDUCED, reboot required)"')
+  }
+
+  // spectre_meltdown_off - Disable Spectre/Meltdown mitigations (LUDICROUS TIER)
+  if (selected.has('spectre_meltdown_off')) {
+    lines.push('# ⚠️ LUDICROUS: Disable Spectre/Meltdown Mitigations')
+    lines.push('Write-Host ""')
+    lines.push('Write-Host "  ╔═══════════════════════════════════════════════════════════════╗" -ForegroundColor Red')
+    lines.push('Write-Host "  ║ CRITICAL WARNING: DISABLING CPU SECURITY MITIGATIONS          ║" -ForegroundColor Red')
+    lines.push('Write-Host "  ║ CVE-2017-5753 (Spectre V1), CVE-2017-5715 (Spectre V2)        ║" -ForegroundColor Red')
+    lines.push('Write-Host "  ║ CVE-2017-5754 (Meltdown) - Hardware vulnerabilities           ║" -ForegroundColor Red')
+    lines.push('Write-Host "  ║ ANY WEBSITE CAN READ YOUR PASSWORDS AFTER THIS!               ║" -ForegroundColor Red')
+    lines.push('Write-Host "  ╚═══════════════════════════════════════════════════════════════╝" -ForegroundColor Red')
+    lines.push('Write-Host ""')
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" "FeatureSettingsOverride" 3',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" "FeatureSettingsOverrideMask" 3',
+    )
+    lines.push('Write-OK "Spectre/Meltdown mitigations DISABLED (reboot required)"')
+  }
+
+  // kernel_mitigations_off - Disable kernel exploit protections (LUDICROUS TIER)
+  if (selected.has('kernel_mitigations_off')) {
+    lines.push('# ⚠️ LUDICROUS: Disable Kernel Mitigations')
+    lines.push('Write-Host "  [!!] DANGER: Disabling kernel exploit protections" -ForegroundColor Red')
+    lines.push('bcdedit /set isolatedcontext No 2>$null')
+    lines.push('bcdedit /set allowedinmemorysettings 0x0 2>$null')
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel" "DisableExceptionChainValidation" 1',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel" "KernelSEHOPEnabled" 0',
+    )
+    lines.push('Write-OK "Kernel mitigations DISABLED (SECURITY REDUCED, reboot required)"')
+  }
+
+  // dep_off - Disable Data Execution Prevention (LUDICROUS TIER)
+  if (selected.has('dep_off')) {
+    lines.push('# ⚠️ LUDICROUS: Disable DEP (Data Execution Prevention)')
+    lines.push('Write-Host "  [!!] DANGER: Disabling DEP - Buffer overflow exploits work again" -ForegroundColor Red')
+    lines.push('bcdedit /set nx AlwaysOff 2>$null')
+    lines.push('Write-OK "DEP DISABLED (SECURITY REDUCED, reboot required)"')
+    lines.push('Write-Host "  [!!] Re-enable with: bcdedit /set nx OptIn" -ForegroundColor Yellow')
   }
 
   // native_nvme - Enable Native NVMe I/O
@@ -612,6 +689,27 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
     lines.push('Write-OK "SysMain/Superfetch disabled"')
   }
 
+  // memory_gaming - Keep kernel in RAM, optimize memory for gaming
+  if (selected.has('memory_gaming')) {
+    lines.push('# Memory gaming mode')
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" "DisablePagingExecutive" 1',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" "LargeSystemCache" 0',
+    )
+    lines.push('Write-OK "Memory gaming mode enabled (kernel stays in RAM)"')
+  }
+
+  // priority_boost_off - Disable dynamic priority boost
+  if (selected.has('priority_boost_off')) {
+    lines.push('# Disable priority boost')
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" "Win32PriorityBoost" 0',
+    )
+    lines.push('Write-OK "Priority boost disabled (consistent scheduling)"')
+  }
+
   return lines
 }
 
@@ -672,6 +770,18 @@ function generatePowerOpts(selected: Set<string>): string[] {
     lines.push('# Disable Hibernation')
     lines.push('powercfg /hibernate off')
     lines.push('Write-OK "Hibernation disabled"')
+  }
+
+  // power_throttle_off - Disable Windows power throttling
+  if (selected.has('power_throttle_off')) {
+    lines.push('# Disable power throttling')
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling" "PowerThrottlingOff" 1',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power" "EcoQosPolicyDisabled" 1',
+    )
+    lines.push('Write-OK "Power throttling disabled"')
   }
 
   return lines

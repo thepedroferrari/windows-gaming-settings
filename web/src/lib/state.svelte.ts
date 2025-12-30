@@ -57,6 +57,8 @@ export interface UIState {
   auditPanelOpen: boolean
   /** Whether wizard mode is active */
   wizardMode: boolean
+  /** Whether user has acknowledged LUDICROUS tier risks */
+  ludicrousAcknowledged: boolean
 }
 
 interface AppStore {
@@ -98,6 +100,7 @@ const DEFAULT_UI: UIState = {
   previewModalOpen: false,
   auditPanelOpen: false,
   wizardMode: false,
+  ludicrousAcknowledged: false,
 }
 
 const DEFAULT_CATALOG: SoftwareCatalog = {}
@@ -469,6 +472,21 @@ export function toggleAuditPanel(): void {
  */
 export function toggleWizardMode(): void {
   app.ui = { ...app.ui, wizardMode: !app.ui.wizardMode }
+}
+
+/**
+ * Acknowledge LUDICROUS tier risks - unlocks dangerous optimizations
+ * This action is intentionally one-way per session for safety.
+ */
+export function acknowledgeLudicrous(): void {
+  app.ui = { ...app.ui, ludicrousAcknowledged: true }
+}
+
+/**
+ * Check if LUDICROUS tier has been acknowledged
+ */
+export function isLudicrousAcknowledged(): boolean {
+  return app.ui.ludicrousAcknowledged
 }
 
 // ============================================================================

@@ -235,6 +235,7 @@ export const OPTIMIZATION_TIERS = {
   SAFE: 'safe',
   CAUTION: 'caution',
   RISKY: 'risky',
+  LUDICROUS: 'ludicrous', // "You shouldn't, but here's the power"
 } as const
 
 export type OptimizationTier = (typeof OPTIMIZATION_TIERS)[keyof typeof OPTIMIZATION_TIERS]
@@ -283,6 +284,10 @@ const SAFE_OPTIMIZATIONS = {
   ACCESSIBILITY_SHORTCUTS: 'accessibility_shortcuts',
   AUDIO_COMMUNICATIONS: 'audio_communications',
   AUDIO_SYSTEM_SOUNDS: 'audio_system_sounds',
+  // New competitive gaming optimizations
+  INPUT_BUFFER: 'input_buffer',
+  FILESYSTEM_PERF: 'filesystem_perf',
+  DWM_PERF: 'dwm_perf',
 } as const
 
 const CAUTION_OPTIMIZATIONS = {
@@ -309,6 +314,10 @@ const CAUTION_OPTIMIZATIONS = {
   SYSMAIN_DISABLE: 'sysmain_disable',
   // New GAP 15 - Services
   SERVICES_SEARCH_OFF: 'services_search_off',
+  // New competitive gaming optimizations
+  MEMORY_GAMING: 'memory_gaming',
+  POWER_THROTTLE_OFF: 'power_throttle_off',
+  PRIORITY_BOOST_OFF: 'priority_boost_off',
 } as const
 
 const RISKY_OPTIMIZATIONS = {
@@ -323,13 +332,28 @@ const RISKY_OPTIMIZATIONS = {
   SMT_DISABLE: 'smt_disable',
   AUDIO_EXCLUSIVE: 'audio_exclusive',
   TCP_OPTIMIZER: 'tcp_optimizer',
-  CORE_ISOLATION_OFF: 'core_isolation_off',
+} as const
+
+// =============================================================================
+// LUDICROUS TIER - "You shouldn't, but here's the power"
+// =============================================================================
+// These optimizations have REAL security implications or can brick your system.
+// Not auto-enabled for ANY profile. Requires explicit acknowledgment.
+// Each one has CVE links and scary-but-accurate warnings.
+const LUDICROUS_OPTIMIZATIONS = {
+  // Security mitigations that expose you to REAL vulnerabilities
+  SPECTRE_MELTDOWN_OFF: 'spectre_meltdown_off', // CVE-2017-5753, CVE-2017-5715, CVE-2017-5754
+  CORE_ISOLATION_OFF: 'core_isolation_off', // Disables VBS/HVCI - major security feature
+  // Extreme performance - may cause instability
+  KERNEL_MITIGATIONS_OFF: 'kernel_mitigations_off', // Disables all kernel exploit protections
+  DEP_OFF: 'dep_off', // Data Execution Prevention off - ancient exploits work again
 } as const
 
 export const OPTIMIZATION_KEYS = {
   ...SAFE_OPTIMIZATIONS,
   ...CAUTION_OPTIMIZATIONS,
   ...RISKY_OPTIMIZATIONS,
+  ...LUDICROUS_OPTIMIZATIONS,
 } as const
 
 export type OptimizationKey = (typeof OPTIMIZATION_KEYS)[keyof typeof OPTIMIZATION_KEYS]
@@ -337,6 +361,8 @@ export type OptimizationKey = (typeof OPTIMIZATION_KEYS)[keyof typeof OPTIMIZATI
 export type SafeOptimization = (typeof SAFE_OPTIMIZATIONS)[keyof typeof SAFE_OPTIMIZATIONS]
 export type CautionOptimization = (typeof CAUTION_OPTIMIZATIONS)[keyof typeof CAUTION_OPTIMIZATIONS]
 export type RiskyOptimization = (typeof RISKY_OPTIMIZATIONS)[keyof typeof RISKY_OPTIMIZATIONS]
+export type LudicrousOptimization =
+  (typeof LUDICROUS_OPTIMIZATIONS)[keyof typeof LUDICROUS_OPTIMIZATIONS]
 
 const OPTIMIZATION_KEY_VALUES = Object.values(OPTIMIZATION_KEYS) as OptimizationKey[]
 

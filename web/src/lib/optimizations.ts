@@ -224,6 +224,40 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
 ✓ No impact on functionality`,
     defaultChecked: false,
   },
+  {
+    key: OPTIMIZATION_KEYS.FILESYSTEM_PERF,
+    tier: OPTIMIZATION_TIERS.SAFE,
+    category: 'system',
+    label: 'Filesystem Performance',
+    hint: 'Disable NTFS overhead',
+    tooltip: `**Filesystem Performance** — reduce disk I/O overhead
+
+- Disables last access timestamp updates
+- Disables 8.3 short filename creation
+- Optimizes NTFS memory usage
+
+✓ Faster file operations
+✓ Reduced write amplification on SSDs
+✓ Invisible to users - no behavior change`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.DWM_PERF,
+    tier: OPTIMIZATION_TIERS.SAFE,
+    category: 'system',
+    label: 'DWM Performance',
+    hint: 'Reduce compositor overhead',
+    tooltip: `**DWM Performance** — Desktop Window Manager tweaks
+
+- Disables accent color gradient effects
+- Disables window colorization
+- Reduces DWM GPU overhead
+
+✓ Faster alt-tab transitions
+✓ Lower GPU usage in desktop
+✓ Slightly less "fancy" windows`,
+    defaultChecked: false,
+  },
 ]
 
 /** Safe Power optimizations */
@@ -445,6 +479,23 @@ const SAFE_INPUT: readonly OptimizationDef[] = [
 ✓ Prevents game-interrupting popups
 ✓ Nothing worse than Sticky Keys during a clutch
 ✓ Safe to disable for gaming`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.INPUT_BUFFER,
+    tier: OPTIMIZATION_TIERS.SAFE,
+    category: 'input',
+    label: 'Input Buffer Size',
+    hint: 'Larger mouse/keyboard buffers',
+    tooltip: `**Input Buffer Size** — prevent input drops under load
+
+- Increases MouseDataQueueSize to 32 (from 16)
+- Increases KeyboardDataQueueSize to 32 (from 16)
+- More buffer for high-polling-rate devices (8000Hz mice)
+
+✓ Prevents input loss during CPU spikes
+✓ Essential for 4000Hz+ polling rate mice
+✓ No downside - just uses a tiny bit more RAM`,
     defaultChecked: false,
   },
 ]
@@ -1055,6 +1106,54 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
 ⚠ Start menu search may be less responsive`,
     defaultChecked: false,
   },
+  {
+    key: OPTIMIZATION_KEYS.MEMORY_GAMING,
+    tier: OPTIMIZATION_TIERS.CAUTION,
+    category: 'system',
+    label: 'Memory Gaming Mode',
+    hint: 'Keep kernel in RAM',
+    tooltip: `**Memory Gaming Mode** — optimize memory for gaming
+
+- Sets DisablePagingExecutive = 1 (kernel stays in RAM)
+- Sets LargeSystemCache = 0 (more RAM for games)
+- Optimizes NTFS memory usage
+
+⚠ Requires 16GB+ RAM recommended
+⚠ May increase memory pressure on low-RAM systems`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.POWER_THROTTLE_OFF,
+    tier: OPTIMIZATION_TIERS.CAUTION,
+    category: 'power',
+    label: 'Power Throttling Off',
+    hint: 'No background throttling',
+    tooltip: `**Power Throttling Off** — disable Windows power throttling
+
+- Prevents Windows from throttling background apps
+- Game always gets full CPU power
+- Disables EcoQoS efficiency mode
+
+⚠ Higher power consumption
+⚠ Laptop battery life reduced`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.PRIORITY_BOOST_OFF,
+    tier: OPTIMIZATION_TIERS.CAUTION,
+    category: 'system',
+    label: 'Priority Boost Off',
+    hint: 'Consistent CPU scheduling',
+    tooltip: `**Priority Boost Off** — disable dynamic priority boost
+
+- Disables Win32PriorityBoost
+- More consistent CPU scheduling
+- Some pros prefer this for predictable frametimes
+
+⚠ May affect multitasking performance
+⚠ Test before competitive use`,
+    defaultChecked: false,
+  },
 ]
 
 /** Risky-tier optimizations */
@@ -1219,20 +1318,120 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
 ⚠ Benchmark with different settings`,
     defaultChecked: false,
   },
+]
+
+// =============================================================================
+// LUDICROUS TIER - "You shouldn't, but here's the power"
+// =============================================================================
+// These optimizations have REAL, DOCUMENTED security vulnerabilities.
+// Not auto-enabled for ANY profile. EVER.
+// Requires explicit "I understand the risks" acknowledgment.
+// Each has CVE links so users can research the actual threats.
+const LUDICROUS_OPTIMIZATIONS: readonly OptimizationDef[] = [
   {
     key: OPTIMIZATION_KEYS.CORE_ISOLATION_OFF,
-    tier: OPTIMIZATION_TIERS.RISKY,
+    tier: OPTIMIZATION_TIERS.LUDICROUS,
     category: 'system',
     label: 'Core Isolation Off',
     hint: 'Disable VBS/HVCI',
-    tooltip: `**Core Isolation Off** — disable virtualization security
+    tooltip: `**⚠️ DANGER: Core Isolation Off** — disable virtualization security
 
-- Disables Memory Integrity (HVCI)
-- Turns off Credential Guard
-- 5-10% performance gain in some cases
+**What this disables:**
+- Memory Integrity (HVCI) — prevents malicious code injection
+- Credential Guard — protects login credentials
+- Kernel DMA Protection — blocks hardware attacks
 
-⚠ Reduces security significantly
-⚠ May be required for some anti-cheat`,
+**Performance gain:** 5-15% in some games
+
+**🔴 REAL RISK:** Malware can inject code into the kernel.
+This is how rootkits work. If you visit a malicious website
+or run untrusted software, your entire system can be compromised.
+
+**Only consider if:**
+- Dedicated offline gaming PC
+- Never browse the web on this machine
+- Never run untrusted executables`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.SPECTRE_MELTDOWN_OFF,
+    tier: OPTIMIZATION_TIERS.LUDICROUS,
+    category: 'system',
+    label: 'Spectre/Meltdown Off',
+    hint: 'CPU vulnerability mitigations',
+    tooltip: `**🔴 DANGER: Spectre/Meltdown Mitigations Off**
+
+**CVEs disabled:**
+- CVE-2017-5753 (Spectre V1) — bounds check bypass
+- CVE-2017-5715 (Spectre V2) — branch target injection
+- CVE-2017-5754 (Meltdown) — rogue data cache load
+
+**Performance gain:** 5-30% depending on workload
+
+**🔴 REAL RISK:** These are HARDWARE vulnerabilities in your CPU.
+Any JavaScript on any website can potentially read your passwords,
+encryption keys, and other sensitive data from memory.
+
+**Attack vector:** Just visiting a website. That's it.
+
+**Only consider if:**
+- COMPLETELY offline gaming PC
+- NEVER connects to any network
+- Physical access is controlled
+
+**Research links:**
+- https://meltdownattack.com
+- https://spectreattack.com`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.KERNEL_MITIGATIONS_OFF,
+    tier: OPTIMIZATION_TIERS.LUDICROUS,
+    category: 'system',
+    label: 'Kernel Mitigations Off',
+    hint: 'Disable kernel exploit protections',
+    tooltip: `**🔴 DANGER: Kernel Mitigations Off**
+
+**What this disables:**
+- KPTI (Kernel Page Table Isolation)
+- SMAP (Supervisor Mode Access Prevention)
+- SMEP (Supervisor Mode Execution Prevention)
+
+**Performance gain:** 2-10%
+
+**🔴 REAL RISK:** Kernel exploits become trivial.
+Any vulnerability in any driver can lead to full system compromise.
+This is literally how hackers escalate privileges.
+
+**Only consider if:**
+- Isolated benchmarking system
+- Will be reinstalled before any real use`,
+    defaultChecked: false,
+  },
+  {
+    key: OPTIMIZATION_KEYS.DEP_OFF,
+    tier: OPTIMIZATION_TIERS.LUDICROUS,
+    category: 'system',
+    label: 'DEP Off',
+    hint: 'Data Execution Prevention off',
+    tooltip: `**🔴 DANGER: DEP (Data Execution Prevention) Off**
+
+**What this disables:**
+- NX bit enforcement — prevents code execution in data segments
+- This is a CPU feature from 2004
+
+**Performance gain:** Minimal (legacy games only)
+
+**🔴 REAL RISK:** Buffer overflow exploits from the 2000s work again.
+This is why we had so many viruses back then.
+DEP is why we DON'T have them now.
+
+**Only consider if:**
+- Running ancient games that don't work with DEP
+- Immediately re-enable after playing
+
+**Note:** Most "DEP issues" are actually compatibility problems
+that can be fixed by running as admin or in compatibility mode.`,
     defaultChecked: false,
   },
 ]
@@ -1248,6 +1447,7 @@ export const OPTIMIZATIONS: readonly OptimizationDef[] = [
   ...SAFE_AUDIO,
   ...CAUTION_OPTIMIZATIONS,
   ...RISKY_OPTIMIZATIONS,
+  ...LUDICROUS_OPTIMIZATIONS,
 ] as const
 
 /** Get optimizations by tier and category */
