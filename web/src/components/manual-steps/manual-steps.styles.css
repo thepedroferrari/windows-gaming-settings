@@ -307,6 +307,182 @@
       color: var(--risky);
     }
 
+    /* Troubleshooting Items */
+    .manual-steps__problem {
+      font-weight: 600;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      line-height: var(--leading-tight);
+    }
+
+    .manual-steps__causes {
+      margin: var(--space-xs) 0;
+      font-size: var(--text-sm);
+      color: var(--text-dim);
+
+      & strong {
+        color: var(--text-secondary);
+        font-weight: 600;
+      }
+
+      & ul {
+        margin: var(--space-xs) 0 0 0;
+        padding-left: var(--space-md);
+        list-style: disc;
+      }
+
+      & li {
+        margin-block-end: 2px;
+        line-height: var(--leading-relaxed);
+      }
+    }
+
+    .manual-steps__quickfix {
+      margin: var(--space-sm) 0 0 0;
+      padding: var(--space-sm);
+      font-size: var(--text-sm);
+      color: var(--safe);
+      background: color-mix(in oklch, var(--safe) 10%, transparent);
+      border: 1px solid color-mix(in oklch, var(--safe) 30%, transparent);
+      border-radius: 6px;
+      line-height: var(--leading-relaxed);
+
+      & strong {
+        color: var(--safe);
+        font-weight: 700;
+      }
+    }
+
+    /* Streaming Troubleshoot Items */
+    .manual-steps__solution {
+      margin: var(--space-sm) 0 0 0;
+      padding: var(--space-sm);
+      font-size: var(--text-sm);
+      color: var(--cyber-cyan);
+      background: color-mix(in oklch, var(--cyber-cyan) 10%, transparent);
+      border: 1px solid color-mix(in oklch, var(--cyber-cyan) 30%, transparent);
+      border-radius: 6px;
+      line-height: var(--leading-relaxed);
+
+      & strong {
+        color: var(--cyber-cyan);
+        font-weight: 700;
+      }
+    }
+
+    /* Diagnostic Tools */
+    .manual-steps__tool-name {
+      font-weight: 700;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+
+    .manual-steps__arsenal-badge {
+      padding: 0.1rem 0.4rem;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--cyber-yellow);
+      background: color-mix(in oklch, var(--cyber-yellow) 15%, transparent);
+      border-radius: 4px;
+      margin-inline-start: var(--space-sm);
+    }
+
+    .manual-steps__tool-use {
+      margin: var(--space-xs) 0 0 0;
+      font-size: var(--text-sm);
+      color: var(--text-dim);
+      line-height: var(--leading-relaxed);
+    }
+
+    /* Game Launch Options */
+    .manual-steps__game-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-block-end: var(--space-sm);
+    }
+
+    .manual-steps__game-name {
+      font-weight: 700;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+
+    .manual-steps__game-platform {
+      padding: 0.15rem 0.5rem;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--cyber-cyan);
+      background: color-mix(in oklch, var(--cyber-cyan) 15%, transparent);
+      border-radius: 4px;
+    }
+
+    .manual-steps__launch-options {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-block-end: var(--space-sm);
+      padding: var(--space-sm);
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .manual-steps__launch-code {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--cyber-yellow);
+      word-break: break-all;
+    }
+
+    .manual-steps__copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-shrink: 0;
+      padding: var(--space-xs) var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all var(--duration-fast) ease;
+
+      & .icon {
+        inline-size: var(--icon-sm);
+        block-size: var(--icon-sm);
+      }
+
+      &:hover {
+        color: var(--cyber-cyan);
+        border-color: var(--cyber-cyan);
+        background: color-mix(in oklch, var(--cyber-cyan) 10%, transparent);
+      }
+
+      &.copied {
+        color: var(--safe);
+        border-color: var(--safe);
+        background: color-mix(in oklch, var(--safe) 15%, transparent);
+      }
+    }
+
+    .manual-steps__game-notes {
+      margin: 0;
+      padding-left: var(--space-md);
+      list-style: disc;
+      font-size: var(--text-sm);
+      color: var(--text-dim);
+      line-height: var(--leading-relaxed);
+
+      & li {
+        margin-block-end: 2px;
+      }
+    }
+
     /* Note */
     .manual-steps__note {
       display: flex;

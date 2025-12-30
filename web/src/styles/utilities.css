@@ -1,4 +1,5 @@
 @layer utilities {
+  /* Screen reader only */
   .sr-only {
     position: absolute;
     width: 1px;
@@ -9,6 +10,17 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+  }
+
+  /* Global keyboard focus indicator */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Remove focus outline for mouse users */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 
   .skip-link {

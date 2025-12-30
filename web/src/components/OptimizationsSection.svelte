@@ -158,9 +158,18 @@
     {#if app.ui.ludicrousAcknowledged}
       <!-- Show LUDICROUS optimizations after acknowledgment -->
       <div class="ludicrous-unlocked">
-        <div class="ludicrous-header">
-          <span class="tier tier-ludicrous">Ludicrous</span>
-          <span class="ludicrous-warning-badge">Security Disabled</span>
+        <div class="ludicrous-intro">
+          <div class="ludicrous-header">
+            <div class="ludicrous-header-badges">
+              <span class="tier tier-ludicrous">Ludicrous</span>
+              <span class="ludicrous-warning-badge">Security Disabled</span>
+            </div>
+            <div class="ludicrous-header-title">Danger Zone: Security Mitigations Off</div>
+          </div>
+          <p class="ludicrous-header-copy">
+            These switches disable CPU and kernel protections and can expose memory. Use only for offline
+            benchmarking and re-enable after testing.
+          </p>
         </div>
         <div class="upgrades-grid upgrades-grid--ludicrous">
           {#each getCategoriesForTier(OPTIMIZATION_TIERS.LUDICROUS) as category}
@@ -177,16 +186,74 @@
               </fieldset>
             {/if}
           {/each}
+          <aside class="ludicrous-info">
+            <div class="ludicrous-info-header">
+              <span class="ludicrous-info-kicker">Risk Advisory</span>
+              <h4>Benchmark Mode Safety Net</h4>
+              <p>
+                These switches remove CPU and kernel mitigations. Treat this OS as disposable and offline
+                only. If you cannot meet every item below, keep them off.
+              </p>
+            </div>
+            <div class="ludicrous-info-grid">
+              <section class="ludicrous-info-card">
+                <h5>Before You Flip</h5>
+                <ul>
+                  <li>Create a restore point or full image backup</li>
+                  <li>Disconnect internet, Bluetooth, and external storage</li>
+                  <li>Use a clean, dedicated benchmark user or install</li>
+                  <li>Have recovery media ready (USB)</li>
+                </ul>
+              </section>
+              <section class="ludicrous-info-card">
+                <h5>Rules While Enabled</h5>
+                <ul>
+                  <li>No browsing, email, chat, or logins</li>
+                  <li>No mods, overlays, or third-party executables</li>
+                  <li>Run only the benchmark, then exit</li>
+                  <li>Monitor temps and stability; stop on errors</li>
+                </ul>
+              </section>
+              <section class="ludicrous-info-card">
+                <h5>Rollback Plan</h5>
+                <ul>
+                  <li>Re-enable mitigations immediately after testing</li>
+                  <li>Reboot and verify VBS/HVCI status</li>
+                  <li>Run Windows Update before daily use</li>
+                  <li>If anything looks off, restore from backup</li>
+                </ul>
+              </section>
+            </div>
+            <div class="ludicrous-info-footer">
+              <span class="ludicrous-info-pill">Offline only</span>
+              <span class="ludicrous-info-pill">Expect breakage</span>
+              <span class="ludicrous-info-pill">Rollback required</span>
+            </div>
+          </aside>
         </div>
       </div>
     {:else}
       <!-- Show unlock button before acknowledgment -->
       <div class="ludicrous-locked">
-        <button type="button" class="ludicrous-unlock-btn" onclick={openLudicrousModal}>
-          <span class="unlock-icon">&#9888;</span>
-          <span class="unlock-text">Reveal Dangerous Options</span>
-          <span class="unlock-hint">Disable CPU security mitigations (not recommended)</span>
-        </button>
+        <div class="ludicrous-warning-card">
+          <div class="ludicrous-warning-copy">
+            <span class="warning-eyebrow">Restricted Section</span>
+            <h3>Dangerous Options Locked</h3>
+            <p class="warning-desc">
+              These disable CPU security mitigations (Spectre/Meltdown class). Only for offline benchmark rigs.
+            </p>
+            <div class="warning-tags">
+              <span>Offline-only</span>
+              <span>No web</span>
+              <span>At your own risk</span>
+            </div>
+          </div>
+          <button type="button" class="ludicrous-unlock-btn" onclick={openLudicrousModal}>
+            <span class="unlock-icon">&#9888;</span>
+            <span class="unlock-text">Reveal Dangerous Options</span>
+            <span class="unlock-hint">Disable CPU security mitigations (not recommended)</span>
+          </button>
+        </div>
       </div>
     {/if}
   </div>

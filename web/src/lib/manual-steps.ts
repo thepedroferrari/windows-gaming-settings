@@ -50,6 +50,31 @@ export interface PreflightCheck {
   readonly fail: string;
 }
 
+export interface TroubleshootingItem {
+  readonly problem: string;
+  readonly causes: readonly string[];
+  readonly quickFix: string;
+}
+
+export interface GameLaunchItem {
+  readonly game: string;
+  readonly platform: "Steam" | "Epic" | "Battle.net" | "Riot" | "Origin" | "EA App";
+  readonly launchOptions?: string;
+  readonly notes: readonly string[];
+}
+
+export interface StreamingTroubleshootItem {
+  readonly problem: string;
+  readonly solution: string;
+  readonly why: string;
+}
+
+export interface DiagnosticTool {
+  readonly tool: string;
+  readonly use: string;
+  readonly arsenalKey?: string;
+}
+
 export interface VideoResource {
   readonly id: string;
   readonly title: string;
@@ -72,7 +97,11 @@ export interface ManualStepSection {
     | readonly SoftwareSettingItem[]
     | readonly BrowserSettingItem[]
     | readonly RgbSettingItem[]
-    | readonly PreflightCheck[];
+    | readonly PreflightCheck[]
+    | readonly TroubleshootingItem[]
+    | readonly GameLaunchItem[]
+    | readonly StreamingTroubleshootItem[]
+    | readonly DiagnosticTool[];
 }
 
 // -----------------------------------------------------------------------------
@@ -477,6 +506,456 @@ export const TROUBLESHOOTING_WIFI_BLUETOOTH: ManualStepSection = {
   ] as const,
 } as const;
 
+export const TROUBLESHOOTING_PERFORMANCE: ManualStepSection = {
+  id: "troubleshooting-performance",
+  title: "Performance Issues",
+  description: "Common FPS and stuttering problems",
+  items: [
+    {
+      problem: "Game runs at 60 FPS even though I have a 144Hz monitor",
+      causes: ["V-Sync enabled in-game", "Windows refresh rate set to 60Hz", "Frame rate cap in game settings", "NVIDIA Control Panel capping frames"],
+      quickFix: "Settings → Display → Advanced → Refresh rate → Set to 144Hz",
+    },
+    {
+      problem: "Micro-stutters every few seconds",
+      causes: ["Background downloads (Steam, Windows Update)", "Timer resolution at default 15.6ms", "Power plan throttling", "Shader compilation"],
+      quickFix: "Run timer-tool.ps1, pause all downloads, set High Performance power plan",
+    },
+    {
+      problem: "FPS drops when alt-tabbing",
+      causes: ["Fullscreen Optimizations enabled", "Game loses GPU priority", "V-Sync mismatch"],
+      quickFix: "Right-click game .exe → Properties → Compatibility → Disable fullscreen optimizations",
+    },
+    {
+      problem: "High FPS but feels laggy",
+      causes: ["High input latency (render queue)", "V-Sync enabled", "Pre-rendered frames too high", "Display not in VRR range"],
+      quickFix: "Enable NVIDIA Low Latency Mode Ultra or Reflex, disable V-Sync, cap FPS 3 below refresh",
+    },
+    {
+      problem: "Game uses integrated GPU instead of dedicated",
+      causes: ["Laptop hybrid graphics", "Windows GPU preference not set", "Monitor plugged into wrong port"],
+      quickFix: "Settings → Display → Graphics → Add game → High performance. Check monitor is plugged into GPU, not motherboard.",
+    },
+    {
+      problem: "Terrible 1% lows / stuttering",
+      causes: ["RAM not in XMP/EXPO", "Background apps", "CPU thermal throttling", "Driver issues"],
+      quickFix: "Enable XMP in BIOS, close background apps, check temps with HWiNFO, DDU and reinstall drivers",
+    },
+  ] as const,
+} as const;
+
+export const TROUBLESHOOTING_AUDIO: ManualStepSection = {
+  id: "troubleshooting-audio",
+  title: "Audio Issues",
+  description: "Crackling, directional audio, and mic problems",
+  items: [
+    {
+      problem: "Audio crackling/popping during games",
+      causes: ["DPC latency spikes", "Audio driver issues", "Sample rate mismatch", "USB power saving"],
+      quickFix: "Run LatencyMon to diagnose. Disable USB selective suspend. Update audio drivers from manufacturer.",
+    },
+    {
+      problem: "Can't hear footsteps / directional audio is off",
+      causes: ["Virtual surround enabled", "Loudness equalization on", "Wrong audio channels"],
+      quickFix: "Disable Windows Sonic/Dolby Atmos. Use stereo. Disable audio enhancements in Sound settings.",
+    },
+    {
+      problem: "Mic too quiet / others can't hear me",
+      causes: ["Mic boost disabled", "Wrong input device", "Discord noise gate too aggressive"],
+      quickFix: "Sound settings → Recording → Microphone → Properties → Levels → Enable Mic Boost (+10-20dB)",
+    },
+  ] as const,
+} as const;
+
+export const TROUBLESHOOTING_NETWORK: ManualStepSection = {
+  id: "troubleshooting-network",
+  title: "Network Issues",
+  description: "Ping, packet loss, and connection problems",
+  items: [
+    {
+      problem: "High ping in games but speed test is fine",
+      causes: ["QoS not configured", "Background uploads", "WiFi interference", "ISP routing issues"],
+      quickFix: "Use Ethernet. Disable background apps. Try different DNS (1.1.1.1 or 8.8.8.8). Check for packet loss with: ping google.com -t",
+    },
+    {
+      problem: "Rubber-banding / teleporting in-game",
+      causes: ["Packet loss", "WiFi instability", "Server issues", "Firewall blocking"],
+      quickFix: "Test with: ping google.com -t (look for timeouts/spikes). Switch to Ethernet if on WiFi.",
+    },
+    {
+      problem: "NAT type Strict / Moderate",
+      causes: ["Router UPnP disabled", "Ports not forwarded", "Double NAT (modem + router)"],
+      quickFix: "Enable UPnP in router settings. Port forward game-specific ports. Check if modem has routing enabled (put in bridge mode).",
+    },
+  ] as const,
+} as const;
+
+export const TROUBLESHOOTING_CRASHES: ManualStepSection = {
+  id: "troubleshooting-crashes",
+  title: "Crashes & Stability",
+  description: "CTDs, blue screens, and random restarts",
+  items: [
+    {
+      problem: "Game crashes to desktop with no error",
+      causes: ["GPU driver issue", "Overclock instability", "Corrupted game files", "Anti-cheat conflict"],
+      quickFix: "DDU and reinstall GPU drivers. Remove any overclock. Verify game files in launcher. Check Windows Event Viewer for clues.",
+    },
+    {
+      problem: "Blue screen (BSOD) during gaming",
+      causes: ["Unstable overclock", "Driver conflict", "RAM issues", "Overheating"],
+      quickFix: "Reset BIOS to defaults. Run memtest86 overnight. Check temps with HWiNFO. Note the STOP code and search it.",
+    },
+    {
+      problem: "PC restarts during gaming (no BSOD)",
+      causes: ["PSU insufficient for GPU power spikes", "CPU/GPU overheating", "Overclock instability"],
+      quickFix: "Check temps during gaming (>95°C = throttling). Ensure PSU has enough wattage + headroom. Remove any overclock. Check PSU cables are fully seated.",
+    },
+  ] as const,
+} as const;
+
+// -----------------------------------------------------------------------------
+// Peripheral Settings
+// -----------------------------------------------------------------------------
+
+export const PERIPHERAL_MOUSE_ALL: ManualStepSection = {
+  id: "peripheral-mouse-all",
+  title: "Mouse Settings",
+  description: "Essential mouse configuration for gaming",
+  items: [
+    { setting: "Polling Rate", value: "1000Hz minimum, 4000Hz+ if supported", why: "Higher = more frequent position updates = smoother tracking" },
+    { setting: "DPI", value: "Personal preference, 400-1600 common for FPS", why: "Higher DPI ≠ better. Find your eDPI sweet spot (DPI × in-game sens)." },
+    { setting: "Angle Snapping", value: "Off", why: "Artificial straightening = bad for raw aim" },
+    { setting: "Acceleration", value: "Off (both Windows and mouse software)", why: "Inconsistent movement speed breaks muscle memory" },
+    { setting: "LOD (Lift-off Distance)", value: "Low/1mm if available", why: "Reduces unwanted tracking when lifting mouse to reposition" },
+    { setting: "Debounce", value: "Lowest stable setting", why: "Lower = faster click registration, but too low may cause double-clicks" },
+  ] as const,
+} as const;
+
+export const PERIPHERAL_MOUSE_PRO: ManualStepSection = {
+  id: "peripheral-mouse-pro",
+  title: "Mouse (Pro)",
+  description: "Advanced mouse settings for competitive players",
+  personas: ["pro_gamer"],
+  items: [
+    { setting: "Surface Calibration", value: "Calibrate to your mousepad", why: "Optimal tracking for your specific surface" },
+    { setting: "DPI Stages", value: "Remove unused stages", why: "Prevents accidental DPI changes mid-game" },
+    { setting: "Onboard Memory", value: "Save profile to mouse", why: "Settings work without software running (less background processes)" },
+  ] as const,
+} as const;
+
+export const PERIPHERAL_KEYBOARD_ALL: ManualStepSection = {
+  id: "peripheral-keyboard-all",
+  title: "Keyboard Settings",
+  description: "Essential keyboard configuration",
+  items: [
+    { setting: "Polling Rate", value: "1000Hz+", why: "Faster key press registration" },
+    { setting: "N-Key Rollover (NKRO)", value: "Enabled / Full", why: "All simultaneous key presses register (important for complex inputs)" },
+    { setting: "Game Mode", value: "Enable during gaming", why: "Disables Windows key to prevent accidental alt-tabs" },
+  ] as const,
+} as const;
+
+export const PERIPHERAL_KEYBOARD_PRO: ManualStepSection = {
+  id: "peripheral-keyboard-pro",
+  title: "Keyboard (Pro)",
+  description: "Advanced keyboard settings for competitive players",
+  personas: ["pro_gamer"],
+  items: [
+    { setting: "Rapid Trigger (if available)", value: "Enable for movement keys", why: "Faster direction changes in strafing games (Wooting, etc.)" },
+    { setting: "Actuation Point", value: "Adjust based on preference", why: "Higher for less fatigue, lower for speed (analog keyboards)" },
+  ] as const,
+} as const;
+
+export const PERIPHERAL_AUDIO_ALL: ManualStepSection = {
+  id: "peripheral-audio-all",
+  title: "Audio/Headset Settings",
+  description: "Sound settings in Windows",
+  location: "Right-click speaker icon → Sound settings → Device properties → Additional device properties",
+  items: [
+    { setting: "Sample Rate", value: "48000 Hz", why: "Match game audio (most games use 48kHz)" },
+    { setting: "Bit Depth", value: "24-bit", why: "Higher dynamic range than 16-bit" },
+    { setting: "Spatial Audio", value: "Off for competitive, preference otherwise", why: "Virtual surround can muddy directional audio in competitive" },
+    { setting: "Exclusive Mode", value: "Allow applications to take exclusive control", why: "Reduces audio latency" },
+  ] as const,
+} as const;
+
+export const PERIPHERAL_AUDIO_PRO: ManualStepSection = {
+  id: "peripheral-audio-pro",
+  title: "Audio (Pro)",
+  description: "Competitive audio settings",
+  personas: ["pro_gamer"],
+  location: "Speaker properties → Enhancements tab",
+  items: [
+    { setting: "Windows Sonic/Dolby Atmos", value: "Off", why: "Adds processing latency. Use stereo for competitive." },
+    { setting: "Loudness Equalization", value: "Off", why: "Compresses dynamic range, makes footsteps harder to hear" },
+    { setting: "Audio Enhancements", value: "All Off", why: "Pure unprocessed signal to headphones" },
+  ] as const,
+} as const;
+
+// -----------------------------------------------------------------------------
+// Network Adapter Settings
+// -----------------------------------------------------------------------------
+
+export const NETWORK_ADAPTER_ALL: ManualStepSection = {
+  id: "network-adapter-all",
+  title: "Network Adapter Settings",
+  description: "Device Manager → Network adapters → Your NIC → Properties → Advanced",
+  note: "Setting names vary by manufacturer (Intel, Realtek, Killer). Use PowerShell: Get-NetAdapterAdvancedProperty -Name 'Ethernet' to see available options.",
+  items: [
+    { setting: "Interrupt Moderation", value: "Disabled", why: "Reduces latency by not batching interrupts. May slightly increase CPU usage." },
+    { setting: "Interrupt Moderation Rate", value: "Off/Minimal", why: "Same as above, for adapters with a rate setting instead of on/off." },
+    { setting: "Flow Control", value: "Disabled", why: "Prevents network pausing. Can improve latency slightly." },
+    { setting: "Energy Efficient Ethernet", value: "Disabled", why: "Prevents power saving on NIC that can cause latency spikes." },
+    { setting: "Green Ethernet", value: "Disabled", why: "Same as above, different manufacturer name." },
+    { setting: "Speed & Duplex", value: "1 Gbps Full Duplex (if wired)", why: "Don't auto-negotiate if you know your connection speed." },
+  ] as const,
+} as const;
+
+export const NETWORK_ADAPTER_PRO: ManualStepSection = {
+  id: "network-adapter-pro",
+  title: "Network (Pro)",
+  description: "Additional NIC settings for competitive",
+  personas: ["pro_gamer"],
+  note: "These settings may increase CPU usage slightly but reduce network latency.",
+  items: [
+    { setting: "Large Send Offload (LSO) v1/v2", value: "Disabled", why: "Reduces CPU usage but adds latency. Disable for lowest ping." },
+    { setting: "Receive Buffers", value: "Maximum (e.g., 2048)", why: "More buffer = handle traffic bursts better." },
+    { setting: "Transmit Buffers", value: "Maximum", why: "Same for outgoing traffic." },
+    { setting: "Gigabit Master Slave Mode", value: "Auto or Force Master", why: "Some NICs default to slave mode, which has worse latency." },
+  ] as const,
+} as const;
+
+// -----------------------------------------------------------------------------
+// Game Launch Options
+// -----------------------------------------------------------------------------
+
+export const GAME_LAUNCH_FPS: ManualStepSection = {
+  id: "game-launch-fps",
+  title: "FPS / Shooter Games",
+  description: "Launch options for competitive shooters",
+  items: [
+    {
+      game: "CS2 / CS:GO",
+      platform: "Steam",
+      launchOptions: "-novid -high -tickrate 128 +fps_max 0",
+      notes: [
+        "-novid: Skip intro video",
+        "-high: High CPU priority",
+        "-tickrate 128: Practice server tickrate",
+        "+fps_max 0: Uncapped (or set to monitor refresh + 1)",
+        "In-game: NVIDIA Reflex = On + Boost",
+        "In-game: Multicore Rendering = Enabled",
+      ],
+    },
+    {
+      game: "Valorant",
+      platform: "Riot",
+      notes: [
+        "No launch options (Riot launcher)",
+        "In-game: NVIDIA Reflex = On + Boost",
+        "In-game: Multithreaded Rendering = On",
+        "In-game: Limit FPS = Off or slightly above refresh",
+        "Note: Vanguard anti-cheat runs at boot",
+        "Warning: Some Core Isolation settings conflict with Vanguard",
+      ],
+    },
+    {
+      game: "Apex Legends",
+      platform: "Steam",
+      launchOptions: "-novid -high +fps_max unlimited",
+      notes: [
+        "Origin/EA App: +fps_max unlimited",
+        "In-game: NVIDIA Reflex = Enabled + Boost",
+        "In-game: Adaptive Resolution FPS Target = 0 (disabled)",
+        "In-game: V-Sync = Disabled",
+        "Config: videoconfig.txt → setting.fps_max \"0\"",
+      ],
+    },
+    {
+      game: "Overwatch 2",
+      platform: "Battle.net",
+      launchOptions: "--tank_WorkerThreadCount X",
+      notes: [
+        "Replace X with your physical core count",
+        "In-game: NVIDIA Reflex = Enabled",
+        "In-game: Reduce Buffering = On (crucial for latency!)",
+        "In-game: Limit FPS = Display-based or custom cap",
+        "In-game: Triple Buffering = Off",
+      ],
+    },
+    {
+      game: "Fortnite",
+      platform: "Epic",
+      launchOptions: "-USEALLAVAILABLECORES",
+      notes: [
+        "Epic launcher → Settings → Additional Command Line",
+        "-PREFERREDPROCESSOR X: Pin to specific core (advanced)",
+        "In-game: NVIDIA Reflex = On + Boost",
+        "In-game: DirectX 12 for newer GPUs, DX11 for stability",
+        "In-game: Rendering Mode = Performance for max FPS",
+      ],
+    },
+  ] as const,
+} as const;
+
+export const GAME_LAUNCH_MOBA: ManualStepSection = {
+  id: "game-launch-moba",
+  title: "MOBA / Strategy Games",
+  description: "Launch options for MOBAs and RTS games",
+  items: [
+    {
+      game: "Dota 2",
+      platform: "Steam",
+      launchOptions: "-novid -high -dx11 +fps_max 0",
+      notes: [
+        "-dx11: Force DirectX 11 (more stable than Vulkan for some)",
+        "-vulkan: Try Vulkan for AMD GPUs",
+        "In-game: Compute Shaders = Enabled",
+        "In-game: Async Compute = Enabled (NVIDIA 10-series+)",
+      ],
+    },
+    {
+      game: "League of Legends",
+      platform: "Riot",
+      notes: [
+        "No launch options (Riot launcher)",
+        "In-game: Cap FPS to monitor refresh (prevents GPU heat)",
+        "In-game: V-Sync = Off",
+        "Config: game.cfg → [Performance] → TargetFrameRate",
+        "Client: Low Spec Mode = faster load times",
+      ],
+    },
+  ] as const,
+} as const;
+
+// -----------------------------------------------------------------------------
+// OBS/Streaming Settings (Streamer-only)
+// -----------------------------------------------------------------------------
+
+export const OBS_OUTPUT: ManualStepSection = {
+  id: "obs-output",
+  title: "OBS Output Settings",
+  description: "Settings → Output → Streaming/Recording",
+  personas: ["streamer"],
+  items: [
+    { setting: "Encoder", value: "NVENC (NVIDIA) or AMF (AMD)", why: "Hardware encoding = minimal CPU impact, GPU handles it" },
+    { setting: "Rate Control", value: "CBR for streaming, CQP for recording", why: "CBR = consistent bitrate for Twitch/YouTube" },
+    { setting: "Bitrate (1080p60)", value: "6000 Kbps (Twitch), 10000+ (YouTube)", why: "Twitch caps at 6000, YouTube allows more headroom" },
+    { setting: "Keyframe Interval", value: "2 seconds", why: "Required by most streaming platforms" },
+    { setting: "Preset", value: "Quality or Max Quality", why: "NVENC Quality ≈ x264 Medium with only ~10% GPU usage" },
+    { setting: "Profile", value: "High", why: "Better compression efficiency than Baseline or Main" },
+    { setting: "Look-ahead", value: "Off for low latency, On for quality", why: "Adds encoding delay but better bitrate allocation" },
+    { setting: "Psycho Visual Tuning", value: "On", why: "Better perceived quality at same bitrate" },
+    { setting: "Max B-frames", value: "2", why: "Balance of quality and encoding latency" },
+  ] as const,
+} as const;
+
+export const OBS_VIDEO: ManualStepSection = {
+  id: "obs-video",
+  title: "OBS Video Settings",
+  description: "Settings → Video",
+  personas: ["streamer"],
+  items: [
+    { setting: "Base (Canvas) Resolution", value: "Your monitor resolution", why: "Capture at native, scale down if needed" },
+    { setting: "Output (Scaled) Resolution", value: "1920x1080 for most", why: "Higher than 1080p rarely worth the bitrate on Twitch" },
+    { setting: "Downscale Filter", value: "Lanczos (Sharpened scaling, 36 samples)", why: "Best quality downscale, slight performance cost" },
+    { setting: "FPS", value: "60 FPS", why: "Match your content. 30 FPS is fine for slow-paced games." },
+  ] as const,
+} as const;
+
+export const OBS_ADVANCED: ManualStepSection = {
+  id: "obs-advanced",
+  title: "OBS Advanced Settings",
+  description: "Settings → Advanced",
+  personas: ["streamer"],
+  items: [
+    { setting: "Process Priority", value: "Above Normal", why: "OBS gets CPU time over background apps, but not before games" },
+    { setting: "Renderer", value: "Direct3D 11", why: "Most compatible. Avoid Vulkan unless troubleshooting." },
+    { setting: "Color Format", value: "NV12", why: "Standard for streaming, hardware encoder native format" },
+    { setting: "Color Space", value: "709", why: "HD standard color space" },
+    { setting: "Color Range", value: "Partial", why: "Full range can cause issues on some platforms/players" },
+  ] as const,
+} as const;
+
+export const OBS_SOURCES: ManualStepSection = {
+  id: "obs-sources",
+  title: "OBS Source Settings",
+  description: "When adding game sources",
+  personas: ["streamer"],
+  note: "Game Capture is always preferred over Display Capture when the game supports it",
+  items: [
+    { setting: "Game Capture vs Display Capture", value: "Game Capture when possible", why: "Lower overhead, captures only the game, not entire screen" },
+    { setting: "Game Capture → Mode", value: "Capture specific window", why: "More reliable than 'Capture any fullscreen application'" },
+    { setting: "Game Capture → SLI/Crossfire Capture", value: "Off unless multi-GPU", why: "Adds overhead when enabled unnecessarily" },
+    { setting: "Game Capture → Allow Transparency", value: "Off", why: "Unnecessary processing for most games" },
+  ] as const,
+} as const;
+
+export const OBS_TROUBLESHOOTING: ManualStepSection = {
+  id: "obs-troubleshooting",
+  title: "Common Streaming Issues",
+  description: "Quick fixes for OBS problems",
+  personas: ["streamer"],
+  items: [
+    { problem: "Encoding overloaded", solution: "Lower preset (Quality → Performance) or output resolution", why: "GPU encoder can't keep up with encoding demand" },
+    { problem: "Dropped frames (Network)", solution: "Lower bitrate or check upload speed", why: "Internet can't sustain the set bitrate" },
+    { problem: "Dropped frames (Rendering)", solution: "Cap game FPS, close background apps", why: "GPU overloaded between game rendering and encoding" },
+    { problem: "Game stutters while streaming", solution: "Use NVENC/AMF, cap FPS 10 below max", why: "Leave GPU headroom for encoding work" },
+    { problem: "Black screen in Game Capture", solution: "Run OBS as admin, or use Display Capture", why: "Anti-cheat or game capture hook compatibility issue" },
+  ] as const,
+} as const;
+
+// -----------------------------------------------------------------------------
+// Diagnostic Tools
+// -----------------------------------------------------------------------------
+
+export const DIAGNOSTIC_TOOLS_PERFORMANCE: ManualStepSection = {
+  id: "diagnostic-performance",
+  title: "Performance Diagnostics",
+  description: "Tools to diagnose FPS issues, stuttering, and system bottlenecks",
+  items: [
+    { tool: "LatencyMon", use: "Diagnose DPC latency spikes causing audio crackle or micro-stutters", arsenalKey: "latencymon" },
+    { tool: "HWiNFO64", use: "Monitor temps, clocks, and detect thermal throttling during gaming", arsenalKey: "hwinfo" },
+    { tool: "CapFrameX", use: "Capture and analyze frametimes for detailed benchmark comparisons", arsenalKey: "capframex" },
+    { tool: "MSI Afterburner", use: "GPU monitoring overlay, frametime graphs, and overclocking", arsenalKey: "msiafterburner" },
+    { tool: "Process Explorer", use: "Deep process inspection, find CPU/memory hogs", arsenalKey: "sysinternals" },
+  ] as const,
+} as const;
+
+export const DIAGNOSTIC_TOOLS_HARDWARE: ManualStepSection = {
+  id: "diagnostic-hardware",
+  title: "Hardware Diagnostics",
+  description: "Tools to test and verify hardware stability",
+  items: [
+    { tool: "DDU (Display Driver Uninstaller)", use: "Clean GPU driver removal before fresh install - fixes many issues", arsenalKey: "ddu" },
+    { tool: "CrystalDiskMark", use: "Test SSD/HDD speeds, diagnose slow load times", arsenalKey: "crystaldiskmark" },
+    { tool: "memtest86", use: "Test RAM stability overnight - catches unstable XMP profiles" },
+    { tool: "OCCT", use: "Stress test CPU, GPU, RAM, and PSU to find stability issues" },
+    { tool: "Prime95", use: "Heavy CPU stress test, reveals thermal throttling" },
+  ] as const,
+} as const;
+
+export const DIAGNOSTIC_TOOLS_NETWORK: ManualStepSection = {
+  id: "diagnostic-network",
+  title: "Network Diagnostics",
+  description: "Tools to diagnose ping, packet loss, and connection issues",
+  items: [
+    { tool: "WinMTR", use: "Network path analysis - find where packet loss occurs between you and server" },
+    { tool: "PingPlotter", use: "Visual network route analysis with graphs over time" },
+    { tool: "Wireshark", use: "Deep packet inspection - for advanced network troubleshooting" },
+  ] as const,
+} as const;
+
+export const DIAGNOSTIC_TOOLS_CRASHES: ManualStepSection = {
+  id: "diagnostic-crashes",
+  title: "Crash Diagnostics",
+  description: "Tools to analyze BSODs and game crashes",
+  items: [
+    { tool: "WhoCrashed", use: "Analyze BSOD minidump files, identifies faulty drivers" },
+    { tool: "BlueScreenView", use: "Simple BSOD log viewer, shows crash history" },
+    { tool: "Event Viewer", use: "Built-in Windows logs - check Application and System for errors" },
+  ] as const,
+} as const;
+
 // -----------------------------------------------------------------------------
 // Section Groups for UI
 // -----------------------------------------------------------------------------
@@ -486,8 +965,13 @@ export type SectionCategory =
   | "gpu"
   | "bios"
   | "software"
+  | "peripherals"
+  | "network"
   | "preflight"
-  | "troubleshooting";
+  | "troubleshooting"
+  | "games"
+  | "streaming"
+  | "diagnostics";
 
 export interface SectionGroup {
   readonly id: SectionCategory;
@@ -570,6 +1054,25 @@ export const SECTION_GROUPS: readonly SectionGroup[] = [
     ],
   },
   {
+    id: "peripherals",
+    title: "Peripherals",
+    icon: "mouse",
+    sections: [
+      PERIPHERAL_MOUSE_ALL,
+      PERIPHERAL_MOUSE_PRO,
+      PERIPHERAL_KEYBOARD_ALL,
+      PERIPHERAL_KEYBOARD_PRO,
+      PERIPHERAL_AUDIO_ALL,
+      PERIPHERAL_AUDIO_PRO,
+    ],
+  },
+  {
+    id: "network",
+    title: "Network Adapter",
+    icon: "wifi",
+    sections: [NETWORK_ADAPTER_ALL, NETWORK_ADAPTER_PRO],
+  },
+  {
     id: "preflight",
     title: "Pre-Flight Checklist",
     icon: "checklist",
@@ -579,8 +1082,32 @@ export const SECTION_GROUPS: readonly SectionGroup[] = [
     id: "troubleshooting",
     title: "Troubleshooting",
     icon: "wrench",
-    sections: [TROUBLESHOOTING_WIFI_BLUETOOTH],
+    sections: [
+      TROUBLESHOOTING_PERFORMANCE,
+      TROUBLESHOOTING_AUDIO,
+      TROUBLESHOOTING_NETWORK,
+      TROUBLESHOOTING_CRASHES,
+      TROUBLESHOOTING_WIFI_BLUETOOTH,
+    ],
     videos: [VIDEOS.STUTTERING_FIXES],
+  },
+  {
+    id: "games",
+    title: "Game Launch Options",
+    icon: "gamepad",
+    sections: [GAME_LAUNCH_FPS, GAME_LAUNCH_MOBA],
+  },
+  {
+    id: "streaming",
+    title: "Streaming (OBS)",
+    icon: "broadcast",
+    sections: [OBS_OUTPUT, OBS_VIDEO, OBS_ADVANCED, OBS_SOURCES, OBS_TROUBLESHOOTING],
+  },
+  {
+    id: "diagnostics",
+    title: "Diagnostic Tools",
+    icon: "stethoscope",
+    sections: [DIAGNOSTIC_TOOLS_PERFORMANCE, DIAGNOSTIC_TOOLS_HARDWARE, DIAGNOSTIC_TOOLS_NETWORK, DIAGNOSTIC_TOOLS_CRASHES],
   },
 ] as const;
 

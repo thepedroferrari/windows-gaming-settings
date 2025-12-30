@@ -20,6 +20,10 @@
     type BrowserSettingItem,
     type RgbSettingItem,
     type PreflightCheck,
+    type TroubleshootingItem,
+    type GameLaunchItem,
+    type StreamingTroubleshootItem,
+    type DiagnosticTool,
     type VideoResource,
   } from "$lib/manual-steps";
 
@@ -73,41 +77,73 @@
     expandedGroups = new Set();
   }
 
+  // Type for all possible item types
+  type AnyItem = ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck | TroubleshootingItem | GameLaunchItem | StreamingTroubleshootItem | DiagnosticTool;
+
   // Type guards for rendering
-  function isManualStepItem(
-    item: ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck
-  ): item is ManualStepItem {
-    return "step" in item && "check" in item;
+  function isManualStepItem(item: AnyItem): item is ManualStepItem {
+    return "step" in item && "check" in item && "why" in item;
   }
 
-  function isSettingItem(
-    item: ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck
-  ): item is SettingItem {
+  function isSettingItem(item: AnyItem): item is SettingItem {
     return "setting" in item && "value" in item && !("path" in item) && !("browser" in item) && !("software" in item);
   }
 
-  function isSoftwareSettingItem(
-    item: ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck
-  ): item is SoftwareSettingItem {
+  function isSoftwareSettingItem(item: AnyItem): item is SoftwareSettingItem {
     return "path" in item && "value" in item && !("browser" in item);
   }
 
-  function isBrowserSettingItem(
-    item: ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck
-  ): item is BrowserSettingItem {
+  function isBrowserSettingItem(item: AnyItem): item is BrowserSettingItem {
     return "browser" in item && "setting" in item;
   }
 
-  function isRgbSettingItem(
-    item: ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck
-  ): item is RgbSettingItem {
+  function isRgbSettingItem(item: AnyItem): item is RgbSettingItem {
     return "software" in item && "action" in item;
   }
 
-  function isPreflightCheck(
-    item: ManualStepItem | SettingItem | SoftwareSettingItem | BrowserSettingItem | RgbSettingItem | PreflightCheck
-  ): item is PreflightCheck {
+  function isPreflightCheck(item: AnyItem): item is PreflightCheck {
     return "check" in item && "how" in item && "fail" in item;
+  }
+
+  function isTroubleshootingItem(item: AnyItem): item is TroubleshootingItem {
+    return "problem" in item && "causes" in item && "quickFix" in item;
+  }
+
+  function isGameLaunchItem(item: AnyItem): item is GameLaunchItem {
+    return "game" in item && "platform" in item && "notes" in item;
+  }
+
+  function isStreamingTroubleshootItem(item: AnyItem): item is StreamingTroubleshootItem {
+    return "problem" in item && "solution" in item && "why" in item && !("causes" in item);
+  }
+
+  function isDiagnosticTool(item: AnyItem): item is DiagnosticTool {
+    return "tool" in item && "use" in item;
+  }
+
+  // Copy to clipboard with feedback
+  let copiedId = $state<string | null>(null);
+
+  async function copyLaunchOptions(launchOptions: string, gameId: string) {
+    try {
+      await navigator.clipboard.writeText(launchOptions);
+      copiedId = gameId;
+      setTimeout(() => {
+        copiedId = null;
+      }, 2000);
+    } catch {
+      // Fallback for older browsers
+      const textarea = document.createElement("textarea");
+      textarea.value = launchOptions;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      copiedId = gameId;
+      setTimeout(() => {
+        copiedId = null;
+      }, 2000);
+    }
   }
 
   // Icon map
@@ -121,10 +157,20 @@
         return "M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0-6h18M3 9v6";
       case "software":
         return "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5";
+      case "peripherals":
+        return "M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4zm0 14a6 6 0 0 1-6-6V6a6 6 0 1 1 12 0v4a6 6 0 0 1-6 6zm0 2v4m-4 0h8";
+      case "network":
+        return "M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01";
       case "preflight":
         return "M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11";
       case "troubleshooting":
         return "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z";
+      case "games":
+        return "M6 11h4v2H6v4H4v-4H0v-2h4V7h2v4zm10-2h4v8h-2v-6h-2v6h-2V9h2zm-6 3h2v6H8v-6zm6 0h2v6h-2v-6z";
+      case "streaming":
+        return "M4.75 8.75a7.25 7.25 0 0 1 14.5 0M2 11.5a10.5 10.5 0 0 1 20 0M8.25 15a3.75 3.75 0 0 1 7.5 0M12 15a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0v-3a1 1 0 0 1 1-1z";
+      case "diagnostics":
+        return "M4.8 2.3A.3.3 0 1 0 5 2.9 2.3 2.3 0 1 1 7.3 5.2a.3.3 0 0 0-.3.3 4 4 0 0 1-4 4 .3.3 0 0 0 0 .6A4.6 4.6 0 0 0 7.6 5.5a.3.3 0 0 0-.3-.3 1.7 1.7 0 1 1-1.7-1.7.3.3 0 0 0 .3-.3 4 4 0 0 1 .6-.9zM12 8a4 4 0 0 0-4 4v7a4 4 0 0 0 8 0v-7a4 4 0 0 0-4-4zm-2 4a2 2 0 1 1 4 0v7a2 2 0 0 1-4 0z";
       default:
         return "M12 2L2 7l10 5 10-5-10-5z";
     }
@@ -253,6 +299,71 @@
                           <p class="manual-steps__fail">
                             <strong>If not:</strong> {item.fail}
                           </p>
+                        {:else if isTroubleshootingItem(item)}
+                          <div class="manual-steps__item-main">
+                            <span class="manual-steps__problem">{item.problem}</span>
+                          </div>
+                          <div class="manual-steps__causes">
+                            <strong>Possible causes:</strong>
+                            <ul>
+                              {#each item.causes as cause}
+                                <li>{cause}</li>
+                              {/each}
+                            </ul>
+                          </div>
+                          <p class="manual-steps__quickfix">
+                            <strong>Quick fix:</strong> {item.quickFix}
+                          </p>
+                        {:else if isGameLaunchItem(item)}
+                          <div class="manual-steps__game-header">
+                            <span class="manual-steps__game-name">{item.game}</span>
+                            <span class="manual-steps__game-platform">{item.platform}</span>
+                          </div>
+                          {#if item.launchOptions}
+                            <div class="manual-steps__launch-options">
+                              <code class="manual-steps__launch-code">{item.launchOptions}</code>
+                              <button
+                                type="button"
+                                class="manual-steps__copy-btn"
+                                class:copied={copiedId === item.game}
+                                onclick={() => copyLaunchOptions(item.launchOptions!, item.game)}
+                              >
+                                {#if copiedId === item.game}
+                                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 6L9 17l-5-5" />
+                                  </svg>
+                                  Copied!
+                                {:else}
+                                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                  </svg>
+                                  Copy
+                                {/if}
+                              </button>
+                            </div>
+                          {/if}
+                          <ul class="manual-steps__game-notes">
+                            {#each item.notes as note}
+                              <li>{note}</li>
+                            {/each}
+                          </ul>
+                        {:else if isStreamingTroubleshootItem(item)}
+                          <div class="manual-steps__item-main">
+                            <span class="manual-steps__problem">{item.problem}</span>
+                          </div>
+                          <p class="manual-steps__solution">
+                            <strong>Solution:</strong> {item.solution}
+                          </p>
+                          <p class="manual-steps__why">{item.why}</p>
+                        {:else if isDiagnosticTool(item)}
+                          <div class="manual-steps__item-main">
+                            <span class="manual-steps__tool-name">{item.tool}</span>
+                            {#if item.arsenalKey}
+                              <span class="manual-steps__arsenal-badge" title="Available in Arsenal">Arsenal</span>
+                            {/if}
+                          </div>
+                          <p class="manual-steps__tool-use">{item.use}</p>
                         {/if}
                       </div>
                     </li>

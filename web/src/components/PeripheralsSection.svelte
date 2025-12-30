@@ -60,12 +60,14 @@
               <input
                 type="checkbox"
                 name="peripheral"
+                id="peripheral-{option.value}"
                 value={option.value}
                 checked={app.peripherals.has(option.value)}
                 onchange={handlePeripheralChange}
+                aria-describedby="peripheral-hint-{option.value}"
               />
               <span class="label-text">{option.label}</span>
-              <span class="label-hint">{option.hint}</span>
+              <span class="label-hint" id="peripheral-hint-{option.value}">{option.hint}</span>
             </label>
           {/each}
         </div>
@@ -112,12 +114,14 @@
               <input
                 type="checkbox"
                 name="monitor-software"
+                id="monitor-{option.value}"
                 value={option.value}
                 checked={app.monitorSoftware.has(option.value)}
                 onchange={handleMonitorChange}
+                aria-describedby="monitor-hint-{option.value}"
               />
               <span class="label-text">{option.label}</span>
-              <span class="label-hint">{option.hint}</span>
+              <span class="label-hint" id="monitor-hint-{option.value}">{option.hint}</span>
             </label>
           {/each}
         </div>

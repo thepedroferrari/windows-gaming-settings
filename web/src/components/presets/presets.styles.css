@@ -132,7 +132,19 @@
     perspective: 1200px;
     margin: 0 auto;
 
-    
+    /* Mobile: Stack cards vertically */
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-md);
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    }
+
+
     &:has(.preset-card.active) .preset-card:not(.active) {
       filter: grayscale(0.5) brightness(0.7);
       transform: scale(0.94);

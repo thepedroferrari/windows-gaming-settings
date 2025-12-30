@@ -25,11 +25,13 @@
   <input
     type="checkbox"
     name="opt"
+    id="opt-{opt.key}"
     value={opt.key}
     checked={isChecked}
     onchange={handleChange}
+    aria-describedby="opt-hint-{opt.key}"
   />
   <span class="label-text">{opt.label}</span>
   <span class="preset-badge" hidden></span>
-  <span class="label-hint">{opt.hint}</span>
+  <span class="label-hint" id="opt-hint-{opt.key}">{opt.hint}</span>
 </label>

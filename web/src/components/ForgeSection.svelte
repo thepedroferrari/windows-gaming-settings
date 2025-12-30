@@ -14,6 +14,7 @@
   import { SCRIPT_FILENAME } from '$lib/types'
   import { generateSHA256, copyToClipboard } from '$lib/checksum'
   import { downloadText } from '../utils/download'
+  import { buildVerificationScript, type SelectionState } from '$lib/script-generator'
   import Summary from './Summary.svelte'
   import PreflightChecks from './PreflightChecks.svelte'
   import ProfileActions from './ProfileActions.svelte'
@@ -44,6 +45,18 @@
     const script = app.script.edited ?? generateCurrentScript()
     if (!script.trim()) return
     downloadText(script, SCRIPT_FILENAME)
+  }
+
+  function handleDownloadVerify() {
+    // Generate verification script from current selections
+    const selection: SelectionState = {
+      hardware: app.hardware,
+      optimizations: Array.from(app.optimizations),
+      packages: Array.from(app.selected),
+      missingPackages: [],
+    }
+    const script = buildVerificationScript(selection)
+    downloadText(script, 'rocktune-verify.ps1')
   }
 
   async function handleCopyHash() {
@@ -121,6 +134,19 @@
           Download
         </span>
         <span class="scanlines"></span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-verify"
+        title="Download verification script to check if optimizations were applied"
+        onclick={handleDownloadVerify}
+      >
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4" />
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg>
+        Verify Script
       </button>
     </div>
 

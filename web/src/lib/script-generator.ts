@@ -48,11 +48,33 @@ export type ScriptGeneratorOptions = {
 
 const DEFAULT_DNS_PROVIDER = 'cloudflare'
 
+/** ASCII banner for script header */
+const ASCII_BANNER = `
+@'
+    ____             __   ______
+   / __ \\____  _____/ /__/_  __/_  ______  ___
+  / /_/ / __ \\/ ___/ //_/ / / / / / / __ \\/ _ \\
+ / _, _/ /_/ / /__/ ,<   / / / /_/ / / / /  __/
+/_/ |_|\\____/\\___/_/|_| /_/  \\__,_/_/ /_/\\___/
+
+        Windows Gaming Loadout Builder
+'@
+`
+
 /** Inline helper functions for self-contained scripts */
 const HELPER_FUNCTIONS = `
-function Write-Step { param([string]$M) Write-Host ""; Write-Host "=== $M ===" -ForegroundColor Cyan }
-function Write-OK { param([string]$M) Write-Host "  [OK] $M" -ForegroundColor Green }
-function Write-Fail { param([string]$M) Write-Host "  [FAIL] $M" -ForegroundColor Red }
+# --- Progress tracking ---
+$script:StepCount = 0
+$script:StepTotal = 0
+$script:SuccessCount = 0
+$script:FailCount = 0
+$script:WarningCount = 0
+
+function Write-Banner { Write-Host ${ASCII_BANNER.trim()} -ForegroundColor Magenta }
+function Write-Step { param([string]$M) $script:StepCount++; Write-Host ""; Write-Host "[$script:StepCount/$script:StepTotal] $M" -ForegroundColor Cyan }
+function Write-OK { param([string]$M) $script:SuccessCount++; Write-Host "  [OK] $M" -ForegroundColor Green }
+function Write-Fail { param([string]$M) $script:FailCount++; Write-Host "  [FAIL] $M" -ForegroundColor Red }
+function Write-Warn { param([string]$M) $script:WarningCount++; Write-Host "  [!] $M" -ForegroundColor Yellow }
 function Set-Reg {
     param([string]$Path, [string]$Name, $Value, [string]$Type = "DWORD")
     try {
@@ -134,11 +156,17 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
   lines.push(HELPER_FUNCTIONS.trim())
   lines.push('')
 
-  // Clear screen and header
+  // Count total steps for progress indicator
+  let stepCount = 0
+  if (selected.has('restore_point')) stepCount++
+  stepCount++ // Upgrades
+  if (allPackagesArray.length > 0) stepCount++ // Arsenal
+  stepCount++ // Complete
+
+  // Clear screen and header with banner
   lines.push('Clear-Host')
-  lines.push('Write-Host ""')
-  lines.push('Write-Host "  ROCKTUNE LOADOUT" -ForegroundColor Magenta')
-  lines.push('Write-Host "  ================" -ForegroundColor Magenta')
+  lines.push(`$script:StepTotal = ${stepCount}`)
+  lines.push('Write-Banner')
   lines.push('Write-Host ""')
   lines.push('')
 
@@ -256,10 +284,22 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
     lines.push('')
   }
 
-  // Footer
+  // Footer with summary
   lines.push('Write-Step "Complete"')
   lines.push('Write-Host ""')
-  lines.push('Write-Host "  Loadout applied. Reboot recommended." -ForegroundColor Green')
+  lines.push('Write-Host "  ╔════════════════════════════════════════╗" -ForegroundColor White')
+  lines.push('Write-Host "  ║           LOADOUT SUMMARY              ║" -ForegroundColor White')
+  lines.push('Write-Host "  ╚════════════════════════════════════════╝" -ForegroundColor White')
+  lines.push('Write-Host ""')
+  lines.push('Write-Host "  Applied:  $($script:SuccessCount) changes" -ForegroundColor Green')
+  lines.push('if ($script:WarningCount -gt 0) { Write-Host "  Warnings: $($script:WarningCount)" -ForegroundColor Yellow }')
+  lines.push('if ($script:FailCount -gt 0) { Write-Host "  Failed:   $($script:FailCount)" -ForegroundColor Red }')
+  lines.push('Write-Host ""')
+  lines.push('Write-Host "  Reboot recommended for all changes to take effect." -ForegroundColor Cyan')
+  lines.push('Write-Host ""')
+  lines.push('')
+  lines.push('# Script verification hash')
+  lines.push(`Write-Host "  Build: ${__BUILD_COMMIT__}" -ForegroundColor DarkGray`)
   lines.push('Write-Host ""')
 
   return lines.join('\n')
@@ -1116,4 +1156,181 @@ function generateAudioOpts(selected: Set<string>): string[] {
   }
 
   return lines
+}
+
+// =============================================================================
+// Verification Script Generator
+// =============================================================================
+
+const VERIFICATION_BANNER = `
+@'
+    ____             __   ______
+   / __ \\____  _____/ /__/_  __/_  ______  ___
+  / /_/ / __ \\/ ___/ //_/ / / / / / / __ \\/ _ \\
+ / _, _/ /_/ / /__/ ,<   / / / /_/ / / / /  __/
+/_/ |_|\\____/\\___/_/|_| /_/  \\__,_/_/ /_/\\___/
+
+      Verification Script - Check Applied Optimizations
+'@
+`
+
+const VERIFICATION_HELPERS = `
+$script:PassCount = 0
+$script:FailCount = 0
+$script:SkipCount = 0
+
+function Write-Banner { Write-Host ${VERIFICATION_BANNER.trim()} -ForegroundColor Cyan }
+function Write-Pass { param([string]$M) $script:PassCount++; Write-Host "  [PASS] $M" -ForegroundColor Green }
+function Write-Fail { param([string]$M) $script:FailCount++; Write-Host "  [FAIL] $M" -ForegroundColor Red }
+function Write-Skip { param([string]$M) $script:SkipCount++; Write-Host "  [SKIP] $M" -ForegroundColor DarkGray }
+function Write-Section { param([string]$M) Write-Host ""; Write-Host "=== $M ===" -ForegroundColor White }
+function Test-RegValue { param([string]$Path, [string]$Name, $Expected)
+    try {
+        if (-not (Test-Path $Path)) { return $false }
+        $actual = (Get-ItemProperty -Path $Path -Name $Name -EA SilentlyContinue).$Name
+        return $actual -eq $Expected
+    } catch { return $false }
+}
+`
+
+/**
+ * Build a verification script that checks applied optimizations
+ */
+export function buildVerificationScript(selection: SelectionState): string {
+  const { optimizations } = selection
+  const selected = new Set(optimizations)
+  const timestamp = new Date().toISOString()
+
+  const lines: string[] = []
+
+  // Header
+  lines.push('<#')
+  lines.push('.SYNOPSIS')
+  lines.push(`    RockTune Verification Script - Generated ${timestamp}`)
+  lines.push('.DESCRIPTION')
+  lines.push('    Checks if the optimizations from your RockTune loadout were applied.')
+  lines.push('    Run this script to verify your system state.')
+  lines.push('#>')
+  lines.push('')
+
+  // Helper functions
+  lines.push(VERIFICATION_HELPERS.trim())
+  lines.push('')
+
+  // Banner
+  lines.push('Clear-Host')
+  lines.push('Write-Banner')
+  lines.push('Write-Host ""')
+  lines.push('')
+
+  // System section
+  lines.push('Write-Section "System Settings"')
+
+  if (selected.has('mouse_accel')) {
+    lines.push('if (Test-RegValue "HKCU:\\Control Panel\\Mouse" "MouseSpeed" 0) { Write-Pass "Mouse acceleration disabled" } else { Write-Fail "Mouse acceleration NOT disabled" }')
+  }
+
+  if (selected.has('keyboard_response')) {
+    lines.push('if (Test-RegValue "HKCU:\\Control Panel\\Keyboard" "KeyboardDelay" 0) { Write-Pass "Keyboard delay minimized" } else { Write-Fail "Keyboard delay NOT minimized" }')
+  }
+
+  if (selected.has('fastboot')) {
+    lines.push('if (Test-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power" "HiberbootEnabled" 0) { Write-Pass "Fast startup disabled" } else { Write-Fail "Fast startup NOT disabled" }')
+  }
+
+  if (selected.has('end_task')) {
+    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings" "TaskbarEndTask" 1) { Write-Pass "End Task enabled in taskbar" } else { Write-Fail "End Task NOT enabled" }')
+  }
+
+  if (selected.has('notifications_off')) {
+    lines.push('if (Test-RegValue "HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer" "DisableNotificationCenter" 1) { Write-Pass "Notifications disabled" } else { Write-Fail "Notifications NOT disabled" }')
+  }
+
+  // Performance section
+  lines.push('')
+  lines.push('Write-Section "Performance Settings"')
+
+  if (selected.has('gamedvr')) {
+    lines.push('if (Test-RegValue "HKCU:\\System\\GameConfigStore" "GameDVR_Enabled" 0) { Write-Pass "Game DVR disabled" } else { Write-Fail "Game DVR NOT disabled" }')
+  }
+
+  if (selected.has('hags')) {
+    lines.push('if (Test-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers" "HwSchMode" 2) { Write-Pass "HAGS enabled" } else { Write-Fail "HAGS NOT enabled" }')
+  }
+
+  if (selected.has('fso_disable')) {
+    lines.push('if (Test-RegValue "HKCU:\\System\\GameConfigStore" "GameDVR_FSEBehaviorMode" 2) { Write-Pass "Fullscreen optimizations disabled" } else { Write-Fail "Fullscreen optimizations NOT disabled" }')
+  }
+
+  if (selected.has('game_mode')) {
+    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\GameBar" "AutoGameModeEnabled" 1) { Write-Pass "Game Mode enabled" } else { Write-Fail "Game Mode NOT enabled" }')
+  }
+
+  // Power section
+  lines.push('')
+  lines.push('Write-Section "Power Settings"')
+
+  if (selected.has('ultimate_perf') || selected.has('power_plan')) {
+    lines.push('$plan = powercfg /getactivescheme')
+    lines.push('if ($plan -match "Ultimate Performance|High performance") { Write-Pass "High/Ultimate performance plan active" } else { Write-Fail "Performance power plan NOT active" }')
+  }
+
+  if (selected.has('hibernation_disable')) {
+    lines.push('$hibPath = "$env:SystemDrive\\hiberfil.sys"')
+    lines.push('if (-not (Test-Path $hibPath)) { Write-Pass "Hibernation disabled" } else { Write-Fail "Hibernation file still exists" }')
+  }
+
+  // Network section
+  lines.push('')
+  lines.push('Write-Section "Network Settings"')
+
+  if (selected.has('nagle') || selected.has('tcp_optimizer')) {
+    lines.push('$adapter = Get-NetAdapter | Where-Object {$_.Status -eq "Up"} | Select-Object -First 1')
+    lines.push('if ($adapter) {')
+    lines.push('    $path = "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\$($adapter.InterfaceGuid)"')
+    lines.push('    if (Test-RegValue $path "TcpAckFrequency" 1) { Write-Pass "Nagle algorithm disabled on $($adapter.Name)" } else { Write-Fail "Nagle algorithm NOT disabled" }')
+    lines.push('} else { Write-Skip "No active network adapter found" }')
+  }
+
+  if (selected.has('network_throttling')) {
+    lines.push('if (Test-RegValue "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" "NetworkThrottlingIndex" 0xffffffff) { Write-Pass "Network throttling disabled" } else { Write-Fail "Network throttling NOT disabled" }')
+  }
+
+  // Privacy section
+  lines.push('')
+  lines.push('Write-Section "Privacy Settings"')
+
+  if (selected.has('privacy_tier1')) {
+    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" "Enabled" 0) { Write-Pass "Advertising ID disabled" } else { Write-Fail "Advertising ID NOT disabled" }')
+  }
+
+  if (selected.has('privacy_tier2')) {
+    lines.push('if (Test-RegValue "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "AllowTelemetry" 0) { Write-Pass "Telemetry minimized" } else { Write-Fail "Telemetry NOT minimized" }')
+  }
+
+  if (selected.has('background_apps')) {
+    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" "GlobalUserDisabled" 1) { Write-Pass "Background apps disabled" } else { Write-Fail "Background apps NOT disabled" }')
+  }
+
+  if (selected.has('copilot_disable')) {
+    lines.push('if (Test-RegValue "HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1) { Write-Pass "Copilot disabled" } else { Write-Fail "Copilot NOT disabled" }')
+  }
+
+  // Summary
+  lines.push('')
+  lines.push('Write-Host ""')
+  lines.push('Write-Host "  ╔════════════════════════════════════════╗" -ForegroundColor White')
+  lines.push('Write-Host "  ║         VERIFICATION SUMMARY           ║" -ForegroundColor White')
+  lines.push('Write-Host "  ╚════════════════════════════════════════╝" -ForegroundColor White')
+  lines.push('Write-Host ""')
+  lines.push('$total = $script:PassCount + $script:FailCount')
+  lines.push('Write-Host "  Passed:  $($script:PassCount)/$total" -ForegroundColor Green')
+  lines.push('if ($script:FailCount -gt 0) { Write-Host "  Failed:  $($script:FailCount)" -ForegroundColor Red }')
+  lines.push('if ($script:SkipCount -gt 0) { Write-Host "  Skipped: $($script:SkipCount)" -ForegroundColor DarkGray }')
+  lines.push('Write-Host ""')
+  lines.push('if ($script:FailCount -eq 0) { Write-Host "  All optimizations verified!" -ForegroundColor Green }')
+  lines.push('else { Write-Host "  Some optimizations may need to be re-applied or require reboot." -ForegroundColor Yellow }')
+  lines.push('Write-Host ""')
+
+  return lines.join('\n')
 }
