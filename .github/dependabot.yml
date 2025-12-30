@@ -1,0 +1,13 @@
+# Dependabot configuration
+# Keeps dependencies up to date automatically
+version: 2
+updates:
+  # Check npm dependencies in web folder
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "automated"
