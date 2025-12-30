@@ -17,6 +17,7 @@
   import Summary from './Summary.svelte'
   import PreflightChecks from './PreflightChecks.svelte'
   import ProfileActions from './ProfileActions.svelte'
+  import ManualStepsSection from './ManualStepsSection.svelte'
 
   let checksum = $state('')
   let copied = $state(false)
@@ -227,6 +228,8 @@
         {/if}
       </div>
     {/if}
+
+    <ManualStepsSection />
 
     <div class="provenance">
       <a

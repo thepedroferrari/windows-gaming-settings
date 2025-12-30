@@ -27,6 +27,7 @@
    @import './src/components/preview-modal/preview-modal.styles.css' layer(components);
    @import './src/components/forge/forge.styles.css' layer(components);
    @import './src/components/preflight/preflight.styles.css' layer(components);
+   @import './src/components/manual-steps/manual-steps.styles.css' layer(components);
 
    /* NOTE: Custom property registrations and shared keyframes live in tokens/animations.css. */
    @import './src/styles/overrides.css' layer(overrides);
