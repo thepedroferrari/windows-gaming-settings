@@ -6,18 +6,29 @@
 
   import { app, toggleOptimization } from '$lib/state.svelte'
   import type { OptimizationDef } from '$lib/optimizations'
+  import type { OptimizationKey } from '$lib/types'
   import { tooltip } from '../utils/tooltips'
 
   interface Props {
     opt: OptimizationDef
+    /**
+     * Optional callback before toggle. Return false to prevent the toggle.
+     * Called with (key, isCurrentlyChecked) - so if isCurrentlyChecked is true,
+     * the user is trying to UNCHECK it.
+     */
+    onBeforeToggle?: (key: OptimizationKey, isCurrentlyChecked: boolean) => boolean
   }
 
-  let { opt }: Props = $props()
+  let { opt, onBeforeToggle }: Props = $props()
 
   // Derived: is this optimization currently enabled
   let isChecked = $derived(app.optimizations.has(opt.key))
 
   function handleChange() {
+    // If callback provided and returns false, don't toggle
+    if (onBeforeToggle && !onBeforeToggle(opt.key, isChecked)) {
+      return
+    }
     toggleOptimization(opt.key)
   }
 </script>

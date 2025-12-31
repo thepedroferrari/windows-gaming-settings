@@ -1335,4 +1335,182 @@
     outline: 2px solid var(--placard-red);
     outline-offset: 2px;
   }
+
+  /* ==========================================================================
+   * Restore Point Dialog - Caution/Warning UI
+   * ========================================================================== */
+
+  .restore-point-dialog {
+    position: fixed;
+    max-width: 520px;
+    width: calc(100% - 2rem);
+    padding: 0;
+    border: 2px solid var(--caution);
+    border-radius: 0;
+    background: var(--placard-bg);
+    clip-path: var(--clip-cyber-md);
+    box-shadow:
+      0 0 40px color-mix(in oklch, var(--caution) 30%, transparent),
+      0 20px 60px oklch(0 0 0 / 0.8);
+  }
+
+  .restore-point-dialog[open] {
+    animation: dialog-pop 0.25s ease-out;
+  }
+
+  .restore-point-dialog::backdrop {
+    background: oklch(0 0 0 / 0.85);
+    backdrop-filter: blur(4px);
+  }
+
+  .restore-point-dialog-header {
+    background: var(--caution);
+    padding: var(--space-lg);
+    color: oklch(0.1 0 0);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    border-bottom: 3px solid oklch(0.2 0 0 / 0.3);
+  }
+
+  .restore-point-dialog-header .warning-icon {
+    width: 36px;
+    height: 36px;
+    filter: drop-shadow(0 2px 4px oklch(0 0 0 / 0.2));
+  }
+
+  .restore-point-dialog-header h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .restore-point-dialog-body {
+    padding: var(--space-lg);
+    max-height: 50vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .restore-point-intro {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: oklch(0.85 0 0);
+    margin: 0;
+  }
+
+  .restore-point-intro strong {
+    color: var(--caution);
+  }
+
+  .restore-point-why h4,
+  .restore-point-command h4 {
+    margin: 0 0 var(--space-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: oklch(0.7 0.03 85);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .restore-point-why ul {
+    margin: 0;
+    padding-left: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .restore-point-why li {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: oklch(0.75 0 0);
+  }
+
+  .restore-point-why li strong {
+    color: oklch(0.9 0 0);
+  }
+
+  .restore-point-command {
+    background: oklch(0.08 0 0);
+    border: 1px solid oklch(0.2 0 0);
+    border-radius: 4px;
+    padding: var(--space-md);
+  }
+
+  .restore-point-command code {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--caution);
+    background: oklch(0.05 0 0);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 2px;
+    user-select: all;
+  }
+
+  .restore-point-warning {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: oklch(0.6 0 0);
+    font-style: italic;
+  }
+
+  .restore-point-warning strong {
+    color: var(--caution);
+    font-style: normal;
+  }
+
+  .restore-point-dialog-footer {
+    padding: var(--space-lg);
+    background: color-mix(in oklch, var(--caution) 5%, transparent);
+    border-top: 1px solid oklch(0.2 0.02 85 / 0.3);
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .restore-point-dialog-footer button {
+    flex: 1;
+    height: 40px;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 0;
+    clip-path: var(--clip-cyber-xs);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+
+  /* Caution Button - Yellow/Amber style */
+  .btn-caution {
+    background: oklch(0.15 0.04 85);
+    border: 1px solid var(--caution);
+    color: var(--caution);
+    box-shadow:
+      inset 0 0 20px color-mix(in oklch, var(--caution) 10%, transparent),
+      0 0 15px color-mix(in oklch, var(--caution) 15%, transparent);
+  }
+
+  .btn-caution:hover {
+    transform: translateY(-1px);
+    background: oklch(0.18 0.05 85);
+    box-shadow:
+      inset 0 0 30px color-mix(in oklch, var(--caution) 15%, transparent),
+      0 0 25px color-mix(in oklch, var(--caution) 25%, transparent);
+  }
+
+  .btn-caution:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn-caution:focus-visible {
+    outline: 2px solid var(--caution);
+    outline-offset: 2px;
+  }
 }

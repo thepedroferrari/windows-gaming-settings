@@ -5,14 +5,20 @@
    * Renders all optimization checkboxes grouped by tier and category.
    */
 
-  import { app, toggleWizardMode, acknowledgeLudicrous } from '$lib/state.svelte'
+  import {
+    app,
+    toggleWizardMode,
+    acknowledgeLudicrous,
+    acknowledgeRestorePointDisable,
+    toggleOptimization,
+  } from '$lib/state.svelte'
   import {
     OPTIMIZATIONS,
     getOptimizationsByTierAndCategory,
     getCategoriesForTier,
     type OptimizationCategory,
   } from '$lib/optimizations'
-  import { OPTIMIZATION_TIERS, OPTIMIZATION_KEYS, type OptimizationTier } from '$lib/types'
+  import { OPTIMIZATION_TIERS, OPTIMIZATION_KEYS, type OptimizationTier, type OptimizationKey } from '$lib/types'
   import OptimizationCheckbox from './OptimizationCheckbox.svelte'
   import DnsProviderSelector from './DnsProviderSelector.svelte'
 
@@ -44,6 +50,8 @@
 
   /** Reference to LUDICROUS dialog element */
   let ludicrousDialog: HTMLDialogElement | null = $state(null)
+  /** Reference to restore point dialog element */
+  let restorePointDialog: HTMLDialogElement | null = $state(null)
 
   function handleWizardToggle() {
     toggleWizardMode()
@@ -60,6 +68,36 @@
   function confirmLudicrous() {
     acknowledgeLudicrous()
     ludicrousDialog?.close()
+  }
+
+  // Restore Point Modal Handlers
+  function openRestorePointModal() {
+    restorePointDialog?.showModal()
+  }
+
+  function closeRestorePointModal() {
+    restorePointDialog?.close()
+  }
+
+  function confirmRestorePointDisable() {
+    acknowledgeRestorePointDisable()
+    toggleOptimization(OPTIMIZATION_KEYS.RESTORE_POINT)
+    restorePointDialog?.close()
+  }
+
+  /**
+   * Intercept toggle for restore_point - show modal if trying to disable without acknowledgment
+   */
+  function handleBeforeToggle(key: OptimizationKey, isCurrentlyChecked: boolean): boolean {
+    // Only intercept restore_point when trying to DISABLE it
+    if (key === OPTIMIZATION_KEYS.RESTORE_POINT && isCurrentlyChecked) {
+      // If not yet acknowledged, show modal and block toggle
+      if (!app.ui.restorePointAcknowledged) {
+        openRestorePointModal()
+        return false
+      }
+    }
+    return true
   }
 </script>
 
@@ -142,7 +180,7 @@
               {CATEGORY_LABELS[category]}
             </legend>
             {#each opts as opt (opt.key)}
-              <OptimizationCheckbox {opt} />
+              <OptimizationCheckbox {opt} onBeforeToggle={handleBeforeToggle} />
               {#if opt.key === OPTIMIZATION_KEYS.DNS && app.optimizations.has(OPTIMIZATION_KEYS.DNS)}
                 <DnsProviderSelector />
               {/if}
@@ -365,6 +403,56 @@
       </button>
       <button type="button" class="btn-danger" onclick={confirmLudicrous}>
         I Understand the Risks
+      </button>
+    </div>
+  </dialog>
+
+  <!-- Restore Point Acknowledgment Dialog -->
+  <dialog
+    bind:this={restorePointDialog}
+    class="restore-point-dialog"
+    aria-labelledby="restore-point-dialog-title"
+  >
+    <div class="restore-point-dialog-header">
+      <svg class="warning-icon" viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+      </svg>
+      <h3 id="restore-point-dialog-title">Disabling Restore Point?</h3>
+    </div>
+
+    <div class="restore-point-dialog-body">
+      <p class="restore-point-intro">
+        <strong>Restore points are your safety net.</strong> Without one, you may need to reinstall Windows
+        if something goes wrong.
+      </p>
+
+      <div class="restore-point-why">
+        <h4>Why This Matters:</h4>
+        <ul>
+          <li>RockTune modifies registry keys, services, and system settings</li>
+          <li>Some changes cannot be undone by simply "unchecking" them</li>
+          <li><strong>System Restore is the only guaranteed rollback</strong> for most tweaks</li>
+          <li>Takes 2 minutes to create, hours to reinstall Windows</li>
+        </ul>
+      </div>
+
+      <div class="restore-point-command">
+        <h4>Create One Now (PowerShell as Admin):</h4>
+        <code>Checkpoint-Computer -Description "Before RockTune"</code>
+      </div>
+
+      <p class="restore-point-warning">
+        If you disable this, the generated script will <strong>not</strong> create a restore point automatically.
+        You are responsible for your own rollback plan.
+      </p>
+    </div>
+
+    <div class="restore-point-dialog-footer">
+      <button type="button" class="btn-secondary" onclick={closeRestorePointModal}>
+        Keep It Enabled
+      </button>
+      <button type="button" class="btn-caution" onclick={confirmRestorePointDisable}>
+        I Have My Own Backup Plan
       </button>
     </div>
   </dialog>

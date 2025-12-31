@@ -15,11 +15,19 @@
     setOptimizations,
     setView,
   } from '$lib/state.svelte'
-  import { VIEW_MODES } from '$lib/types'
+  import { VIEW_MODES, OPTIMIZATION_KEYS } from '$lib/types'
   import { getRecommendedPreset } from '$lib/presets'
   import { safeParseCatalog, isParseSuccess, formatZodErrors } from './schemas'
   import type { SoftwareCatalog } from '$lib/types'
   import { getDefaultOptimizations } from '$lib/optimizations'
+
+  /** LUDICROUS optimization keys for danger zone detection */
+  const LUDICROUS_KEYS = [
+    OPTIMIZATION_KEYS.SPECTRE_MELTDOWN_OFF,
+    OPTIMIZATION_KEYS.CORE_ISOLATION_OFF,
+    OPTIMIZATION_KEYS.KERNEL_MITIGATIONS_OFF,
+    OPTIMIZATION_KEYS.DEP_OFF,
+  ] as const
 
   // Navigation
   import UnifiedNav from './components/UnifiedNav.svelte'
@@ -52,6 +60,16 @@
   let totalCount = $derived(getTotalCount())
   let recommendedPreset = $derived(getRecommendedPreset(app.activePreset))
   let activeView = $derived(app.view)
+
+  /** Check if any LUDICROUS optimizations are selected */
+  let hasLudicrousSelected = $derived(
+    LUDICROUS_KEYS.some((key) => app.optimizations.has(key))
+  )
+
+  /** Show danger banner when LUDICROUS acknowledged AND items selected */
+  let showDangerBanner = $derived(
+    app.ui.ludicrousAcknowledged && hasLudicrousSelected
+  )
 
   function handleViewToggle(view: typeof VIEW_MODES.GRID | typeof VIEW_MODES.LIST) {
     setView(view)
@@ -103,6 +121,18 @@
 
 <!-- Fixed Navigation -->
 <UnifiedNav />
+
+<!-- Danger Zone Banner - shown when LUDICROUS items selected -->
+{#if showDangerBanner}
+  <div class="danger-banner" role="alert">
+    <svg class="danger-banner__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+    </svg>
+    <span class="danger-banner__text">
+      <strong>SECURITY OFF</strong> — Mitigations disabled. Offline use only.
+    </span>
+  </div>
+{/if}
 
 <!-- Hero Header -->
 <HeroSection />

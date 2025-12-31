@@ -59,6 +59,8 @@ export interface UIState {
   wizardMode: boolean
   /** Whether user has acknowledged LUDICROUS tier risks */
   ludicrousAcknowledged: boolean
+  /** Whether user has acknowledged disabling restore point */
+  restorePointAcknowledged: boolean
 }
 
 interface AppStore {
@@ -101,6 +103,7 @@ const DEFAULT_UI: UIState = {
   auditPanelOpen: false,
   wizardMode: false,
   ludicrousAcknowledged: false,
+  restorePointAcknowledged: false,
 }
 
 const DEFAULT_CATALOG: SoftwareCatalog = {}
@@ -487,6 +490,21 @@ export function acknowledgeLudicrous(): void {
  */
 export function isLudicrousAcknowledged(): boolean {
   return app.ui.ludicrousAcknowledged
+}
+
+/**
+ * Acknowledge restore point disable risks - allows disabling restore point optimization
+ * This action is intentionally one-way per session for safety.
+ */
+export function acknowledgeRestorePointDisable(): void {
+  app.ui = { ...app.ui, restorePointAcknowledged: true }
+}
+
+/**
+ * Check if restore point disable has been acknowledged
+ */
+export function isRestorePointAcknowledged(): boolean {
+  return app.ui.restorePointAcknowledged
 }
 
 // ============================================================================
