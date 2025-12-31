@@ -12,8 +12,65 @@ import type {
   PackageKey,
   PeripheralType,
   SoftwareCatalog,
+  OptimizationTier,
 } from './types'
-import { isPackageKey } from './types'
+import { isPackageKey, OPTIMIZATION_KEYS, OPTIMIZATION_TIERS } from './types'
+import { OPTIMIZATIONS } from './optimizations'
+
+/** LUDICROUS optimization keys for danger zone detection */
+const LUDICROUS_KEYS: readonly OptimizationKey[] = [
+  OPTIMIZATION_KEYS.SPECTRE_MELTDOWN_OFF,
+  OPTIMIZATION_KEYS.CORE_ISOLATION_OFF,
+  OPTIMIZATION_KEYS.KERNEL_MITIGATIONS_OFF,
+  OPTIMIZATION_KEYS.DEP_OFF,
+]
+
+/** Build a lookup map from optimization key to tier */
+const TIER_BY_KEY = new Map<OptimizationKey, OptimizationTier>(
+  OPTIMIZATIONS.map((opt) => [opt.key, opt.tier])
+)
+
+/** Tier priority for risk profile calculation (higher = more dangerous) */
+const TIER_PRIORITY: Record<OptimizationTier, number> = {
+  [OPTIMIZATION_TIERS.SAFE]: 0,
+  [OPTIMIZATION_TIERS.CAUTION]: 1,
+  [OPTIMIZATION_TIERS.RISKY]: 2,
+  [OPTIMIZATION_TIERS.LUDICROUS]: 3,
+}
+
+/**
+ * Calculate the highest risk tier from selected optimizations
+ */
+function calculateRiskProfile(selected: Set<OptimizationKey>): OptimizationTier {
+  let highestPriority = 0
+  let highestTier: OptimizationTier = OPTIMIZATION_TIERS.SAFE
+
+  for (const key of selected) {
+    const tier = TIER_BY_KEY.get(key)
+    if (tier) {
+      const priority = TIER_PRIORITY[tier]
+      if (priority > highestPriority) {
+        highestPriority = priority
+        highestTier = tier
+      }
+    }
+  }
+
+  return highestTier
+}
+
+/**
+ * Check if any CAUTION or higher tier optimizations are selected
+ */
+function hasNonSafeOptimizations(selected: Set<OptimizationKey>): boolean {
+  for (const key of selected) {
+    const tier = TIER_BY_KEY.get(key)
+    if (tier && TIER_PRIORITY[tier] >= TIER_PRIORITY[OPTIMIZATION_TIERS.CAUTION]) {
+      return true
+    }
+  }
+  return false
+}
 
 export type SelectionState = {
   hardware: HardwareProfile
@@ -120,8 +177,18 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
 
   const lines: string[] = []
 
+  // Check if any LUDICROUS optimizations are selected
+  const hasLudicrous = LUDICROUS_KEYS.some((key) => selected.has(key))
+
   // Header
   lines.push('#Requires -RunAsAdministrator')
+  if (hasLudicrous) {
+    lines.push('# ╔═══════════════════════════════════════════════════════════════════════╗')
+    lines.push('# ║  ⚠️  DANGER_ZONE_ENABLED=true                                          ║')
+    lines.push('# ║  WARNING: Security mitigations disabled. OFFLINE USE ONLY.            ║')
+    lines.push('# ╚═══════════════════════════════════════════════════════════════════════╝')
+    lines.push('')
+  }
   lines.push('<#')
   lines.push('.SYNOPSIS')
   lines.push(`    RockTune — Loadout generated ${timestamp}`)
@@ -129,15 +196,25 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
   lines.push(`    Core: ${hardware.cpu} + ${hardware.gpu}`)
   lines.push(`    Build: ${__BUILD_COMMIT__} (${__BUILD_DATE__})`)
   lines.push(`    Source: https://github.com/thepedroferrari/windows-gaming-settings/tree/${__BUILD_COMMIT__}`)
+  if (hasLudicrous) {
+    lines.push('')
+    lines.push('    ⚠️  DANGER ZONE: CPU security mitigations are DISABLED in this script.')
+    lines.push('    DO NOT run this on any machine connected to the internet.')
+  }
   lines.push('')
   lines.push('    Windows is the arena. RockTune is the upgrade bay.')
   lines.push('#>')
   lines.push('')
 
   // Config JSON
+  const riskProfile = calculateRiskProfile(selected)
+  const restorePointRequired = hasNonSafeOptimizations(selected)
+
   const config = {
     generated: timestamp,
     build: __BUILD_COMMIT__,
+    risk_profile: riskProfile,
+    restore_point_required: restorePointRequired,
     hardware: {
       cpu: hardware.cpu,
       gpu: hardware.gpu,
