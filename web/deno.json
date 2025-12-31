@@ -26,6 +26,7 @@
   },
   "imports": {
     "$lib/": "./src/lib/",
+    "vite": "npm:vite@^5",
     "diff": "npm:diff@^5.1.0",
     "zod": "npm:zod@^3.23.0",
     "svelte": "npm:svelte@^5",

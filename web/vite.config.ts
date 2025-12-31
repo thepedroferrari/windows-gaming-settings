@@ -1,6 +1,6 @@
-import { defineConfig } from 'npm:vite@5'
-import { svelte } from 'npm:@sveltejs/vite-plugin-svelte@4'
-import { vitePreprocess } from 'npm:@sveltejs/vite-plugin-svelte@4'
+// Versions managed via deno.json import map
+import { defineConfig } from 'vite'
+import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
 // Get git commit info at build time
 function getGitInfo() {
