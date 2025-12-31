@@ -42,12 +42,12 @@
       width: 32px;
       height: 32px;
     }
-    & .software-card .name {
-      font-size: 0.875rem;
-      text-align: left;
-      flex: 1;
-      color: var(--text-primary);
-    }
+      & .software-card .name {
+        font-size: 0.875rem;
+        text-align: left;
+        flex: 1;
+        color: var(--text-primary);
+      }
     & .software-card .list-desc {
       display: block;
       color: var(--text-secondary);

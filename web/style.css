@@ -1144,7 +1144,6 @@
            font-weight: 400;
            line-height: 1.5;
            color: var(--text-secondary);
-           text-align: left;
            box-shadow:
              0 8px 24px color-mix(in oklch, oklch(0 0 0) 50%, transparent),
              0 0 20px color-mix(in oklch, var(--control-accent) 10%, transparent);
