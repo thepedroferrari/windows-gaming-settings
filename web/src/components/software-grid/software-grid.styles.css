@@ -1,14 +1,14 @@
 @layer components {
   .software-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: var(--space-md);
-    perspective: 1200px;
-    perspective-origin: center center;
     max-height: 540px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-gutter: stable;
+    padding: var(--space-sm);
+    position: relative;
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -28,6 +28,7 @@
     }
   }
 
+  /* ===== LIST VIEW ===== */
   .software-grid.list-view {
     grid-template-columns: 1fr;
     gap: var(--space-xs);
@@ -36,31 +37,20 @@
     & .software-card {
       aspect-ratio: unset;
       height: auto;
-    }
-
-    & .software-card .inner {
-      position: relative;
-      inset: auto;
-    }
-
-    & .software-card .front {
-      position: relative;
-      inset: auto;
       flex-direction: row;
       justify-content: flex-start;
       padding: var(--space-sm) var(--space-md);
       gap: var(--space-md);
-      opacity: 1 !important;
-    }
 
-    & .software-card .back {
-      display: none;
+      /* Hide overlay in list view */
+      & .card-overlay {
+        display: none;
+      }
     }
 
     & .software-card .logo {
       width: 32px;
       height: 32px;
-      margin: 0;
     }
 
     & .software-card .name {
@@ -68,7 +58,6 @@
       text-align: left;
       flex: 1;
       color: var(--text-primary);
-      text-shadow: 0 0 6px color-mix(in oklch, var(--text-primary) 40%, transparent);
     }
 
     & .software-card .list-desc {
@@ -76,7 +65,6 @@
       color: var(--text-secondary);
       font-size: 0.75rem;
       flex: 2;
-      text-shadow: 0 0 6px color-mix(in oklch, var(--text-secondary) 35%, transparent);
     }
 
     & .software-card .list-category {
@@ -84,23 +72,25 @@
       font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--text-primary);
+      color: var(--text-hint);
       width: 80px;
       text-align: right;
-      text-shadow: 0 0 6px color-mix(in oklch, var(--text-primary) 35%, transparent);
     }
   }
 
+  /* ===== RESPONSIVE ===== */
   @media (max-width: 768px) {
     .software-grid {
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: var(--space-sm);
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
     .software-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-sm);
+      gap: var(--space-xs);
+      padding: var(--space-xs);
     }
   }
 }
