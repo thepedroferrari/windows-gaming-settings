@@ -422,37 +422,25 @@
 
     <div class="restore-point-dialog-body">
       <p class="restore-point-intro">
-        <strong>Restore points are your safety net.</strong> Without one, you may need to reinstall Windows
-        if something goes wrong.
+        <strong>System Restore is your only rollback.</strong>
       </p>
 
-      <div class="restore-point-why">
-        <h4>Why This Matters:</h4>
-        <ul>
-          <li>RockTune modifies registry keys, services, and system settings</li>
-          <li>Some changes cannot be undone by simply "unchecking" them</li>
-          <li><strong>System Restore is the only guaranteed rollback</strong> for most tweaks</li>
-          <li>Takes 2 minutes to create, hours to reinstall Windows</li>
-        </ul>
-      </div>
+      <p class="restore-point-desc">
+        These tweaks can change registry, services, and security settings.
+        Without a restore point, undoing this may require a full reinstall.
+      </p>
 
-      <div class="restore-point-command">
-        <h4>Create One Now (PowerShell as Admin):</h4>
-        <code>Checkpoint-Computer -Description "Before RockTune"</code>
-      </div>
-
-      <p class="restore-point-warning">
-        If you disable this, the generated script will <strong>not</strong> create a restore point automatically.
-        You are responsible for your own rollback plan.
+      <p class="restore-point-recommendation">
+        <strong>Recommended:</strong> leave this ON.
       </p>
     </div>
 
     <div class="restore-point-dialog-footer">
-      <button type="button" class="btn-secondary" onclick={closeRestorePointModal}>
-        Keep It Enabled
-      </button>
       <button type="button" class="btn-caution" onclick={confirmRestorePointDisable}>
-        I Have My Own Backup Plan
+        I know the risks, disable restore point
+      </button>
+      <button type="button" class="btn-secondary" onclick={closeRestorePointModal}>
+        Keep restore point ON
       </button>
     </div>
   </dialog>

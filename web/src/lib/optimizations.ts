@@ -126,7 +126,7 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
       pros: ['Instant rollback if needed', 'Best practice before system changes', 'Takes only seconds'],
       cons: [],
     },
-    defaultChecked: false,
+    defaultChecked: true,
   },
   {
     key: OPTIMIZATION_KEYS.CLASSIC_MENU,
