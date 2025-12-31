@@ -211,42 +211,192 @@
     padding: 2px 6px;
   }
 
+  /* ==========================================================================
+   * LUDICROUS Unlock Button - Dark with Red Accents
+   * ========================================================================== */
+
   .ludicrous-unlock-btn {
-    background: var(--placard-red);
-    color: white;
-    border: 1px solid var(--placard-red);
-    padding: var(--space-xl);
+    /* Layout */
+    position: relative;
+    display: grid;
+    gap: var(--space-md);
+    justify-items: center;
+    padding: var(--space-xl) var(--space-2xl);
+    min-width: 220px;
+
+    /* Cyber clip-path corners */
+    clip-path: var(--clip-cyber-md);
+
+    /* Black background */
+    background: oklch(0.08 0.02 25);
+
+    /* Red accent border */
+    border: 1px solid var(--placard-border);
+
+    /* Typography - red text */
+    color: var(--placard-red);
     font-family: var(--font-display);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+
+    /* Subtle red glow */
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 8%, transparent),
+      inset 0 0 20px color-mix(in oklch, var(--placard-red) 10%, transparent),
+      0 0 30px color-mix(in oklch, var(--placard-red) 15%, transparent),
+      0 4px 20px color-mix(in oklch, oklch(0 0 0) 50%, transparent);
+
+    /* Interactions */
     cursor: pointer;
-    display: grid;
-    gap: var(--space-sm);
-    justify-items: center;
-    transition: all 0.2s var(--ease-out-expo);
-    box-shadow: 0 10px 20px color-mix(in oklch, var(--placard-red) 30%, transparent);
+    transition: all 0.25s var(--ease-out-expo);
+    overflow: hidden;
+    isolation: isolate;
   }
 
-  .ludicrous-unlock-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 30px color-mix(in oklch, var(--placard-red) 50%, transparent);
-    filter: brightness(1.1);
+  /* Scanline texture overlay */
+  .ludicrous-unlock-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--overlay-scanlines);
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.25s ease;
   }
+
+  /* Top border accent line */
+  .ludicrous-unlock-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--placard-red) 0%,
+      color-mix(in oklch, var(--placard-red) 50%, transparent) 70%,
+      transparent 100%
+    );
+    z-index: 2;
+  }
+
+  /* Hover state */
+  .ludicrous-unlock-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--placard-red);
+    background: oklch(0.1 0.03 25);
+    box-shadow:
+      inset 0 0 40px color-mix(in oklch, var(--placard-red) 15%, transparent),
+      0 0 60px color-mix(in oklch, var(--placard-red) 35%, transparent),
+      0 8px 30px color-mix(in oklch, oklch(0 0 0) 70%, transparent);
+  }
+
+  .ludicrous-unlock-btn:hover::before {
+    opacity: 0.1;
+    animation: cyberScanlines 4s linear infinite;
+  }
+
+  .ludicrous-unlock-btn:hover::after {
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--placard-red) 100%, oklch(1 0 0)) 0%,
+      var(--placard-red) 60%,
+      transparent 100%
+    );
+  }
+
+  /* Focus state for accessibility */
+  .ludicrous-unlock-btn:focus-visible {
+    outline: 2px solid var(--placard-red);
+    outline-offset: 3px;
+  }
+
+  /* Active/pressed state */
+  .ludicrous-unlock-btn:active {
+    transform: translateY(0);
+    box-shadow:
+      inset 0 2px 8px color-mix(in oklch, oklch(0 0 0) 50%, transparent),
+      inset 0 0 20px color-mix(in oklch, var(--placard-red) 15%, transparent),
+      0 0 20px color-mix(in oklch, var(--placard-red) 20%, transparent);
+  }
+
+  /* ==========================================================================
+   * Icon - SVG with red glow
+   * ========================================================================== */
 
   .unlock-icon {
-    font-size: 2rem;
+    width: 36px;
+    height: 36px;
+    position: relative;
+    z-index: 3;
+    color: var(--placard-red);
+    filter: drop-shadow(0 0 12px color-mix(in oklch, var(--placard-red) 60%, transparent));
+    transition: all 0.25s var(--ease-out-expo);
   }
+
+  .ludicrous-unlock-btn:hover .unlock-icon {
+    color: color-mix(in oklch, var(--placard-red) 100%, oklch(0.8 0.2 25));
+    filter: drop-shadow(0 0 18px color-mix(in oklch, var(--placard-red) 80%, transparent));
+  }
+
+  /* ==========================================================================
+   * Text Hierarchy
+   * ========================================================================== */
 
   .unlock-text {
     font-size: 1rem;
+    letter-spacing: 0.1em;
+    position: relative;
+    z-index: 3;
+    color: oklch(0.9 0 0);
+    text-shadow: 0 0 20px color-mix(in oklch, var(--placard-red) 30%, transparent);
+    transition: all 0.25s var(--ease-out-expo);
+  }
+
+  .ludicrous-unlock-btn:hover .unlock-text {
+    color: oklch(1 0 0);
+    text-shadow: 0 0 25px color-mix(in oklch, var(--placard-red) 50%, transparent);
   }
 
   .unlock-hint {
     font-family: var(--font-mono);
     font-size: 0.65rem;
-    color: oklch(1 0 0 / 0.7);
     font-weight: 500;
+    color: color-mix(in oklch, var(--placard-red) 60%, oklch(0.5 0 0));
+    letter-spacing: 0.02em;
+    text-transform: none;
+    position: relative;
+    z-index: 3;
+    margin-top: var(--space-xs);
+    padding-top: var(--space-sm);
+    border-top: 1px solid color-mix(in oklch, var(--placard-red) 20%, transparent);
+    transition: all 0.25s var(--ease-out-expo);
+  }
+
+  .ludicrous-unlock-btn:hover .unlock-hint {
+    color: color-mix(in oklch, var(--placard-red) 80%, oklch(0.6 0 0));
+    border-top-color: color-mix(in oklch, var(--placard-red) 35%, transparent);
+  }
+
+  /* ==========================================================================
+   * Reduced Motion Support
+   * ========================================================================== */
+
+  @media (prefers-reduced-motion: reduce) {
+    .ludicrous-unlock-btn,
+    .ludicrous-unlock-btn:hover,
+    .unlock-icon,
+    .ludicrous-unlock-btn:hover .unlock-icon {
+      animation: none;
+      transition-duration: 0.01ms;
+    }
+
+    .ludicrous-unlock-btn::before {
+      animation: none;
+    }
   }
 
   @media (max-width: 820px) {
@@ -257,6 +407,20 @@
 
     .warning-tags {
       justify-content: center;
+    }
+
+    .ludicrous-unlock-btn {
+      padding: var(--space-lg) var(--space-xl);
+      min-width: 180px;
+    }
+
+    .unlock-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .unlock-text {
+      font-size: 0.95rem;
     }
   }
 
@@ -320,23 +484,34 @@
 
   .placard-header-grid {
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 140px 1fr;
     background: var(--placard-red);
     color: white;
-    border-bottom: 4px solid var(--placard-ink);
+    border-bottom: 1px solid var(--placard-border);
     position: relative;
     overflow: hidden;
   }
 
   .placard-header-grid::before {
-      content: '';
-      position: absolute;
+    content: '';
+    position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.1), transparent);
+    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.08), transparent);
     transform: translateX(-100%);
-    animation: placard-shimmer 4s infinite;
-      pointer-events: none;
-    }
+    animation: placard-shimmer 5s infinite;
+    pointer-events: none;
+  }
+
+  /* Subtle top glow accent line */
+  .placard-header-grid::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.4), transparent);
+  }
 
   @keyframes placard-shimmer {
     100% {
@@ -345,13 +520,31 @@
   }
 
   .placard-header-left {
-    padding: var(--space-xl);
-    border-right: 4px solid var(--placard-ink);
+    padding: var(--space-lg);
+    border-right: 1px solid var(--placard-border);
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap: var(--space-xs);
     position: relative;
+    background: color-mix(in oklch, var(--placard-red) 80%, var(--placard-ink));
+  }
+
+  /* Skull icon with glow animation */
+  .placard-skull-icon {
+    width: 80px;
+    height: 80px;
+    color: white;
+    filter: drop-shadow(0 0 12px var(--placard-glow));
+    animation: skull-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes skull-pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 12px var(--placard-glow));
+    }
+    50% {
+      filter: drop-shadow(0 0 20px var(--placard-red)) drop-shadow(0 0 30px var(--placard-glow));
+    }
   }
 
   .placard-header-right {
@@ -359,49 +552,18 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
     background: color-mix(in oklch, var(--placard-red) 10%, var(--placard-ink));
   }
 
-  .placard-header-badges {
-    display: flex;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-xs);
-  }
-
-  .placard-header-badges mark {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    font-weight: 900;
-    padding: 2px 6px;
-    letter-spacing: 0.1em;
-    background: var(--placard-ink);
-    color: white;
-    border: 1px solid oklch(1 0 0 / 0.2);
-  }
-
-  .placard-header-badges .placard-id {
-    color: var(--placard-red);
-  }
-
-  .placard-header-left h2 {
+  .placard-header-right h2 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: white;
-  }
-
-  .placard-header-right h3 {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    line-height: 1.1;
     color: var(--placard-red);
   }
 
@@ -409,10 +571,11 @@
     margin: 0;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    font-weight: 700;
-    color: oklch(1 0 0 / 0.6);
-    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: oklch(1 0 0 / 0.5);
+    letter-spacing: 0.03em;
     line-height: 1.4;
+    text-transform: uppercase;
   }
 
   .placard-blocks-horizontal {
@@ -432,58 +595,119 @@
 
   .placard-opt-cell {
     background: var(--placard-ink);
-    padding: var(--space-xl);
+    padding: var(--space-sm);
     display: flex;
-    align-items: center;
-    min-height: 120px;
+    align-items: stretch;
+    min-height: 100px;
   }
 
+  /* Card-style label toggle */
   .placard-opt-cell label {
     width: 100%;
-    height: 100%;
-    padding: 0;
+    padding: var(--space-lg);
     background: transparent;
-    border: none;
-    box-shadow: none;
-    clip-path: none;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--space-md);
-    align-items: center;
+    border: 1px solid color-mix(in oklch, var(--placard-red) 30%, transparent);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-xs);
     cursor: pointer;
+    position: relative;
+    transition:
+      transform 0.15s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
   }
 
+  /* Hover state */
   .placard-opt-cell label:hover {
-    background: oklch(1 0 0 / 0.03);
+    transform: scale(1.02);
+    border-color: color-mix(in oklch, var(--placard-red) 60%, transparent);
+    background: color-mix(in oklch, var(--placard-red) 5%, transparent);
+  }
+
+  /* Selected state */
+  .placard-opt-cell label.selected {
+    border-color: white;
+    background: color-mix(in oklch, var(--placard-red) 15%, transparent);
+    box-shadow:
+      0 0 20px var(--placard-glow),
+      inset 0 0 30px color-mix(in oklch, var(--placard-red) 10%, transparent);
+  }
+
+  .placard-opt-cell label.selected:hover {
+    transform: scale(1.02);
+    box-shadow:
+      0 0 25px var(--placard-glow),
+      inset 0 0 30px color-mix(in oklch, var(--placard-red) 15%, transparent);
+  }
+
+  /* Corner indicator - shows when selected */
+  .placard-opt-cell .corner-indicator {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background: var(--placard-red);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .placard-opt-cell label.selected .corner-indicator {
+    opacity: 1;
+    transform: scale(1);
+    animation: corner-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes corner-pulse {
+    0%, 100% {
+      box-shadow: 0 0 4px var(--placard-red);
+    }
+    50% {
+      box-shadow: 0 0 10px var(--placard-red), 0 0 15px var(--placard-glow);
+    }
   }
 
   .placard-opt-cell .label-text {
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 900;
     text-transform: uppercase;
     color: white;
-    line-height: 1.1;
+    line-height: 1.2;
     letter-spacing: 0.02em;
   }
 
   .placard-opt-cell .label-hint {
-    grid-column: 2;
     font-family: var(--font-mono);
     font-size: 0.65rem;
-    color: oklch(1 0 0 / 0.35);
-    margin-top: 1px;
+    color: oklch(1 0 0 / 0.4);
     letter-spacing: 0.02em;
+    line-height: 1.3;
   }
 
-  .placard-opt-cell input[type="checkbox"]::before {
-    border: 1.5px solid color-mix(in oklch, var(--placard-red) 50%, transparent);
+  .placard-opt-cell label.selected .label-hint {
+    color: oklch(1 0 0 / 0.55);
   }
 
-  .placard-opt-cell input[type="checkbox"]:checked::before {
-    background: var(--placard-red);
-    border-color: white;
-    box-shadow: 0 0 15px var(--placard-glow);
+  /* Screen reader only - hide checkbox visually but keep accessible */
+  .placard-opt-cell .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .placard-footer-v2 {
@@ -947,22 +1171,29 @@
     }
 
   .attack-vectors li::before {
-    content: '>>';
-      position: absolute;
-      left: 0;
-    color: var(--placard-red);
-    font-family: var(--font-mono);
-    font-weight: 900;
-    font-size: 0.7rem;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.35em;
+    width: 14px;
+    height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d94848' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 4px oklch(0.6 0.22 25 / 0.5));
   }
 
   .only-for li::before {
-    content: '!';
-      position: absolute;
-      left: 0;
-      color: var(--cyber-yellow);
-    font-family: var(--font-mono);
-    font-weight: 900;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.2em;
+    width: 14px;
+    height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f0c000'%3E%3Cpath d='M12 2L1 21h22L12 2zm0 15a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm-1-2V9h2v6h-2z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 4px oklch(0.85 0.15 85 / 0.5));
   }
 
   .research-links {
@@ -996,38 +1227,112 @@
   }
 
   .ludicrous-dialog-footer button {
-      flex: 1;
-    height: 48px;
+    flex: 1;
+    height: 40px;
     font-family: var(--font-display);
+    font-size: 0.65rem;
     font-weight: 900;
-      text-transform: uppercase;
-    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     cursor: pointer;
     transition: all 0.2s var(--ease-out-expo);
+    clip-path: var(--clip-cyber-sm);
+    position: relative;
   }
 
+  /* ==========================================================================
+   * Cancel Button - Dark subtle
+   * ========================================================================== */
+
   .btn-secondary {
-    background: transparent;
-    border: 1px solid oklch(1 0 0 / 0.2);
-    color: oklch(1 0 0 / 0.6);
+    background: oklch(0.12 0.01 250);
+    border: 1px solid oklch(1 0 0 / 0.15);
+    color: oklch(1 0 0 / 0.5);
   }
 
   .btn-secondary:hover {
-    background: oklch(1 0 0 / 0.05);
-    color: white;
-    border-color: white;
+    background: oklch(0.15 0.01 250);
+    color: oklch(1 0 0 / 0.8);
+    border-color: oklch(1 0 0 / 0.3);
   }
 
+  .btn-secondary:active {
+    transform: scale(0.98);
+  }
+
+  /* ==========================================================================
+   * Danger Button - ROG Style (Black + Red Accents)
+   * ========================================================================== */
+
   .btn-danger {
-    background: var(--placard-red);
+    background: oklch(0.08 0.02 25);
     border: 1px solid var(--placard-red);
-    color: white;
-    box-shadow: 0 4px 12px color-mix(in oklch, var(--placard-red) 30%, transparent);
+    color: var(--placard-red);
+    box-shadow:
+      inset 0 0 30px color-mix(in oklch, var(--placard-red) 10%, transparent),
+      0 0 20px color-mix(in oklch, var(--placard-red) 20%, transparent),
+      0 4px 15px color-mix(in oklch, oklch(0 0 0) 50%, transparent);
+    overflow: hidden;
+  }
+
+  /* Top accent line */
+  .btn-danger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 6px;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--placard-red) 0%,
+      color-mix(in oklch, var(--placard-red) 60%, transparent) 60%,
+      transparent 100%
+    );
+  }
+
+  /* Scanline overlay */
+  .btn-danger::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--overlay-scanlines);
+    opacity: 0.05;
+    pointer-events: none;
   }
 
   .btn-danger:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px color-mix(in oklch, var(--placard-red) 50%, transparent);
-    filter: brightness(1.1);
+    background: oklch(0.1 0.03 25);
+    color: color-mix(in oklch, var(--placard-red) 100%, oklch(0.9 0.15 25));
+    box-shadow:
+      inset 0 0 40px color-mix(in oklch, var(--placard-red) 15%, transparent),
+      0 0 40px color-mix(in oklch, var(--placard-red) 35%, transparent),
+      0 8px 25px color-mix(in oklch, oklch(0 0 0) 60%, transparent);
+  }
+
+  .btn-danger:hover::before {
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--placard-red) 100%, oklch(0.8 0.2 25)) 0%,
+      var(--placard-red) 50%,
+      transparent 100%
+    );
+  }
+
+  .btn-danger:hover::after {
+    opacity: 0.08;
+  }
+
+  .btn-danger:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow:
+      inset 0 2px 10px color-mix(in oklch, oklch(0 0 0) 50%, transparent),
+      0 0 20px color-mix(in oklch, var(--placard-red) 25%, transparent);
+  }
+
+  .btn-danger:focus-visible {
+    outline: 2px solid var(--placard-red);
+    outline-offset: 2px;
   }
 }

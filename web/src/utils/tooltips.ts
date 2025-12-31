@@ -1,17 +1,21 @@
 /**
  * Rich Tooltip System - Self-contained Svelte Action
  *
- * Supports markdown-like formatting in tooltips:
- * - **bold** for emphasis
- * - ⚠️ prefix for warnings
- * - ✓ prefix for benefits
- * - Lines starting with "- " become list items
- * - Empty line creates paragraph break
+ * Supports two formats:
+ * 1. String (legacy) - markdown-like formatting:
+ *    - **bold** for emphasis
+ *    - ⚠️ prefix for warnings
+ *    - ✓ prefix for benefits
+ *    - Lines starting with "- " become list items
+ *    - Empty line creates paragraph break
+ *
+ * 2. Structured object (new) - pros/cons grid layout:
+ *    { title, desc, pros: string[], cons: string[] }
  *
  * Usage:
  * ```svelte
  * <button use:tooltip={'Click to submit'}>Submit</button>
- * <label use:tooltip={`**Bold** text\n- List item`}>Info</label>
+ * <label use:tooltip={{ title: 'Feature', desc: '...', pros: [...], cons: [...] }}>Info</label>
  * ```
  */
 
@@ -30,6 +34,25 @@ const config: TooltipConfig = {
 }
 
 /**
+ * Structured tooltip format with pros/cons
+ */
+export interface StructuredTooltip {
+  title: string
+  desc: string
+  pros: string[]
+  cons: string[]
+}
+
+export type TooltipContent = string | StructuredTooltip
+
+/**
+ * Type guard for structured tooltip
+ */
+function isStructuredTooltip(content: TooltipContent): content is StructuredTooltip {
+  return typeof content === 'object' && content !== null && 'pros' in content && 'cons' in content
+}
+
+/**
  * Get or create the shared tooltip element
  */
 function getTooltipElement(): HTMLElement {
@@ -45,7 +68,7 @@ function getTooltipElement(): HTMLElement {
 }
 
 /**
- * Parse rich markdown-like content to HTML
+ * Parse rich markdown-like content to HTML (legacy string format)
  */
 function parseRichContent(raw: string): string {
   const lines = raw.split('\n')
@@ -79,12 +102,16 @@ function parseRichContent(raw: string): string {
     }
 
     if (trimmed.startsWith('⚠️') || trimmed.startsWith('⚠')) {
-      parts.push(`<p class="tt-warn">${formatInline(trimmed)}</p>`)
+      // Strip the warning emoji, CSS ::before will add icon
+      const text = trimmed.replace(/^⚠️?\s*/, '')
+      parts.push(`<p class="tt-warn">${formatInline(text)}</p>`)
       continue
     }
 
     if (trimmed.startsWith('✓') || trimmed.startsWith('✔')) {
-      parts.push(`<p class="tt-ok">${formatInline(trimmed)}</p>`)
+      // Strip the checkmark, CSS ::before will add icon
+      const text = trimmed.replace(/^[✓✔]\s*/, '')
+      parts.push(`<p class="tt-ok">${formatInline(text)}</p>`)
       continue
     }
 
@@ -94,6 +121,29 @@ function parseRichContent(raw: string): string {
   if (inList) parts.push('</ul>')
 
   return parts.join('')
+}
+
+/**
+ * Render structured tooltip with pros/cons grid layout
+ */
+function renderStructuredTooltip(content: StructuredTooltip): string {
+  const prosItems = content.pros.map((p) => `<li>${formatInline(p)}</li>`).join('')
+  const consItems = content.cons.map((c) => `<li>${formatInline(c)}</li>`).join('')
+
+  return `
+    <div class="tt-header">
+      <strong class="tt-title">${formatInline(content.title)}</strong>
+      <p class="tt-desc">${formatInline(content.desc)}</p>
+    </div>
+    <div class="tt-pros">
+      <span class="tt-column-label">Benefits</span>
+      <ul>${prosItems}</ul>
+    </div>
+    <div class="tt-cons">
+      <span class="tt-column-label">Risks</span>
+      <ul>${consItems}</ul>
+    </div>
+  `
 }
 
 /**
@@ -115,7 +165,13 @@ function positionTooltip(tooltip: HTMLElement, trigger: HTMLElement): void {
   let top = triggerRect.bottom + config.offset
   let left = triggerRect.left
 
-  if (left + tooltipRect.width > viewportWidth - 16) {
+  // Center the tooltip under the trigger if possible
+  const centeredLeft = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2
+
+  // Use centered position if it fits
+  if (centeredLeft >= 16 && centeredLeft + tooltipRect.width <= viewportWidth - 16) {
+    left = centeredLeft
+  } else if (left + tooltipRect.width > viewportWidth - 16) {
     left = triggerRect.right - tooltipRect.width
   }
 
@@ -137,19 +193,28 @@ function positionTooltip(tooltip: HTMLElement, trigger: HTMLElement): void {
 /**
  * Show the tooltip for a given trigger
  */
-function showTooltipFor(trigger: HTMLElement, content: string): void {
+function showTooltipFor(trigger: HTMLElement, content: TooltipContent): void {
   const tooltip = getTooltipElement()
 
   if (!content) return
 
-  const isRich = content.includes('\n') || content.includes('**') || content.includes('- ')
+  // Clear previous classes
+  tooltip.classList.remove('tt-rich', 'tt-structured')
 
-  if (isRich) {
-    tooltip.innerHTML = parseRichContent(content)
-    tooltip.classList.add('tt-rich')
+  if (isStructuredTooltip(content)) {
+    // Structured tooltip with pros/cons grid
+    tooltip.innerHTML = renderStructuredTooltip(content)
+    tooltip.classList.add('tt-structured')
   } else {
-    tooltip.textContent = content
-    tooltip.classList.remove('tt-rich')
+    // Legacy string format
+    const isRich = content.includes('\n') || content.includes('**') || content.includes('- ')
+
+    if (isRich) {
+      tooltip.innerHTML = parseRichContent(content)
+      tooltip.classList.add('tt-rich')
+    } else {
+      tooltip.textContent = content
+    }
   }
 
   tooltip.classList.add('tt-visible')
@@ -184,10 +249,10 @@ function hideTooltipElement(): void {
  * Usage:
  * ```svelte
  * <button use:tooltip={'Click to submit'}>Submit</button>
- * <label use:tooltip={`**Bold** text\n- List item`}>Info</label>
+ * <label use:tooltip={{ title: 'Feature', desc: '...', pros: [...], cons: [...] }}>Info</label>
  * ```
  */
-export function tooltip(node: HTMLElement, content: string) {
+export function tooltip(node: HTMLElement, content: TooltipContent) {
   let showTimeout: ReturnType<typeof setTimeout> | null = null
   let hideTimeout: ReturnType<typeof setTimeout> | null = null
   let currentContent = content
@@ -249,13 +314,13 @@ export function tooltip(node: HTMLElement, content: string) {
   node.addEventListener('focusout', handleFocusOut)
   node.addEventListener('pointerdown', handlePointerDown)
 
-  // Also set data-tooltip for CSS fallback
-  node.dataset.tooltip = content
+  // Also set data-tooltip for CSS fallback (stringify if object)
+  node.dataset.tooltip = typeof content === 'string' ? content : JSON.stringify(content)
 
   return {
-    update(newContent: string) {
+    update(newContent: TooltipContent) {
       currentContent = newContent
-      node.dataset.tooltip = newContent
+      node.dataset.tooltip = typeof newContent === 'string' ? newContent : JSON.stringify(newContent)
       if (isActive) {
         showTooltipFor(node, newContent)
       }

@@ -15,7 +15,7 @@
   let { key, pkg, selected, delay = 0, onToggle }: Props = $props()
 
   // Derived state
-  let actionText = $derived(selected ? '✓ Selected' : 'Click to add')
+  let actionText = $derived(selected ? 'Selected' : 'Click to add')
   let ariaAction = $derived(selected ? 'remove from' : 'add to')
   let ariaLabel = $derived(
     `${pkg.name}: ${pkg.desc ?? pkg.category}. Press Enter or Space to ${ariaAction} selection.`
@@ -217,7 +217,14 @@
       <span class="back-name">{pkg.name}</span>
       <span class="back-desc">{pkg.desc ?? 'No description available.'}</span>
       <span class="back-category">{pkg.category}</span>
-      <span class="back-action">{actionText}</span>
+      <span class="back-action">
+        {#if selected}
+          <svg class="action-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+        {/if}
+        {actionText}
+      </span>
     </div>
   </div>
 </div>

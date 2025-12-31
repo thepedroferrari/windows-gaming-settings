@@ -7,6 +7,7 @@
 
 import type { OptimizationKey, OptimizationTier } from './types'
 import { OPTIMIZATION_KEYS, OPTIMIZATION_TIERS } from './types'
+import type { StructuredTooltip } from '../utils/tooltips'
 
 /** Optimization category for grouping in UI */
 export type OptimizationCategory =
@@ -25,7 +26,7 @@ export interface OptimizationDef {
   readonly category: OptimizationCategory
   readonly label: string
   readonly hint: string
-  readonly tooltip: string
+  readonly tooltip: StructuredTooltip
   readonly defaultChecked: boolean
 }
 
@@ -37,14 +38,16 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Fixed Page File',
     hint: '4GB for 32GB+ RAM — prevents fragmentation',
-    tooltip: `**Fixed Page File** — prevents dynamic resizing
-
-- Sets **4GB** fixed size (8GB if RAM < 32GB)
-- Stops Windows from growing/shrinking page file
-- Eliminates fragmentation-induced stutters
-
-✓ Recommended for 16GB+ RAM systems
-✓ Reduces disk I/O during gaming sessions`,
+    tooltip: {
+      title: 'Fixed Page File',
+      desc: 'Prevents dynamic resizing and fragmentation',
+      pros: [
+        'Sets 4GB fixed size (8GB if RAM < 32GB)',
+        'Eliminates fragmentation-induced stutters',
+        'Reduces disk I/O during gaming',
+      ],
+      cons: ['Uses fixed disk space', 'Manual adjustment if RAM changes'],
+    },
     defaultChecked: true,
   },
   {
@@ -53,15 +56,16 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Disable Fast Startup',
     hint: 'Clean boots, prevents driver issues',
-    tooltip: `**Disable Fast Startup** — cleaner boot cycle
-
-- Fast Startup = hybrid hibernation (not true shutdown)
-- Can cause driver conflicts on reboot
-- Peripherals may not reinitialize properly
-
-✓ Ensures fresh driver initialization every boot
-✓ Fixes USB/audio devices not detected issues
-✓ Required for dual-boot systems`,
+    tooltip: {
+      title: 'Disable Fast Startup',
+      desc: 'Ensures clean boot cycle instead of hybrid hibernation',
+      pros: [
+        'Fresh driver initialization every boot',
+        'Fixes USB/audio detection issues',
+        'Required for dual-boot systems',
+      ],
+      cons: ['Slightly longer boot time', 'No hibernation resume'],
+    },
     defaultChecked: true,
   },
   {
@@ -70,14 +74,16 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Timer Resolution Tool',
     hint: '0.5ms timer for games',
-    tooltip: `**Timer Resolution Tool** — run before gaming
-
-- Sets Windows timer to **0.5ms** (from 15.6ms default)
-- Improves input responsiveness and frame pacing
-- Must be running during gameplay
-
-✓ Why it matters: 15.6ms × 64 ticks ≈ 1 second (Valve's default tickrate)
-✓ 0.5ms enables smoother 128-tick gameplay`,
+    tooltip: {
+      title: 'Timer Resolution Tool',
+      desc: 'Sets Windows timer to 0.5ms (from 15.6ms default)',
+      pros: [
+        'Improves input responsiveness',
+        'Better frame pacing',
+        'Smoother 128-tick gameplay',
+      ],
+      cons: ['Must run during gameplay', 'Slightly higher power usage'],
+    },
     defaultChecked: true,
   },
   {
@@ -86,14 +92,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Explorer Speed',
     hint: 'Faster folder browsing',
-    tooltip: `**Explorer Speed** — faster folder navigation
-
-- Disables auto folder-type detection
-- Skips thumbnail/metadata pre-scanning
-- Folders open instantly instead of analyzing
-
-✓ Big improvement for folders with many files
-✓ No downside — folder views still work normally`,
+    tooltip: {
+      title: 'Explorer Speed',
+      desc: 'Disables auto folder-type detection and metadata scanning',
+      pros: ['Folders open instantly', 'Big improvement for large folders', 'No functional downside'],
+      cons: ['Less automatic folder organization', 'Manual view settings needed'],
+    },
     defaultChecked: false,
   },
   {
@@ -102,14 +106,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Purge Temp Files',
     hint: 'Free disk space',
-    tooltip: `**Purge Temp Files** — clear junk data
-
-- Cleans %TEMP% (user temp folder)
-- Cleans %WINDIR%\\Temp (system temp)
-- Removes leftover installer files
-
-✓ Instant operation, no reboot needed
-✓ Safe — only removes temp/cache files`,
+    tooltip: {
+      title: 'Purge Temp Files',
+      desc: 'Clears temporary and cache files from system',
+      pros: ['Frees disk space', 'Instant operation', 'Only removes temp/cache files'],
+      cons: ['One-time operation', 'May need to re-download cached data'],
+    },
     defaultChecked: false,
   },
   {
@@ -118,14 +120,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Restore Point',
     hint: 'Safety backup first',
-    tooltip: `**Create Restore Point** — safety net
-
-- Creates system restore point before changes
-- Allows rollback if something goes wrong
-- Only takes a few seconds
-
-✓ Always recommended before major changes
-✓ No impact on performance`,
+    tooltip: {
+      title: 'Create Restore Point',
+      desc: 'Creates system restore point before applying changes',
+      pros: ['Allows rollback if needed', 'Only takes seconds', 'No performance impact'],
+      cons: ['Uses some disk space', 'Not a full backup'],
+    },
     defaultChecked: false,
   },
   {
@@ -134,14 +134,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Classic Context Menu',
     hint: 'Win10 style right-click',
-    tooltip: `**Classic Context Menu** — Win11 right-click fix
-
-- Restores Windows 10 style right-click menu
-- No more "Show more options" extra click
-- All options visible immediately
-
-✓ Quality-of-life improvement
-✓ Easy to revert if needed`,
+    tooltip: {
+      title: 'Classic Context Menu',
+      desc: 'Restores Windows 10 style right-click menu',
+      pros: ['All options visible immediately', 'No extra click needed', 'Easy to revert'],
+      cons: ['Loses Win11 menu styling', 'Personal preference'],
+    },
     defaultChecked: false,
   },
   {
@@ -150,14 +148,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Storage Sense',
     hint: 'Auto cleanup temp files',
-    tooltip: `**Storage Sense** — automatic disk cleanup
-
-- Enables Windows Storage Sense feature
-- Auto-deletes temp files over 30 days old
-- Cleans Recycle Bin automatically
-
-✓ Set and forget disk maintenance
-✓ Keeps system running lean`,
+    tooltip: {
+      title: 'Storage Sense',
+      desc: 'Enables automatic disk cleanup feature',
+      pros: ['Set and forget maintenance', 'Auto-cleans old temp files', 'Keeps system lean'],
+      cons: ['May delete files you wanted', 'Runs in background'],
+    },
     defaultChecked: false,
   },
   {
@@ -166,14 +162,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Taskbar End Task',
     hint: 'Right-click to kill apps',
-    tooltip: `**Taskbar End Task** — quick process termination
-
-- Adds "End Task" to taskbar right-click menu
-- Kill frozen apps without Task Manager
-- Win11 feature (often disabled by default)
-
-✓ Huge convenience for stuck apps
-✓ No downside`,
+    tooltip: {
+      title: 'Taskbar End Task',
+      desc: 'Adds "End Task" to taskbar right-click menu',
+      pros: ['Kill frozen apps without Task Manager', 'Huge convenience', 'No downside'],
+      cons: ['Win11 only feature', 'Can accidentally close apps'],
+    },
     defaultChecked: false,
   },
   {
@@ -182,14 +176,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Explorer Cleanup',
     hint: 'Remove clutter from sidebar',
-    tooltip: `**Explorer Cleanup** — cleaner File Explorer
-
-- Hides "Gallery" from navigation pane
-- Removes duplicate drive entries
-- Cleaner, less cluttered sidebar
-
-✓ Quality-of-life improvement
-✓ Easy to revert`,
+    tooltip: {
+      title: 'Explorer Cleanup',
+      desc: 'Hides Gallery and duplicate entries from navigation',
+      pros: ['Cleaner File Explorer', 'Less cluttered sidebar', 'Easy to revert'],
+      cons: ['Hides some default items', 'Personal preference'],
+    },
     defaultChecked: false,
   },
   {
@@ -198,14 +190,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Quiet Notifications',
     hint: 'Disable non-essential popups',
-    tooltip: `**Quiet Notifications** — reduce interruptions
-
-- Disables tips, suggestions, and welcome screens
-- Stops lock screen app notifications
-- Reduces notification center clutter
-
-✓ No more random Windows tips mid-game
-✓ Critical notifications still work`,
+    tooltip: {
+      title: 'Quiet Notifications',
+      desc: 'Disables tips, suggestions, and welcome screens',
+      pros: ['No random tips mid-game', 'Less notification clutter', 'Critical alerts still work'],
+      cons: ['Miss Windows tips', 'Less feature discovery'],
+    },
     defaultChecked: false,
   },
   {
@@ -214,14 +204,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'PowerShell 7 Telemetry',
     hint: 'Disable PS7 data collection',
-    tooltip: `**PowerShell 7 Telemetry** — disable tracking
-
-- Disables PowerShell 7 telemetry if installed
-- Sets POWERSHELL_TELEMETRY_OPTOUT=1
-- No effect if using Windows PowerShell 5.1
-
-✓ Privacy improvement
-✓ No impact on functionality`,
+    tooltip: {
+      title: 'PowerShell 7 Telemetry',
+      desc: 'Disables PowerShell 7 telemetry data collection',
+      pros: ['Privacy improvement', 'No impact on functionality', 'Environment variable only'],
+      cons: ['No effect if using PS 5.1', 'Microsoft loses usage data'],
+    },
     defaultChecked: false,
   },
   {
@@ -230,15 +218,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Filesystem Performance',
     hint: 'Disable NTFS overhead',
-    tooltip: `**Filesystem Performance** — reduce disk I/O overhead
-
-- Disables last access timestamp updates
-- Disables 8.3 short filename creation
-- Optimizes NTFS memory usage
-
-✓ Faster file operations
-✓ Reduced write amplification on SSDs
-✓ Invisible to users - no behavior change`,
+    tooltip: {
+      title: 'Filesystem Performance',
+      desc: 'Reduces disk I/O overhead from NTFS features',
+      pros: ['Faster file operations', 'Reduced SSD write amplification', 'Invisible to users'],
+      cons: ['No last access timestamps', 'No 8.3 short filenames'],
+    },
     defaultChecked: false,
   },
   {
@@ -247,15 +232,12 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     category: 'system',
     label: 'DWM Performance',
     hint: 'Reduce compositor overhead',
-    tooltip: `**DWM Performance** — Desktop Window Manager tweaks
-
-- Disables accent color gradient effects
-- Disables window colorization
-- Reduces DWM GPU overhead
-
-✓ Faster alt-tab transitions
-✓ Lower GPU usage in desktop
-✓ Slightly less "fancy" windows`,
+    tooltip: {
+      title: 'DWM Performance',
+      desc: 'Disables visual effects in Desktop Window Manager',
+      pros: ['Faster alt-tab transitions', 'Lower GPU usage', 'Reduced DWM overhead'],
+      cons: ['Less fancy windows', 'No accent gradients'],
+    },
     defaultChecked: false,
   },
 ]
@@ -268,14 +250,12 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     category: 'power',
     label: 'Balanced+ Power Plan',
     hint: 'Optimized for gaming PCs',
-    tooltip: `**Balanced+ Power Plan** — gaming-optimized
-
-- Uses Windows Balanced as base (best for modern CPUs)
-- Disables monitor/sleep timeouts
-- Keeps USB/PCIe devices at full power
-
-✓ Works with CPU boost features (P-States, CPPC)
-✓ Better than High Performance for X3D chips`,
+    tooltip: {
+      title: 'Balanced+ Power Plan',
+      desc: 'Gaming-optimized power plan based on Windows Balanced',
+      pros: ['Works with CPU boost (P-States, CPPC)', 'Better than High Perf for X3D', 'No sleep timeouts'],
+      cons: ['Slightly higher idle power', 'USB/PCIe always powered'],
+    },
     defaultChecked: true,
   },
   {
@@ -284,14 +264,12 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     category: 'power',
     label: 'USB Full Power',
     hint: 'Prevent device disconnects',
-    tooltip: `**USB Full Power** — disable USB suspend
-
-- Disables selective suspend in power plan
-- Prevents USB devices from sleeping
-- Fixes random disconnects on mice/keyboards
-
-✓ Essential for gaming peripherals
-✓ Minimal power impact on desktop PCs`,
+    tooltip: {
+      title: 'USB Full Power',
+      desc: 'Disables USB selective suspend in power plan',
+      pros: ['Prevents random disconnects', 'Essential for gaming peripherals', 'Fixes mouse/keyboard issues'],
+      cons: ['Minimal power impact', 'Devices never sleep'],
+    },
     defaultChecked: true,
   },
   {
@@ -300,14 +278,12 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     category: 'power',
     label: 'PCIe Full Power',
     hint: 'GPU and NVMe always ready',
-    tooltip: `**PCIe Full Power** — disable power saving
-
-- Disables PCIe ASPM (Active State Power Management)
-- GPU and NVMe drives stay at full power
-- Reduces micro-stutter from power state changes
-
-✓ Important for GPU-intensive games
-✓ May increase idle power slightly`,
+    tooltip: {
+      title: 'PCIe Full Power',
+      desc: 'Disables PCIe ASPM (Active State Power Management)',
+      pros: ['GPU/NVMe at full power', 'Reduces micro-stutters', 'Important for GPU games'],
+      cons: ['Slightly higher idle power', 'More heat at idle'],
+    },
     defaultChecked: true,
   },
   {
@@ -316,14 +292,12 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     category: 'power',
     label: 'USB Hub Suspend Off',
     hint: 'Per-device power setting',
-    tooltip: `**USB Hub Suspend Off** — device-level fix
-
-- Disables suspend on USB hub controllers
-- Complements USB Full Power setting
-- Fixes issues USB power plan misses
-
-✓ Targets Device Manager settings
-✓ More thorough than power plan alone`,
+    tooltip: {
+      title: 'USB Hub Suspend Off',
+      desc: 'Disables suspend on USB hub controllers in Device Manager',
+      pros: ['More thorough than power plan', 'Fixes remaining USB issues', 'Per-device targeting'],
+      cons: ['Requires Device Manager access', 'Complements USB Full Power'],
+    },
     defaultChecked: false,
   },
   {
@@ -332,14 +306,12 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     category: 'power',
     label: 'Min Processor State 5%',
     hint: 'Allow CPU to downclock when idle',
-    tooltip: `**Min Processor State 5%** — thermal headroom
-
-- Sets minimum CPU state to 5%
-- Allows proper C-state entry
-- Better thermal behavior for boost
-
-✓ Essential for AMD X3D efficiency
-✓ Improves boost headroom`,
+    tooltip: {
+      title: 'Min Processor State 5%',
+      desc: 'Sets minimum CPU state to 5% for thermal headroom',
+      pros: ['Better thermal behavior', 'Essential for AMD X3D', 'Improves boost headroom'],
+      cons: ['Slightly slower wake from idle', 'CPU downclocks when idle'],
+    },
     defaultChecked: false,
   },
   {
@@ -348,14 +320,12 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     category: 'power',
     label: 'Hibernation Off',
     hint: 'Free disk, cleaner state',
-    tooltip: `**Hibernation Off** — disable hiberfil.sys
-
-- Removes hibernation file (several GB)
-- Cleaner shutdown/boot cycle
-- Works with fast startup disable
-
-✓ Frees disk space
-✓ Prevents resume issues`,
+    tooltip: {
+      title: 'Hibernation Off',
+      desc: 'Removes hibernation file (hiberfil.sys)',
+      pros: ['Frees several GB disk space', 'Cleaner boot cycle', 'Prevents resume issues'],
+      cons: ['No hibernation option', 'Must fully shutdown'],
+    },
     defaultChecked: false,
   },
 ]
@@ -368,16 +338,12 @@ const SAFE_NETWORK: readonly OptimizationDef[] = [
     category: 'network',
     label: 'Custom DNS',
     hint: 'Faster, more reliable DNS lookups',
-    tooltip: `**Custom DNS** — faster DNS resolution
-
-- **Cloudflare** (1.1.1.1) — fastest, privacy-first
-- **Google** (8.8.8.8) — reliable, widely used
-- **Quad9** (9.9.9.9) — blocks malware domains
-- **OpenDNS** (208.67.222.222) — Cisco, very stable
-- **AdGuard** (94.140.14.14) — blocks ads at DNS level
-
-✓ Faster than most ISP DNS servers
-✓ Works with all games and services`,
+    tooltip: {
+      title: 'Custom DNS',
+      desc: 'Use faster DNS servers (Cloudflare, Google, Quad9)',
+      pros: ['Faster than ISP DNS', 'More reliable', 'Privacy options available'],
+      cons: ['Requires DNS provider trust', 'May bypass ISP filtering'],
+    },
     defaultChecked: true,
   },
   {
@@ -386,14 +352,12 @@ const SAFE_NETWORK: readonly OptimizationDef[] = [
     category: 'network',
     label: 'Disable Nagle',
     hint: 'Lower network latency',
-    tooltip: `**Disable Nagle's Algorithm** — reduce network delay
-
-- Nagle buffers small packets (adds latency)
-- Disabling sends packets immediately
-- Per-adapter registry tweak
-
-✓ Critical for competitive FPS games
-✓ May increase bandwidth slightly`,
+    tooltip: {
+      title: "Disable Nagle's Algorithm",
+      desc: 'Sends packets immediately instead of buffering',
+      pros: ['Critical for competitive FPS', 'Lower network latency', 'Immediate packet send'],
+      cons: ['Slightly higher bandwidth usage', 'More packets sent'],
+    },
     defaultChecked: true,
   },
   {
@@ -402,14 +366,12 @@ const SAFE_NETWORK: readonly OptimizationDef[] = [
     category: 'network',
     label: 'RSS Enable',
     hint: 'Spread network load across CPUs',
-    tooltip: `**RSS Enable** — Receive Side Scaling
-
-- Distributes network traffic across CPU cores
-- Reduces single-core bottleneck
-- Better performance on high-speed networks
-
-✓ Enabled by default on most adapters
-✓ Verify with Get-NetAdapterRss`,
+    tooltip: {
+      title: 'RSS Enable',
+      desc: 'Receive Side Scaling - distributes traffic across CPU cores',
+      pros: ['Reduces single-core bottleneck', 'Better on high-speed networks', 'Usually enabled by default'],
+      cons: ['May already be enabled', 'Minimal impact if not bottlenecked'],
+    },
     defaultChecked: false,
   },
   {
@@ -418,14 +380,12 @@ const SAFE_NETWORK: readonly OptimizationDef[] = [
     category: 'network',
     label: 'Adapter Power Off',
     hint: 'Disable NIC power saving',
-    tooltip: `**Adapter Power Off** — network never sleeps
-
-- Disables network adapter power management
-- Prevents wake-on-LAN overhead
-- Keeps adapter at full speed
-
-✓ Better for gaming/streaming
-✓ Minimal power impact on desktop`,
+    tooltip: {
+      title: 'Adapter Power Off',
+      desc: 'Disables network adapter power management',
+      pros: ['Network never sleeps', 'Better for gaming/streaming', 'Consistent performance'],
+      cons: ['Minimal power impact', 'Adapter always active'],
+    },
     defaultChecked: false,
   },
 ]
@@ -438,14 +398,12 @@ const SAFE_INPUT: readonly OptimizationDef[] = [
     category: 'input',
     label: 'Disable Mouse Accel',
     hint: 'Raw mouse input',
-    tooltip: `**Disable Mouse Acceleration** — consistent aim
-
-- Disables Windows mouse acceleration
-- 1:1 mouse movement (no curve)
-- Sets pointer precision off
-
-✓ Essential for competitive gaming
-✓ Muscle memory builds faster`,
+    tooltip: {
+      title: 'Disable Mouse Acceleration',
+      desc: '1:1 mouse movement with no acceleration curve',
+      pros: ['Essential for competitive gaming', 'Consistent aim', 'Faster muscle memory'],
+      cons: ['May feel different initially', 'Preference-dependent'],
+    },
     defaultChecked: false,
   },
   {
@@ -454,14 +412,12 @@ const SAFE_INPUT: readonly OptimizationDef[] = [
     category: 'input',
     label: 'Keyboard Response',
     hint: 'Faster key repeat',
-    tooltip: `**Keyboard Response** — snappier typing
-
-- Sets fastest key repeat rate
-- Shortest repeat delay
-- Improves responsiveness feel
-
-✓ Better for fast-paced games
-✓ Personal preference setting`,
+    tooltip: {
+      title: 'Keyboard Response',
+      desc: 'Sets fastest key repeat rate and shortest delay',
+      pros: ['Snappier typing feel', 'Better for fast-paced games', 'More responsive'],
+      cons: ['Personal preference', 'May cause accidental repeats'],
+    },
     defaultChecked: false,
   },
   {
@@ -470,15 +426,12 @@ const SAFE_INPUT: readonly OptimizationDef[] = [
     category: 'input',
     label: 'Disable Accessibility Shortcuts',
     hint: 'No Sticky Keys popup mid-game',
-    tooltip: `**Disable Accessibility Shortcuts** — ESSENTIAL for gaming
-
-- **Sticky Keys** — 5 shifts = popup. Deadly mid-clutch.
-- **Filter Keys** — Holding keys triggers popup
-- **Toggle Keys** — Caps Lock beeps
-
-✓ Prevents game-interrupting popups
-✓ Nothing worse than Sticky Keys during a clutch
-✓ Safe to disable for gaming`,
+    tooltip: {
+      title: 'Disable Accessibility Shortcuts',
+      desc: 'Prevents Sticky Keys, Filter Keys, Toggle Keys popups',
+      pros: ['No popups mid-game', 'Essential for gaming', '5 shifts wont interrupt'],
+      cons: ['Accessibility features disabled', 'Need manual re-enable if needed'],
+    },
     defaultChecked: false,
   },
   {
@@ -487,15 +440,12 @@ const SAFE_INPUT: readonly OptimizationDef[] = [
     category: 'input',
     label: 'Input Buffer Size',
     hint: 'Larger mouse/keyboard buffers',
-    tooltip: `**Input Buffer Size** — prevent input drops under load
-
-- Increases MouseDataQueueSize to 32 (from 16)
-- Increases KeyboardDataQueueSize to 32 (from 16)
-- More buffer for high-polling-rate devices (8000Hz mice)
-
-✓ Prevents input loss during CPU spikes
-✓ Essential for 4000Hz+ polling rate mice
-✓ No downside - just uses a tiny bit more RAM`,
+    tooltip: {
+      title: 'Input Buffer Size',
+      desc: 'Increases input queue size for high-polling-rate devices',
+      pros: ['Prevents input loss during CPU spikes', 'Essential for 4000Hz+ mice', 'No downside'],
+      cons: ['Uses tiny bit more RAM', 'Overkill for standard mice'],
+    },
     defaultChecked: false,
   },
 ]
@@ -508,14 +458,12 @@ const SAFE_DISPLAY: readonly OptimizationDef[] = [
     category: 'display',
     label: 'Visual Performance',
     hint: 'Disable animations',
-    tooltip: `**Visual Performance** — reduce UI overhead
-
-- Disables window animations
-- Turns off transparency effects
-- Faster alt-tab and window switching
-
-✓ Reduces DWM overhead
-✓ May look less polished`,
+    tooltip: {
+      title: 'Visual Performance',
+      desc: 'Disables window animations and transparency effects',
+      pros: ['Reduces DWM overhead', 'Faster alt-tab', 'Lower GPU usage'],
+      cons: ['Less polished look', 'No transparency effects'],
+    },
     defaultChecked: false,
   },
   {
@@ -524,14 +472,12 @@ const SAFE_DISPLAY: readonly OptimizationDef[] = [
     category: 'display',
     label: 'MPO Off',
     hint: 'Fix display issues',
-    tooltip: `**Multiplane Overlay Off** — fix display glitches
-
-- Disables hardware cursor/overlay planes
-- Fixes flickering on some GPU/monitor combos
-- Resolves VRR stuttering issues
-
-✓ Try if you see random flickering
-✓ Slight GPU overhead increase`,
+    tooltip: {
+      title: 'Multiplane Overlay Off',
+      desc: 'Disables hardware cursor/overlay planes',
+      pros: ['Fixes flickering issues', 'Resolves VRR stuttering', 'GPU/monitor compatibility fix'],
+      cons: ['Slight GPU overhead increase', 'Only needed if flickering'],
+    },
     defaultChecked: false,
   },
   {
@@ -540,14 +486,12 @@ const SAFE_DISPLAY: readonly OptimizationDef[] = [
     category: 'display',
     label: 'Game DVR Off',
     hint: 'Disable background recording',
-    tooltip: `**Game DVR Off** — stop hidden recording
-
-- Disables Xbox Game Bar background capture
-- Stops constant video encoding
-- Frees GPU encoder resources
-
-✓ 1-3% FPS improvement in some games
-✓ Disable if you don't use Game Bar clips`,
+    tooltip: {
+      title: 'Game DVR Off',
+      desc: 'Stops Xbox Game Bar background capture and encoding',
+      pros: ['1-3% FPS improvement', 'Frees GPU encoder', 'No hidden recording'],
+      cons: ['No instant replay feature', 'Cant use Game Bar clips'],
+    },
     defaultChecked: true,
   },
   {
@@ -556,14 +500,12 @@ const SAFE_DISPLAY: readonly OptimizationDef[] = [
     category: 'display',
     label: 'Game Mode On',
     hint: 'Enable Windows Game Mode',
-    tooltip: `**Game Mode On** — Windows gaming priority
-
-- Prioritizes game processes for CPU/GPU
-- Reduces background task interference
-- Works with X3D V-Cache optimizer
-
-✓ Essential for AMD X3D CPUs
-✓ Minimal downside for other systems`,
+    tooltip: {
+      title: 'Game Mode On',
+      desc: 'Prioritizes game processes for CPU/GPU resources',
+      pros: ['Essential for AMD X3D CPUs', 'Reduces background interference', 'Works with V-Cache optimizer'],
+      cons: ['Minimal impact on non-X3D', 'May affect background tasks'],
+    },
     defaultChecked: false,
   },
 ]
@@ -576,14 +518,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Background Apps',
     hint: 'Stop apps running silently',
-    tooltip: `**Background Apps** — reduce hidden processes
-
-- Prevents apps from running in background
-- Stops UWP apps from phoning home
-- Reduces RAM and CPU usage
-
-✓ Significant resource savings
-✓ Some apps may need exceptions`,
+    tooltip: {
+      title: 'Background Apps',
+      desc: 'Prevents UWP apps from running in background',
+      pros: ['Significant resource savings', 'Reduces RAM/CPU usage', 'Stops apps phoning home'],
+      cons: ['Some apps need exceptions', 'May affect notifications'],
+    },
     defaultChecked: true,
   },
   {
@@ -592,14 +532,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Edge Debloat',
     hint: 'Remove Edge integrations',
-    tooltip: `**Edge Debloat** — clean up Edge hooks
-
-- Disables Edge sidebar, shopping features
-- Removes Copilot button
-- Stops Edge from hijacking searches
-
-✓ Keeps Edge functional but quieter
-✓ Only if you use Edge as browser`,
+    tooltip: {
+      title: 'Edge Debloat',
+      desc: 'Disables Edge sidebar, shopping, and Copilot features',
+      pros: ['Quieter Edge browser', 'No search hijacking', 'Removes bloat features'],
+      cons: ['Only useful if you use Edge', 'Loses some Edge features'],
+    },
     defaultChecked: true,
   },
   {
@@ -608,14 +546,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Disable Copilot',
     hint: 'Remove AI assistant',
-    tooltip: `**Disable Copilot** — remove Windows AI
-
-- Disables Windows Copilot feature
-- Removes taskbar button
-- Stops background AI processes
-
-✓ Privacy improvement
-✓ Frees RAM and network`,
+    tooltip: {
+      title: 'Disable Copilot',
+      desc: 'Removes Windows Copilot AI assistant',
+      pros: ['Privacy improvement', 'Frees RAM and network', 'No AI processes'],
+      cons: ['Lose AI assistant features', 'Manual re-enable needed'],
+    },
     defaultChecked: true,
   },
   {
@@ -624,14 +560,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Block Razer Services',
     hint: 'Stop Synapse bloat',
-    tooltip: `**Block Razer Services** — tame Synapse
-
-- Disables unnecessary Razer services
-- Stops analytics and telemetry
-- Keeps core device functionality
-
-✓ Only if you have Razer devices
-✓ Synapse still works for lighting/macros`,
+    tooltip: {
+      title: 'Block Razer Services',
+      desc: 'Disables unnecessary Razer services and telemetry',
+      pros: ['Stops analytics/telemetry', 'Synapse still works', 'Reduces bloat'],
+      cons: ['Only for Razer users', 'Some features may be affected'],
+    },
     defaultChecked: false,
   },
   {
@@ -640,14 +574,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Delivery Optimization Off',
     hint: 'Stop P2P Windows Update',
-    tooltip: `**Delivery Optimization Off** — disable P2P updates
-
-- Stops Windows from sharing updates P2P
-- Reduces background upload bandwidth
-- Downloads only from Microsoft
-
-✓ Saves upload bandwidth
-✓ No impact on update speed`,
+    tooltip: {
+      title: 'Delivery Optimization Off',
+      desc: 'Stops P2P update sharing, downloads only from Microsoft',
+      pros: ['Saves upload bandwidth', 'No P2P sharing', 'No impact on update speed'],
+      cons: ['Uses more Microsoft bandwidth', 'Slightly slower in some cases'],
+    },
     defaultChecked: false,
   },
   {
@@ -656,14 +588,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Error Reporting Off',
     hint: 'Stop crash reports',
-    tooltip: `**Error Reporting Off** — disable WER
-
-- Stops Windows Error Reporting service
-- No crash dumps sent to Microsoft
-- Frees resources on crashes
-
-✓ Privacy improvement
-✓ Faster crash recovery`,
+    tooltip: {
+      title: 'Error Reporting Off',
+      desc: 'Stops Windows Error Reporting service',
+      pros: ['Privacy improvement', 'Faster crash recovery', 'No data sent'],
+      cons: ['Microsoft cant diagnose issues', 'No automatic crash reports'],
+    },
     defaultChecked: false,
   },
   {
@@ -672,14 +602,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'WiFi Sense Off',
     hint: 'Stop network sharing',
-    tooltip: `**WiFi Sense Off** — disable auto-connect
-
-- Stops automatic hotspot connections
-- Disables suggested open network joins
-- No credential sharing
-
-✓ Privacy and security improvement
-✓ No downside for home networks`,
+    tooltip: {
+      title: 'WiFi Sense Off',
+      desc: 'Disables automatic hotspot connections and credential sharing',
+      pros: ['Privacy/security improvement', 'No auto-connect to open networks', 'No credential sharing'],
+      cons: ['No automatic network suggestions', 'Manual network selection'],
+    },
     defaultChecked: false,
   },
   {
@@ -688,14 +616,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Spotlight Off',
     hint: 'No lock screen ads',
-    tooltip: `**Spotlight Off** — disable Windows Spotlight
-
-- Removes Bing images from lock screen
-- Stops fun facts and tips
-- Cleaner lock screen experience
-
-✓ Reduces background downloads
-✓ Faster lock screen load`,
+    tooltip: {
+      title: 'Spotlight Off',
+      desc: 'Removes Bing images and tips from lock screen',
+      pros: ['Reduces background downloads', 'Faster lock screen', 'Cleaner experience'],
+      cons: ['No pretty Bing images', 'Static lock screen'],
+    },
     defaultChecked: false,
   },
   {
@@ -704,14 +630,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Feedback Off',
     hint: 'Stop Windows prompts',
-    tooltip: `**Feedback Off** — disable feedback prompts
-
-- Stops "Rate your experience" popups
-- Disables feedback frequency
-- No more interruptions
-
-✓ Quality-of-life improvement
-✓ No downside`,
+    tooltip: {
+      title: 'Feedback Off',
+      desc: 'Disables "Rate your experience" popups',
+      pros: ['No interruptions', 'Quality-of-life improvement', 'No downside'],
+      cons: ['Microsoft loses feedback', 'Cant rate experiences'],
+    },
     defaultChecked: false,
   },
   {
@@ -720,14 +644,12 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Clipboard Sync Off',
     hint: 'Local clipboard only',
-    tooltip: `**Clipboard Sync Off** — disable cloud clipboard
-
-- Stops clipboard sync to Microsoft cloud
-- Disables clipboard history feature
-- Local clipboard only
-
-✓ Privacy improvement
-✓ Prevents accidental data sync`,
+    tooltip: {
+      title: 'Clipboard Sync Off',
+      desc: 'Disables cloud clipboard sync and history',
+      pros: ['Privacy improvement', 'No accidental data sync', 'Local clipboard only'],
+      cons: ['No cross-device clipboard', 'No clipboard history'],
+    },
     defaultChecked: false,
   },
 ]
@@ -740,14 +662,12 @@ const SAFE_AUDIO: readonly OptimizationDef[] = [
     category: 'audio',
     label: 'Audio Enhancements Off',
     hint: 'Clean audio signal',
-    tooltip: `**Audio Enhancements Off** — pure audio
-
-- Disables Windows audio enhancements
-- No virtual surround processing
-- Reduces audio latency
-
-✓ Cleaner audio for external DACs
-✓ Better for competitive gaming`,
+    tooltip: {
+      title: 'Audio Enhancements Off',
+      desc: 'Disables Windows audio processing and enhancements',
+      pros: ['Pure audio signal', 'Reduces latency', 'Better for external DACs'],
+      cons: ['No virtual surround', 'No Windows audio effects'],
+    },
     defaultChecked: true,
   },
   {
@@ -756,14 +676,12 @@ const SAFE_AUDIO: readonly OptimizationDef[] = [
     category: 'audio',
     label: 'No Volume Ducking',
     hint: 'Keep volume during Discord calls',
-    tooltip: `**No Volume Ducking** — fix communication volume drop
-
-- Windows "Communications" tab setting
-- Stops volume reducing when Discord/Teams calls
-- Sets "Do nothing" for communications activity
-
-✓ Keeps game audio at 100% during voice chat
-✓ Essential for competitive gaming with comms`,
+    tooltip: {
+      title: 'No Volume Ducking',
+      desc: 'Prevents volume reduction during voice calls',
+      pros: ['Game audio stays at 100%', 'Essential for competitive', 'No auto volume changes'],
+      cons: ['May miss call notifications', 'Manual volume needed'],
+    },
     defaultChecked: false,
   },
   {
@@ -772,14 +690,12 @@ const SAFE_AUDIO: readonly OptimizationDef[] = [
     category: 'audio',
     label: 'Mute System Sounds',
     hint: 'No Windows beeps/chimes',
-    tooltip: `**Mute System Sounds** — silent Windows
-
-- Sets sound scheme to "No Sounds"
-- No notification chimes
-- No error beeps
-
-✓ Zero audio interruptions during gaming
-✓ Clean soundscape for competitive`,
+    tooltip: {
+      title: 'Mute System Sounds',
+      desc: 'Sets sound scheme to "No Sounds"',
+      pros: ['Zero audio interruptions', 'Clean soundscape', 'No error beeps'],
+      cons: ['No audio feedback', 'May miss notifications'],
+    },
     defaultChecked: false,
   },
 ]
@@ -792,14 +708,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'MSI Mode',
     hint: 'Reduce DPC latency',
-    tooltip: `**MSI Mode** — Message Signaled Interrupts
-
-- Enables MSI for GPU and network adapters
-- Reduces DPC latency by ~50μs
-- Better interrupt handling
-
-⚠ Test for stability — some hardware has issues
-⚠ Check with LatencyMon after enabling`,
+    tooltip: {
+      title: 'MSI Mode',
+      desc: 'Message Signaled Interrupts for GPU/NIC',
+      pros: ['Reduces DPC latency ~50μs', 'Better interrupt handling', 'Modern interrupt method'],
+      cons: ['Some hardware has compatibility issues', 'Requires LatencyMon testing'],
+    },
     defaultChecked: false,
   },
   {
@@ -808,14 +722,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'HPET Off',
     hint: 'Alternative timer source',
-    tooltip: `**HPET Off** — disable High Precision Event Timer
-
-- Uses TSC (CPU timer) instead of HPET
-- Can improve frame times on some systems
-- May cause issues on others
-
-⚠ Benchmark before and after
-⚠ Requires reboot to take effect`,
+    tooltip: {
+      title: 'HPET Off',
+      desc: 'Disable High Precision Event Timer',
+      pros: ['Uses faster TSC timer', 'Can improve frame times', 'Lower timer overhead'],
+      cons: ['Results vary by system', 'Requires reboot', 'Benchmark before/after'],
+    },
     defaultChecked: false,
   },
   {
@@ -824,14 +736,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'display',
     label: 'Game Bar Off',
     hint: 'Fully disable Xbox overlay',
-    tooltip: `**Game Bar Off** — complete removal
-
-- Fully disables Xbox Game Bar
-- Removes overlay completely
-- Frees more resources than Game DVR alone
-
-⚠ Breaks X3D V-Cache optimizer on AMD
-⚠ Keep enabled if you have 7800X3D/7950X3D/9800X3D`,
+    tooltip: {
+      title: 'Game Bar Off',
+      desc: 'Complete Xbox Game Bar removal',
+      pros: ['Removes overlay completely', 'Frees more resources', 'No background processes'],
+      cons: ['**Breaks X3D V-Cache optimizer**', 'Keep ON for 7800X3D/9800X3D', 'No quick capture'],
+    },
     defaultChecked: false,
   },
   {
@@ -840,14 +750,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'display',
     label: 'HAGS On',
     hint: 'Hardware accelerated GPU scheduling',
-    tooltip: `**HAGS On** — GPU scheduling optimization
-
-- Lets GPU manage its own memory
-- Can reduce latency in newer games
-- Mixed results depending on GPU/game
-
-⚠ Test in your specific games
-⚠ Some older games run worse`,
+    tooltip: {
+      title: 'HAGS On',
+      desc: 'Hardware Accelerated GPU Scheduling',
+      pros: ['GPU manages own memory', 'Can reduce input latency', 'Benefits newer games'],
+      cons: ['Mixed results by GPU/game', 'Some older games worse', 'Test per-game'],
+    },
     defaultChecked: false,
   },
   {
@@ -856,14 +764,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'display',
     label: 'Fullscreen Optimizations Off',
     hint: 'Legacy fullscreen mode',
-    tooltip: `**Fullscreen Optimizations Off** — true exclusive fullscreen
-
-- Disables borderless fullscreen wrapper
-- May reduce input latency
-- Can cause alt-tab issues
-
-⚠ Per-game setting may be better
-⚠ Some games need this, others don't`,
+    tooltip: {
+      title: 'Fullscreen Optimizations Off',
+      desc: 'True exclusive fullscreen mode',
+      pros: ['Lower input latency possible', 'Direct GPU access', 'No compositor overhead'],
+      cons: ['Alt-tab issues', 'Per-game setting may be better', 'Some games need it on'],
+    },
     defaultChecked: false,
   },
   {
@@ -872,14 +778,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'power',
     label: 'Ultimate Performance',
     hint: 'Maximum power, no throttling',
-    tooltip: `**Ultimate Performance** — power plan
-
-- Enables hidden Ultimate Performance plan
-- Disables all power saving features
-- Maximum performance at all times
-
-⚠ Higher power consumption
-⚠ May reduce AMD X3D efficiency`,
+    tooltip: {
+      title: 'Ultimate Performance',
+      desc: 'Hidden maximum power plan',
+      pros: ['All power saving disabled', 'Maximum clocks always', 'Zero throttling'],
+      cons: ['Higher power consumption', 'May hurt AMD X3D efficiency', 'More heat output'],
+    },
     defaultChecked: false,
   },
   {
@@ -888,14 +792,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Trim Services',
     hint: 'Disable unused Windows services',
-    tooltip: `**Trim Services** — disable bloat services
-
-- Disables Print Spooler, Fax, Xbox services
-- Reduces background processes
-- Frees RAM and CPU cycles
-
-⚠ May break features you use
-⚠ Review service list before enabling`,
+    tooltip: {
+      title: 'Trim Services',
+      desc: 'Disable bloat services',
+      pros: ['Stops Print Spooler, Fax, etc.', 'Fewer background processes', 'Frees RAM/CPU'],
+      cons: ['May break features you use', 'Review list before enabling', 'Hard to diagnose issues'],
+    },
     defaultChecked: false,
   },
   {
@@ -904,14 +806,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Deep Disk Cleanup',
     hint: 'Clear Windows Update cache',
-    tooltip: `**Deep Disk Cleanup** — thorough cleaning
-
-- Clears Windows Update download cache
-- Removes old Windows installations
-- Deletes delivery optimization files
-
-⚠ Cannot roll back Windows updates after
-⚠ May need to re-download updates`,
+    tooltip: {
+      title: 'Deep Disk Cleanup',
+      desc: 'Thorough system cleaning',
+      pros: ['Clears WU download cache', 'Removes old installations', 'Reclaims disk space'],
+      cons: ['Cannot roll back updates', 'May need re-downloads', 'One-way operation'],
+    },
     defaultChecked: false,
   },
   {
@@ -920,14 +820,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'WPBT Disable',
     hint: 'Block BIOS software injection',
-    tooltip: `**WPBT Disable** — block vendor bloatware
-
-- Prevents BIOS from injecting software
-- Stops OEM tools from auto-installing
-- Registry-based block
-
-⚠ May affect some BIOS features
-⚠ Test after motherboard updates`,
+    tooltip: {
+      title: 'WPBT Disable',
+      desc: 'Block vendor bloatware injection',
+      pros: ['Stops BIOS software injection', 'No OEM auto-installs', 'Cleaner system'],
+      cons: ['May affect BIOS features', 'Test after mobo updates', 'Some utilities blocked'],
+    },
     defaultChecked: false,
   },
   {
@@ -936,14 +834,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'network',
     label: 'QoS Gaming',
     hint: 'Prioritize game traffic',
-    tooltip: `**QoS Gaming** — network priority
-
-- Sets game traffic to high priority
-- Deprioritizes background downloads
-- Uses Windows QoS policy
-
-⚠ May not work with all routers
-⚠ Test in multiplayer games`,
+    tooltip: {
+      title: 'QoS Gaming',
+      desc: 'Network traffic prioritization',
+      pros: ['Game traffic = high priority', 'Background downloads deprioritized', 'Uses Windows QoS'],
+      cons: ['Not all routers respect this', 'Test in multiplayer', 'Router QoS may conflict'],
+    },
     defaultChecked: false,
   },
   {
@@ -952,14 +848,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'network',
     label: 'Network Throttling Off',
     hint: 'Disable media streaming throttle',
-    tooltip: `**Network Throttling Off** — full speed networking
-
-- Disables multimedia throttling
-- Network always at full speed
-- May improve download speeds
-
-⚠ Can increase CPU usage
-⚠ Minimal impact in most cases`,
+    tooltip: {
+      title: 'Network Throttling Off',
+      desc: 'Disable multimedia throttling',
+      pros: ['Network at full speed', 'No streaming limits', 'May improve downloads'],
+      cons: ['Can increase CPU usage', 'Minimal impact usually', 'May affect streaming apps'],
+    },
     defaultChecked: false,
   },
   {
@@ -968,14 +862,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Interrupt Affinity',
     hint: 'Pin interrupts to CPU cores',
-    tooltip: `**Interrupt Affinity** — CPU core assignment
-
-- Assigns GPU/network interrupts to specific cores
-- Reduces core switching overhead
-- Better DPC latency on many-core CPUs
-
-⚠ Optimal settings are hardware-specific
-⚠ Use MSI Utility Tool to verify`,
+    tooltip: {
+      title: 'Interrupt Affinity',
+      desc: 'Pin GPU/NIC interrupts to cores',
+      pros: ['Reduces core switching', 'Better DPC latency', 'Good for many-core CPUs'],
+      cons: ['Hardware-specific tuning', 'Use MSI Utility Tool', 'Wrong settings hurt perf'],
+    },
     defaultChecked: false,
   },
   {
@@ -984,14 +876,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Process Mitigations',
     hint: 'Disable exploit protections',
-    tooltip: `**Process Mitigations** — security vs performance
-
-- Disables CFG, CET, and other mitigations
-- Can improve performance 1-5%
-- Reduces security protections
-
-⚠ Security trade-off
-⚠ Only for offline/trusted games`,
+    tooltip: {
+      title: 'Process Mitigations',
+      desc: 'Disable CFG, CET exploit protections',
+      pros: ['1-5% performance gain', 'Less CPU overhead', 'Faster code execution'],
+      cons: ['Reduces security protections', 'Only for offline/trusted games', 'Security trade-off'],
+    },
     defaultChecked: false,
   },
   {
@@ -1000,14 +890,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'MMCSS Gaming',
     hint: 'GPU/CPU priority for games',
-    tooltip: `**MMCSS Gaming** — Multimedia Class Scheduler Service
-
-- Sets GPU Priority to 8 (highest)
-- Sets CPU Priority to 6
-- Scheduling Category = High
-
-⚠ May affect streaming/capture apps
-⚠ Test with your specific games`,
+    tooltip: {
+      title: 'MMCSS Gaming',
+      desc: 'Multimedia Class Scheduler tuning',
+      pros: ['GPU Priority = 8 (highest)', 'CPU Priority = 6', 'Scheduling Category = High'],
+      cons: ['May affect streaming/capture', 'Test with your games', 'OBS may need adjustment'],
+    },
     defaultChecked: false,
   },
   {
@@ -1016,14 +904,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Scheduler Optimization',
     hint: 'Win32PrioritySeparation tuning',
-    tooltip: `**Scheduler Optimization** — process scheduling
-
-- Sets Win32PrioritySeparation to 26
-- Optimizes foreground process priority
-- Better frame time consistency
-
-⚠ May affect background tasks
-⚠ Benchmark before and after`,
+    tooltip: {
+      title: 'Scheduler Optimization',
+      desc: 'Win32PrioritySeparation = 26',
+      pros: ['Better foreground priority', 'More consistent frame times', 'Optimized quantum'],
+      cons: ['May affect background tasks', 'Benchmark before/after', 'Subtle differences'],
+    },
     defaultChecked: false,
   },
   {
@@ -1032,14 +918,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'power',
     label: 'Core Parking Off',
     hint: 'Keep all cores active',
-    tooltip: `**Core Parking Off** — disable CPU sleep
-
-- Keeps all CPU cores active
-- Prevents core unparking latency
-- 100% min processor state equivalent
-
-⚠ Higher idle power consumption
-⚠ May hurt AMD X3D efficiency`,
+    tooltip: {
+      title: 'Core Parking Off',
+      desc: 'Disable CPU core sleep states',
+      pros: ['All cores always active', 'No unparking latency', 'Instant core availability'],
+      cons: ['Higher idle power', 'May hurt AMD X3D efficiency', 'More heat at idle'],
+    },
     defaultChecked: false,
   },
   {
@@ -1048,14 +932,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Timer Registry',
     hint: 'GlobalTimerResolutionRequests',
-    tooltip: `**Timer Registry** — system timer settings
-
-- Enables GlobalTimerResolutionRequests
-- Sets SystemResponsiveness to 0
-- Complements timer-tool.ps1
-
-⚠ May increase power usage
-⚠ Test with timer-tool.ps1`,
+    tooltip: {
+      title: 'Timer Registry',
+      desc: 'System timer resolution settings',
+      pros: ['GlobalTimerResolutionRequests on', 'SystemResponsiveness = 0', 'Complements timer-tool.ps1'],
+      cons: ['May increase power usage', 'Test with timer-tool.ps1', 'Subtle improvements'],
+    },
     defaultChecked: false,
   },
   {
@@ -1064,14 +946,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'network',
     label: 'RSC Off',
     hint: 'Disable packet coalescing',
-    tooltip: `**RSC Off** — Receive Segment Coalescing
-
-- Disables packet batching in NIC
-- May reduce network latency
-- Increases CPU usage slightly
-
-⚠ Not all adapters support this
-⚠ Benchmark network performance`,
+    tooltip: {
+      title: 'RSC Off',
+      desc: 'Disable Receive Segment Coalescing',
+      pros: ['No packet batching in NIC', 'May reduce network latency', 'Packets processed immediately'],
+      cons: ['Slightly higher CPU usage', 'Not all adapters support', 'Benchmark network perf'],
+    },
     defaultChecked: false,
   },
   {
@@ -1080,14 +960,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'SysMain Off',
     hint: 'Disable Superfetch',
-    tooltip: `**SysMain Off** — disable Superfetch
-
-- Stops memory prefetching service
-- Frees RAM for games
-- May slow app launches
-
-⚠ Reduces app launch speed
-⚠ Better for gaming-only PCs`,
+    tooltip: {
+      title: 'SysMain Off',
+      desc: 'Disable Superfetch/prefetch service',
+      pros: ['Stops memory prefetching', 'Frees RAM for games', 'Less disk I/O'],
+      cons: ['Slower app launches', 'Better for gaming-only PCs', 'First launch slower'],
+    },
     defaultChecked: false,
   },
   {
@@ -1096,14 +974,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Windows Search Off',
     hint: 'Stop disk indexing spikes',
-    tooltip: `**Windows Search Off** — disable indexing service
-
-- Sets WSearch service to Manual
-- Stops constant disk I/O from indexing
-- Search still works (just slower first time)
-
-⚠ File search will be slower initially
-⚠ Start menu search may be less responsive`,
+    tooltip: {
+      title: 'Windows Search Off',
+      desc: 'Disable indexing service',
+      pros: ['WSearch set to Manual', 'No constant disk I/O', 'Search still works'],
+      cons: ['File search slower initially', 'Start menu less responsive', 'No instant results'],
+    },
     defaultChecked: false,
   },
   {
@@ -1112,14 +988,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Memory Gaming Mode',
     hint: 'Keep kernel in RAM',
-    tooltip: `**Memory Gaming Mode** — optimize memory for gaming
-
-- Sets DisablePagingExecutive = 1 (kernel stays in RAM)
-- Sets LargeSystemCache = 0 (more RAM for games)
-- Optimizes NTFS memory usage
-
-⚠ Requires 16GB+ RAM recommended
-⚠ May increase memory pressure on low-RAM systems`,
+    tooltip: {
+      title: 'Memory Gaming Mode',
+      desc: 'Optimize memory for gaming',
+      pros: ['Kernel stays in RAM', 'More RAM for games', 'Optimized NTFS usage'],
+      cons: ['Requires 16GB+ RAM', 'Memory pressure on low-RAM', 'Not for 8GB systems'],
+    },
     defaultChecked: false,
   },
   {
@@ -1128,14 +1002,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'power',
     label: 'Power Throttling Off',
     hint: 'No background throttling',
-    tooltip: `**Power Throttling Off** — disable Windows power throttling
-
-- Prevents Windows from throttling background apps
-- Game always gets full CPU power
-- Disables EcoQoS efficiency mode
-
-⚠ Higher power consumption
-⚠ Laptop battery life reduced`,
+    tooltip: {
+      title: 'Power Throttling Off',
+      desc: 'Disable Windows power throttling',
+      pros: ['No background throttling', 'Full CPU power always', 'EcoQoS disabled'],
+      cons: ['Higher power consumption', 'Laptop battery drain', 'More heat output'],
+    },
     defaultChecked: false,
   },
   {
@@ -1144,14 +1016,12 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Priority Boost Off',
     hint: 'Consistent CPU scheduling',
-    tooltip: `**Priority Boost Off** — disable dynamic priority boost
-
-- Disables Win32PriorityBoost
-- More consistent CPU scheduling
-- Some pros prefer this for predictable frametimes
-
-⚠ May affect multitasking performance
-⚠ Test before competitive use`,
+    tooltip: {
+      title: 'Priority Boost Off',
+      desc: 'Disable dynamic priority boost',
+      pros: ['More consistent scheduling', 'Predictable frame times', 'Some pros prefer this'],
+      cons: ['May affect multitasking', 'Test before competitive', 'Subtle change'],
+    },
     defaultChecked: false,
   },
 ]
@@ -1164,14 +1034,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Privacy Tier 1',
     hint: 'Disable ads and tracking',
-    tooltip: `**Privacy Tier 1** — basic telemetry block
-
-- Disables advertising ID
-- Blocks activity history upload
-- Removes Start menu suggestions
-
-⚠ Some personalization features lost
-⚠ Affects Microsoft account features`,
+    tooltip: {
+      title: 'Privacy Tier 1',
+      desc: 'Basic telemetry and ad blocking',
+      pros: ['Disables advertising ID', 'Blocks activity history', 'Removes Start suggestions'],
+      cons: ['Personalization features lost', 'Affects MS account features', 'Less targeted content'],
+    },
     defaultChecked: false,
   },
   {
@@ -1180,14 +1048,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Privacy Tier 2',
     hint: 'Disable diagnostic data',
-    tooltip: `**Privacy Tier 2** — extended privacy
-
-- Sets telemetry to Security level (minimum)
-- Disables typing/inking data collection
-- Blocks feedback prompts
-
-⚠ Some troubleshooting features affected
-⚠ May impact Windows Insider access`,
+    tooltip: {
+      title: 'Privacy Tier 2',
+      desc: 'Extended privacy controls',
+      pros: ['Telemetry = Security level', 'No typing/inking collection', 'Blocks feedback prompts'],
+      cons: ['Troubleshooting features affected', 'May impact Windows Insider', 'Less diagnostic data'],
+    },
     defaultChecked: false,
   },
   {
@@ -1196,14 +1062,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'privacy',
     label: 'Privacy Tier 3',
     hint: 'Maximum telemetry blocking',
-    tooltip: `**Privacy Tier 3** — aggressive blocking
-
-- Disables Connected User Experience service
-- Blocks telemetry hosts in firewall
-- Stops most data transmission
-
-⚠ May break Microsoft Store updates
-⚠ Some apps may not work correctly`,
+    tooltip: {
+      title: 'Privacy Tier 3',
+      desc: 'Aggressive telemetry blocking',
+      pros: ['Disables Connected User Exp', 'Firewall blocks telemetry hosts', 'Minimal data transmission'],
+      cons: ['May break MS Store updates', 'Some apps may not work', 'Hard to diagnose issues'],
+    },
     defaultChecked: false,
   },
   {
@@ -1212,14 +1076,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Remove Bloatware',
     hint: 'Uninstall preinstalled apps',
-    tooltip: `**Remove Bloatware** — clean slate
-
-- Removes Candy Crush, Spotify, TikTok, etc.
-- Uninstalls Xbox apps (if not needed)
-- Clears pinned Start menu items
-
-⚠ Some apps cannot be reinstalled easily
-⚠ May affect Microsoft Store functionality`,
+    tooltip: {
+      title: 'Remove Bloatware',
+      desc: 'Uninstall preinstalled apps',
+      pros: ['Removes Candy Crush, TikTok, etc.', 'Clears Start menu bloat', 'Cleaner system'],
+      cons: ['Some apps hard to reinstall', 'May affect MS Store', 'Xbox apps removed'],
+    },
     defaultChecked: false,
   },
   {
@@ -1228,14 +1090,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'network',
     label: 'Prefer IPv4',
     hint: 'Disable IPv6 priority',
-    tooltip: `**Prefer IPv4** — legacy networking
-
-- Sets IPv4 as preferred protocol
-- May reduce DNS lookup time
-- Fixes some game connection issues
-
-⚠ Can break IPv6-only services
-⚠ Some ISPs require IPv6`,
+    tooltip: {
+      title: 'Prefer IPv4',
+      desc: 'Set IPv4 as preferred protocol',
+      pros: ['May reduce DNS lookup time', 'Fixes some game connections', 'Simpler networking'],
+      cons: ['Can break IPv6-only services', 'Some ISPs require IPv6', 'Future compatibility'],
+    },
     defaultChecked: false,
   },
   {
@@ -1244,14 +1104,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'network',
     label: 'Teredo Off',
     hint: 'Disable IPv6 tunnel',
-    tooltip: `**Teredo Off** — remove IPv6 tunnel
-
-- Disables Teredo IPv6 tunneling
-- Reduces network overhead
-- May improve NAT traversal
-
-⚠ Breaks Xbox Party Chat on some networks
-⚠ May affect some P2P games`,
+    tooltip: {
+      title: 'Teredo Off',
+      desc: 'Remove IPv6 tunneling',
+      pros: ['Disables Teredo tunneling', 'Reduces network overhead', 'May improve NAT traversal'],
+      cons: ['Breaks Xbox Party Chat', 'May affect P2P games', 'Some features need IPv6'],
+    },
     defaultChecked: false,
   },
   {
@@ -1260,14 +1118,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Native NVMe',
     hint: 'Disable storage stacks',
-    tooltip: `**Native NVMe** — bypass storage layers
-
-- Uses NVMe driver directly
-- Bypasses StorPort/AHCI layers
-- May reduce storage latency
-
-⚠ Only for NVMe drives
-⚠ Verify with benchmarks`,
+    tooltip: {
+      title: 'Native NVMe',
+      desc: 'Bypass storage abstraction layers',
+      pros: ['Uses NVMe driver directly', 'Bypasses StorPort/AHCI', 'May reduce storage latency'],
+      cons: ['Only for NVMe drives', 'Verify with benchmarks', 'SATA drives unaffected'],
+    },
     defaultChecked: false,
   },
   {
@@ -1276,14 +1132,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'SMT/HT Off',
     hint: 'Disable hyperthreading',
-    tooltip: `**SMT/HT Off** — disable hyperthreading
-
-- Disables simultaneous multithreading
-- Can improve single-thread performance
-- Better cache utilization per core
-
-⚠ Significantly reduces multitasking
-⚠ Streaming while gaming affected`,
+    tooltip: {
+      title: 'SMT/HT Off',
+      desc: 'Disable simultaneous multithreading',
+      pros: ['Better single-thread perf', 'Better cache per core', 'Less thread contention'],
+      cons: ['**Significantly reduces multitasking**', 'Streaming affected', 'Half the threads'],
+    },
     defaultChecked: false,
   },
   {
@@ -1292,14 +1146,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'audio',
     label: 'Audio Exclusive Mode',
     hint: 'Game takes over audio',
-    tooltip: `**Audio Exclusive Mode** — WASAPI exclusive
-
-- Allows games to bypass Windows mixer
-- Lowest possible audio latency
-- Blocks other app audio
-
-⚠ Discord/music won't play during games
-⚠ Only for competitive single-focus`,
+    tooltip: {
+      title: 'Audio Exclusive Mode',
+      desc: 'WASAPI exclusive mode',
+      pros: ['Bypasses Windows mixer', 'Lowest audio latency', 'Direct hardware access'],
+      cons: ['**Discord/music blocked**', 'Only for competitive focus', 'No multitasking audio'],
+    },
     defaultChecked: false,
   },
   {
@@ -1308,14 +1160,12 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'network',
     label: 'TCP Optimizer',
     hint: 'Aggressive TCP tuning',
-    tooltip: `**TCP Optimizer** — network stack tuning
-
-- Adjusts TCP window size
-- Disables auto-tuning
-- Sets custom buffer sizes
-
-⚠ May hurt performance on some connections
-⚠ Benchmark with different settings`,
+    tooltip: {
+      title: 'TCP Optimizer',
+      desc: 'Aggressive TCP stack tuning',
+      pros: ['Custom TCP window size', 'Auto-tuning disabled', 'Custom buffer sizes'],
+      cons: ['May hurt some connections', 'Benchmark needed', 'ISP-dependent results'],
+    },
     defaultChecked: false,
   },
 ]
@@ -1334,23 +1184,12 @@ const LUDICROUS_OPTIMIZATIONS: readonly OptimizationDef[] = [
     category: 'system',
     label: 'Core Isolation Off',
     hint: 'Disable VBS/HVCI',
-    tooltip: `**⚠️ DANGER: Core Isolation Off** — disable virtualization security
-
-**What this disables:**
-- Memory Integrity (HVCI) — prevents malicious code injection
-- Credential Guard — protects login credentials
-- Kernel DMA Protection — blocks hardware attacks
-
-**Performance gain:** 5-15% in some games
-
-**🔴 REAL RISK:** Malware can inject code into the kernel.
-This is how rootkits work. If you visit a malicious website
-or run untrusted software, your entire system can be compromised.
-
-**Only consider if:**
-- Dedicated offline gaming PC
-- Never browse the web on this machine
-- Never run untrusted executables`,
+    tooltip: {
+      title: 'Core Isolation Off',
+      desc: 'Disable virtualization-based security',
+      pros: ['5-15% performance in some games', 'Disables HVCI overhead', 'Lower virtualization cost'],
+      cons: ['**Malware can inject kernel code**', 'Rootkits become possible', 'Never use online'],
+    },
     defaultChecked: false,
   },
   {
@@ -1359,29 +1198,12 @@ or run untrusted software, your entire system can be compromised.
     category: 'system',
     label: 'Spectre/Meltdown Off',
     hint: 'CPU vulnerability mitigations',
-    tooltip: `**🔴 DANGER: Spectre/Meltdown Mitigations Off**
-
-**CVEs disabled:**
-- CVE-2017-5753 (Spectre V1) — bounds check bypass
-- CVE-2017-5715 (Spectre V2) — branch target injection
-- CVE-2017-5754 (Meltdown) — rogue data cache load
-
-**Performance gain:** 5-30% depending on workload
-
-**🔴 REAL RISK:** These are HARDWARE vulnerabilities in your CPU.
-Any JavaScript on any website can potentially read your passwords,
-encryption keys, and other sensitive data from memory.
-
-**Attack vector:** Just visiting a website. That's it.
-
-**Only consider if:**
-- COMPLETELY offline gaming PC
-- NEVER connects to any network
-- Physical access is controlled
-
-**Research links:**
-- https://meltdownattack.com
-- https://spectreattack.com`,
+    tooltip: {
+      title: 'Spectre/Meltdown Off',
+      desc: 'Disable CPU vulnerability mitigations',
+      pros: ['5-30% performance gain', 'No mitigation overhead', 'Faster syscalls'],
+      cons: ['**JS can read your passwords**', 'Hardware-level vulnerability', 'NEVER connect to network'],
+    },
     defaultChecked: false,
   },
   {
@@ -1390,22 +1212,12 @@ encryption keys, and other sensitive data from memory.
     category: 'system',
     label: 'Kernel Mitigations Off',
     hint: 'Disable kernel exploit protections',
-    tooltip: `**🔴 DANGER: Kernel Mitigations Off**
-
-**What this disables:**
-- KPTI (Kernel Page Table Isolation)
-- SMAP (Supervisor Mode Access Prevention)
-- SMEP (Supervisor Mode Execution Prevention)
-
-**Performance gain:** 2-10%
-
-**🔴 REAL RISK:** Kernel exploits become trivial.
-Any vulnerability in any driver can lead to full system compromise.
-This is literally how hackers escalate privileges.
-
-**Only consider if:**
-- Isolated benchmarking system
-- Will be reinstalled before any real use`,
+    tooltip: {
+      title: 'Kernel Mitigations Off',
+      desc: 'Disable KPTI, SMAP, SMEP',
+      pros: ['2-10% performance gain', 'No page table isolation', 'Faster kernel access'],
+      cons: ['**Kernel exploits become trivial**', 'Any driver vuln = full compromise', 'Reinstall before real use'],
+    },
     defaultChecked: false,
   },
   {
@@ -1414,24 +1226,12 @@ This is literally how hackers escalate privileges.
     category: 'system',
     label: 'DEP Off',
     hint: 'Data Execution Prevention off',
-    tooltip: `**🔴 DANGER: DEP (Data Execution Prevention) Off**
-
-**What this disables:**
-- NX bit enforcement — prevents code execution in data segments
-- This is a CPU feature from 2004
-
-**Performance gain:** Minimal (legacy games only)
-
-**🔴 REAL RISK:** Buffer overflow exploits from the 2000s work again.
-This is why we had so many viruses back then.
-DEP is why we DON'T have them now.
-
-**Only consider if:**
-- Running ancient games that don't work with DEP
-- Immediately re-enable after playing
-
-**Note:** Most "DEP issues" are actually compatibility problems
-that can be fixed by running as admin or in compatibility mode.`,
+    tooltip: {
+      title: 'DEP Off',
+      desc: 'Disable NX bit enforcement',
+      pros: ['Legacy game compatibility', 'Minimal perf gain', 'Ancient software support'],
+      cons: ['**Buffer overflows work again**', '2000s-era viruses possible', 'Re-enable immediately after'],
+    },
     defaultChecked: false,
   },
 ]

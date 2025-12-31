@@ -160,21 +160,27 @@
       <article class="ludicrous-placard-v2">
         <header class="placard-header-grid">
           <div class="placard-header-left">
-            <div class="placard-header-badges">
-              <mark class="placard-id">ADVISORY-LUDICROUS-001</mark>
-              <mark class="placard-kicker">CRITICAL RISK</mark>
-            </div>
-            <h2>Danger Zone: Security Mitigations Off</h2>
+            <!-- Stylized skull icon with glow animation -->
+            <svg class="placard-skull-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Skull outline -->
+              <path d="M32 4C18 4 8 16 8 28c0 8 4 15 10 19v9c0 2 2 4 4 4h20c2 0 4-2 4-4v-9c6-4 10-11 10-19 0-12-10-24-24-24z" fill="currentColor" opacity="0.15"/>
+              <path d="M32 4C18 4 8 16 8 28c0 8 4 15 10 19v9c0 2 2 4 4 4h20c2 0 4-2 4-4v-9c6-4 10-11 10-19 0-12-10-24-24-24z" stroke="currentColor" stroke-width="2" fill="none"/>
+              <!-- Left eye socket -->
+              <ellipse cx="22" cy="28" rx="6" ry="7" fill="currentColor"/>
+              <!-- Right eye socket -->
+              <ellipse cx="42" cy="28" rx="6" ry="7" fill="currentColor"/>
+              <!-- Nose cavity -->
+              <path d="M32 36l-4 8h8l-4-8z" fill="currentColor"/>
+              <!-- Teeth marks -->
+              <path d="M22 52v4M27 52v4M32 52v4M37 52v4M42 52v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
           </div>
           <div class="placard-header-right">
-            <h3>Benchmark Mode Safety Net</h3>
+            <h2>Danger Zone: Security Off</h2>
             <p class="placard-desc">
-              KERNEL MITIGATIONS DISABLED. TREAT SYSTEM AS DISPOSABLE AND OFFLINE ONLY.
+              Benchmark mode. Treat system as disposable and offline only.
             </p>
           </div>
-          <svg class="placard-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
         </header>
 
         <div class="placard-blocks-horizontal">
@@ -278,7 +284,9 @@
             </div>
           </div>
           <button type="button" class="ludicrous-unlock-btn" onclick={openLudicrousModal}>
-            <span class="unlock-icon">&#9888;</span>
+            <svg class="unlock-icon" viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+            </svg>
             <span class="unlock-text">Reveal Dangerous Options</span>
             <span class="unlock-hint">Disable CPU security mitigations (not recommended)</span>
           </button>

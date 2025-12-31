@@ -648,7 +648,13 @@
       }
     }
 
-    
+    .action-icon {
+      vertical-align: -2px;
+      margin-right: 4px;
+      stroke: currentColor;
+    }
+
+
     .ripple {
       position: absolute;
       border-radius: 50%;
