@@ -320,7 +320,8 @@ export function tooltip(node: HTMLElement, content: TooltipContent) {
   return {
     update(newContent: TooltipContent) {
       currentContent = newContent
-      node.dataset.tooltip = typeof newContent === 'string' ? newContent : JSON.stringify(newContent)
+      node.dataset.tooltip =
+        typeof newContent === 'string' ? newContent : JSON.stringify(newContent)
       if (isActive) {
         showTooltipFor(node, newContent)
       }

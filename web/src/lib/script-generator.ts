@@ -27,7 +27,7 @@ const LUDICROUS_KEYS: readonly OptimizationKey[] = [
 
 /** Build a lookup map from optimization key to tier */
 const TIER_BY_KEY = new Map<OptimizationKey, OptimizationTier>(
-  OPTIMIZATIONS.map((opt) => [opt.key, opt.tier])
+  OPTIMIZATIONS.map((opt) => [opt.key, opt.tier]),
 )
 
 /** Tier priority for risk profile calculation (higher = more dangerous) */
@@ -195,7 +195,9 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
   lines.push('.DESCRIPTION')
   lines.push(`    Core: ${hardware.cpu} + ${hardware.gpu}`)
   lines.push(`    Build: ${__BUILD_COMMIT__} (${__BUILD_DATE__})`)
-  lines.push(`    Source: https://github.com/thepedroferrari/windows-gaming-settings/tree/${__BUILD_COMMIT__}`)
+  lines.push(
+    `    Source: https://github.com/thepedroferrari/windows-gaming-settings/tree/${__BUILD_COMMIT__}`,
+  )
   if (hasLudicrous) {
     lines.push('')
     lines.push('    ⚠️  DANGER ZONE: CPU security mitigations are DISABLED in this script.')
@@ -369,10 +371,16 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
   lines.push('Write-Host "  ╚════════════════════════════════════════╝" -ForegroundColor White')
   lines.push('Write-Host ""')
   lines.push('Write-Host "  Applied:  $($script:SuccessCount) changes" -ForegroundColor Green')
-  lines.push('if ($script:WarningCount -gt 0) { Write-Host "  Warnings: $($script:WarningCount)" -ForegroundColor Yellow }')
-  lines.push('if ($script:FailCount -gt 0) { Write-Host "  Failed:   $($script:FailCount)" -ForegroundColor Red }')
+  lines.push(
+    'if ($script:WarningCount -gt 0) { Write-Host "  Warnings: $($script:WarningCount)" -ForegroundColor Yellow }',
+  )
+  lines.push(
+    'if ($script:FailCount -gt 0) { Write-Host "  Failed:   $($script:FailCount)" -ForegroundColor Red }',
+  )
   lines.push('Write-Host ""')
-  lines.push('Write-Host "  Reboot recommended for all changes to take effect." -ForegroundColor Cyan')
+  lines.push(
+    'Write-Host "  Reboot recommended for all changes to take effect." -ForegroundColor Cyan',
+  )
   lines.push('Write-Host ""')
   lines.push('')
   lines.push('# Script verification hash')
@@ -516,18 +524,12 @@ function generateSystemOpts(selected: Set<string>): string[] {
   // accessibility_shortcuts - Disable Sticky Keys, Filter Keys, Toggle Keys
   if (selected.has('accessibility_shortcuts')) {
     lines.push('# Disable accessibility shortcuts (Sticky/Filter/Toggle Keys)')
-    lines.push(
-      'Set-Reg "HKCU:\\Control Panel\\Accessibility\\StickyKeys" "Flags" "506" "String"',
-    )
+    lines.push('Set-Reg "HKCU:\\Control Panel\\Accessibility\\StickyKeys" "Flags" "506" "String"')
     lines.push(
       'Set-Reg "HKCU:\\Control Panel\\Accessibility\\Keyboard Response" "Flags" "122" "String"',
     )
-    lines.push(
-      'Set-Reg "HKCU:\\Control Panel\\Accessibility\\ToggleKeys" "Flags" "58" "String"',
-    )
-    lines.push(
-      'Set-Reg "HKCU:\\Control Panel\\Accessibility\\MouseKeys" "Flags" "58" "String"',
-    )
+    lines.push('Set-Reg "HKCU:\\Control Panel\\Accessibility\\ToggleKeys" "Flags" "58" "String"')
+    lines.push('Set-Reg "HKCU:\\Control Panel\\Accessibility\\MouseKeys" "Flags" "58" "String"')
     lines.push('Write-OK "Accessibility shortcuts disabled (no more Sticky Keys popup)"')
   }
 
@@ -620,7 +622,9 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
     lines.push('# This optimization requires running timer-tool.ps1 BEFORE launching games.')
     lines.push('# Keep it running during gameplay for smooth frame pacing.')
     lines.push('#')
-    lines.push('# Download: https://github.com/thepedroferrari/windows-gaming-settings/blob/master/timer-tool.ps1')
+    lines.push(
+      '# Download: https://github.com/thepedroferrari/windows-gaming-settings/blob/master/timer-tool.ps1',
+    )
     lines.push('#')
     lines.push('# Usage:')
     lines.push('#   .\\timer-tool.ps1                        # Basic - run before gaming')
@@ -632,8 +636,12 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
     lines.push('')
     lines.push('Write-Host ""')
     lines.push('Write-Host "  [!] MANUAL STEP: Timer Resolution" -ForegroundColor Yellow')
-    lines.push('Write-Host "      Download and run timer-tool.ps1 before gaming" -ForegroundColor Yellow')
-    lines.push('Write-Host "      https://github.com/thepedroferrari/windows-gaming-settings" -ForegroundColor Cyan')
+    lines.push(
+      'Write-Host "      Download and run timer-tool.ps1 before gaming" -ForegroundColor Yellow',
+    )
+    lines.push(
+      'Write-Host "      https://github.com/thepedroferrari/windows-gaming-settings" -ForegroundColor Cyan',
+    )
     lines.push('Write-Host ""')
   }
 
@@ -711,12 +719,24 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
   if (selected.has('spectre_meltdown_off')) {
     lines.push('# ⚠️ LUDICROUS: Disable Spectre/Meltdown Mitigations')
     lines.push('Write-Host ""')
-    lines.push('Write-Host "  ╔═══════════════════════════════════════════════════════════════╗" -ForegroundColor Red')
-    lines.push('Write-Host "  ║ CRITICAL WARNING: DISABLING CPU SECURITY MITIGATIONS          ║" -ForegroundColor Red')
-    lines.push('Write-Host "  ║ CVE-2017-5753 (Spectre V1), CVE-2017-5715 (Spectre V2)        ║" -ForegroundColor Red')
-    lines.push('Write-Host "  ║ CVE-2017-5754 (Meltdown) - Hardware vulnerabilities           ║" -ForegroundColor Red')
-    lines.push('Write-Host "  ║ ANY WEBSITE CAN READ YOUR PASSWORDS AFTER THIS!               ║" -ForegroundColor Red')
-    lines.push('Write-Host "  ╚═══════════════════════════════════════════════════════════════╝" -ForegroundColor Red')
+    lines.push(
+      'Write-Host "  ╔═══════════════════════════════════════════════════════════════╗" -ForegroundColor Red',
+    )
+    lines.push(
+      'Write-Host "  ║ CRITICAL WARNING: DISABLING CPU SECURITY MITIGATIONS          ║" -ForegroundColor Red',
+    )
+    lines.push(
+      'Write-Host "  ║ CVE-2017-5753 (Spectre V1), CVE-2017-5715 (Spectre V2)        ║" -ForegroundColor Red',
+    )
+    lines.push(
+      'Write-Host "  ║ CVE-2017-5754 (Meltdown) - Hardware vulnerabilities           ║" -ForegroundColor Red',
+    )
+    lines.push(
+      'Write-Host "  ║ ANY WEBSITE CAN READ YOUR PASSWORDS AFTER THIS!               ║" -ForegroundColor Red',
+    )
+    lines.push(
+      'Write-Host "  ╚═══════════════════════════════════════════════════════════════╝" -ForegroundColor Red',
+    )
     lines.push('Write-Host ""')
     lines.push(
       'Set-Reg "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" "FeatureSettingsOverride" 3',
@@ -730,7 +750,9 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
   // kernel_mitigations_off - Disable kernel exploit protections (LUDICROUS TIER)
   if (selected.has('kernel_mitigations_off')) {
     lines.push('# ⚠️ LUDICROUS: Disable Kernel Mitigations')
-    lines.push('Write-Host "  [!!] DANGER: Disabling kernel exploit protections" -ForegroundColor Red')
+    lines.push(
+      'Write-Host "  [!!] DANGER: Disabling kernel exploit protections" -ForegroundColor Red',
+    )
     lines.push('bcdedit /set isolatedcontext No 2>$null')
     lines.push('bcdedit /set allowedinmemorysettings 0x0 2>$null')
     lines.push(
@@ -745,7 +767,9 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
   // dep_off - Disable Data Execution Prevention (LUDICROUS TIER)
   if (selected.has('dep_off')) {
     lines.push('# ⚠️ LUDICROUS: Disable DEP (Data Execution Prevention)')
-    lines.push('Write-Host "  [!!] DANGER: Disabling DEP - Buffer overflow exploits work again" -ForegroundColor Red')
+    lines.push(
+      'Write-Host "  [!!] DANGER: Disabling DEP - Buffer overflow exploits work again" -ForegroundColor Red',
+    )
     lines.push('bcdedit /set nx AlwaysOff 2>$null')
     lines.push('Write-OK "DEP DISABLED (SECURITY REDUCED, reboot required)"')
     lines.push('Write-Host "  [!!] Re-enable with: bcdedit /set nx OptIn" -ForegroundColor Yellow')
@@ -1304,23 +1328,33 @@ export function buildVerificationScript(selection: SelectionState): string {
   lines.push('Write-Section "System Settings"')
 
   if (selected.has('mouse_accel')) {
-    lines.push('if (Test-RegValue "HKCU:\\Control Panel\\Mouse" "MouseSpeed" 0) { Write-Pass "Mouse acceleration disabled" } else { Write-Fail "Mouse acceleration NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Control Panel\\Mouse" "MouseSpeed" 0) { Write-Pass "Mouse acceleration disabled" } else { Write-Fail "Mouse acceleration NOT disabled" }',
+    )
   }
 
   if (selected.has('keyboard_response')) {
-    lines.push('if (Test-RegValue "HKCU:\\Control Panel\\Keyboard" "KeyboardDelay" 0) { Write-Pass "Keyboard delay minimized" } else { Write-Fail "Keyboard delay NOT minimized" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Control Panel\\Keyboard" "KeyboardDelay" 0) { Write-Pass "Keyboard delay minimized" } else { Write-Fail "Keyboard delay NOT minimized" }',
+    )
   }
 
   if (selected.has('fastboot')) {
-    lines.push('if (Test-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power" "HiberbootEnabled" 0) { Write-Pass "Fast startup disabled" } else { Write-Fail "Fast startup NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power" "HiberbootEnabled" 0) { Write-Pass "Fast startup disabled" } else { Write-Fail "Fast startup NOT disabled" }',
+    )
   }
 
   if (selected.has('end_task')) {
-    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings" "TaskbarEndTask" 1) { Write-Pass "End Task enabled in taskbar" } else { Write-Fail "End Task NOT enabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings" "TaskbarEndTask" 1) { Write-Pass "End Task enabled in taskbar" } else { Write-Fail "End Task NOT enabled" }',
+    )
   }
 
   if (selected.has('notifications_off')) {
-    lines.push('if (Test-RegValue "HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer" "DisableNotificationCenter" 1) { Write-Pass "Notifications disabled" } else { Write-Fail "Notifications NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer" "DisableNotificationCenter" 1) { Write-Pass "Notifications disabled" } else { Write-Fail "Notifications NOT disabled" }',
+    )
   }
 
   // Performance section
@@ -1328,19 +1362,27 @@ export function buildVerificationScript(selection: SelectionState): string {
   lines.push('Write-Section "Performance Settings"')
 
   if (selected.has('gamedvr')) {
-    lines.push('if (Test-RegValue "HKCU:\\System\\GameConfigStore" "GameDVR_Enabled" 0) { Write-Pass "Game DVR disabled" } else { Write-Fail "Game DVR NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\System\\GameConfigStore" "GameDVR_Enabled" 0) { Write-Pass "Game DVR disabled" } else { Write-Fail "Game DVR NOT disabled" }',
+    )
   }
 
   if (selected.has('hags')) {
-    lines.push('if (Test-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers" "HwSchMode" 2) { Write-Pass "HAGS enabled" } else { Write-Fail "HAGS NOT enabled" }')
+    lines.push(
+      'if (Test-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers" "HwSchMode" 2) { Write-Pass "HAGS enabled" } else { Write-Fail "HAGS NOT enabled" }',
+    )
   }
 
   if (selected.has('fso_disable')) {
-    lines.push('if (Test-RegValue "HKCU:\\System\\GameConfigStore" "GameDVR_FSEBehaviorMode" 2) { Write-Pass "Fullscreen optimizations disabled" } else { Write-Fail "Fullscreen optimizations NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\System\\GameConfigStore" "GameDVR_FSEBehaviorMode" 2) { Write-Pass "Fullscreen optimizations disabled" } else { Write-Fail "Fullscreen optimizations NOT disabled" }',
+    )
   }
 
   if (selected.has('game_mode')) {
-    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\GameBar" "AutoGameModeEnabled" 1) { Write-Pass "Game Mode enabled" } else { Write-Fail "Game Mode NOT enabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Software\\Microsoft\\GameBar" "AutoGameModeEnabled" 1) { Write-Pass "Game Mode enabled" } else { Write-Fail "Game Mode NOT enabled" }',
+    )
   }
 
   // Power section
@@ -1349,12 +1391,16 @@ export function buildVerificationScript(selection: SelectionState): string {
 
   if (selected.has('ultimate_perf') || selected.has('power_plan')) {
     lines.push('$plan = powercfg /getactivescheme')
-    lines.push('if ($plan -match "Ultimate Performance|High performance") { Write-Pass "High/Ultimate performance plan active" } else { Write-Fail "Performance power plan NOT active" }')
+    lines.push(
+      'if ($plan -match "Ultimate Performance|High performance") { Write-Pass "High/Ultimate performance plan active" } else { Write-Fail "Performance power plan NOT active" }',
+    )
   }
 
   if (selected.has('hibernation_disable')) {
     lines.push('$hibPath = "$env:SystemDrive\\hiberfil.sys"')
-    lines.push('if (-not (Test-Path $hibPath)) { Write-Pass "Hibernation disabled" } else { Write-Fail "Hibernation file still exists" }')
+    lines.push(
+      'if (-not (Test-Path $hibPath)) { Write-Pass "Hibernation disabled" } else { Write-Fail "Hibernation file still exists" }',
+    )
   }
 
   // Network section
@@ -1362,15 +1408,23 @@ export function buildVerificationScript(selection: SelectionState): string {
   lines.push('Write-Section "Network Settings"')
 
   if (selected.has('nagle') || selected.has('tcp_optimizer')) {
-    lines.push('$adapter = Get-NetAdapter | Where-Object {$_.Status -eq "Up"} | Select-Object -First 1')
+    lines.push(
+      '$adapter = Get-NetAdapter | Where-Object {$_.Status -eq "Up"} | Select-Object -First 1',
+    )
     lines.push('if ($adapter) {')
-    lines.push('    $path = "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\$($adapter.InterfaceGuid)"')
-    lines.push('    if (Test-RegValue $path "TcpAckFrequency" 1) { Write-Pass "Nagle algorithm disabled on $($adapter.Name)" } else { Write-Fail "Nagle algorithm NOT disabled" }')
+    lines.push(
+      '    $path = "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\$($adapter.InterfaceGuid)"',
+    )
+    lines.push(
+      '    if (Test-RegValue $path "TcpAckFrequency" 1) { Write-Pass "Nagle algorithm disabled on $($adapter.Name)" } else { Write-Fail "Nagle algorithm NOT disabled" }',
+    )
     lines.push('} else { Write-Skip "No active network adapter found" }')
   }
 
   if (selected.has('network_throttling')) {
-    lines.push('if (Test-RegValue "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" "NetworkThrottlingIndex" 0xffffffff) { Write-Pass "Network throttling disabled" } else { Write-Fail "Network throttling NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" "NetworkThrottlingIndex" 0xffffffff) { Write-Pass "Network throttling disabled" } else { Write-Fail "Network throttling NOT disabled" }',
+    )
   }
 
   // Privacy section
@@ -1378,19 +1432,27 @@ export function buildVerificationScript(selection: SelectionState): string {
   lines.push('Write-Section "Privacy Settings"')
 
   if (selected.has('privacy_tier1')) {
-    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" "Enabled" 0) { Write-Pass "Advertising ID disabled" } else { Write-Fail "Advertising ID NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" "Enabled" 0) { Write-Pass "Advertising ID disabled" } else { Write-Fail "Advertising ID NOT disabled" }',
+    )
   }
 
   if (selected.has('privacy_tier2')) {
-    lines.push('if (Test-RegValue "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "AllowTelemetry" 0) { Write-Pass "Telemetry minimized" } else { Write-Fail "Telemetry NOT minimized" }')
+    lines.push(
+      'if (Test-RegValue "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "AllowTelemetry" 0) { Write-Pass "Telemetry minimized" } else { Write-Fail "Telemetry NOT minimized" }',
+    )
   }
 
   if (selected.has('background_apps')) {
-    lines.push('if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" "GlobalUserDisabled" 1) { Write-Pass "Background apps disabled" } else { Write-Fail "Background apps NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" "GlobalUserDisabled" 1) { Write-Pass "Background apps disabled" } else { Write-Fail "Background apps NOT disabled" }',
+    )
   }
 
   if (selected.has('copilot_disable')) {
-    lines.push('if (Test-RegValue "HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1) { Write-Pass "Copilot disabled" } else { Write-Fail "Copilot NOT disabled" }')
+    lines.push(
+      'if (Test-RegValue "HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1) { Write-Pass "Copilot disabled" } else { Write-Fail "Copilot NOT disabled" }',
+    )
   }
 
   // Summary
@@ -1402,11 +1464,19 @@ export function buildVerificationScript(selection: SelectionState): string {
   lines.push('Write-Host ""')
   lines.push('$total = $script:PassCount + $script:FailCount')
   lines.push('Write-Host "  Passed:  $($script:PassCount)/$total" -ForegroundColor Green')
-  lines.push('if ($script:FailCount -gt 0) { Write-Host "  Failed:  $($script:FailCount)" -ForegroundColor Red }')
-  lines.push('if ($script:SkipCount -gt 0) { Write-Host "  Skipped: $($script:SkipCount)" -ForegroundColor DarkGray }')
+  lines.push(
+    'if ($script:FailCount -gt 0) { Write-Host "  Failed:  $($script:FailCount)" -ForegroundColor Red }',
+  )
+  lines.push(
+    'if ($script:SkipCount -gt 0) { Write-Host "  Skipped: $($script:SkipCount)" -ForegroundColor DarkGray }',
+  )
   lines.push('Write-Host ""')
-  lines.push('if ($script:FailCount -eq 0) { Write-Host "  All optimizations verified!" -ForegroundColor Green }')
-  lines.push('else { Write-Host "  Some optimizations may need to be re-applied or require reboot." -ForegroundColor Yellow }')
+  lines.push(
+    'if ($script:FailCount -eq 0) { Write-Host "  All optimizations verified!" -ForegroundColor Green }',
+  )
+  lines.push(
+    'else { Write-Host "  Some optimizations may need to be re-applied or require reboot." -ForegroundColor Yellow }',
+  )
   lines.push('Write-Host ""')
 
   return lines.join('\n')

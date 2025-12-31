@@ -1,8 +1,5 @@
 @layer components {
-  
-
   @scope (.unified-nav) {
-    
     :scope {
       --nav-height: 44px;
       --nav-height-mobile: 40px;
@@ -11,21 +8,15 @@
       --nav-clip: var(--clip-cyber-sm);
       --nav-clip-xs: var(--clip-cyber-xs);
       --nav-transition: var(--duration-normal) var(--ease-out-expo);
-
-      
       position: fixed;
       inset-block-start: 0;
       inset-inline: 0;
       z-index: 1000;
-
-      
       display: flex;
       align-items: center;
       justify-content: space-between;
       block-size: var(--nav-height);
       padding-inline: var(--space-lg);
-
-      
       background: linear-gradient(
         180deg,
         color-mix(in oklch, oklch(0.08 0.02 280) 98%, transparent) 0%,
@@ -37,14 +28,11 @@
         var(--shadow-lg),
         inset 0 -1px 0 var(--white-5);
     }
-
-    
     .status {
       display: flex;
       align-items: center;
       gap: var(--space-xs);
       min-inline-size: 90px;
-
       .dot {
         inline-size: 8px;
         block-size: 8px;
@@ -53,9 +41,7 @@
         box-shadow:
           var(--glow-sm) var(--nav-safe),
           var(--glow-md) color-mix(in oklch, var(--nav-safe) 40%, transparent);
-        animation: statusPulse var(--anim-normal) ease-in-out infinite;
       }
-
       .label {
         font-family: var(--font-display);
         font-size: var(--text-xs);
@@ -65,8 +51,6 @@
         text-shadow: var(--glow-sm) color-mix(in oklch, var(--nav-safe) 40%, transparent);
       }
     }
-
-    
     .links {
       display: flex;
       align-items: center;
@@ -75,7 +59,6 @@
       background: var(--black-20);
       clip-path: var(--nav-clip);
     }
-
     .nav-link {
       display: flex;
       align-items: center;
@@ -96,13 +79,11 @@
       transition-property: color, background, border-color, box-shadow, text-shadow;
       white-space: nowrap;
       position: relative;
-
       &:hover {
         color: var(--text-primary);
         background: var(--accent-10);
         border-color: var(--accent-25);
       }
-
       &[aria-current="true"],
       &.active {
         background: linear-gradient(135deg, var(--nav-accent) 0%, var(--accent-dim) 100%);
@@ -112,7 +93,6 @@
           var(--glow-sm) var(--accent-glow),
           inset 0 1px 0 var(--white-15);
         text-shadow: var(--text-shadow-sm);
-
         &::after {
           content: "";
           position: absolute;
@@ -123,8 +103,6 @@
         }
       }
     }
-
-    /* Actions section */
     .nav-actions {
       display: flex;
       align-items: center;
@@ -132,7 +110,6 @@
       min-inline-size: 180px;
       justify-content: flex-end;
     }
-
     .download-link {
       display: inline-flex;
       align-items: center;
@@ -150,13 +127,11 @@
       border: 1px solid var(--cyber-yellow);
       clip-path: var(--nav-clip);
       transition: all var(--transition-smooth);
-
       .icon {
         inline-size: var(--icon-xs);
         block-size: var(--icon-xs);
         flex-shrink: 0;
       }
-
       &:hover {
         color: oklch(0.95 0.15 90);
         background: color-mix(in oklch, var(--cyber-yellow) 25%, transparent);
@@ -164,11 +139,9 @@
         transform: scale(1.02);
       }
     }
-
     .badge {
       --badge-neon: var(--neon-cyan);
       --badge-glow: var(--neon-cyan-glow);
-
       display: inline-flex;
       align-items: center;
       gap: var(--space-xs);
@@ -191,9 +164,6 @@
         var(--glow-sm) var(--badge-glow),
         var(--glow-md) color-mix(in oklch, var(--badge-neon) 25%, transparent),
         inset 0 0 12px color-mix(in oklch, var(--badge-neon) 8%, transparent);
-      animation: badgeGlow var(--anim-slow) ease-in-out infinite;
-
-      
       &::before {
         content: "";
         position: absolute;
@@ -206,9 +176,7 @@
           transparent 100%
         );
         opacity: 0;
-        animation: badgeScan 4s ease-in-out infinite;
       }
-
       .icon {
         inline-size: var(--icon-xs);
         block-size: var(--icon-xs);
@@ -216,7 +184,6 @@
         filter: drop-shadow(0 0 4px var(--badge-glow));
         transition: filter var(--duration-normal);
       }
-
       &:hover {
         color: oklch(0.95 0.05 195);
         background: color-mix(in oklch, var(--badge-neon) 25%, transparent);
@@ -227,15 +194,12 @@
           inset 0 0 20px color-mix(in oklch, var(--badge-neon) 15%, transparent);
         text-shadow: var(--glow-md) var(--badge-neon);
         transform: scale(1.02);
-
         .icon {
           filter: drop-shadow(0 0 8px var(--badge-neon));
         }
       }
     }
   }
-
-  
   @keyframes statusPulse {
     0%, 100% {
       opacity: 1;
@@ -250,7 +214,6 @@
         0 0 20px color-mix(in oklch, var(--nav-safe) 60%, transparent);
     }
   }
-
   @keyframes badgeGlow {
     0%, 100% {
       box-shadow:
@@ -265,7 +228,6 @@
         inset 0 0 16px color-mix(in oklch, var(--badge-neon) 12%, transparent);
     }
   }
-
   @keyframes badgeScan {
     0%, 80%, 100% {
       opacity: 0;
@@ -278,33 +240,25 @@
       transform: translateX(300%);
     }
   }
-
-  
   body:has(.unified-nav) {
     padding-block-start: 44px; 
   }
-
-  
   @media (width <= 768px) {
     .unified-nav {
       padding-inline: var(--space-sm);
-
       .status,
       .nav-actions {
         display: none;
       }
-
       .links {
         inline-size: 100%;
         justify-content: center;
         overflow-x: auto;
         scrollbar-width: none;
-
         &::-webkit-scrollbar {
           display: none;
         }
       }
-
       .nav-link {
         padding-block: var(--space-xs);
         padding-inline: 10px;
@@ -312,16 +266,13 @@
       }
     }
   }
-
   @media (width <= 480px) {
     .unified-nav {
       block-size: 40px; 
     }
-
     body:has(.unified-nav) {
       padding-block-start: 40px;
     }
-
     .unified-nav .nav-link {
       padding-block: 5px;
       padding-inline: 8px;

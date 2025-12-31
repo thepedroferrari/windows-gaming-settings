@@ -77,11 +77,7 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Timer Resolution Tool',
       desc: 'Sets Windows timer to 0.5ms (from 15.6ms default)',
-      pros: [
-        'Improves input responsiveness',
-        'Better frame pacing',
-        'Smoother 128-tick gameplay',
-      ],
+      pros: ['Improves input responsiveness', 'Better frame pacing', 'Smoother 128-tick gameplay'],
       cons: ['Must run during gameplay', 'Slightly higher power usage'],
     },
     defaultChecked: true,
@@ -95,7 +91,11 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Explorer Speed',
       desc: 'Disables auto folder-type detection and metadata scanning',
-      pros: ['Folders open instantly', 'Big improvement for large folders', 'No functional downside'],
+      pros: [
+        'Folders open instantly',
+        'Big improvement for large folders',
+        'No functional downside',
+      ],
       cons: ['Less automatic folder organization', 'Manual view settings needed'],
     },
     defaultChecked: false,
@@ -109,7 +109,11 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Purge Temp Files',
       desc: 'Clears Windows temp folders, browser caches, and crash dumps',
-      pros: ['Reclaims GB of disk space', 'Instant operation', 'Safe — only removes expendable files'],
+      pros: [
+        'Reclaims GB of disk space',
+        'Instant operation',
+        'Safe — only removes expendable files',
+      ],
       cons: ['Some apps may need to rebuild caches'],
     },
     defaultChecked: false,
@@ -123,7 +127,11 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Create Restore Point',
       desc: 'Creates Windows restore point before applying any changes',
-      pros: ['Instant rollback if needed', 'Best practice before system changes', 'Takes only seconds'],
+      pros: [
+        'Instant rollback if needed',
+        'Best practice before system changes',
+        'Takes only seconds',
+      ],
       cons: [],
     },
     defaultChecked: true,
@@ -165,7 +173,11 @@ const SAFE_SYSTEM: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Taskbar End Task',
       desc: 'Adds "End Task" option to taskbar right-click menu (Win11 23H2+)',
-      pros: ['Kill frozen apps instantly', 'No Task Manager needed', 'Huge quality-of-life improvement'],
+      pros: [
+        'Kill frozen apps instantly',
+        'No Task Manager needed',
+        'Huge quality-of-life improvement',
+      ],
       cons: [],
     },
     defaultChecked: false,
@@ -253,7 +265,11 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Balanced+ Power Plan',
       desc: 'Gaming-optimized power plan based on Windows Balanced',
-      pros: ['Works with CPU boost (P-States, CPPC)', 'Better than High Perf for X3D', 'No sleep timeouts'],
+      pros: [
+        'Works with CPU boost (P-States, CPPC)',
+        'Better than High Perf for X3D',
+        'No sleep timeouts',
+      ],
       cons: ['Slightly higher idle power', 'USB/PCIe always powered'],
     },
     defaultChecked: true,
@@ -267,7 +283,11 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     tooltip: {
       title: 'USB Full Power',
       desc: 'Disables USB selective suspend — devices stay powered',
-      pros: ['Eliminates random disconnects', 'Essential for gaming mice/keyboards', 'Fixes wake-from-sleep issues'],
+      pros: [
+        'Eliminates random disconnects',
+        'Essential for gaming mice/keyboards',
+        'Fixes wake-from-sleep issues',
+      ],
       cons: [],
     },
     defaultChecked: true,
@@ -295,7 +315,11 @@ const SAFE_POWER: readonly OptimizationDef[] = [
     tooltip: {
       title: 'USB Hub Suspend Off',
       desc: 'Disables power management on USB hub controllers via Device Manager',
-      pros: ['More thorough than power plan settings', 'Targets root hub controllers', 'Fixes stubborn USB issues'],
+      pros: [
+        'More thorough than power plan settings',
+        'Targets root hub controllers',
+        'Fixes stubborn USB issues',
+      ],
       cons: [],
     },
     defaultChecked: false,
@@ -369,7 +393,11 @@ const SAFE_NETWORK: readonly OptimizationDef[] = [
     tooltip: {
       title: 'RSS Enable',
       desc: 'Receive Side Scaling — spreads network processing across CPU cores',
-      pros: ['Prevents single-core network bottleneck', 'Better throughput on gigabit+', 'Essential for high-speed NICs'],
+      pros: [
+        'Prevents single-core network bottleneck',
+        'Better throughput on gigabit+',
+        'Essential for high-speed NICs',
+      ],
       cons: [],
     },
     defaultChecked: false,
@@ -443,7 +471,11 @@ const SAFE_INPUT: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Input Buffer Size',
       desc: 'Increases HID input queue — prevents dropped inputs at high polling rates',
-      pros: ['Prevents input loss during CPU spikes', 'Essential for 4000Hz+ mice', 'Recommended for 8KHz polling'],
+      pros: [
+        'Prevents input loss during CPU spikes',
+        'Essential for 4000Hz+ mice',
+        'Recommended for 8KHz polling',
+      ],
       cons: [],
     },
     defaultChecked: false,
@@ -503,7 +535,11 @@ const SAFE_DISPLAY: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Game Mode On',
       desc: 'Prioritizes game processes for CPU/GPU resources',
-      pros: ['Essential for AMD X3D CPUs', 'Reduces background interference', 'Works with V-Cache optimizer'],
+      pros: [
+        'Essential for AMD X3D CPUs',
+        'Reduces background interference',
+        'Works with V-Cache optimizer',
+      ],
       cons: ['Minimal impact on non-X3D', 'May affect background tasks'],
     },
     defaultChecked: false,
@@ -605,7 +641,11 @@ const SAFE_PRIVACY: readonly OptimizationDef[] = [
     tooltip: {
       title: 'WiFi Sense Off',
       desc: 'Disables automatic hotspot connections and credential sharing',
-      pros: ['Privacy/security improvement', 'No auto-connect to open networks', 'No credential sharing'],
+      pros: [
+        'Privacy/security improvement',
+        'No auto-connect to open networks',
+        'No credential sharing',
+      ],
       cons: ['No automatic network suggestions', 'Manual network selection'],
     },
     defaultChecked: false,
@@ -711,7 +751,11 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'MSI Mode',
       desc: 'Enables Message Signaled Interrupts for GPU and network adapters',
-      pros: ['Reduces DPC latency by ~50μs', 'More efficient interrupt delivery', 'Better for high-refresh gaming'],
+      pros: [
+        'Reduces DPC latency by ~50μs',
+        'More efficient interrupt delivery',
+        'Better for high-refresh gaming',
+      ],
       cons: ['Some older hardware incompatible', 'Test with LatencyMon after enabling'],
     },
     defaultChecked: false,
@@ -725,8 +769,16 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'HPET Off',
       desc: 'Forces Windows to use TSC instead of High Precision Event Timer',
-      pros: ['TSC is faster on modern CPUs', 'Can improve frame consistency', 'Lower timer query overhead'],
-      cons: ['Results vary by system', 'Requires reboot to take effect', 'Benchmark to verify improvement'],
+      pros: [
+        'TSC is faster on modern CPUs',
+        'Can improve frame consistency',
+        'Lower timer query overhead',
+      ],
+      cons: [
+        'Results vary by system',
+        'Requires reboot to take effect',
+        'Benchmark to verify improvement',
+      ],
     },
     defaultChecked: false,
   },
@@ -795,7 +847,11 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Trim Services',
       desc: 'Sets rarely-used services to Manual (Print Spooler, Fax, Remote Registry)',
-      pros: ['Stops services you dont use', 'Fewer background processes', 'Services start if needed'],
+      pros: [
+        'Stops services you dont use',
+        'Fewer background processes',
+        'Services start if needed',
+      ],
       cons: ['Printing may need manual service start', 'Review list matches your usage'],
     },
     defaultChecked: false,
@@ -837,7 +893,11 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'QoS Gaming',
       desc: 'Network traffic prioritization',
-      pros: ['Game traffic = high priority', 'Background downloads deprioritized', 'Uses Windows QoS'],
+      pros: [
+        'Game traffic = high priority',
+        'Background downloads deprioritized',
+        'Uses Windows QoS',
+      ],
       cons: ['Not all routers respect this', 'Test in multiplayer', 'Router QoS may conflict'],
     },
     defaultChecked: false,
@@ -851,7 +911,11 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Network Throttling Off',
       desc: 'Disables Windows multimedia network throttling (NetworkThrottlingIndex)',
-      pros: ['Full network throughput always', 'No background throttling during media', 'Better for game downloads'],
+      pros: [
+        'Full network throughput always',
+        'No background throttling during media',
+        'Better for game downloads',
+      ],
       cons: ['Slightly higher CPU usage on network I/O'],
     },
     defaultChecked: false,
@@ -880,7 +944,11 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
       title: 'Process Mitigations',
       desc: 'Disable CFG, CET exploit protections',
       pros: ['1-5% performance gain', 'Less CPU overhead', 'Faster code execution'],
-      cons: ['Reduces security protections', 'Only for offline/trusted games', 'Security trade-off'],
+      cons: [
+        'Reduces security protections',
+        'Only for offline/trusted games',
+        'Security trade-off',
+      ],
     },
     defaultChecked: false,
   },
@@ -935,7 +1003,11 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Timer Registry',
       desc: 'System timer resolution settings',
-      pros: ['GlobalTimerResolutionRequests on', 'SystemResponsiveness = 0', 'Complements timer-tool.ps1'],
+      pros: [
+        'GlobalTimerResolutionRequests on',
+        'SystemResponsiveness = 0',
+        'Complements timer-tool.ps1',
+      ],
       cons: ['May increase power usage', 'Test with timer-tool.ps1', 'Subtle improvements'],
     },
     defaultChecked: false,
@@ -949,7 +1021,11 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'RSC Off',
       desc: 'Disable Receive Segment Coalescing',
-      pros: ['No packet batching in NIC', 'May reduce network latency', 'Packets processed immediately'],
+      pros: [
+        'No packet batching in NIC',
+        'May reduce network latency',
+        'Packets processed immediately',
+      ],
       cons: ['Slightly higher CPU usage', 'Not all adapters support', 'Benchmark network perf'],
     },
     defaultChecked: false,
@@ -1051,8 +1127,16 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Privacy Tier 2',
       desc: 'Extended privacy controls',
-      pros: ['Telemetry = Security level', 'No typing/inking collection', 'Blocks feedback prompts'],
-      cons: ['Troubleshooting features affected', 'May impact Windows Insider', 'Less diagnostic data'],
+      pros: [
+        'Telemetry = Security level',
+        'No typing/inking collection',
+        'Blocks feedback prompts',
+      ],
+      cons: [
+        'Troubleshooting features affected',
+        'May impact Windows Insider',
+        'Less diagnostic data',
+      ],
     },
     defaultChecked: false,
   },
@@ -1065,7 +1149,11 @@ const RISKY_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Privacy Tier 3',
       desc: 'Aggressive telemetry blocking',
-      pros: ['Disables Connected User Exp', 'Firewall blocks telemetry hosts', 'Minimal data transmission'],
+      pros: [
+        'Disables Connected User Exp',
+        'Firewall blocks telemetry hosts',
+        'Minimal data transmission',
+      ],
       cons: ['May break MS Store updates', 'Some apps may not work', 'Hard to diagnose issues'],
     },
     defaultChecked: false,
@@ -1187,8 +1275,16 @@ const LUDICROUS_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Core Isolation Off',
       desc: 'Disables Memory Integrity (HVCI), Credential Guard, and Kernel DMA Protection',
-      pros: ['5-15% FPS gain in CPU-bound games', 'Removes virtualization overhead', 'Benchmark mode only'],
-      cons: ['**Malware can inject kernel code**', 'Rootkits become trivial', 'Offline/disposable systems only'],
+      pros: [
+        '5-15% FPS gain in CPU-bound games',
+        'Removes virtualization overhead',
+        'Benchmark mode only',
+      ],
+      cons: [
+        '**Malware can inject kernel code**',
+        'Rootkits become trivial',
+        'Offline/disposable systems only',
+      ],
     },
     defaultChecked: false,
   },
@@ -1201,8 +1297,16 @@ const LUDICROUS_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Spectre/Meltdown Off',
       desc: 'Disables CVE-2017-5753/5715/5754 mitigations — CPU hardware vulnerabilities',
-      pros: ['5-30% performance depending on workload', 'No branch prediction penalties', 'Faster syscalls'],
-      cons: ['**Any website JS can read your passwords**', 'Hardware-level CPU flaw', '**NEVER connect to network**'],
+      pros: [
+        '5-30% performance depending on workload',
+        'No branch prediction penalties',
+        'Faster syscalls',
+      ],
+      cons: [
+        '**Any website JS can read your passwords**',
+        'Hardware-level CPU flaw',
+        '**NEVER connect to network**',
+      ],
     },
     defaultChecked: false,
   },
@@ -1215,8 +1319,16 @@ const LUDICROUS_OPTIMIZATIONS: readonly OptimizationDef[] = [
     tooltip: {
       title: 'Kernel Mitigations Off',
       desc: 'Disables KPTI, SMAP, SMEP — kernel memory protections',
-      pros: ['2-10% performance gain', 'No page table isolation overhead', 'Faster user/kernel transitions'],
-      cons: ['**Kernel exploits become trivial**', 'Any driver bug = full system compromise', 'Reinstall OS before real use'],
+      pros: [
+        '2-10% performance gain',
+        'No page table isolation overhead',
+        'Faster user/kernel transitions',
+      ],
+      cons: [
+        '**Kernel exploits become trivial**',
+        'Any driver bug = full system compromise',
+        'Reinstall OS before real use',
+      ],
     },
     defaultChecked: false,
   },
@@ -1230,7 +1342,11 @@ const LUDICROUS_OPTIMIZATIONS: readonly OptimizationDef[] = [
       title: 'DEP Off',
       desc: 'Disables NX bit — allows code execution in data segments',
       pros: ['Fixes ancient games with DEP issues', 'Compatibility for pre-2004 software'],
-      cons: ['**Buffer overflow exploits work again**', 'This is why 2000s had so many viruses', 'Re-enable immediately'],
+      cons: [
+        '**Buffer overflow exploits work again**',
+        'This is why 2000s had so many viruses',
+        'Re-enable immediately',
+      ],
     },
     defaultChecked: false,
   },

@@ -2,7 +2,13 @@ import { z } from 'zod'
 import personasDoc from '../../docs/personas.json'
 import { PackageKeySchema } from '../schemas'
 import { getOptimizationsForProfile, PROFILE_IDS, OPTIMIZATIONS } from './optimizations'
-import { isPresetType, OPTIMIZATION_TIERS, type OptimizationKey, type PackageKey, type PresetType } from './types'
+import {
+  isPresetType,
+  OPTIMIZATION_TIERS,
+  type OptimizationKey,
+  type PackageKey,
+  type PresetType,
+} from './types'
 
 export interface PresetConfig {
   readonly opts: readonly OptimizationKey[]

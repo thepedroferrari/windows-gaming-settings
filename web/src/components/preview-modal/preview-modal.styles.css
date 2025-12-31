@@ -1,47 +1,31 @@
 @layer components {
-  
-
   @scope (.preview-modal) {
     :scope {
-      
       --pm-clip: var(--clip-cyber-md);
       --pm-clip-sm: var(--clip-cyber-xs);
       --pm-clip-xs: var(--clip-cyber-2xs);
-
-      
       position: fixed;
       inset-block-start: 50%;
       inset-inline-start: 50%;
       transform: translate(-50%, -50%);
-
-      
       inline-size: min(90vw, 900px);
       max-block-size: 85vh;
       padding: 0;
       margin: 0;
-
-      
       border: 1px solid var(--border);
       clip-path: var(--pm-clip);
       background: var(--bg-card);
       color: var(--text-primary);
       overflow: hidden;
-
-      
       flex-direction: column;
-
-      
       &[open] {
         display: flex;
       }
-
       &::backdrop {
         background: var(--black-75);
         backdrop-filter: blur(4px);
       }
     }
-
-    
     .header {
       display: flex;
       align-items: center;
@@ -54,7 +38,6 @@
         color-mix(in oklch, var(--cyber-yellow) 8%, var(--bg-header)) 0%,
         var(--bg-header) 100%
       );
-
       & h3 {
         margin: 0;
         font-family: var(--font-display);
@@ -65,13 +48,10 @@
         text-shadow: var(--glow-sm) var(--cyber-yellow-glow);
       }
     }
-
     .header-icon {
       color: var(--cyber-yellow);
       margin-inline-end: var(--space-xs);
     }
-
-    
     .close {
       display: grid;
       place-items: center;
@@ -85,12 +65,10 @@
       clip-path: var(--pm-clip-sm);
       transition: var(--transition-quick);
       transition-property: color, background, border-color, box-shadow;
-
       & svg {
         inline-size: var(--icon-xs);
         block-size: var(--icon-xs);
       }
-
       &:hover {
         background: color-mix(in oklch, var(--risky) 15%, transparent);
         border-color: var(--risky);
@@ -98,15 +76,11 @@
         box-shadow: var(--glow-sm) color-mix(in oklch, var(--risky) 30%, transparent);
       }
     }
-
-    
     .body {
       flex: 1;
       padding: var(--space-sm);
       overflow: auto;
     }
-
-    
     .footer {
       display: flex;
       align-items: center;
@@ -118,7 +92,6 @@
       color: var(--text-secondary);
       background: var(--black-80);
       border-block-start: 1px solid var(--border);
-
       & code,
       & .run-step {
         display: inline-flex;
@@ -134,12 +107,10 @@
         color: var(--cyber-yellow);
       }
     }
-
     .label {
       color: var(--text-primary);
       font-weight: 600;
     }
-
     .arrow {
       color: var(--text-secondary);
       font-weight: 500;

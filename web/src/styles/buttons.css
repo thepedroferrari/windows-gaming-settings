@@ -1,7 +1,4 @@
 @layer components {
-  
-
-  
   .btn-secondary {
     display: inline-flex;
     align-items: center;
@@ -18,19 +15,15 @@
     transition: var(--transition-quick);
     transition-property: background, border-color, color;
     text-decoration: none;
-
     &:hover {
       background: var(--bg-hover);
       border-color: var(--accent);
       color: var(--accent);
     }
-
     &:active {
       transform: scale(0.98);
     }
   }
-
-  
   .download-btn {
     position: relative;
     display: inline-flex;
@@ -49,19 +42,15 @@
     overflow: hidden;
     transition: var(--transition-smooth);
     transition-property: transform, box-shadow;
-
     &:hover {
       transform: translateY(-2px);
       box-shadow:
         0 4px 20px var(--cyber-yellow-40),
         0 0 30px var(--cyber-yellow-20);
     }
-
     &:active {
       transform: translateY(0) scale(0.98);
     }
-
-    
     & .text {
       display: flex;
       align-items: center;
@@ -69,8 +58,6 @@
       position: relative;
       z-index: 1;
     }
-
-    
     & .glitch,
     & .scanlines,
     & .shimmer {
@@ -78,7 +65,6 @@
       inset: 0;
       pointer-events: none;
     }
-
     & .scanlines {
       background: repeating-linear-gradient(
         0deg,
@@ -88,7 +74,6 @@
         oklch(0 0 0 / 0.05) 4px
       );
     }
-
     & .shimmer {
       background: linear-gradient(
         90deg,
@@ -97,18 +82,13 @@
         transparent 100%
       );
       transform: translateX(-100%);
-      animation: shimmerSlide 3s ease-in-out infinite;
     }
   }
-
-  
   .btn-icon {
     inline-size: var(--icon-sm);
     block-size: var(--icon-sm);
     flex-shrink: 0;
   }
-
-  
   @keyframes shimmerSlide {
     0%, 100% {
       transform: translateX(-100%);

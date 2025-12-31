@@ -48,7 +48,6 @@
   // Global UI components
   import PreviewModal from './components/PreviewModal.svelte'
   import AuditPanel from './components/AuditPanel.svelte'
-  import CursorGlow from './components/CursorGlow.svelte'
   import SRAnnounce from './components/SRAnnounce.svelte'
 
   // Loading state
@@ -115,8 +114,7 @@
   })
 </script>
 
-<!-- Ambient Effects & Accessibility -->
-<CursorGlow />
+<!-- Accessibility -->
 <SRAnnounce />
 
 <!-- Fixed Navigation -->

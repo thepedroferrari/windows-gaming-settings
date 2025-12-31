@@ -1,6 +1,4 @@
 @layer components {
-  
-
   @scope (.profile-actions) {
     :scope {
       display: flex;
@@ -8,6 +6,4 @@
       margin-block-end: var(--space-md);
     }
   }
-
-  
 }

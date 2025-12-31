@@ -1,8 +1,5 @@
 @layer components {
-  
-
   @scope (.step--forge) {
-    
     .header-row {
       display: flex;
       align-items: flex-start;
@@ -10,24 +7,19 @@
       gap: var(--space-md);
       margin-block-end: var(--space-md);
     }
-
     .header-left {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-xs);
-
       & h2 {
         margin: 0;
       }
-
       & .step-desc {
         margin: var(--space-xs) 0 0 0;
       }
     }
-
-    
     .status {
       display: flex;
       align-items: center;
@@ -37,16 +29,13 @@
       border: 1px solid var(--safe-30);
       clip-path: var(--clip-cyber-xs);
       flex-shrink: 0;
-
       .indicator {
         inline-size: 8px;
         block-size: 8px;
         background: var(--safe);
         border-radius: var(--radius-full);
         box-shadow: var(--glow-sm) var(--safe);
-        animation: forgeStatusPulse var(--anim-normal) ease-in-out infinite;
       }
-
       .text {
         font-family: var(--font-display);
         font-size: var(--text-xs);
@@ -56,14 +45,11 @@
         text-transform: uppercase;
       }
     }
-
-    /* Transparency Zone - Option D: Action-first layout */
     .transparency-zone {
       position: relative;
       margin-block-start: var(--space-xl);
       padding: var(--space-lg);
       background:
-        /* Subtle noise texture */
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
         linear-gradient(180deg,
           oklch(0.16 0.02 160) 0%,
@@ -72,8 +58,6 @@
       background-blend-mode: overlay, normal;
       border: 1px solid var(--safe-30);
     }
-
-    /* Decorative corner brackets */
     .corner {
       position: absolute;
       inline-size: 16px;
@@ -82,36 +66,30 @@
       border-style: solid;
       border-width: 0;
     }
-
     .corner--tl {
       inset-block-start: -1px;
       inset-inline-start: -1px;
       border-block-start-width: 2px;
       border-inline-start-width: 2px;
     }
-
     .corner--tr {
       inset-block-start: -1px;
       inset-inline-end: -1px;
       border-block-start-width: 2px;
       border-inline-end-width: 2px;
     }
-
     .corner--bl {
       inset-block-end: -1px;
       inset-inline-start: -1px;
       border-block-end-width: 2px;
       border-inline-start-width: 2px;
     }
-
     .corner--br {
       inset-block-end: -1px;
       inset-inline-end: -1px;
       border-block-end-width: 2px;
       border-inline-end-width: 2px;
     }
-
-    /* Manifesto - the philosophy statement */
     .manifesto {
       margin: 0 0 var(--space-xl) 0;
       padding: var(--space-md) var(--space-lg);
@@ -122,7 +100,6 @@
       background: oklch(0.12 0.015 160);
       border-inline-start: 3px solid var(--safe-50);
     }
-
     .manifesto-emphasis {
       display: block;
       margin-block-start: var(--space-sm);
@@ -133,8 +110,6 @@
       color: var(--safe);
       text-transform: uppercase;
     }
-
-    /* Trust strip - compact horizontal badges */
     .trust-strip {
       display: flex;
       align-items: center;
@@ -145,7 +120,6 @@
       padding: var(--space-md) 0;
       border-block-start: 1px solid var(--safe-20);
     }
-
     .trust-item {
       display: inline-flex;
       align-items: center;
@@ -157,23 +131,19 @@
       color: var(--text-secondary);
       text-transform: uppercase;
     }
-
     .trust-icon {
       inline-size: 18px;
       block-size: 18px;
       stroke: var(--safe);
     }
-
     .trust-divider {
       color: var(--safe-40);
     }
-
     .actions {
       display: flex;
       gap: var(--space-md);
       align-items: stretch;
     }
-
     .btn-preview {
       display: inline-flex;
       align-items: center;
@@ -193,20 +163,17 @@
       cursor: pointer;
       transition: var(--transition-smooth);
       transition-property: background, border-color, color, box-shadow;
-
       &:hover {
         background: var(--bg-hover);
         border-color: var(--accent);
         color: var(--accent);
         box-shadow: var(--glow-sm) color-mix(in oklch, var(--accent) 25%, transparent);
       }
-
       .icon {
         inline-size: var(--icon-sm);
         block-size: var(--icon-sm);
       }
     }
-
     .btn-forge {
       position: relative;
       display: inline-flex;
@@ -228,38 +195,32 @@
       overflow: hidden;
       transition: var(--transition-smooth);
       transition-property: transform, box-shadow;
-
       &:hover {
         transform: translateY(-2px);
         box-shadow:
           0 4px 16px var(--cyber-yellow-40),
           0 0 24px var(--cyber-yellow-20);
       }
-
       &:active {
         transform: translateY(-1px) scale(0.99);
       }
-
       .text {
         display: flex;
         align-items: center;
         gap: var(--space-sm);
         position: relative;
         z-index: 1;
-
         .icon {
           inline-size: var(--icon-sm);
           block-size: var(--icon-sm);
         }
       }
-
       .glitch,
       .scanlines {
         position: absolute;
         inset: 0;
         pointer-events: none;
       }
-
       .scanlines {
         background: repeating-linear-gradient(
           0deg,
@@ -270,7 +231,6 @@
         );
       }
     }
-
     .btn-verify {
       display: inline-flex;
       align-items: center;
@@ -289,39 +249,32 @@
       cursor: pointer;
       transition: var(--transition-smooth);
       transition-property: background, border-color, box-shadow;
-
       &:hover {
         background: color-mix(in oklch, var(--safe) 20%, transparent);
         border-color: var(--safe);
         box-shadow: var(--glow-sm) color-mix(in oklch, var(--safe) 25%, transparent);
       }
-
       .icon {
         inline-size: var(--icon-sm);
         block-size: var(--icon-sm);
       }
     }
-
-    /* Verification Block */
     .verification-block {
       margin-block-start: var(--space-xl);
       padding-block-start: var(--space-lg);
       border-block-start: 1px solid var(--safe-20);
     }
-
     .hash-header {
       display: flex;
       align-items: center;
       gap: var(--space-sm);
       margin-block-end: var(--space-md);
     }
-
     .hash-icon {
       inline-size: 24px;
       block-size: 24px;
       stroke: var(--safe);
     }
-
     .hash-label {
       font-family: var(--font-display);
       font-size: var(--text-base);
@@ -330,13 +283,11 @@
       color: var(--safe);
       text-transform: uppercase;
     }
-
     .hash-display {
       display: flex;
       flex-direction: column;
       gap: var(--space-sm);
     }
-
     .hash-value {
       font-family: var(--font-mono);
       font-size: var(--text-lg);
@@ -349,12 +300,10 @@
       user-select: all;
       letter-spacing: 1px;
     }
-
     .hash-actions {
       display: flex;
       gap: var(--space-sm);
     }
-
     .hash-btn {
       display: inline-flex;
       align-items: center;
@@ -371,40 +320,32 @@
       cursor: pointer;
       transition: var(--transition-fast);
       transition-property: background, border-color;
-
       &:hover {
         background: var(--safe-10);
         border-color: var(--safe-50);
       }
-
       &.active {
         background: var(--safe-10);
         border-color: var(--safe);
       }
-
       .icon {
         inline-size: 14px;
         block-size: 14px;
       }
     }
-
-    /* Verification panel - step-by-step for security engineers */
     .verify-panel {
       margin-block-start: var(--space-md);
       padding: var(--space-md);
       background: oklch(0.08 0.01 160);
       border: 1px solid var(--safe-20);
     }
-
     .verify-step {
       display: flex;
       gap: var(--space-md);
       margin-block-end: var(--space-md);
-
       &:last-of-type {
         margin-block-end: var(--space-sm);
       }
-
       .step-num {
         display: flex;
         align-items: center;
@@ -418,18 +359,15 @@
         border: 1px solid var(--safe-40);
         flex-shrink: 0;
       }
-
       .step-content {
         flex: 1;
         min-width: 0;
       }
-
       .step-label {
         margin: 0 0 var(--space-xs) 0;
         font-size: var(--text-xs);
         color: var(--text-secondary);
       }
-
       .step-command {
         display: block;
         padding: var(--space-sm);
@@ -441,7 +379,6 @@
         user-select: all;
         overflow-x: auto;
       }
-
       .step-expected {
         display: block;
         padding: var(--space-sm);
@@ -454,7 +391,6 @@
         word-break: break-all;
       }
     }
-
     .verify-result {
       margin: 0;
       padding-block-start: var(--space-sm);
@@ -463,8 +399,6 @@
       color: var(--text-muted);
       text-align: center;
     }
-
-    /* Provenance footer */
     .provenance {
       display: flex;
       align-items: center;
@@ -476,7 +410,6 @@
       font-size: var(--text-xs);
       color: var(--text-muted);
     }
-
     .provenance-link {
       display: inline-flex;
       align-items: center;
@@ -484,28 +417,22 @@
       color: var(--text-muted);
       text-decoration: none;
       transition: color var(--transition-fast);
-
       &:hover {
         color: var(--safe);
       }
-
       .icon {
         inline-size: 14px;
         block-size: 14px;
       }
-
       .provenance-commit {
         font-family: var(--font-mono);
         font-weight: 500;
       }
-
       .provenance-date {
         color: var(--text-muted);
       }
     }
   }
-
-
   @keyframes forgeStatusPulse {
     0%, 100% {
       opacity: 1;

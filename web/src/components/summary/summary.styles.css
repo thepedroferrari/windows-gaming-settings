@@ -1,16 +1,12 @@
 @layer components {
-  
-
   .summary-shell {
     container-type: inline-size;
     container-name: summary;
   }
-
   @scope (.summary) {
     :scope {
       --summary-accent: var(--cyber-yellow);
       --summary-accent-glow: var(--cyber-yellow-glow);
-
       position: relative;
       background:
         linear-gradient(
@@ -42,8 +38,6 @@
       transform-style: preserve-3d;
       transition: all var(--duration-slow) var(--ease-out-expo);
       overflow: hidden;
-
-      
       &::before {
         content: "\25E2 DEPLOYMENT MANIFEST"; 
         position: absolute;
@@ -63,8 +57,6 @@
           transparent 100%
         );
       }
-
-      
       &::after {
         content: "";
         position: absolute;
@@ -81,7 +73,6 @@
         transition: opacity var(--duration-slow) ease;
         z-index: 10;
       }
-
       &:hover {
         transform: translateY(-2px);
         border-color: var(--summary-accent);
@@ -90,22 +81,17 @@
           0 0 60px color-mix(in oklch, var(--summary-accent) 25%, transparent),
           inset 0 1px 0 var(--white-10),
           inset 0 0 40px color-mix(in oklch, var(--summary-accent) 5%, transparent);
-
         &::after {
           opacity: 0.5;
-          animation: cyberScanlines var(--cyber-scanline-speed) linear infinite;
         }
       }
     }
-
-    
     .corner {
       position: absolute;
       inline-size: 14px;
       block-size: 14px;
       pointer-events: none;
       z-index: 5;
-
       &::before,
       &::after {
         content: "";
@@ -114,18 +100,15 @@
         box-shadow: var(--glow-sm) var(--cyber-yellow-glow);
       }
     }
-
     .corner--tl {
       inset-block-start: 28px;
       inset-inline-start: 8px;
-
       &::before {
         inline-size: 10px;
         block-size: 2px;
         inset-block-start: 0;
         inset-inline-start: 0;
       }
-
       &::after {
         inline-size: 2px;
         block-size: 10px;
@@ -133,18 +116,15 @@
         inset-inline-start: 0;
       }
     }
-
     .corner--tr {
       inset-block-start: 28px;
       inset-inline-end: 8px;
-
       &::before {
         inline-size: 10px;
         block-size: 2px;
         inset-block-start: 0;
         inset-inline-end: 0;
       }
-
       &::after {
         inline-size: 2px;
         block-size: 10px;
@@ -152,18 +132,15 @@
         inset-inline-end: 0;
       }
     }
-
     .corner--bl {
       inset-block-end: 8px;
       inset-inline-start: 20px;
-
       &::before {
         inline-size: 10px;
         block-size: 2px;
         inset-block-end: 0;
         inset-inline-start: 0;
       }
-
       &::after {
         inline-size: 2px;
         block-size: 10px;
@@ -171,18 +148,15 @@
         inset-inline-start: 0;
       }
     }
-
     .corner--br {
       inset-block-end: 20px;
       inset-inline-end: 8px;
-
       &::before {
         inline-size: 10px;
         block-size: 2px;
         inset-block-end: 0;
         inset-inline-end: 0;
       }
-
       &::after {
         inline-size: 2px;
         block-size: 10px;
@@ -190,21 +164,15 @@
         inset-inline-end: 0;
       }
     }
-
     :scope:hover .corner {
-      animation: cornerPulse var(--anim-normal) ease-in-out infinite;
     }
-
-    
     .item {
       text-align: center;
       padding: var(--space-md) var(--space-sm);
       position: relative;
       z-index: 1;
-
       &:not(:last-child) {
         border-inline-end: 1px solid color-mix(in oklch, var(--cyber-yellow) 25%, var(--border));
-
         &::after {
           content: "";
           position: absolute;
@@ -216,7 +184,6 @@
           opacity: 0.5;
         }
       }
-
       &::before {
         content: "\25E2"; 
         position: absolute;
@@ -229,7 +196,6 @@
         text-shadow: var(--glow-sm) var(--cyber-yellow-glow);
       }
     }
-
     .value {
       font-family: var(--font-display);
       font-size: var(--text-2xl);
@@ -241,22 +207,17 @@
         0 0 20px var(--cyber-yellow-glow),
         0 0 40px var(--cyber-yellow-40),
         0 2px 4px oklch(0 0 0 / 50%);
-      animation: dataFlicker 4s ease-in-out infinite;
       position: relative;
-
       &::after {
         content: "_";
         opacity: 0;
-        animation: terminalBlink 1s step-end infinite;
         color: var(--cyber-yellow);
         margin-inline-start: 2px;
       }
     }
-
     :scope:hover .value::after {
       opacity: 1;
     }
-
     .label {
       font-family: var(--font-ui);
       color: var(--text-secondary);
@@ -266,13 +227,11 @@
       letter-spacing: var(--tracking-wider);
       position: relative;
       display: inline-block;
-
       &::before {
         content: "[ ";
         color: var(--cyber-yellow-dim);
         opacity: 0.5;
       }
-
       &::after {
         content: " ]";
         color: var(--cyber-yellow-dim);
@@ -280,8 +239,6 @@
       }
     }
   }
-
-  
   @keyframes cornerPulse {
     0%, 100% {
       opacity: 0.7;
@@ -290,7 +247,6 @@
       opacity: 1;
     }
   }
-
   @keyframes dataFlicker {
     0%, 100% {
       opacity: 1;
@@ -311,7 +267,6 @@
       opacity: 1;
     }
   }
-
   @keyframes terminalBlink {
     0%, 50% {
       opacity: 1;
@@ -320,35 +275,27 @@
       opacity: 0;
     }
   }
-
-  
   @container summary (width <= 768px) {
     .summary {
       grid-template-columns: 1fr;
       padding-block-start: var(--space-2xl);
-
       &::before {
         font-size: var(--text-3xs);
       }
     }
-
     .summary .item {
       border-block-end: 1px solid color-mix(in oklch, var(--cyber-yellow) 20%, var(--border));
       padding: var(--space-sm);
-
       &:not(:last-child) {
         border-inline-end: none;
       }
-
       &:last-child {
         border-block-end: none;
       }
-
       &:not(:last-child)::after {
         display: none;
       }
     }
-
     .summary .corner {
       display: none;
     }

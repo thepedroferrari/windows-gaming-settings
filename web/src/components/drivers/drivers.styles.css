@@ -1,13 +1,9 @@
 @layer components {
-  
-
   @scope (.driver-cards) {
     :scope {
       display: grid;
       gap: var(--space-md);
     }
-
-    
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -17,12 +13,10 @@
       transition: all var(--duration-normal) ease;
       opacity: 0.5;
       pointer-events: none;
-
       &.active {
         opacity: 1;
         pointer-events: auto;
         border-color: var(--border-light);
-
         &:hover {
           border-color: var(--cyber-yellow);
           background: var(--bg-card-hover);
@@ -32,7 +26,6 @@
             0 0 20px color-mix(in oklch, var(--cyber-yellow) 15%, transparent);
         }
       }
-
       & h4 {
         font-family: var(--font-ui);
         font-size: var(--text-base);
@@ -40,14 +33,12 @@
         margin: 0 0 var(--space-xs);
         color: var(--text-primary);
       }
-
       & p {
         font-size: var(--text-sm);
         color: var(--text-secondary);
         margin: 0 0 var(--space-sm);
         line-height: 1.4;
       }
-
       & > a {
         display: inline-flex;
         align-items: center;
@@ -57,20 +48,17 @@
         color: var(--cyber-yellow-dim);
         text-decoration: none;
         transition: all var(--duration-normal);
-
         &:hover {
           color: var(--cyber-yellow);
           text-shadow: var(--glow-sm) var(--cyber-yellow-glow);
         }
       }
     }
-
     .card--mobo {
       opacity: 1;
       pointer-events: auto;
       border-color: var(--border-light);
       grid-column: span 1;
-
       &:hover {
         border-color: var(--cyber-yellow);
         background: var(--bg-card-hover);
@@ -80,8 +68,6 @@
           0 0 20px color-mix(in oklch, var(--cyber-yellow) 15%, transparent);
       }
     }
-
-    
     .badge {
       display: inline-block;
       font-size: var(--text-2xs);
@@ -93,38 +79,31 @@
       margin-block-end: var(--space-xs);
       border-radius: 0;
       clip-path: var(--clip-cyber-2xs);
-
       &.cpu {
         background: color-mix(in oklch, oklch(0.7 0.15 45) 25%, transparent);
         color: oklch(0.85 0.14 55);
         border: 1px solid color-mix(in oklch, oklch(0.7 0.15 45) 40%, transparent);
       }
-
       &.gpu {
         background: color-mix(in oklch, oklch(0.65 0.2 145) 25%, transparent);
         color: oklch(0.8 0.2 145);
         border: 1px solid color-mix(in oklch, oklch(0.65 0.2 145) 40%, transparent);
       }
-
       &.mobo {
         background: color-mix(in oklch, oklch(0.65 0.18 270) 25%, transparent);
         color: oklch(0.85 0.14 270);
         border: 1px solid color-mix(in oklch, oklch(0.65 0.18 270) 40%, transparent);
       }
-
       &.monitor {
         background: color-mix(in oklch, oklch(0.7 0.15 200) 25%, transparent);
         color: oklch(0.85 0.14 200);
         border: 1px solid color-mix(in oklch, oklch(0.7 0.15 200) 40%, transparent);
       }
     }
-
-    
     .links {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-sm);
-
       & a {
         display: inline-flex;
         align-items: center;
@@ -141,27 +120,23 @@
         color: var(--text-primary);
         text-decoration: none;
         transition: all var(--duration-normal);
-
         & svg {
           inline-size: 10px;
           block-size: 10px;
           opacity: 0.6;
           flex-shrink: 0;
         }
-
         &:hover {
           background: var(--cyber-yellow);
           border-color: var(--cyber-yellow);
           color: oklch(0.1 0 0);
           box-shadow: 0 0 12px var(--cyber-yellow-glow);
-
           & svg {
             opacity: 1;
           }
         }
       }
     }
-
     .links--monitor a:hover {
       background: oklch(0.8 0.12 200);
       border-color: oklch(0.8 0.12 200);
@@ -169,9 +144,6 @@
       box-shadow: 0 0 12px color-mix(in oklch, oklch(0.8 0.12 200) 50%, transparent);
     }
   }
-
-  
-
   @scope (.driver-warning) {
     :scope {
       display: flex;
@@ -188,25 +160,21 @@
       border-inline-start: 3px solid var(--caution);
       clip-path: var(--clip-cyber-sm);
     }
-
     .icon {
       inline-size: var(--icon-lg);
       block-size: var(--icon-lg);
       flex-shrink: 0;
       color: var(--caution);
     }
-
     .content {
       display: flex;
       flex-direction: column;
       gap: var(--space-2xs);
-
       & strong {
         font-size: var(--text-sm);
         font-weight: 600;
         color: var(--text-primary);
       }
-
       & span {
         font-size: var(--text-sm);
         color: var(--text-secondary);

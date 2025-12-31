@@ -1,11 +1,8 @@
 @layer components {
-  
-
   @scope (.preflight-section) {
     :scope {
       margin-block-end: var(--space-lg);
     }
-
     .title {
       display: flex;
       align-items: center;
@@ -15,32 +12,27 @@
       font-weight: 600;
       color: var(--text-primary);
     }
-
     .icon {
       inline-size: var(--icon-lg);
       block-size: var(--icon-lg);
       color: var(--cyber-yellow);
     }
-
     .items {
       display: grid;
       gap: var(--space-sm);
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     }
-
     .card {
       padding: var(--space-md);
       background: var(--bg-card);
       border: 1px solid var(--border);
       clip-path: var(--clip-cyber-sm);
-
       & h4 {
         margin: var(--space-xs) 0;
         font-size: var(--text-base);
         font-weight: 600;
         color: var(--text-primary);
       }
-
       & p {
         margin: 0 0 var(--space-sm) 0;
         font-size: var(--text-sm);
@@ -48,7 +40,6 @@
         line-height: var(--leading-normal);
       }
     }
-
     .badge {
       display: inline-block;
       padding: 0.2rem 0.6rem;
@@ -57,20 +48,17 @@
       text-transform: uppercase;
       letter-spacing: var(--tracking-wide);
       border-radius: 2px;
-
       &.required {
         background: var(--risky-bg);
         color: var(--risky);
         border: 1px solid color-mix(in oklch, var(--risky) 50%, transparent);
       }
-
       &.recommended {
         background: var(--safe-bg);
         color: var(--safe);
         border: 1px solid color-mix(in oklch, var(--safe) 50%, transparent);
       }
     }
-
     .link {
       display: inline-flex;
       align-items: center;
@@ -86,13 +74,11 @@
       text-decoration: none;
       cursor: pointer;
       transition: all var(--duration-fast) ease;
-
       &:hover {
         background: color-mix(in oklch, var(--cyber-yellow) 20%, transparent);
         border-color: var(--cyber-yellow);
         box-shadow: var(--glow-sm) color-mix(in oklch, var(--cyber-yellow) 35%, transparent);
       }
-
       & svg {
         inline-size: var(--icon-sm);
         block-size: var(--icon-sm);

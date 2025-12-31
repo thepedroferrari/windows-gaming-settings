@@ -1,34 +1,25 @@
 @layer layout {
-
-  /* Offset anchor jumps for the fixed nav bar. */
   html {
     scroll-padding-top: var(--nav-height);
   }
-
-
   .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 var(--space-md);
     padding-top: 48px;
   }
-
-
   .step {
     padding: var(--space-xl) 0;
     border-bottom: 1px solid var(--border);
   }
-
   .step:last-child {
     border-bottom: none;
   }
-
   .step h2 {
     margin: 0 0 0.25rem 0;
     font-size: 1.5rem;
     color: var(--text-primary);
   }
-
   .step-num {
     display: inline-flex;
     align-items: center;
@@ -42,51 +33,41 @@
     font-weight: 700;
     border-radius: 50%;
   }
-
   .step-desc {
     margin: 0 0 var(--space-md) 0;
     color: var(--text-dim);
     font-size: 0.875rem;
   }
-
   .step-desc .trust-hint {
     display: block;
     margin-top: 0.25rem;
     color: var(--text-hint);
     font-size: 0.75rem;
   }
-
   .step-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 1.5rem;
   }
-
   .step-header__left h2 {
     margin: 0 0 0.25rem 0;
   }
-
   .step-header__right {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
   }
-
-
   .step--arsenal {
     padding-left: var(--space-sm);
     padding-right: var(--space-sm);
   }
-
-
   .loading-state,
   .error-state {
     text-align: center;
     padding: 3rem;
     color: var(--text-dim);
   }
-
   .error-state button {
     margin-top: 1rem;
     padding: 0.5rem 1rem;
@@ -96,13 +77,11 @@
     border-radius: 4px;
     cursor: pointer;
   }
-
   .site-header {
     text-align: center;
     padding: 0;
     position: relative;
     animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
-
     &::after {
       content: "";
       position: absolute;
@@ -119,7 +98,6 @@
           transparent 100%);
     }
   }
-
   .mission-brief {
     max-width: 700px;
     width: 100%;
@@ -130,8 +108,6 @@
     position: relative;
     backdrop-filter: blur(4px);
     box-shadow: 0 0 30px -10px color-mix(in oklch, var(--accent) 10%, transparent);
-
-
     &::before {
       content: "";
       position: absolute;
@@ -142,7 +118,6 @@
       border-top: 2px solid var(--accent);
       border-right: 2px solid var(--accent);
     }
-
     &::after {
       content: "";
       position: absolute;
@@ -154,21 +129,17 @@
       border-right: 2px solid var(--accent);
     }
   }
-
   @media (max-width: 600px) {
     .mission-brief {
       padding: var(--space-md);
       border-left-width: 1px;
     }
-
   }
-
   main {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: var(--space-lg);
   }
-
   .site-footer {
     text-align: center;
     padding: var(--space-2xl);
@@ -176,7 +147,6 @@
     font-size: var(--text-sm);
     border-top: 1px solid var(--border);
     margin-top: var(--space-3xl);
-
     & p {
       margin: 0;
       display: flex;
@@ -185,53 +155,44 @@
       gap: var(--space-sm);
       flex-wrap: wrap;
     }
-
     & a {
       color: var(--text-secondary);
       text-decoration: none;
       transition: color 0.2s;
-
       &:hover {
         color: var(--accent);
         text-shadow: 0 0 8px color-mix(in oklch, var(--accent) 40%, transparent);
       }
     }
-
     & .footer-divider {
       color: var(--border);
     }
   }
-
   .upgrades-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-md);
     margin-bottom: var(--space-md);
   }
-
   .core-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-md);
     margin-bottom: var(--space-md);
   }
-
   .peripherals-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-md);
   }
-
   .peripherals-grid>fieldset {
     grid-column: span 2;
   }
-
   .peripheral-columns {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: var(--space-md);
   }
-
   .peripheral-column {
     display: flex;
     flex-direction: column;
@@ -239,36 +200,26 @@
     overflow: hidden;
     min-width: 0;
   }
-
   @media (max-width: 480px) {
     html {
       scroll-padding-top: var(--nav-height-mobile, 40px);
     }
   }
-
   @media (max-width: 1024px) {
     .peripherals-grid {
       grid-template-columns: 1fr;
     }
-
     .peripherals-grid>fieldset {
       grid-column: span 1;
     }
   }
-
   @media (max-width: 768px) {
-
     .upgrades-grid,
     .core-grid,
     .peripheral-columns {
       grid-template-columns: 1fr;
     }
   }
-
-  /* ==========================================================================
-   * Danger Zone Banner - persistent warning when security mitigations disabled
-   * ========================================================================== */
-
   .danger-banner {
     position: fixed;
     top: var(--nav-height);
@@ -288,11 +239,8 @@
     box-shadow:
       0 2px 10px oklch(0.5 0.2 25 / 0.3),
       inset 0 -1px 0 oklch(0.4 0.15 25 / 0.5);
-    animation: danger-pulse 2s ease-in-out infinite;
   }
-
   @keyframes danger-pulse {
-
     0%,
     100% {
       background: linear-gradient(90deg,
@@ -300,7 +248,6 @@
           oklch(0.2 0.12 25) 50%,
           oklch(0.25 0.15 25) 100%);
     }
-
     50% {
       background: linear-gradient(90deg,
           oklch(0.28 0.17 25) 0%,
@@ -308,28 +255,23 @@
           oklch(0.28 0.17 25) 100%);
     }
   }
-
   .danger-banner__icon {
     width: 18px;
     height: 18px;
     color: oklch(0.7 0.2 25);
     filter: drop-shadow(0 0 4px oklch(0.6 0.2 25 / 0.5));
   }
-
   .danger-banner__text {
     font-family: var(--font-display);
     font-size: 0.8rem;
     letter-spacing: 0.05em;
     color: oklch(0.85 0.1 25);
   }
-
   .danger-banner__text strong {
     color: oklch(0.75 0.2 25);
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
-
-  /* Adjust container padding when banner is visible */
   .danger-banner+*+*+.container {
     padding-top: calc(48px + 40px);
   }

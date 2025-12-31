@@ -10,23 +10,19 @@
     clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
     text-align: right;
   }
-
   .toggle-label {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 2px;
-
     & strong {
       font-size: 0.8rem;
     }
   }
-
   .toggle-hint {
     font-size: 0.75rem;
     color: var(--text-secondary);
   }
-
   .wizard-modal {
     position: fixed;
     top: 50%;
@@ -43,16 +39,13 @@
     box-shadow:
       0 25px 60px color-mix(in oklch, oklch(0 0 0) 60%, transparent),
       0 0 30px color-mix(in oklch, var(--accent) 15%, transparent);
-
     &::backdrop {
       background: color-mix(in oklch, oklch(0 0 0) 75%, transparent);
       backdrop-filter: blur(6px);
     }
   }
-
   .wizard-content {
     padding: var(--space-xl);
-
     & h3 {
       font-family: var(--font-ui);
       margin: 0 0 var(--space-md);
@@ -60,40 +53,33 @@
       font-weight: 700;
     }
   }
-
   .wizard-risk {
     margin-bottom: var(--space-lg);
   }
-
   .wizard-description {
     color: var(--text-secondary);
     margin-bottom: var(--space-lg);
     line-height: 1.6;
   }
-
   .wizard-details {
     background: var(--bg-primary);
     border-radius: var(--radius);
     padding: var(--space-md);
     margin-bottom: var(--space-lg);
-
     & h4 {
       font-size: 0.85rem;
       color: var(--text-hint);
       margin-bottom: var(--space-sm);
     }
-
     & ul {
       margin: 0;
       padding-left: var(--space-lg);
       font-size: 0.85rem;
       color: var(--text-secondary);
     }
-
     & li {
       margin: var(--space-xs) 0;
     }
-
     & code {
       background: color-mix(in oklch, var(--accent) 10%, transparent);
       padding: 0.1rem 0.3rem;
@@ -101,20 +87,13 @@
       font-size: 0.8rem;
     }
   }
-
   .wizard-actions {
     display: flex;
     gap: var(--space-md);
-
     & button {
       flex: 1;
     }
   }
-
-  /* ==========================================================================
-   * LUDICROUS Tier - Dangerous Optimizations
-   * ========================================================================== */
-
   #optimizations {
     --danger: oklch(0.68 0.23 26);
     --danger-bright: oklch(0.82 0.2 26);
@@ -125,28 +104,22 @@
     --danger-glow: color-mix(in oklch, var(--danger) 55%, transparent);
     --danger-stripe: color-mix(in oklch, var(--danger) 45%, oklch(0 0 0));
     --danger-grid: color-mix(in oklch, var(--danger) 20%, transparent);
-
-    /* Placard Unified Tokens */
     --placard-red: oklch(0.6 0.22 25);
     --placard-ink: oklch(0.12 0.04 25);
     --placard-border: oklch(0.4 0.15 25);
     --placard-glow: color-mix(in oklch, var(--placard-red) 25%, transparent);
   }
-
   .ludicrous-section {
     margin-top: var(--space-xl);
     padding-top: var(--space-lg);
     border-top: 1px dashed var(--border);
   }
-
-  /* Locked state - reveal button */
   .ludicrous-locked {
     display: flex;
     justify-content: center;
     padding: var(--space-2xl) 0 var(--space-xl);
     width: 100%;
   }
-
   .ludicrous-warning-card {
     position: relative;
     width: min(920px, 100%);
@@ -160,12 +133,10 @@
     clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
     box-shadow: 0 30px 60px oklch(0 0 0 / 0.5);
   }
-
   .ludicrous-warning-copy {
     display: grid;
     gap: var(--space-md);
   }
-
   .warning-eyebrow {
     font-family: var(--font-mono);
     font-size: 0.65rem;
@@ -177,7 +148,6 @@
     border: 1px solid var(--placard-red);
     width: fit-content;
   }
-
   .ludicrous-warning-copy h3 {
     margin: 0;
     font-family: var(--font-display);
@@ -187,7 +157,6 @@
     color: white;
     letter-spacing: 0.02em;
   }
-
   .warning-desc {
     margin: 0;
     font-family: var(--font-mono);
@@ -196,12 +165,10 @@
     line-height: 1.5;
     max-width: 500px;
   }
-
   .warning-tags {
     display: flex;
     gap: var(--space-sm);
   }
-
   .warning-tags span {
     font-family: var(--font-mono);
     font-size: 0.6rem;
@@ -210,51 +177,31 @@
     border: 1px solid oklch(1 0 0 / 0.1);
     padding: 2px 6px;
   }
-
-  /* ==========================================================================
-   * LUDICROUS Unlock Button - Dark with Red Accents
-   * ========================================================================== */
-
   .ludicrous-unlock-btn {
-    /* Layout */
     position: relative;
     display: grid;
     gap: var(--space-md);
     justify-items: center;
     padding: var(--space-xl) var(--space-2xl);
     min-width: 220px;
-
-    /* Cyber clip-path corners */
     clip-path: var(--clip-cyber-md);
-
-    /* Black background */
     background: oklch(0.08 0.02 25);
-
-    /* Red accent border */
     border: 1px solid var(--placard-border);
-
-    /* Typography - red text */
     color: var(--placard-red);
     font-family: var(--font-display);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-
-    /* Subtle red glow */
     box-shadow:
       inset 0 1px 0 color-mix(in oklch, oklch(1 0 0) 8%, transparent),
       inset 0 0 20px color-mix(in oklch, var(--placard-red) 10%, transparent),
       0 0 30px color-mix(in oklch, var(--placard-red) 15%, transparent),
       0 4px 20px color-mix(in oklch, oklch(0 0 0) 50%, transparent);
-
-    /* Interactions */
     cursor: pointer;
     transition: all 0.25s var(--ease-out-expo);
     overflow: hidden;
     isolation: isolate;
   }
-
-  /* Scanline texture overlay */
   .ludicrous-unlock-btn::before {
     content: '';
     position: absolute;
@@ -265,8 +212,6 @@
     z-index: 1;
     transition: opacity 0.25s ease;
   }
-
-  /* Top border accent line */
   .ludicrous-unlock-btn::after {
     content: '';
     position: absolute;
@@ -280,8 +225,6 @@
         transparent 100%);
     z-index: 2;
   }
-
-  /* Hover state */
   .ludicrous-unlock-btn:hover {
     transform: translateY(-2px);
     border-color: var(--placard-red);
@@ -291,26 +234,19 @@
       0 0 60px color-mix(in oklch, var(--placard-red) 35%, transparent),
       0 8px 30px color-mix(in oklch, oklch(0 0 0) 70%, transparent);
   }
-
   .ludicrous-unlock-btn:hover::before {
     opacity: 0.1;
-    animation: cyberScanlines 4s linear infinite;
   }
-
   .ludicrous-unlock-btn:hover::after {
     background: linear-gradient(90deg,
         color-mix(in oklch, var(--placard-red) 100%, oklch(1 0 0)) 0%,
         var(--placard-red) 60%,
         transparent 100%);
   }
-
-  /* Focus state for accessibility */
   .ludicrous-unlock-btn:focus-visible {
     outline: 2px solid var(--placard-red);
     outline-offset: 3px;
   }
-
-  /* Active/pressed state */
   .ludicrous-unlock-btn:active {
     transform: translateY(0);
     box-shadow:
@@ -318,11 +254,6 @@
       inset 0 0 20px color-mix(in oklch, var(--placard-red) 15%, transparent),
       0 0 20px color-mix(in oklch, var(--placard-red) 20%, transparent);
   }
-
-  /* ==========================================================================
-   * Icon - SVG with red glow
-   * ========================================================================== */
-
   .unlock-icon {
     width: 36px;
     height: 36px;
@@ -332,16 +263,10 @@
     filter: drop-shadow(0 0 12px color-mix(in oklch, var(--placard-red) 60%, transparent));
     transition: all 0.25s var(--ease-out-expo);
   }
-
   .ludicrous-unlock-btn:hover .unlock-icon {
     color: color-mix(in oklch, var(--placard-red) 100%, oklch(0.8 0.2 25));
     filter: drop-shadow(0 0 18px color-mix(in oklch, var(--placard-red) 80%, transparent));
   }
-
-  /* ==========================================================================
-   * Text Hierarchy
-   * ========================================================================== */
-
   .unlock-text {
     font-size: 1rem;
     letter-spacing: 0.1em;
@@ -351,12 +276,10 @@
     text-shadow: 0 0 20px color-mix(in oklch, var(--placard-red) 30%, transparent);
     transition: all 0.25s var(--ease-out-expo);
   }
-
   .ludicrous-unlock-btn:hover .unlock-text {
     color: oklch(1 0 0);
     text-shadow: 0 0 25px color-mix(in oklch, var(--placard-red) 50%, transparent);
   }
-
   .unlock-hint {
     font-family: var(--font-mono);
     font-size: 0.65rem;
@@ -371,18 +294,11 @@
     border-top: 1px solid color-mix(in oklch, var(--placard-red) 20%, transparent);
     transition: all 0.25s var(--ease-out-expo);
   }
-
   .ludicrous-unlock-btn:hover .unlock-hint {
     color: color-mix(in oklch, var(--placard-red) 80%, oklch(0.6 0 0));
     border-top-color: color-mix(in oklch, var(--placard-red) 35%, transparent);
   }
-
-  /* ==========================================================================
-   * Reduced Motion Support
-   * ========================================================================== */
-
   @media (prefers-reduced-motion: reduce) {
-
     .ludicrous-unlock-btn,
     .ludicrous-unlock-btn:hover,
     .unlock-icon,
@@ -390,65 +306,48 @@
       animation: none;
       transition-duration: 0.01ms;
     }
-
     .ludicrous-unlock-btn::before {
       animation: none;
     }
   }
-
   @media (max-width: 820px) {
     .ludicrous-warning-card {
       grid-template-columns: 1fr;
       text-align: center;
     }
-
     .warning-tags {
       justify-content: center;
     }
-
     .ludicrous-unlock-btn {
       padding: var(--space-lg) var(--space-xl);
       min-width: 180px;
     }
-
     .unlock-icon {
       width: 28px;
       height: 28px;
     }
-
     .unlock-text {
       font-size: 0.95rem;
     }
   }
-
-  /* Unlocked state - LUDICROUS optimizations visible */
   .ludicrous-unlocked {
     animation: ludicrous-reveal 0.4s ease-out;
   }
-
   @keyframes ludicrous-reveal {
     from {
       opacity: 0;
       transform: translateY(10px);
     }
-
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-
-
-  /* ==========================================================================
-   * LUDICROUS Placard V2 - Unified Technical Instrument Panel
-   * ========================================================================== */
-
   .ludicrous-placard-v2 {
     --placard-red: oklch(0.6 0.22 25);
     --placard-ink: oklch(0.12 0.04 25);
     --placard-border: oklch(0.4 0.15 25);
     --placard-glow: color-mix(in oklch, var(--placard-red) 25%, transparent);
-
     margin-top: var(--space-xl);
     display: flex;
     flex-direction: column;
@@ -466,19 +365,16 @@
     animation: placard-reveal 0.8s var(--ease-out-expo) both;
     z-index: 10;
   }
-
   @keyframes placard-reveal {
     from {
       opacity: 0;
       transform: scale(0.99) translateY(20px);
     }
-
     to {
       opacity: 1;
       transform: scale(1) translateY(0);
     }
   }
-
   .placard-header-grid {
     display: grid;
     grid-template-columns: 140px 1fr;
@@ -488,18 +384,14 @@
     position: relative;
     overflow: hidden;
   }
-
   .placard-header-grid::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.08), transparent);
     transform: translateX(-100%);
-    animation: placard-shimmer 5s infinite;
     pointer-events: none;
   }
-
-  /* Subtle top glow accent line */
   .placard-header-grid::after {
     content: '';
     position: absolute;
@@ -509,13 +401,11 @@
     height: 2px;
     background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.4), transparent);
   }
-
   @keyframes placard-shimmer {
     100% {
       transform: translateX(100%);
     }
   }
-
   .placard-header-left {
     padding: var(--space-lg);
     border-right: 1px solid var(--placard-border);
@@ -525,28 +415,21 @@
     position: relative;
     background: color-mix(in oklch, var(--placard-red) 80%, var(--placard-ink));
   }
-
-  /* Skull icon with glow animation */
   .placard-skull-icon {
     width: 80px;
     height: 80px;
     color: white;
     filter: drop-shadow(0 0 12px var(--placard-glow));
-    animation: skull-pulse 3s ease-in-out infinite;
   }
-
   @keyframes skull-pulse {
-
     0%,
     100% {
       filter: drop-shadow(0 0 12px var(--placard-glow));
     }
-
     50% {
       filter: drop-shadow(0 0 20px var(--placard-red)) drop-shadow(0 0 30px var(--placard-glow));
     }
   }
-
   .placard-header-right {
     padding: var(--space-xl) var(--space-2xl);
     display: flex;
@@ -555,7 +438,6 @@
     gap: var(--space-xs);
     background: color-mix(in oklch, var(--placard-red) 10%, var(--placard-ink));
   }
-
   .placard-header-right h2 {
     margin: 0;
     font-family: var(--font-display);
@@ -566,7 +448,6 @@
     line-height: 1.1;
     color: var(--placard-red);
   }
-
   .placard-desc {
     margin: 0;
     font-family: var(--font-mono);
@@ -577,7 +458,6 @@
     line-height: 1.4;
     text-transform: uppercase;
   }
-
   .placard-blocks-horizontal {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -585,14 +465,12 @@
     background: var(--placard-border);
     border-bottom: 1px solid var(--placard-border);
   }
-
   .placard-opts-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1px;
     padding: var(--space-md);
   }
-
   .placard-opt-cell {
     background: var(--placard-ink);
     padding: var(--space-sm);
@@ -600,8 +478,6 @@
     align-items: stretch;
     min-height: 100px;
   }
-
-  /* Card-style label toggle */
   .placard-opt-cell label {
     width: 100%;
     padding: var(--space-lg);
@@ -620,15 +496,11 @@
       box-shadow 0.2s ease,
       background 0.2s ease;
   }
-
-  /* Hover state */
   .placard-opt-cell label:hover {
     transform: scale(1.02);
     border-color: color-mix(in oklch, var(--placard-red) 60%, transparent);
     background: color-mix(in oklch, var(--placard-red) 5%, transparent);
   }
-
-  /* Selected state */
   .placard-opt-cell label.selected {
     border-color: white;
     background: color-mix(in oklch, var(--placard-red) 15%, transparent);
@@ -636,15 +508,12 @@
       0 0 20px var(--placard-glow),
       inset 0 0 30px color-mix(in oklch, var(--placard-red) 10%, transparent);
   }
-
   .placard-opt-cell label.selected:hover {
     transform: scale(1.02);
     box-shadow:
       0 0 25px var(--placard-glow),
       inset 0 0 30px color-mix(in oklch, var(--placard-red) 15%, transparent);
   }
-
-  /* Corner indicator - shows when selected */
   .placard-opt-cell .corner-indicator {
     position: absolute;
     bottom: 8px;
@@ -659,25 +528,19 @@
       opacity 0.2s ease,
       transform 0.2s ease;
   }
-
   .placard-opt-cell label.selected .corner-indicator {
     opacity: 1;
     transform: scale(1);
-    animation: corner-pulse 2s ease-in-out infinite;
   }
-
   @keyframes corner-pulse {
-
     0%,
     100% {
       box-shadow: 0 0 4px var(--placard-red);
     }
-
     50% {
       box-shadow: 0 0 10px var(--placard-red), 0 0 15px var(--placard-glow);
     }
   }
-
   .placard-opt-cell .label-text {
     font-family: var(--font-display);
     font-size: 0.95rem;
@@ -687,7 +550,6 @@
     line-height: 1.2;
     letter-spacing: 0.02em;
   }
-
   .placard-opt-cell .label-hint {
     font-family: var(--font-mono);
     font-size: 0.65rem;
@@ -695,12 +557,9 @@
     letter-spacing: 0.02em;
     line-height: 1.3;
   }
-
   .placard-opt-cell label.selected .label-hint {
     color: oklch(1 0 0 / 0.55);
   }
-
-  /* Screen reader only - hide checkbox visually but keep accessible */
   .placard-opt-cell .sr-only {
     position: absolute;
     width: 1px;
@@ -712,7 +571,6 @@
     white-space: nowrap;
     border: 0;
   }
-
   .placard-footer-v2 {
     padding: var(--space-lg) var(--space-xl);
     background: var(--placard-ink);
@@ -722,7 +580,6 @@
     gap: var(--space-xl);
     position: relative;
   }
-
   .placard-footer-v2 mark {
     background: transparent;
     border: 1px solid oklch(1 0 0 / 0.2);
@@ -733,35 +590,28 @@
     padding: 4px 12px;
     letter-spacing: 0.1em;
   }
-
-  /* Media Queries for unified ludicrous grid */
   @media (max-width: 1100px) {
-
     .placard-header-grid,
     .placard-blocks-horizontal,
     .placard-opts-grid {
       grid-template-columns: 1fr;
     }
-
     .placard-opt-cell {
       min-height: auto;
     }
   }
-
   .placard-content {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1px;
     background: var(--placard-border);
   }
-
   .placard-block {
     background: var(--placard-ink);
     padding: var(--space-xl);
     display: grid;
     gap: var(--space-md);
   }
-
   .placard-block h3 {
     margin: 0;
     font-family: var(--font-mono);
@@ -773,7 +623,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-sm);
-
     &::after {
       content: '';
       flex: 1;
@@ -781,7 +630,6 @@
       background: color-mix(in oklch, var(--placard-red) 30%, transparent);
     }
   }
-
   .placard-list {
     margin: 0;
     display: grid;
@@ -789,7 +637,6 @@
     align-items: start;
     row-gap: var(--space-sm);
     column-gap: var(--space-sm);
-
     & dt {
       grid-column: 1;
       font-family: var(--font-mono);
@@ -803,7 +650,6 @@
       justify-content: center;
       border: 1px solid oklch(1 0 0 / 0.1);
     }
-
     & dd {
       grid-column: 2;
       margin: 0;
@@ -813,7 +659,6 @@
       font-weight: 500;
     }
   }
-
   .placard-footer {
     padding: var(--space-lg) var(--space-xl);
     background: color-mix(in oklch, var(--placard-red) 5%, transparent);
@@ -823,11 +668,9 @@
     align-items: center;
     position: relative;
   }
-
   .placard-footer-status {
     display: flex;
     gap: var(--space-sm);
-
     & mark {
       background: transparent;
       border: 1px solid oklch(1 0 0 / 0.2);
@@ -839,12 +682,10 @@
       letter-spacing: 0.05em;
     }
   }
-
   .placard-corner-accents {
     position: absolute;
     inset: 0;
     pointer-events: none;
-
     &::before,
     &::after {
       content: '';
@@ -853,14 +694,12 @@
       height: 10px;
       border: 1px solid var(--placard-red);
     }
-
     &::before {
       top: 10px;
       left: 10px;
       border-right: 0;
       border-bottom: 0;
     }
-
     &::after {
       bottom: 10px;
       right: 10px;
@@ -868,8 +707,6 @@
       border-top: 0;
     }
   }
-
-  /* LUDICROUS Tier badge */
   .tier-ludicrous {
     background: linear-gradient(135deg,
         var(--danger-ink),
@@ -880,7 +717,6 @@
     text-shadow: var(--text-shadow-sm);
     box-shadow: 0 0 12px var(--danger-glow);
   }
-
   .tier-ludicrous-field {
     position: relative;
     border-color: color-mix(in oklch, var(--danger) 55%, var(--danger-deep));
@@ -895,7 +731,6 @@
       0 18px 36px color-mix(in oklch, oklch(0 0 0) 65%, transparent),
       0 0 24px color-mix(in oklch, var(--danger) 20%, transparent),
       inset 0 0 0 1px color-mix(in oklch, var(--danger) 18%, transparent);
-
     &::before {
       content: '';
       position: absolute;
@@ -904,7 +739,6 @@
       opacity: 0.08;
       pointer-events: none;
     }
-
     &:hover {
       border-color: var(--ludicrous-border-strong);
       box-shadow:
@@ -912,7 +746,6 @@
         0 0 30px color-mix(in oklch, var(--danger) 30%, transparent),
         inset 0 0 30px color-mix(in oklch, var(--danger) 16%, transparent);
     }
-
     & label {
       background: linear-gradient(145deg,
           color-mix(in oklch, var(--danger) 14%, var(--danger-void)),
@@ -921,7 +754,6 @@
       border-radius: 0;
       clip-path: var(--clip-cyber-sm);
       box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--danger) 15%, transparent);
-
       &:hover {
         background: linear-gradient(145deg,
             color-mix(in oklch, var(--danger) 22%, var(--danger-void)),
@@ -931,7 +763,6 @@
           0 8px 20px color-mix(in oklch, oklch(0 0 0) 55%, transparent),
           inset 0 0 0 1px color-mix(in oklch, var(--danger) 20%, transparent);
       }
-
       &:has(input:checked) {
         background: linear-gradient(145deg,
             color-mix(in oklch, var(--danger) 28%, var(--danger-void)),
@@ -940,22 +771,18 @@
         box-shadow:
           0 0 22px color-mix(in oklch, var(--danger) 45%, transparent),
           inset 0 0 18px color-mix(in oklch, var(--danger) 18%, transparent);
-
         & .label-hint {
           color: var(--danger-bright);
         }
       }
     }
-
     & .label-text {
       color: var(--text-primary);
       letter-spacing: 0.015em;
     }
-
     & .label-hint {
       color: var(--text-hint);
     }
-
     & label[data-tooltip]::after {
       background:
         linear-gradient(160deg,
@@ -969,7 +796,6 @@
         0 12px 28px color-mix(in oklch, oklch(0 0 0) 70%, transparent),
         0 0 22px color-mix(in oklch, var(--danger) 30%, transparent);
     }
-
     & label input[type="checkbox"]::before {
       background: linear-gradient(135deg,
           color-mix(in oklch, var(--danger) 12%, var(--danger-void)),
@@ -978,11 +804,9 @@
       border-radius: 0;
       clip-path: var(--clip-cyber-2xs);
     }
-
     & label input[type="checkbox"]::after {
       border-color: white !important;
     }
-
     & label input[type="checkbox"]:checked::before {
       background: linear-gradient(135deg,
           var(--danger),
@@ -993,26 +817,15 @@
         0 0 26px color-mix(in oklch, var(--danger) 45%, transparent);
     }
   }
-
   @media (max-width: 900px) {
     .upgrades-grid--ludicrous {
       grid-template-columns: 1fr;
     }
-
     .ludicrous-placard {
       grid-column: 1;
       grid-row: auto;
     }
   }
-
-  /* ==========================================================================
-   * LUDICROUS Dialog - Native <dialog> element
-   * ========================================================================== */
-
-  /* ==========================================================================
-   * LUDICROUS Dialog - Technical Emergency UI
-   * ========================================================================== */
-
   .ludicrous-dialog {
     position: fixed;
     max-width: 600px;
@@ -1033,24 +846,20 @@
     overflow: hidden;
     animation: dialog-appear 0.3s var(--ease-out-expo);
   }
-
   @keyframes dialog-appear {
     from {
       opacity: 0;
       transform: translateY(-20px) scale(0.98);
     }
-
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
   }
-
   .ludicrous-dialog::backdrop {
     background: oklch(0 0 0 / 0.92);
     backdrop-filter: blur(4px);
   }
-
   .ludicrous-dialog-header {
     background: var(--placard-red);
     padding: var(--space-xl);
@@ -1060,13 +869,11 @@
     gap: var(--space-md);
     border-bottom: 4px solid var(--placard-ink);
   }
-
   .ludicrous-dialog-header .danger-icon {
     width: 40px;
     height: 40px;
     filter: drop-shadow(0 4px 8px oklch(0 0 0 / 0.3));
   }
-
   .ludicrous-dialog-header h3 {
     margin: 0;
     font-family: var(--font-display);
@@ -1075,7 +882,6 @@
     text-transform: uppercase;
     letter-spacing: -0.01em;
   }
-
   .ludicrous-dialog-body {
     padding: var(--space-xl);
     max-height: 60vh;
@@ -1086,7 +892,6 @@
       linear-gradient(to bottom, var(--placard-ink), color-mix(in oklch, var(--placard-ink) 95%, white)),
       repeating-linear-gradient(0deg, oklch(1 0 0 / 0.02) 0 1px, transparent 1px 20px);
   }
-
   .danger-intro {
     font-family: var(--font-mono);
     font-size: 1rem;
@@ -1098,7 +903,6 @@
     font-weight: 700;
     text-transform: uppercase;
   }
-
   .cve-section h4,
   .attack-vectors h4,
   .only-for h4 {
@@ -1113,7 +917,6 @@
     align-items: center;
     gap: var(--space-sm);
   }
-
   .cve-section h4::after,
   .attack-vectors h4::after,
   .only-for h4::after {
@@ -1122,7 +925,6 @@
     height: 1px;
     background: oklch(1 0 0 / 0.1);
   }
-
   .cve-list {
     list-style: none;
     padding: 0;
@@ -1130,7 +932,6 @@
     display: grid;
     gap: var(--space-xs);
   }
-
   .cve-list li {
     background: oklch(1 0 0 / 0.03);
     padding: var(--space-sm) var(--space-md);
@@ -1139,7 +940,6 @@
     justify-content: space-between;
     align-items: center;
   }
-
   .cve-list a {
     color: var(--placard-red);
     font-family: var(--font-mono);
@@ -1147,13 +947,11 @@
     text-decoration: none;
     font-size: 0.9rem;
   }
-
   .cve-name {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: oklch(1 0 0 / 0.5);
   }
-
   .attack-vectors ul,
   .only-for ul {
     list-style: none;
@@ -1162,7 +960,6 @@
     display: grid;
     gap: var(--space-sm);
   }
-
   .attack-vectors li,
   .only-for li {
     position: relative;
@@ -1170,7 +967,6 @@
     font-size: 0.9rem;
     color: oklch(1 0 0 / 0.85);
   }
-
   .attack-vectors li::before {
     content: '';
     position: absolute;
@@ -1183,7 +979,6 @@
     background-repeat: no-repeat;
     filter: drop-shadow(0 0 4px oklch(0.6 0.22 25 / 0.5));
   }
-
   .only-for li::before {
     content: '';
     position: absolute;
@@ -1196,7 +991,6 @@
     background-repeat: no-repeat;
     filter: drop-shadow(0 0 4px oklch(0.85 0.15 85 / 0.5));
   }
-
   .research-links {
     display: flex;
     flex-direction: column;
@@ -1205,20 +999,17 @@
     background: oklch(1 0 0 / 0.02);
     border: 1px dashed oklch(1 0 0 / 0.1);
   }
-
   .research-links span {
     font-family: var(--font-mono);
     font-size: 0.65rem;
     text-transform: uppercase;
     color: oklch(1 0 0 / 0.4);
   }
-
   .research-links a {
     color: oklch(1 0 0 / 0.7);
     text-decoration: underline;
     font-size: 0.85rem;
   }
-
   .ludicrous-dialog-footer {
     padding: var(--space-xl);
     background: color-mix(in oklch, var(--placard-red) 5%, transparent);
@@ -1226,7 +1017,6 @@
     display: flex;
     gap: var(--space-md);
   }
-
   .ludicrous-dialog-footer button {
     flex: 1;
     height: 40px;
@@ -1240,31 +1030,19 @@
     clip-path: var(--clip-cyber-sm);
     position: relative;
   }
-
-  /* ==========================================================================
-   * Cancel Button - Dark subtle
-   * ========================================================================== */
-
   .btn-secondary {
     background: oklch(0.12 0.01 250);
     border: 1px solid oklch(1 0 0 / 0.15);
     color: oklch(1 0 0 / 0.5);
   }
-
   .btn-secondary:hover {
     background: oklch(0.15 0.01 250);
     color: oklch(1 0 0 / 0.8);
     border-color: oklch(1 0 0 / 0.3);
   }
-
   .btn-secondary:active {
     transform: scale(0.98);
   }
-
-  /* ==========================================================================
-   * Danger Button - ROG Style (Black + Red Accents)
-   * ========================================================================== */
-
   .btn-danger {
     background: oklch(0.08 0.02 25);
     border: 1px solid var(--placard-red);
@@ -1275,8 +1053,6 @@
       0 4px 15px color-mix(in oklch, oklch(0 0 0) 50%, transparent);
     overflow: hidden;
   }
-
-  /* Top accent line */
   .btn-danger::before {
     content: '';
     position: absolute;
@@ -1289,8 +1065,6 @@
         color-mix(in oklch, var(--placard-red) 60%, transparent) 60%,
         transparent 100%);
   }
-
-  /* Scanline overlay */
   .btn-danger::after {
     content: '';
     position: absolute;
@@ -1299,7 +1073,6 @@
     opacity: 0.05;
     pointer-events: none;
   }
-
   .btn-danger:hover {
     transform: translateY(-2px);
     background: oklch(0.1 0.03 25);
@@ -1309,34 +1082,25 @@
       0 0 40px color-mix(in oklch, var(--placard-red) 35%, transparent),
       0 8px 25px color-mix(in oklch, oklch(0 0 0) 60%, transparent);
   }
-
   .btn-danger:hover::before {
     background: linear-gradient(90deg,
         color-mix(in oklch, var(--placard-red) 100%, oklch(0.8 0.2 25)) 0%,
         var(--placard-red) 50%,
         transparent 100%);
   }
-
   .btn-danger:hover::after {
     opacity: 0.08;
   }
-
   .btn-danger:active {
     transform: translateY(0) scale(0.98);
     box-shadow:
       inset 0 2px 10px color-mix(in oklch, oklch(0 0 0) 50%, transparent),
       0 0 20px color-mix(in oklch, var(--placard-red) 25%, transparent);
   }
-
   .btn-danger:focus-visible {
     outline: 2px solid var(--placard-red);
     outline-offset: 2px;
   }
-
-  /* ==========================================================================
-   * Restore Point Dialog - Caution/Warning UI
-   * ========================================================================== */
-
   .restore-point-dialog {
     position: fixed;
     top: 50%;
@@ -1354,16 +1118,13 @@
       0 0 40px color-mix(in oklch, var(--caution) 30%, transparent),
       0 20px 60px oklch(0 0 0 / 0.8);
   }
-
   .restore-point-dialog[open] {
     animation: dialog-pop 0.25s ease-out;
   }
-
   .restore-point-dialog::backdrop {
     background: oklch(0 0 0 / 0.85);
     backdrop-filter: blur(4px);
   }
-
   .restore-point-dialog-header {
     background: var(--caution);
     padding: var(--space-lg);
@@ -1373,13 +1134,11 @@
     gap: var(--space-md);
     border-bottom: 3px solid oklch(0.2 0 0 / 0.3);
   }
-
   .restore-point-dialog-header .warning-icon {
     width: 36px;
     height: 36px;
     filter: drop-shadow(0 2px 4px oklch(0 0 0 / 0.2));
   }
-
   .restore-point-dialog-header h3 {
     margin: 0;
     font-family: var(--font-display);
@@ -1387,7 +1146,6 @@
     font-weight: 600;
     letter-spacing: -0.01em;
   }
-
   .restore-point-dialog-body {
     padding: var(--space-xl);
     display: flex;
@@ -1395,31 +1153,26 @@
     gap: var(--space-md);
     text-align: center;
   }
-
   .restore-point-intro {
     font-size: 1.1rem;
     line-height: 1.4;
     color: var(--caution);
     margin: 0;
   }
-
   .restore-point-desc {
     font-size: 0.95rem;
     line-height: 1.5;
     color: oklch(0.75 0 0);
     margin: 0;
   }
-
   .restore-point-recommendation {
     font-size: 0.9rem;
     color: oklch(0.6 0 0);
     margin: var(--space-sm) 0 0;
   }
-
   .restore-point-recommendation strong {
     color: var(--caution);
   }
-
   .restore-point-dialog-footer {
     padding: var(--space-lg);
     background: color-mix(in oklch, var(--caution) 5%, transparent);
@@ -1428,7 +1181,6 @@
     flex-direction: column;
     gap: var(--space-sm);
   }
-
   .restore-point-dialog-footer button {
     width: 100%;
     min-height: 44px;
@@ -1442,8 +1194,6 @@
     transition: all 0.15s ease;
     position: relative;
   }
-
-  /* Caution Button - Yellow/Amber style */
   .btn-caution {
     background: oklch(0.15 0.04 85);
     border: 1px solid var(--caution);
@@ -1452,7 +1202,6 @@
       inset 0 0 20px color-mix(in oklch, var(--caution) 10%, transparent),
       0 0 15px color-mix(in oklch, var(--caution) 15%, transparent);
   }
-
   .btn-caution:hover {
     transform: translateY(-1px);
     background: oklch(0.18 0.05 85);
@@ -1460,11 +1209,9 @@
       inset 0 0 30px color-mix(in oklch, var(--caution) 15%, transparent),
       0 0 25px color-mix(in oklch, var(--caution) 25%, transparent);
   }
-
   .btn-caution:active {
     transform: translateY(0) scale(0.98);
   }
-
   .btn-caution:focus-visible {
     outline: 2px solid var(--caution);
     outline-offset: 2px;

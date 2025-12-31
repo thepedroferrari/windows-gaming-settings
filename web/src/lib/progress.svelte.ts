@@ -110,7 +110,10 @@ export function markIncomplete(sectionId: string, itemId: string): void {
 /**
  * Get completion count for a section
  */
-export function getSectionProgress(sectionId: string, totalItems: number): { completed: number; total: number; percent: number } {
+export function getSectionProgress(
+  sectionId: string,
+  totalItems: number,
+): { completed: number; total: number; percent: number } {
   const section = progressData.sections[sectionId] ?? {}
   const completed = Object.values(section).filter(Boolean).length
 
@@ -124,7 +127,11 @@ export function getSectionProgress(sectionId: string, totalItems: number): { com
 /**
  * Get overall completion across all sections
  */
-export function getOverallProgress(sectionTotals: Record<string, number>): { completed: number; total: number; percent: number } {
+export function getOverallProgress(sectionTotals: Record<string, number>): {
+  completed: number
+  total: number
+  percent: number
+} {
   let completed = 0
   let total = 0
 
@@ -175,7 +182,17 @@ export function createItemId(item: Record<string, unknown>): string {
   }
 
   // Fallback: derive from first matching property (legacy behavior)
-  const keys = ['setting', 'step', 'check', 'problem', 'game', 'tool', 'path', 'software', 'browser']
+  const keys = [
+    'setting',
+    'step',
+    'check',
+    'problem',
+    'game',
+    'tool',
+    'path',
+    'software',
+    'browser',
+  ]
   for (const key of keys) {
     if (typeof item[key] === 'string') {
       return slugify(item[key] as string)
@@ -198,7 +215,7 @@ function hashCode(str: string): string {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
+    hash = (hash << 5) - hash + char
     hash = hash & hash // Convert to 32bit integer
   }
   return Math.abs(hash).toString(36)

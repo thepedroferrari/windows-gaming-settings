@@ -3,14 +3,12 @@
     position: relative;
     flex-shrink: 0;
   }
-
   .cyber-toggle-input {
     position: absolute;
     opacity: 0;
     width: 0;
     height: 0;
   }
-
   .cyber-toggle-label {
     display: block;
     width: 64px;
@@ -32,41 +30,33 @@
     position: relative;
     overflow: hidden;
   }
-
   .cyber-toggle-track {
     transform: translateX(0);
   }
-
   .cyber-toggle-input:focus + .cyber-toggle-label {
     border-color: var(--cyber-yellow);
   }
-
   .cyber-toggle-input:checked + .cyber-toggle-label {
     border-color: var(--cyber-yellow);
     box-shadow:
       0 0 20px color-mix(in oklch, var(--cyber-yellow) 40%, transparent),
       inset 0 0 12px color-mix(in oklch, var(--cyber-yellow) 25%, transparent);
   }
-
   .cyber-toggle-svg {
     display: block;
     width: 100%;
     height: 100%;
   }
-
   .pixel-row {
     transition: transform 0.22s var(--ease-out-back);
   }
-
   .pixel-row rect {
     fill: var(--border-light);
     transition: fill 0.3s ease;
   }
-
   .cyber-toggle-input:checked + .cyber-toggle-label .pixel-row {
     transform: translateX(34px);
   }
-
   .pixel-row:nth-child(1) { transition-delay: 0ms; }
   .pixel-row:nth-child(2) { transition-delay: 10ms; }
   .pixel-row:nth-child(3) { transition-delay: 20ms; }
@@ -77,7 +67,6 @@
   .pixel-row:nth-child(8) { transition-delay: 10ms; }
   .pixel-row:nth-child(9) { transition-delay: 0ms; }
   .pixel-row:nth-child(10) { transition-delay: 0ms; }
-
   .cyber-toggle-input:checked + .cyber-toggle-label .pixel-row rect {
     fill: var(--cyber-yellow);
     filter: drop-shadow(0 0 2px var(--cyber-yellow-glow));
