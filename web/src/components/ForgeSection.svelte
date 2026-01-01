@@ -15,7 +15,6 @@
     openPreviewModal,
     generateCurrentScript,
     setScriptDownloaded,
-    setScriptVerified,
   } from "$lib/state.svelte";
   import { SCRIPT_FILENAME } from "$lib/types";
   import { generateSHA256, copyToClipboard } from "$lib/checksum";
@@ -261,42 +260,6 @@
     </footer>
   </section>
 
-  {#if app.script.downloaded && !app.script.verified}
-    <aside class="verify-reminder" role="alert">
-      <div class="verify-reminder__content">
-        <svg class="verify-reminder__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <path d="m9 12 2 2 4-4" />
-        </svg>
-        <div class="verify-reminder__text">
-          <strong class="verify-reminder__title">Next: Verify your script</strong>
-          <p class="verify-reminder__desc">Use the SHA-256 checksum below to confirm file integrity before running</p>
-        </div>
-      </div>
-      <div class="verify-reminder__actions">
-        <button
-          type="button"
-          class="verify-reminder__scroll-btn"
-          onclick={() => {
-            document.getElementById('verification-hud')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }}
-        >
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-          Scroll to Verification
-        </button>
-        <button
-          type="button"
-          class="verify-reminder__mark-btn"
-          onclick={() => setScriptVerified(true)}
-        >
-          I verified it
-        </button>
-      </div>
-    </aside>
-  {/if}
-
   {#if checksum}
     <section class="verification-hud" id="verification-hud">
       <header class="verification-hud__header">
@@ -310,12 +273,13 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           <path d="m9 12 2 2 4-4" />
         </svg>
-        <h3 class="verification-hud__title">VERIFY BEFORE YOU RUN</h3>
+        <h3 class="verification-hud__title">SHA-256 CHECKSUM</h3>
+        <span class="verification-hud__badge">optional</span>
       </header>
 
       <div class="verification-hud__content">
         <div class="hash-panel">
-          <span class="hash-panel__label">SHA-256 Checksum</span>
+          <span class="hash-panel__label">File Hash</span>
           <code class="hash-panel__value" title={checksum}>{checksum}</code>
           <button
             type="button"
@@ -354,8 +318,9 @@
 
         <div class="verify-instructions">
           <details class="verify-details">
-            <summary class="verify-summary">How to verify manually</summary>
+            <summary class="verify-summary">How to verify (for the curious)</summary>
             <div class="verify-steps">
+              <p class="verify-intro">Security folks and IT pros: here's how to double-check the file hash.</p>
               <div class="verify-step">
                 <span class="verify-step__num">1</span>
                 <div class="verify-step__content">
@@ -371,12 +336,12 @@
               <div class="verify-step">
                 <span class="verify-step__num">2</span>
                 <div class="verify-step__content">
-                  <p class="verify-step__label">Expected output:</p>
+                  <p class="verify-step__label">Compare with:</p>
                   <code class="verify-step__expected">{checksum}</code>
                 </div>
               </div>
               <p class="verify-result">
-                If they match exactly, your file is authentic and unmodified.
+                Match? You're good to go.
               </p>
             </div>
           </details>
