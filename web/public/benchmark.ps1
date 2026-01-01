@@ -157,6 +157,80 @@ function Wait-ForUserExit {
     }
 }
 
+function Show-RockTuneFinalChecklist {
+    <#
+    .SYNOPSIS
+        Prints a no-guesswork, step-by-step checklist after tools launch.
+    .DESCRIPTION
+        This is intentionally explicit for first-time users who need to know
+        exactly what to click and in what order. The checklist is short and
+        ends with clear completion cues.
+    #>
+    Write-Section "ROCKTUNE Benchmark Steps"
+
+    Write-Host "  ____   ___   ____ _  __ _______ _   _ _   _ _____" -ForegroundColor Cyan
+    Write-Host " |  _ \ / _ \ / ___| |/ /|_   _| | | | | \ | | ____|" -ForegroundColor Cyan
+    Write-Host " | |_) | | | | |   | ' /   | | | | | | |  \| |  _|" -ForegroundColor Cyan
+    Write-Host " |  _ <| |_| | |___| . \   | | | |_| | | |\  | |___" -ForegroundColor Cyan
+    Write-Host " |_| \_\\___/ \____|_|\_\  |_|  \___/|_|_| \_|_____|" -ForegroundColor Cyan
+    Write-Host "                 S O G A M E D   S T Y L E" -ForegroundColor Cyan
+
+    Write-Host ""
+    Write-Host "[ ] 1) Confirm the tools are open" -ForegroundColor White
+    Write-Host "    - CapFrameX is running" -ForegroundColor White
+    Write-Host "    - Unigine Superposition is open" -ForegroundColor White
+    Write-Host "    - LatencyMon is open" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 2) Set CapFrameX (once)" -ForegroundColor White
+    Write-Host "    - Capture API: PresentMon" -ForegroundColor White
+    Write-Host "    - Capture duration: 60s" -ForegroundColor White
+    Write-Host "    - Start delay: 3s" -ForegroundColor White
+    Write-Host "    - Hotkey: F11 (start/stop capture)" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 3) Set Superposition (once)" -ForegroundColor White
+    Write-Host "    - Preset: 1080p Medium" -ForegroundColor White
+    Write-Host "    - Fullscreen: On" -ForegroundColor White
+    Write-Host "    - VSync: Off" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 4) Warm-up run (no capture)" -ForegroundColor White
+    Write-Host "    - In Superposition, click RUN or BENCHMARK" -ForegroundColor White
+    Write-Host "    - Let the run finish" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 5) Captured runs (before changes)" -ForegroundColor White
+    Write-Host "    - Start Superposition, then press F11 to start capture" -ForegroundColor White
+    Write-Host "    - After the run ends, press F11 again to stop capture" -ForegroundColor White
+    Write-Host "    - Do 2 valid runs; discard the first if shader compilation occurs" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 6) LatencyMon (during a run)" -ForegroundColor White
+    Write-Host "    - Click Start and let it run for ~5 minutes" -ForegroundColor White
+    Write-Host "    - Screenshot the Main and Drivers tabs" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 7) Apply your RockTune changes" -ForegroundColor White
+    Write-Host "    - Run your optimization flow" -ForegroundColor White
+    Write-Host "    - Reboot if requested" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 8) Repeat the captured runs (after changes)" -ForegroundColor White
+    Write-Host "    - Same settings, same steps, same number of runs" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 9) Export evidence in CapFrameX" -ForegroundColor White
+    Write-Host "    - Analysis -> Aggregate the runs" -ForegroundColor White
+    Write-Host "    - Export CSV + HTML summary" -ForegroundColor White
+
+    Write-Host ""
+    Write-Host "[ ] 10) Optional input-lag proof (free method)" -ForegroundColor White
+    Write-Host "     - Record 10 clicks at 240fps on a phone" -ForegroundColor White
+    Write-Host "     - Count frames from click to pixel change" -ForegroundColor White
+    Write-Host "     - 1 frame at 240fps = 4.17ms" -ForegroundColor White
+}
+
 function Prompt-YesNo {
     <#
     .SYNOPSIS
@@ -816,6 +890,8 @@ try {
     Write-Note "Compare Avg FPS, 1% low, 0.1% low, and frametime graphs."
 
     Write-Ok "Benchmark stack is ready."
+
+    Show-RockTuneFinalChecklist
 } catch {
     Write-Fail "Script failed: $($_.Exception.Message)"
 } finally {
