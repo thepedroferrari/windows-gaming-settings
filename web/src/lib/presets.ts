@@ -122,7 +122,7 @@ function toPresetMeta(persona: PersonaRaw): PresetMeta {
 }
 
 /** Calculate tier breakdown for a set of optimizations */
-export function getTierBreakdown(opts: readonly OptimizationKey[]): TierBreakdown {
+function getTierBreakdown(opts: readonly OptimizationKey[]): TierBreakdown {
   const optSet = new Set(opts)
   let safe = 0
   let caution = 0

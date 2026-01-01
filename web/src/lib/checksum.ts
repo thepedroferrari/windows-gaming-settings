@@ -18,15 +18,6 @@ export async function generateSHA256(content: string): Promise<string> {
 }
 
 /**
- * Format hash for display (first 16 chars + ... + last 8 chars)
- * Full hash is 64 chars, this shows 24 + ellipsis
- */
-export function formatHashShort(hash: string): string {
-  if (hash.length <= 32) return hash
-  return `${hash.slice(0, 16)}...${hash.slice(-8)}`
-}
-
-/**
  * Copy text to clipboard
  * Returns true if successful
  */

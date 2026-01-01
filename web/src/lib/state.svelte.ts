@@ -461,25 +461,11 @@ export function acknowledgeLudicrous(): void {
 }
 
 /**
- * Check if LUDICROUS tier has been acknowledged
- */
-export function isLudicrousAcknowledged(): boolean {
-  return app.ui.ludicrousAcknowledged
-}
-
-/**
  * Acknowledge restore point disable risks - allows disabling restore point optimization
  * This action is intentionally one-way per session for safety.
  */
 export function acknowledgeRestorePointDisable(): void {
   app.ui = { ...app.ui, restorePointAcknowledged: true }
-}
-
-/**
- * Check if restore point disable has been acknowledged
- */
-export function isRestorePointAcknowledged(): boolean {
-  return app.ui.restorePointAcknowledged
 }
 
 /**

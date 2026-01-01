@@ -11,7 +11,7 @@
   }
 
   .step {
-    padding: var(--space-xl) 0;
+    padding: 0 0 var(--space-xl) 0;
     border-bottom: 1px solid var(--border);
   }
 
@@ -186,7 +186,7 @@
 
   @media (max-width: 768px) {
     .step {
-      padding: var(--space-md) var(--space-xs);
+      padding: 0 var(--space-xs) var(--space-md) var(--space-xs);
     }
 
     .upgrades-grid,

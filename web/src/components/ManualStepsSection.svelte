@@ -50,17 +50,14 @@
     return `https://www.youtube.com/watch?v=${videoId}`;
   }
 
-  
   let expandedGroups = $state<Set<string>>(new Set(["windows", "preflight"]));
 
-  
   let filteredGroups = $derived.by(() => {
     const persona = app.activePreset ?? "gamer";
     const gpu = app.hardware.gpu;
     return getFilteredSectionGroups(persona, gpu);
   });
 
-  
   let totalItems = $derived.by(() => {
     const persona = app.activePreset ?? "gamer";
     const gpu = app.hardware.gpu;
@@ -85,34 +82,27 @@
     expandedGroups = new Set();
   }
 
-  
   let progressData = $derived(getProgressData());
 
-  
   function handleCheckbox(sectionId: string, itemId: string) {
     toggleItem(sectionId, itemId);
   }
 
-  
   function isDone(sectionId: string, itemId: string): boolean {
-    
     const _ = progressData.lastUpdated;
     return isCompleted(sectionId, itemId);
   }
 
-  
   function handleResetSection(sectionId: string) {
     resetSection(sectionId);
   }
 
-  
   function handleResetAll() {
     if (confirm("Reset all progress? This cannot be undone.")) {
       resetAll();
     }
   }
 
-  
   type AnyItem =
     | ManualStepItem
     | SettingItem
@@ -142,16 +132,12 @@
     };
   }
 
-  
   function getProgress(sectionId: string, items: readonly AnyItem[]) {
-    
     const _ = progressData.lastUpdated;
     return getProgressForItems(sectionId, items);
   }
 
-  
   function getGroupProgress(sections: readonly ManualStepSection[]) {
-    
     const _ = progressData.lastUpdated;
     let completed = 0;
     let total = 0;
@@ -172,7 +158,6 @@
     };
   }
 
-  
   function isManualStepItem(item: AnyItem): item is ManualStepItem {
     return "step" in item && "check" in item && "why" in item;
   }
@@ -226,7 +211,6 @@
     return "tool" in item && "use" in item;
   }
 
-  
   let copiedId = $state<string | null>(null);
 
   async function copyLaunchOptions(launchOptions: string, gameId: string) {
@@ -237,7 +221,6 @@
         copiedId = null;
       }, 2000);
     } catch {
-      
       const textarea = document.createElement("textarea");
       textarea.value = launchOptions;
       document.body.appendChild(textarea);
@@ -251,7 +234,6 @@
     }
   }
 
-  
   function getGroupIcon(groupId: string): string {
     switch (groupId) {
       case "windows":
@@ -286,63 +268,55 @@
   }
 </script>
 
-<section class="manual-steps">
-  <header class="manual-steps__header">
-    <div class="manual-steps__title-row">
-      <h3 class="manual-steps__title">
-        <svg
-          class="manual-steps__icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M9 11l3 3L22 4" />
-          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-        </svg>
-        Manual Steps Guide
-      </h3>
-      <span class="manual-steps__count">{totalItems} items</span>
+<section id="guide" class="step step--guide manual-steps">
+  <header class="step-banner">
+    <div class="step-banner__marker">6</div>
+    <div class="step-banner__content">
+      <h2 class="step-banner__title">Manual Steps Guide</h2>
+      <p class="step-banner__subtitle">
+        Settings that can't be scripted but make a real difference
+      </p>
     </div>
-    <p class="manual-steps__desc">
-      Settings that can't be scripted but make a real difference
-    </p>
-    <div class="manual-steps__controls">
-      <button type="button" class="manual-steps__btn" onclick={expandAll}>
-        Expand All
-      </button>
-      <button type="button" class="manual-steps__btn" onclick={collapseAll}>
-        Collapse All
-      </button>
-      <button
-        type="button"
-        class="manual-steps__btn manual-steps__btn--print"
-        onclick={handlePrint}
-      >
-        <svg
-          class="icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M6 9V2h12v7" />
-          <path
-            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
-          />
-          <rect x="6" y="14" width="12" height="8" />
-        </svg>
-        Print
-      </button>
+    <div class="step-banner__actions">
+      <span class="items-count">{totalItems} items</span>
     </div>
   </header>
+
+  <div class="manual-steps__controls">
+    <button type="button" class="manual-steps__btn" onclick={expandAll}>
+      Expand All
+    </button>
+    <button type="button" class="manual-steps__btn" onclick={collapseAll}>
+      Collapse All
+    </button>
+    <button
+      type="button"
+      class="manual-steps__btn manual-steps__btn--print"
+      onclick={handlePrint}
+    >
+      <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M6 9V2h12v7" />
+        <path
+          d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+        />
+        <rect x="6" y="14" width="12" height="8" />
+      </svg>
+      Print
+    </button>
+  </div>
 
   <div class="manual-steps__groups">
     {#each filteredGroups as group (group.id)}
       {@const groupProgress = getGroupProgress(group.sections)}
       {@const isSingleSectionGroup = group.sections.length === 1}
       {@const groupSubtitle = isSingleSectionGroup
-        ? group.sections[0]?.description ?? group.sections[0]?.title
+        ? (group.sections[0]?.description ?? group.sections[0]?.title)
         : undefined}
 
       <details
@@ -679,7 +653,6 @@
             </div>
           {/each}
 
-          
           {#if group.videos && group.videos.length > 0}
             <div class="manual-steps__videos">
               <h4 class="manual-steps__videos-title">
@@ -733,5 +706,3 @@
     {/each}
   </div>
 </section>
-
-

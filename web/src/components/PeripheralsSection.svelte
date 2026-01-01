@@ -30,11 +30,16 @@
 </script>
 
 <section id="peripherals" class="step">
-  <h2><span class="step-num">2</span> Peripherals</h2>
-  <p class="step-desc">Install companion software for your gaming gear</p>
+  <header class="step-banner">
+    <div class="step-banner__marker">2</div>
+    <div class="step-banner__content">
+      <h2 class="step-banner__title">Peripherals</h2>
+      <p class="step-banner__subtitle">Install companion software for your gaming gear</p>
+    </div>
+  </header>
 
   <div class="peripherals-grid">
-    
+
     <fieldset class="control-fieldset peripherals-fieldset peripherals-fieldset--gear">
       <legend class="control-legend">
         <span class="legend-badge legend-badge--peripherals">Gear</span>
@@ -90,7 +95,7 @@
       </div>
     </fieldset>
 
-    
+
     <fieldset class="control-fieldset peripherals-fieldset peripherals-fieldset--monitors">
       <legend class="control-legend">
         <span class="legend-badge legend-badge--peripherals">Monitors</span>

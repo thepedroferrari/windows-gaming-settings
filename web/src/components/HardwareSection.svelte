@@ -11,17 +11,16 @@
 </script>
 
 <section id="hardware" class="step">
-  <div class="step-header">
-    <div class="step-header__left">
-      <h2><span class="step-num">1</span> Hardware</h2>
-      <p class="step-desc">
-        Select your CPU and GPU to enable the right optimizations
-      </p>
+  <header class="step-banner">
+    <div class="step-banner__marker">1</div>
+    <div class="step-banner__content">
+      <h2 class="step-banner__title">Hardware</h2>
+      <p class="step-banner__subtitle">Select your CPU and GPU to enable the right optimizations</p>
     </div>
-    <div class="step-header__right">
+    <div class="step-banner__actions">
       <button
         type="button"
-        class="help-trigger"
+        class="step-banner__action"
         popovertarget="hardware-help"
         style="anchor-name: --hw-help-anchor"
       >
@@ -40,7 +39,7 @@
         </svg>
       </button>
     </div>
-  </div>
+  </header>
 
   <div id="hardware-help" popover class="hardware-help-panel">
     <section class="help-section">

@@ -70,7 +70,7 @@
     ludicrousDialog?.close()
   }
 
-  
+
   function openRestorePointModal() {
     restorePointDialog?.showModal()
   }
@@ -89,9 +89,9 @@
    * Intercept toggle for restore_point - show modal if trying to disable without acknowledgment
    */
   function handleBeforeToggle(key: OptimizationKey, isCurrentlyChecked: boolean): boolean {
-    
+
     if (key === OPTIMIZATION_KEYS.RESTORE_POINT && isCurrentlyChecked) {
-      
+
       if (!app.ui.restorePointAcknowledged) {
         openRestorePointModal()
         return false
@@ -102,18 +102,19 @@
 </script>
 
 <section id="optimizations" class="step">
-  <div class="step-header">
-    <div class="step-header__left">
-      <h2><span class="step-num">3</span> Upgrades</h2>
-      <p class="step-desc">Safe options enabled by default — hover for details</p>
+  <header class="step-banner">
+    <div class="step-banner__marker">3</div>
+    <div class="step-banner__content">
+      <h2 class="step-banner__title">Upgrades</h2>
+      <p class="step-banner__subtitle">Safe options enabled by default — hover for details</p>
     </div>
-    <div class="step-header__right">
-      <div class="wizard-toggle">
+    <div class="step-banner__actions">
+      <div class="wizard-toggle wizard-toggle--banner">
         <span class="toggle-label">
           <strong>Wizard Mode</strong>
           <span class="toggle-hint">Review each change</span>
         </span>
-        <div class="cyber-toggle">
+        <div class="cyber-toggle cyber-toggle--banner">
           <input
             type="checkbox"
             id="wizard-mode"
@@ -143,9 +144,9 @@
         </div>
       </div>
     </div>
-  </div>
+  </header>
 
-  
+
   <dialog id="wizard-modal" class="wizard-modal">
     <div class="wizard-content">
       <h3 id="wizard-title">Optimization Name</h3>
@@ -191,25 +192,25 @@
     {/each}
   </div>
 
-  
+
   <div class="ludicrous-section">
     {#if app.ui.ludicrousAcknowledged}
-      
+
       <article class="ludicrous-placard-v2">
         <header class="placard-header-grid">
           <div class="placard-header-left">
-            
+
             <svg class="placard-skull-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              
+
               <path d="M32 4C18 4 8 16 8 28c0 8 4 15 10 19v9c0 2 2 4 4 4h20c2 0 4-2 4-4v-9c6-4 10-11 10-19 0-12-10-24-24-24z" fill="currentColor" opacity="0.15"/>
               <path d="M32 4C18 4 8 16 8 28c0 8 4 15 10 19v9c0 2 2 4 4 4h20c2 0 4-2 4-4v-9c6-4 10-11 10-19 0-12-10-24-24-24z" stroke="currentColor" stroke-width="2" fill="none"/>
-              
+
               <ellipse cx="22" cy="28" rx="6" ry="7" fill="currentColor"/>
-              
+
               <ellipse cx="42" cy="28" rx="6" ry="7" fill="currentColor"/>
-              
+
               <path d="M32 36l-4 8h8l-4-8z" fill="currentColor"/>
-              
+
               <path d="M22 52v4M27 52v4M32 52v4M37 52v4M42 52v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </div>
@@ -282,7 +283,7 @@
         </footer>
       </article>
     {:else}
-      
+
       <div class="ludicrous-locked">
         <article class="ludicrous-warning-card">
           <div class="ludicrous-warning-copy">
@@ -309,7 +310,7 @@
     {/if}
   </div>
 
-  
+
   <dialog
     bind:this={ludicrousDialog}
     class="ludicrous-dialog"
@@ -383,7 +384,7 @@
     </footer>
   </dialog>
 
-  
+
   <dialog
     bind:this={restorePointDialog}
     class="restore-point-dialog"

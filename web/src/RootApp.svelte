@@ -29,10 +29,10 @@
     OPTIMIZATION_KEYS.DEP_OFF,
   ] as const
 
-  
+
   import UnifiedNav from './components/UnifiedNav.svelte'
 
-  
+
   import HeroSection from './components/HeroSection.svelte'
   import PresetSection from './components/PresetSection.svelte'
   import HardwareSection from './components/HardwareSection.svelte'
@@ -41,20 +41,20 @@
   import ForgeSection from './components/ForgeSection.svelte'
   import ManualStepsSection from './components/ManualStepsSection.svelte'
 
-  
+
   import SoftwareGrid from './components/SoftwareGrid.svelte'
   import Filters from './components/Filters.svelte'
 
-  
+
   import PreviewModal from './components/PreviewModal.svelte'
   import AuditPanel from './components/AuditPanel.svelte'
   import SRAnnounce from './components/SRAnnounce.svelte'
 
-  
+
   let loading = $state(true)
   let error = $state<string | null>(null)
 
-  
+
   let selectedCount = $derived(getSelectedCount())
   let totalCount = $derived(getTotalCount())
   let recommendedPreset = $derived(getRecommendedPreset(app.activePreset))
@@ -98,7 +98,7 @@
       const catalog = await loadCatalog()
       setSoftware(catalog)
 
-      
+
       const defaults = getDefaultOptimizations()
       setOptimizations(defaults)
     } catch (e) {
@@ -137,7 +137,7 @@
 
 
 <main class="container" id="main-content">
-  
+
   <section id="quick-start" class="step step--quickstart">
     <div class="quickstart-header">
       <div class="quickstart-accent quickstart-accent--left" aria-hidden="true"></div>
@@ -150,30 +150,30 @@
     <PresetSection />
   </section>
 
-  
+
   <HardwareSection />
 
-  
+
   <PeripheralsSection />
 
-  
+
   <OptimizationsSection />
 
-  
+
   <section id="software" class="step step--arsenal">
-    <div class="step-header">
-      <div class="step-header__left">
-        <h2><span class="step-num">4</span> Arsenal</h2>
-        <p class="step-desc">
-          All packages installed via <abbr title="Windows Package Manager">winget</abbr> — Microsoft's official package manager.
-          <span class="trust-hint">Pulled from verified sources. Preview exact commands in the Forge.</span>
+    <header class="step-banner">
+      <div class="step-banner__marker">4</div>
+      <div class="step-banner__content">
+        <h2 class="step-banner__title">Arsenal</h2>
+        <p class="step-banner__subtitle">
+          Install via <abbr title="Windows Package Manager">winget</abbr> — Microsoft's official package manager
         </p>
       </div>
-      <div class="step-header__right">
-        <div class="view-toggle">
+      <div class="step-banner__actions">
+        <div class="view-toggle view-toggle--banner">
           <button
             type="button"
-            class="view-btn"
+            class="view-btn view-btn--banner"
             class:active={activeView === VIEW_MODES.GRID}
             onclick={() => handleViewToggle(VIEW_MODES.GRID)}
             aria-label="Grid view"
@@ -187,7 +187,7 @@
           </button>
           <button
             type="button"
-            class="view-btn"
+            class="view-btn view-btn--banner"
             class:active={activeView === VIEW_MODES.LIST}
             onclick={() => handleViewToggle(VIEW_MODES.LIST)}
             aria-label="List view"
@@ -200,7 +200,7 @@
           </button>
         </div>
       </div>
-    </div>
+    </header>
 
     {#if loading}
       <output class="loading-state" aria-busy="true">Loading software catalog...</output>
@@ -215,10 +215,10 @@
     {/if}
   </section>
 
-  
+
   <ForgeSection />
 
-  
+
   <section id="manual-guide" class="step step--manual-guide">
     <ManualStepsSection />
   </section>

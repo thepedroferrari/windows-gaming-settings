@@ -21,6 +21,7 @@
    @import './src/components/forge/forge.styles.css' layer(components);
    @import './src/components/preflight/preflight.styles.css' layer(components);
    @import './src/components/manual-steps/manual-steps.styles.css' layer(components);
+   @import './src/components/step-banner/step-banner.styles.css' layer(components);
    @import './src/styles/overrides.css' layer(overrides);
 
    @layer base {
@@ -905,8 +906,7 @@
        --stagger: 0;
        --step-accent: var(--cyber-yellow);
        margin-bottom: var(--space-2xl);
-       padding: var(--space-xl);
-       padding-left: calc(var(--space-xl) + 4px);
+       padding: 0 var(--space-xl) var(--space-xl) calc(var(--space-xl) + 4px);
        position: relative;
        border-radius: 0;
        clip-path: var(--clip-cyber-xl);
@@ -1857,7 +1857,7 @@
 
        .step {
          margin-bottom: var(--space-xl);
-         padding: var(--space-lg);
+         padding: 0 var(--space-lg) var(--space-lg) var(--space-lg);
        }
 
        .step-desc {

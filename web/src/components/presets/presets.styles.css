@@ -292,7 +292,6 @@
     position: relative;
     background-color: #040712;
     background-image:
-      url("/textures/card-texture.png"),
       radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255, 255, 255, 0.12), transparent 50%),
       linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.4) 100%);
     border: 2px solid rgba(255, 255, 255, 0.15);
@@ -341,7 +340,6 @@
 
   .preset-card__shine::after {
     background-image:
-      url("/textures/sparkles.gif"), url("/textures/holo.png"),
       linear-gradient(125deg,
         var(--sunpillar-6) 0%,
         var(--sunpillar-1) 17%,
@@ -623,7 +621,6 @@
       background-color: #0d0604;
       border-color: hsl(40, 80%, 50%);
       background-image:
-        url("/textures/card-texture.png"),
         radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255, 180, 100, 0.12), transparent 50%),
         linear-gradient(180deg, rgba(255, 150, 50, 0.06) 0%, rgba(0, 0, 0, 0.5) 100%);
     }

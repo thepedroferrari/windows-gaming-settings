@@ -30,7 +30,7 @@
   let copied = $state(false);
   let showVerifyTip = $state(false);
 
-  
+
   $effect(() => {
     const script = app.script.edited ?? generateCurrentScript();
     if (script.trim()) {
@@ -47,14 +47,14 @@
   }
 
   function handleDownload() {
-    
+
     const script = app.script.edited ?? generateCurrentScript();
     if (!script.trim()) return;
     downloadText(script, SCRIPT_FILENAME);
   }
 
   function handleDownloadVerify() {
-    
+
     const selection: SelectionState = {
       hardware: app.hardware,
       optimizations: Array.from(app.optimizations),
@@ -80,31 +80,34 @@
 </script>
 
 <section id="generate" class="step step--forge">
-  <div class="header-row">
-    <div class="header-left">
-      <h2><span class="step-num">5</span> Forge Script</h2>
-      <p class="step-desc">Your personalized loadout is ready</p>
+  <header class="step-banner">
+    <div class="step-banner__marker">5</div>
+    <div class="step-banner__content">
+      <h2 class="step-banner__title">Forge Script</h2>
+      <p class="step-banner__subtitle">Your personalized loadout is ready</p>
     </div>
-    <output class="status">
-      <span class="indicator"></span>
-      <span class="text">SYSTEM READY</span>
-    </output>
-  </div>
+    <div class="step-banner__actions">
+      <output class="status-badge--ready">
+        <span class="status-indicator--ready"></span>
+        <span class="status-text--ready">SYSTEM READY</span>
+      </output>
+    </div>
+  </header>
 
   <Summary />
 
   <PreflightChecks />
   <ProfileActions />
 
-  
+
   <section class="transparency-zone" id="download">
-    
+
     <span class="corner corner--tl"></span>
     <span class="corner corner--tr"></span>
     <span class="corner corner--bl"></span>
     <span class="corner corner--br"></span>
 
-    
+
     <p class="manifesto">
       Unlike typical optimizers, this is a PowerShell script you can read.
       <span class="manifesto-emphasis"
@@ -112,7 +115,7 @@
       >
     </p>
 
-    
+
     <div class="actions">
       <button
         type="button"
@@ -176,7 +179,7 @@
       </button>
     </div>
 
-    
+
     <div class="trust-strip">
       <span class="trust-item">
         <svg

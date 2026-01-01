@@ -110,7 +110,7 @@ export interface ManualStepSection {
     | readonly DiagnosticTool[]
 }
 
-export const WINDOWS_DISPLAY_ALL: ManualStepSection = {
+const WINDOWS_DISPLAY_ALL: ManualStepSection = {
   id: 'windows-display',
   title: 'Windows Display Settings',
   description: 'Classic mistakes that cost people frames without them knowing',
@@ -148,7 +148,7 @@ export const WINDOWS_DISPLAY_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const WINDOWS_DISPLAY_PRO: ManualStepSection = {
+const WINDOWS_DISPLAY_PRO: ManualStepSection = {
   id: 'windows-display-pro',
   title: 'Windows Display (Pro)',
   description: 'Additional display settings for competitive players',
@@ -163,7 +163,7 @@ export const WINDOWS_DISPLAY_PRO: ManualStepSection = {
   ] as const,
 } as const
 
-export const NVIDIA_GAMER: ManualStepSection = {
+const NVIDIA_GAMER: ManualStepSection = {
   id: 'nvidia-gamer',
   title: 'NVIDIA Control Panel',
   description: 'Right-click desktop > NVIDIA Control Panel',
@@ -215,7 +215,7 @@ export const NVIDIA_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const NVIDIA_PRO_GAMER: ManualStepSection = {
+const NVIDIA_PRO_GAMER: ManualStepSection = {
   id: 'nvidia-pro-gamer',
   title: 'NVIDIA Control Panel',
   description: 'Right-click desktop > NVIDIA Control Panel',
@@ -280,7 +280,7 @@ export const NVIDIA_PRO_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const NVIDIA_STREAMER: ManualStepSection = {
+const NVIDIA_STREAMER: ManualStepSection = {
   id: 'nvidia-streamer',
   title: 'NVIDIA Control Panel',
   description: 'Right-click desktop > NVIDIA Control Panel',
@@ -321,7 +321,7 @@ export const NVIDIA_STREAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const NVIDIA_BENCHMARKER: ManualStepSection = {
+const NVIDIA_BENCHMARKER: ManualStepSection = {
   id: 'nvidia-benchmarker',
   title: 'NVIDIA Control Panel',
   description: 'Right-click desktop > NVIDIA Control Panel',
@@ -368,7 +368,7 @@ export const NVIDIA_BENCHMARKER: ManualStepSection = {
   ] as const,
 } as const
 
-export const AMD_GAMER: ManualStepSection = {
+const AMD_GAMER: ManualStepSection = {
   id: 'amd-gamer',
   title: 'AMD Adrenalin Settings',
   description: 'Right-click desktop > AMD Software: Adrenalin Edition',
@@ -409,7 +409,7 @@ export const AMD_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const AMD_PRO_GAMER: ManualStepSection = {
+const AMD_PRO_GAMER: ManualStepSection = {
   id: 'amd-pro-gamer',
   title: 'AMD Adrenalin Settings',
   description: 'Right-click desktop > AMD Software: Adrenalin Edition',
@@ -455,7 +455,7 @@ export const AMD_PRO_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const AMD_STREAMER: ManualStepSection = {
+const AMD_STREAMER: ManualStepSection = {
   id: 'amd-streamer',
   title: 'AMD Adrenalin Settings',
   description: 'Right-click desktop > AMD Software: Adrenalin Edition',
@@ -489,7 +489,7 @@ export const AMD_STREAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const BIOS_ALL: ManualStepSection = {
+const BIOS_ALL: ManualStepSection = {
   id: 'bios-all',
   title: 'BIOS Settings',
   description: 'Restart > DEL/F2 during POST > Enter BIOS',
@@ -521,7 +521,7 @@ export const BIOS_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const BIOS_AMD_X3D: ManualStepSection = {
+const BIOS_AMD_X3D: ManualStepSection = {
   id: 'bios-amd-x3d',
   title: 'AMD X3D CPU Settings',
   description: 'For 7800X3D, 9800X3D, and similar V-Cache CPUs',
@@ -554,7 +554,7 @@ export const BIOS_AMD_X3D: ManualStepSection = {
   ] as const,
 } as const
 
-export const BIOS_INTEL: ManualStepSection = {
+const BIOS_INTEL: ManualStepSection = {
   id: 'bios-intel',
   title: 'Intel CPU Settings',
   items: [
@@ -579,7 +579,7 @@ export const BIOS_INTEL: ManualStepSection = {
   ] as const,
 } as const
 
-export const DISCORD_GAMER: ManualStepSection = {
+const DISCORD_GAMER: ManualStepSection = {
   id: 'discord-gamer',
   title: 'Discord',
   location: 'Settings (gear icon)',
@@ -606,7 +606,7 @@ export const DISCORD_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const DISCORD_PRO_GAMER: ManualStepSection = {
+const DISCORD_PRO_GAMER: ManualStepSection = {
   id: 'discord-pro-gamer',
   title: 'Discord',
   location: 'Settings (gear icon)',
@@ -652,7 +652,7 @@ export const DISCORD_PRO_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const DISCORD_STREAMER: ManualStepSection = {
+const DISCORD_STREAMER: ManualStepSection = {
   id: 'discord-streamer',
   title: 'Discord',
   location: 'Settings (gear icon)',
@@ -679,7 +679,7 @@ export const DISCORD_STREAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const STEAM_GAMER: ManualStepSection = {
+const STEAM_GAMER: ManualStepSection = {
   id: 'steam-gamer',
   title: 'Steam',
   location: 'Steam > Settings',
@@ -712,7 +712,7 @@ export const STEAM_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const STEAM_PRO_GAMER: ManualStepSection = {
+const STEAM_PRO_GAMER: ManualStepSection = {
   id: 'steam-pro-gamer',
   title: 'Steam',
   location: 'Steam > Settings',
@@ -752,7 +752,7 @@ export const STEAM_PRO_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const BROWSERS_ALL: ManualStepSection = {
+const BROWSERS_ALL: ManualStepSection = {
   id: 'browsers-all',
   title: 'Browser Settings',
   description: "Browsers eat resources even when 'closed'",
@@ -801,7 +801,7 @@ export const BROWSERS_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const RGB_PRO_GAMER: ManualStepSection = {
+const RGB_PRO_GAMER: ManualStepSection = {
   id: 'rgb-pro-gamer',
   title: 'RGB Software',
   description: 'Pretty lights, ugly overhead',
@@ -835,7 +835,7 @@ export const RGB_PRO_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const RGB_GAMER: ManualStepSection = {
+const RGB_GAMER: ManualStepSection = {
   id: 'rgb-gamer',
   title: 'RGB Software',
   description: 'Pretty lights, ugly overhead',
@@ -850,7 +850,7 @@ export const RGB_GAMER: ManualStepSection = {
   ] as const,
 } as const
 
-export const PREFLIGHT_ALL: ManualStepSection = {
+const PREFLIGHT_ALL: ManualStepSection = {
   id: 'preflight-all',
   title: 'Pre-Flight Checklist',
   description: 'Quick sanity checks before a gaming session',
@@ -906,7 +906,7 @@ export const PREFLIGHT_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const PREFLIGHT_PRO: ManualStepSection = {
+const PREFLIGHT_PRO: ManualStepSection = {
   id: 'preflight-pro',
   title: 'Pre-Flight (Pro)',
   description: 'Extra checks for competitive players',
@@ -939,7 +939,7 @@ export const PREFLIGHT_PRO: ManualStepSection = {
   ] as const,
 } as const
 
-export const TROUBLESHOOTING_WIFI_BLUETOOTH: ManualStepSection = {
+const TROUBLESHOOTING_WIFI_BLUETOOTH: ManualStepSection = {
   id: 'troubleshooting-wifi-bt',
   title: 'Wireless/Bluetooth Stutter Fix',
   description:
@@ -973,7 +973,7 @@ export const TROUBLESHOOTING_WIFI_BLUETOOTH: ManualStepSection = {
   ] as const,
 } as const
 
-export const TROUBLESHOOTING_PERFORMANCE: ManualStepSection = {
+const TROUBLESHOOTING_PERFORMANCE: ManualStepSection = {
   id: 'troubleshooting-performance',
   title: 'Performance Issues',
   description: 'Common FPS and stuttering problems',
@@ -1040,7 +1040,7 @@ export const TROUBLESHOOTING_PERFORMANCE: ManualStepSection = {
   ] as const,
 } as const
 
-export const TROUBLESHOOTING_AUDIO: ManualStepSection = {
+const TROUBLESHOOTING_AUDIO: ManualStepSection = {
   id: 'troubleshooting-audio',
   title: 'Audio Issues',
   description: 'Crackling, directional audio, and mic problems',
@@ -1074,7 +1074,7 @@ export const TROUBLESHOOTING_AUDIO: ManualStepSection = {
   ] as const,
 } as const
 
-export const TROUBLESHOOTING_NETWORK: ManualStepSection = {
+const TROUBLESHOOTING_NETWORK: ManualStepSection = {
   id: 'troubleshooting-network',
   title: 'Network Issues',
   description: 'Ping, packet loss, and connection problems',
@@ -1108,7 +1108,7 @@ export const TROUBLESHOOTING_NETWORK: ManualStepSection = {
   ] as const,
 } as const
 
-export const TROUBLESHOOTING_CRASHES: ManualStepSection = {
+const TROUBLESHOOTING_CRASHES: ManualStepSection = {
   id: 'troubleshooting-crashes',
   title: 'Crashes & Stability',
   description: 'CTDs, blue screens, and random restarts',
@@ -1146,7 +1146,7 @@ export const TROUBLESHOOTING_CRASHES: ManualStepSection = {
   ] as const,
 } as const
 
-export const PERIPHERAL_MOUSE_ALL: ManualStepSection = {
+const PERIPHERAL_MOUSE_ALL: ManualStepSection = {
   id: 'peripheral-mouse-all',
   title: 'Mouse Settings',
   description: 'Essential mouse configuration for gaming',
@@ -1190,7 +1190,7 @@ export const PERIPHERAL_MOUSE_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const PERIPHERAL_MOUSE_PRO: ManualStepSection = {
+const PERIPHERAL_MOUSE_PRO: ManualStepSection = {
   id: 'peripheral-mouse-pro',
   title: 'Mouse (Pro)',
   description: 'Advanced mouse settings for competitive players',
@@ -1217,7 +1217,7 @@ export const PERIPHERAL_MOUSE_PRO: ManualStepSection = {
   ] as const,
 } as const
 
-export const PERIPHERAL_KEYBOARD_ALL: ManualStepSection = {
+const PERIPHERAL_KEYBOARD_ALL: ManualStepSection = {
   id: 'peripheral-keyboard-all',
   title: 'Keyboard Settings',
   description: 'Essential keyboard configuration',
@@ -1243,7 +1243,7 @@ export const PERIPHERAL_KEYBOARD_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const PERIPHERAL_KEYBOARD_PRO: ManualStepSection = {
+const PERIPHERAL_KEYBOARD_PRO: ManualStepSection = {
   id: 'peripheral-keyboard-pro',
   title: 'Keyboard (Pro)',
   description: 'Advanced keyboard settings for competitive players',
@@ -1264,7 +1264,7 @@ export const PERIPHERAL_KEYBOARD_PRO: ManualStepSection = {
   ] as const,
 } as const
 
-export const PERIPHERAL_AUDIO_ALL: ManualStepSection = {
+const PERIPHERAL_AUDIO_ALL: ManualStepSection = {
   id: 'peripheral-audio-all',
   title: 'Audio/Headset Settings',
   description: 'Sound settings in Windows',
@@ -1298,7 +1298,7 @@ export const PERIPHERAL_AUDIO_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const PERIPHERAL_AUDIO_PRO: ManualStepSection = {
+const PERIPHERAL_AUDIO_PRO: ManualStepSection = {
   id: 'peripheral-audio-pro',
   title: 'Audio (Pro)',
   description: 'Competitive audio settings',
@@ -1326,7 +1326,7 @@ export const PERIPHERAL_AUDIO_PRO: ManualStepSection = {
   ] as const,
 } as const
 
-export const NETWORK_ADAPTER_ALL: ManualStepSection = {
+const NETWORK_ADAPTER_ALL: ManualStepSection = {
   id: 'network-adapter-all',
   title: 'Network Adapter Settings',
   description: 'Device Manager → Network adapters → Your NIC → Properties → Advanced',
@@ -1371,7 +1371,7 @@ export const NETWORK_ADAPTER_ALL: ManualStepSection = {
   ] as const,
 } as const
 
-export const NETWORK_ADAPTER_PRO: ManualStepSection = {
+const NETWORK_ADAPTER_PRO: ManualStepSection = {
   id: 'network-adapter-pro',
   title: 'Network (Pro)',
   description: 'Additional NIC settings for competitive',
@@ -1405,7 +1405,7 @@ export const NETWORK_ADAPTER_PRO: ManualStepSection = {
   ] as const,
 } as const
 
-export const GAME_LAUNCH_FPS: ManualStepSection = {
+const GAME_LAUNCH_FPS: ManualStepSection = {
   id: 'game-launch-fps',
   title: 'FPS / Shooter Games',
   description: 'Launch options for competitive shooters',
@@ -1479,7 +1479,7 @@ export const GAME_LAUNCH_FPS: ManualStepSection = {
   ] as const,
 } as const
 
-export const GAME_LAUNCH_MOBA: ManualStepSection = {
+const GAME_LAUNCH_MOBA: ManualStepSection = {
   id: 'game-launch-moba',
   title: 'MOBA / Strategy Games',
   description: 'Launch options for MOBAs and RTS games',
@@ -1511,7 +1511,7 @@ export const GAME_LAUNCH_MOBA: ManualStepSection = {
   ] as const,
 } as const
 
-export const OBS_OUTPUT: ManualStepSection = {
+const OBS_OUTPUT: ManualStepSection = {
   id: 'obs-output',
   title: 'OBS Output Settings',
   description: 'Settings → Output → Streaming/Recording',
@@ -1574,7 +1574,7 @@ export const OBS_OUTPUT: ManualStepSection = {
   ] as const,
 } as const
 
-export const OBS_VIDEO: ManualStepSection = {
+const OBS_VIDEO: ManualStepSection = {
   id: 'obs-video',
   title: 'OBS Video Settings',
   description: 'Settings → Video',
@@ -1607,7 +1607,7 @@ export const OBS_VIDEO: ManualStepSection = {
   ] as const,
 } as const
 
-export const OBS_ADVANCED: ManualStepSection = {
+const OBS_ADVANCED: ManualStepSection = {
   id: 'obs-advanced',
   title: 'OBS Advanced Settings',
   description: 'Settings → Advanced',
@@ -1641,7 +1641,7 @@ export const OBS_ADVANCED: ManualStepSection = {
   ] as const,
 } as const
 
-export const OBS_SOURCES: ManualStepSection = {
+const OBS_SOURCES: ManualStepSection = {
   id: 'obs-sources',
   title: 'OBS Source Settings',
   description: 'When adding game sources',
@@ -1675,7 +1675,7 @@ export const OBS_SOURCES: ManualStepSection = {
   ] as const,
 } as const
 
-export const OBS_TROUBLESHOOTING: ManualStepSection = {
+const OBS_TROUBLESHOOTING: ManualStepSection = {
   id: 'obs-troubleshooting',
   title: 'Common Streaming Issues',
   description: 'Quick fixes for OBS problems',
@@ -1714,7 +1714,7 @@ export const OBS_TROUBLESHOOTING: ManualStepSection = {
   ] as const,
 } as const
 
-export const DIAGNOSTIC_TOOLS_PERFORMANCE: ManualStepSection = {
+const DIAGNOSTIC_TOOLS_PERFORMANCE: ManualStepSection = {
   id: 'diagnostic-performance',
   title: 'Performance Diagnostics',
   description: 'Tools to diagnose FPS issues, stuttering, and system bottlenecks',
@@ -1752,7 +1752,7 @@ export const DIAGNOSTIC_TOOLS_PERFORMANCE: ManualStepSection = {
   ] as const,
 } as const
 
-export const DIAGNOSTIC_TOOLS_HARDWARE: ManualStepSection = {
+const DIAGNOSTIC_TOOLS_HARDWARE: ManualStepSection = {
   id: 'diagnostic-hardware',
   title: 'Hardware Diagnostics',
   description: 'Tools to test and verify hardware stability',
@@ -1787,7 +1787,7 @@ export const DIAGNOSTIC_TOOLS_HARDWARE: ManualStepSection = {
   ] as const,
 } as const
 
-export const DIAGNOSTIC_TOOLS_NETWORK: ManualStepSection = {
+const DIAGNOSTIC_TOOLS_NETWORK: ManualStepSection = {
   id: 'diagnostic-network',
   title: 'Network Diagnostics',
   description: 'Tools to diagnose ping, packet loss, and connection issues',
@@ -1810,7 +1810,7 @@ export const DIAGNOSTIC_TOOLS_NETWORK: ManualStepSection = {
   ] as const,
 } as const
 
-export const DIAGNOSTIC_TOOLS_CRASHES: ManualStepSection = {
+const DIAGNOSTIC_TOOLS_CRASHES: ManualStepSection = {
   id: 'diagnostic-crashes',
   title: 'Crash Diagnostics',
   description: 'Tools to analyze BSODs and game crashes',
@@ -1854,7 +1854,7 @@ export interface SectionGroup {
   readonly videos?: readonly VideoResource[]
 }
 
-export const VIDEOS = {
+const VIDEOS = {
   INTEL_SETTINGS: {
     id: 'intel-settings',
     title: 'Intel CPU Settings You NEED to Change',
@@ -1878,7 +1878,7 @@ export const VIDEOS = {
   },
 } as const
 
-export const SECTION_GROUPS: readonly SectionGroup[] = [
+const SECTION_GROUPS: readonly SectionGroup[] = [
   {
     id: 'windows',
     title: 'Windows Display',
@@ -1989,7 +1989,7 @@ export const SECTION_GROUPS: readonly SectionGroup[] = [
  * Filter sections based on persona and GPU type
  * Intel GPUs don't have dedicated control panels, so GPU-specific sections are filtered out
  */
-export function filterSections(
+function filterSections(
   sections: readonly ManualStepSection[],
   persona: PresetType,
   gpuType: GpuType,
