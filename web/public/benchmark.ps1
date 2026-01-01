@@ -173,62 +173,149 @@ function Show-RockTuneFinalChecklist {
     Write-Host " | |_) | | | | |   | ' /   | | | | | | |  \| |  _|" -ForegroundColor Cyan
     Write-Host " |  _ <| |_| | |___| . \   | | | |_| | | |\  | |___" -ForegroundColor Cyan
     Write-Host " |_| \_\\___/ \____|_|\_\  |_|  \___/|_|_| \_|_____|" -ForegroundColor Cyan
-    Write-Host "                 S O G A M E D   S T Y L E" -ForegroundColor Cyan
 
-    Write-Host ""
-    Write-Host "[ ] 1) Confirm the tools are open" -ForegroundColor White
-    Write-Host "    - CapFrameX is running" -ForegroundColor White
-    Write-Host "    - Unigine Superposition is open" -ForegroundColor White
-    Write-Host "    - LatencyMon is open" -ForegroundColor White
+    $useTwoColumns = $false
+    $consoleWidth = 0
+    try {
+        $consoleWidth = $Host.UI.RawUI.WindowSize.Width
+        if ($consoleWidth -ge 120) {
+            $useTwoColumns = $true
+        }
+    } catch {
+        $useTwoColumns = $false
+    }
 
-    Write-Host ""
-    Write-Host "[ ] 2) Set CapFrameX (once)" -ForegroundColor White
-    Write-Host "    - Capture API: PresentMon" -ForegroundColor White
-    Write-Host "    - Capture duration: 60s" -ForegroundColor White
-    Write-Host "    - Start delay: 3s" -ForegroundColor White
-    Write-Host "    - Hotkey: F11 (start/stop capture)" -ForegroundColor White
+    if ($useTwoColumns) {
+        Write-Note "Checklist layout: two columns (wide console detected)."
+    } else {
+        Write-Note "Checklist layout: single column."
+    }
 
-    Write-Host ""
-    Write-Host "[ ] 3) Set Superposition (once)" -ForegroundColor White
-    Write-Host "    - Preset: 1080p Medium" -ForegroundColor White
-    Write-Host "    - Fullscreen: On" -ForegroundColor White
-    Write-Host "    - VSync: Off" -ForegroundColor White
+    $sections = @(
+        @{
+            Title = "FIRST STEPS"
+            Lines = @(
+                "[ ] Confirm the tools are open",
+                "    - CapFrameX is running",
+                "    - Unigine Superposition is open",
+                "    - LatencyMon is open"
+            )
+        },
+        @{
+            Title = "CONFIGURE CAPFRAMEX (ONCE)"
+            Lines = @(
+                "[ ] Capture API: PresentMon",
+                "[ ] Capture duration: 60s",
+                "[ ] Start delay: 3s",
+                "[ ] Hotkey: F11 (start/stop capture)"
+            )
+        },
+        @{
+            Title = "CONFIGURE SUPERPOSITION (ONCE)"
+            Lines = @(
+                "[ ] Preset: 1080p Medium",
+                "[ ] Fullscreen: On",
+                "[ ] VSync: Off"
+            )
+        },
+        @{
+            Title = "BEFORE CHANGES"
+            Lines = @(
+                "[ ] Warm-up run (no capture)",
+                "    - Click RUN in Superposition",
+                "    - Let the run finish",
+                "[ ] Captured runs (before)",
+                "    - Press F11 at start, F11 at end",
+                "    - Do 2 valid runs; discard first if shader compilation occurs"
+            )
+        },
+        @{
+            Title = "LATENCYMON"
+            Lines = @(
+                "[ ] Click Start, run for ~5 minutes",
+                "    - Screenshot Main tab",
+                "    - Screenshot Drivers tab"
+            )
+        },
+        @{
+            Title = "APPLY ROCKTUNE CHANGES"
+            Lines = @(
+                "[ ] Run your optimization flow",
+                "[ ] Reboot if requested"
+            )
+        },
+        @{
+            Title = "AFTER CHANGES"
+            Lines = @(
+                "[ ] Repeat the captured runs",
+                "    - Same settings, same steps, same number of runs"
+            )
+        },
+        @{
+            Title = "EXPORT EVIDENCE"
+            Lines = @(
+                "[ ] CapFrameX -> Analysis -> Aggregate",
+                "[ ] Export CSV + HTML summary"
+            )
+        },
+        @{
+            Title = "OPTIONAL INPUT LAG (FREE METHOD)"
+            Lines = @(
+                "[ ] Record 10 clicks at 240fps",
+                "[ ] Count frames from click to pixel change",
+                "[ ] 1 frame at 240fps = 4.17ms"
+            )
+        }
+    )
 
-    Write-Host ""
-    Write-Host "[ ] 4) Warm-up run (no capture)" -ForegroundColor White
-    Write-Host "    - In Superposition, click RUN or BENCHMARK" -ForegroundColor White
-    Write-Host "    - Let the run finish" -ForegroundColor White
+    function Get-SectionLines {
+        param(
+            [Parameter(Mandatory=$true)]
+            [hashtable]$Section
+        )
 
-    Write-Host ""
-    Write-Host "[ ] 5) Captured runs (before changes)" -ForegroundColor White
-    Write-Host "    - Start Superposition, then press F11 to start capture" -ForegroundColor White
-    Write-Host "    - After the run ends, press F11 again to stop capture" -ForegroundColor White
-    Write-Host "    - Do 2 valid runs; discard the first if shader compilation occurs" -ForegroundColor White
+        $lines = @("== $($Section.Title) ==")
+        foreach ($line in $Section.Lines) {
+            $lines += $line
+        }
 
-    Write-Host ""
-    Write-Host "[ ] 6) LatencyMon (during a run)" -ForegroundColor White
-    Write-Host "    - Click Start and let it run for ~5 minutes" -ForegroundColor White
-    Write-Host "    - Screenshot the Main and Drivers tabs" -ForegroundColor White
+        return $lines
+    }
 
-    Write-Host ""
-    Write-Host "[ ] 7) Apply your RockTune changes" -ForegroundColor White
-    Write-Host "    - Run your optimization flow" -ForegroundColor White
-    Write-Host "    - Reboot if requested" -ForegroundColor White
+    if ($useTwoColumns) {
+        $leftWidth = 58
+        for ($i = 0; $i -lt $sections.Count; $i += 2) {
+            $left = Get-SectionLines -Section $sections[$i]
+            $right = @()
+            if ($i + 1 -lt $sections.Count) {
+                $right = Get-SectionLines -Section $sections[$i + 1]
+            }
 
-    Write-Host ""
-    Write-Host "[ ] 8) Repeat the captured runs (after changes)" -ForegroundColor White
-    Write-Host "    - Same settings, same steps, same number of runs" -ForegroundColor White
+            $maxLines = [math]::Max($left.Count, $right.Count)
+            for ($lineIndex = 0; $lineIndex -lt $maxLines; $lineIndex++) {
+                $leftText = ""
+                $rightText = ""
+                if ($lineIndex -lt $left.Count) {
+                    $leftText = $left[$lineIndex]
+                }
+                if ($lineIndex -lt $right.Count) {
+                    $rightText = $right[$lineIndex]
+                }
 
-    Write-Host ""
-    Write-Host "[ ] 9) Export evidence in CapFrameX" -ForegroundColor White
-    Write-Host "    - Analysis -> Aggregate the runs" -ForegroundColor White
-    Write-Host "    - Export CSV + HTML summary" -ForegroundColor White
+                Write-Host ($leftText.PadRight($leftWidth) + $rightText) -ForegroundColor White
+            }
 
-    Write-Host ""
-    Write-Host "[ ] 10) Optional input-lag proof (free method)" -ForegroundColor White
-    Write-Host "     - Record 10 clicks at 240fps on a phone" -ForegroundColor White
-    Write-Host "     - Count frames from click to pixel change" -ForegroundColor White
-    Write-Host "     - 1 frame at 240fps = 4.17ms" -ForegroundColor White
+            Write-Host ""
+        }
+    } else {
+        foreach ($section in $sections) {
+            Write-Host ""
+            Write-Host "== $($section.Title) ==" -ForegroundColor Yellow
+            foreach ($line in $section.Lines) {
+                Write-Host $line -ForegroundColor White
+            }
+        }
+    }
 }
 
 function Prompt-YesNo {
