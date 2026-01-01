@@ -250,7 +250,7 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
   lines.push('Write-Host "  CPU: $cpu" -ForegroundColor White')
   lines.push('Write-Host "  GPU: $gpu" -ForegroundColor White')
 
-  lines.push('Write-Host "  RAM: ${ram}GB" -ForegroundColor White')
+  lines.push('Write-Host "  RAM: ' + '$' + '{ram}GB" -ForegroundColor White')
   lines.push('')
 
   if (selected.has('restore_point')) {
@@ -388,7 +388,7 @@ function generateSystemOpts(selected: Set<string>): string[] {
       '    if ($pf) { $pf.InitialSize = $size; $pf.MaximumSize = $size; $pf.Put() | Out-Null }',
     )
 
-    lines.push('    Write-OK "Page file set to ${size}MB fixed"')
+    lines.push('    Write-OK "Page file set to ' + '$' + '{size}MB fixed"')
     lines.push('}')
   }
 

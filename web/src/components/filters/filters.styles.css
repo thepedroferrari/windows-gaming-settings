@@ -75,13 +75,11 @@
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
     padding-block: var(--space-2xs);
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 0.5rem,
-      black calc(100% - 2rem),
-      transparent
-    );
+    mask-image: linear-gradient(to right,
+        transparent,
+        black 0.5rem,
+        black calc(100% - 2rem),
+        transparent);
 
     &::-webkit-scrollbar {
       display: none;
@@ -226,11 +224,9 @@
     }
 
     &.active {
-      background: linear-gradient(
-        135deg,
-        var(--accent-20) 0%,
-        color-mix(in oklch, var(--neon-cyan) 10%, transparent) 100%
-      );
+      background: linear-gradient(135deg,
+          var(--accent-20) 0%,
+          color-mix(in oklch, var(--neon-cyan) 10%, transparent) 100%);
       color: var(--text-primary);
     }
   }
@@ -246,11 +242,9 @@
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     white-space: nowrap;
-    background: linear-gradient(
-      135deg,
-      oklch(0.52 0.24 18) 0%,
-      oklch(0.42 0.28 12) 100%
-    );
+    background: linear-gradient(135deg,
+        oklch(0.52 0.24 18) 0%,
+        oklch(0.42 0.28 12) 100%);
     border: none;
     border-inline-start: 3px solid oklch(0.75 0.22 20);
     color: white;
@@ -282,22 +276,18 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        oklch(0 0 0 / 0.05) 2px,
-        oklch(0 0 0 / 0.05) 4px
-      );
+      background: repeating-linear-gradient(90deg,
+          transparent,
+          transparent 2px,
+          oklch(0 0 0 / 0.05) 2px,
+          oklch(0 0 0 / 0.05) 4px);
       pointer-events: none;
     }
 
     &:hover {
-      background: linear-gradient(
-        135deg,
-        oklch(0.58 0.28 16) 0%,
-        oklch(0.48 0.32 10) 100%
-      );
+      background: linear-gradient(135deg,
+          oklch(0.58 0.28 16) 0%,
+          oklch(0.48 0.32 10) 100%);
       border-inline-start-color: oklch(0.85 0.2 20);
       box-shadow:
         0 4px 16px oklch(0.5 0.28 15 / 0.6),
@@ -324,7 +314,7 @@
   @scope (.view-toggle) {
     :scope {
       display: flex;
-      background: var(--white-10);
+      background: var(--bg-primary);
       border: 1px solid color-mix(in oklch, var(--accent) 30%, var(--border));
       padding: 3px;
       clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
