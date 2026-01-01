@@ -34,7 +34,7 @@
   $effect(() => {
     const script = app.script.edited ?? generateCurrentScript();
     if (script.trim()) {
-      generateSHA256(script).then((hash) => {
+      generateSHA256(script, { includeBom: true }).then((hash) => {
         checksum = hash;
       });
     } else {
@@ -359,5 +359,4 @@
     </footer>
   </section>
 </section>
-
 

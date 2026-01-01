@@ -6,7 +6,9 @@
  * Download text content as a file
  */
 export function downloadText(content: string, filename: string): void {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+  const needsBom = filename.toLowerCase().endsWith('.ps1')
+  const payload = needsBom && !content.startsWith('\ufeff') ? `\ufeff${content}` : content
+  const blob = new Blob([payload], { type: 'text/plain;charset=utf-8' })
   const url = URL.createObjectURL(blob)
 
   const link = document.createElement('a')

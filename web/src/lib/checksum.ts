@@ -9,9 +9,14 @@
  * Generate SHA256 checksum of a string
  * Returns lowercase hex string (64 characters)
  */
-export async function generateSHA256(content: string): Promise<string> {
+export type Sha256Options = {
+  includeBom?: boolean
+}
+
+export async function generateSHA256(content: string, options: Sha256Options = {}): Promise<string> {
+  const payload = options.includeBom && !content.startsWith('\ufeff') ? `\ufeff${content}` : content
   const encoder = new TextEncoder()
-  const data = encoder.encode(content)
+  const data = encoder.encode(payload)
   const hashBuffer = await crypto.subtle.digest('SHA-256', data)
   const hashArray = Array.from(new Uint8Array(hashBuffer))
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
