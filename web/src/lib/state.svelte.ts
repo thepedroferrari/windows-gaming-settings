@@ -47,6 +47,10 @@ export interface ScriptState {
   edited: string | null
   /** Current view mode in code viewer */
   mode: ScriptMode
+  /** Whether script has been downloaded */
+  downloaded: boolean
+  /** Whether user has verified the script */
+  verified: boolean
 }
 
 /** UI state for modals and panels */
@@ -95,6 +99,8 @@ const DEFAULT_SCRIPT: ScriptState = {
   previous: '',
   edited: null,
   mode: 'current',
+  downloaded: false,
+  verified: false,
 }
 
 /** Default UI state */
@@ -422,6 +428,20 @@ export function setScriptMode(mode: ScriptMode): void {
  */
 export function setEditedScript(script: string | null): void {
   app.script.edited = script
+}
+
+/**
+ * Mark script as downloaded
+ */
+export function setScriptDownloaded(downloaded: boolean): void {
+  app.script = { ...app.script, downloaded }
+}
+
+/**
+ * Mark script as verified by user
+ */
+export function setScriptVerified(verified: boolean): void {
+  app.script = { ...app.script, verified }
 }
 
 /**

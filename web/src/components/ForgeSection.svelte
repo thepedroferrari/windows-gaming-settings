@@ -14,6 +14,8 @@
     app,
     openPreviewModal,
     generateCurrentScript,
+    setScriptDownloaded,
+    setScriptVerified,
   } from "$lib/state.svelte";
   import { SCRIPT_FILENAME } from "$lib/types";
   import { generateSHA256, copyToClipboard } from "$lib/checksum";
@@ -50,6 +52,7 @@
     const script = app.script.edited ?? generateCurrentScript();
     if (!script.trim()) return;
     downloadText(script, SCRIPT_FILENAME);
+    setScriptDownloaded(true);
   }
 
   function handleDownloadVerify() {
@@ -82,10 +85,19 @@
       <p class="step-banner__subtitle">Your personalized loadout is ready</p>
     </div>
     <div class="step-banner__actions">
-      <output class="status-badge--ready">
-        <span class="status-indicator--ready"></span>
-        <span class="status-text--ready">SYSTEM READY</span>
-      </output>
+      {#if app.script.downloaded}
+        <output class="status-badge--downloaded">
+          <svg class="status-icon--downloaded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          <span class="status-text--downloaded">DOWNLOADED</span>
+        </output>
+      {:else}
+        <output class="status-badge--ready">
+          <span class="status-indicator--ready"></span>
+          <span class="status-text--ready">SYSTEM READY</span>
+        </output>
+      {/if}
     </div>
   </header>
 
@@ -93,94 +105,6 @@
 
   <PreflightChecks />
   <ProfileActions />
-
-  {#if checksum}
-    <section class="verification-hud">
-      <header class="verification-hud__header">
-        <svg
-          class="verification-hud__icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <path d="m9 12 2 2 4-4" />
-        </svg>
-        <h3 class="verification-hud__title">VERIFY BEFORE YOU RUN</h3>
-      </header>
-
-      <div class="verification-hud__content">
-        <div class="hash-panel">
-          <span class="hash-panel__label">SHA-256 Checksum</span>
-          <code class="hash-panel__value" title={checksum}>{checksum}</code>
-          <button
-            type="button"
-            class="hash-panel__btn"
-            title={copied ? "Copied!" : "Copy SHA-256 hash"}
-            onclick={handleCopyHash}
-          >
-            {#if copied}
-              <svg
-                class="icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="m9 12 2 2 4-4" />
-              </svg>
-              Copied
-            {:else}
-              <svg
-                class="icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="9" y="9" width="13" height="13" rx="2" />
-                <path
-                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-                />
-              </svg>
-              Copy Hash
-            {/if}
-          </button>
-        </div>
-
-        <div class="verify-instructions">
-          <details class="verify-details">
-            <summary class="verify-summary">How to verify manually</summary>
-            <div class="verify-steps">
-              <div class="verify-step">
-                <span class="verify-step__num">1</span>
-                <div class="verify-step__content">
-                  <p class="verify-step__label">
-                    Run in PowerShell (same folder as download):
-                  </p>
-                  <code class="verify-step__command"
-                    >Get-FileHash .\rocktune-setup.ps1 -Algorithm SHA256 |
-                    Select-Object -ExpandProperty Hash</code
-                  >
-                </div>
-              </div>
-              <div class="verify-step">
-                <span class="verify-step__num">2</span>
-                <div class="verify-step__content">
-                  <p class="verify-step__label">Expected output:</p>
-                  <code class="verify-step__expected">{checksum}</code>
-                </div>
-              </div>
-              <p class="verify-result">
-                If they match exactly, your file is authentic and unmodified.
-              </p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-  {/if}
 
   <section class="transparency-zone" id="download">
 
@@ -336,5 +260,129 @@
       </a>
     </footer>
   </section>
+
+  {#if app.script.downloaded && !app.script.verified}
+    <aside class="verify-reminder" role="alert">
+      <div class="verify-reminder__content">
+        <svg class="verify-reminder__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <div class="verify-reminder__text">
+          <strong class="verify-reminder__title">Next: Verify your script</strong>
+          <p class="verify-reminder__desc">Use the SHA-256 checksum below to confirm file integrity before running</p>
+        </div>
+      </div>
+      <div class="verify-reminder__actions">
+        <button
+          type="button"
+          class="verify-reminder__scroll-btn"
+          onclick={() => {
+            document.getElementById('verification-hud')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }}
+        >
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+          Scroll to Verification
+        </button>
+        <button
+          type="button"
+          class="verify-reminder__mark-btn"
+          onclick={() => setScriptVerified(true)}
+        >
+          I verified it
+        </button>
+      </div>
+    </aside>
+  {/if}
+
+  {#if checksum}
+    <section class="verification-hud" id="verification-hud">
+      <header class="verification-hud__header">
+        <svg
+          class="verification-hud__icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <h3 class="verification-hud__title">VERIFY BEFORE YOU RUN</h3>
+      </header>
+
+      <div class="verification-hud__content">
+        <div class="hash-panel">
+          <span class="hash-panel__label">SHA-256 Checksum</span>
+          <code class="hash-panel__value" title={checksum}>{checksum}</code>
+          <button
+            type="button"
+            class="hash-panel__btn"
+            title={copied ? "Copied!" : "Copy SHA-256 hash"}
+            onclick={handleCopyHash}
+          >
+            {#if copied}
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              Copied
+            {:else}
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" />
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                />
+              </svg>
+              Copy Hash
+            {/if}
+          </button>
+        </div>
+
+        <div class="verify-instructions">
+          <details class="verify-details">
+            <summary class="verify-summary">How to verify manually</summary>
+            <div class="verify-steps">
+              <div class="verify-step">
+                <span class="verify-step__num">1</span>
+                <div class="verify-step__content">
+                  <p class="verify-step__label">
+                    Run in PowerShell (same folder as download):
+                  </p>
+                  <code class="verify-step__command"
+                    >Get-FileHash .\rocktune-setup.ps1 -Algorithm SHA256 |
+                    Select-Object -ExpandProperty Hash</code
+                  >
+                </div>
+              </div>
+              <div class="verify-step">
+                <span class="verify-step__num">2</span>
+                <div class="verify-step__content">
+                  <p class="verify-step__label">Expected output:</p>
+                  <code class="verify-step__expected">{checksum}</code>
+                </div>
+              </div>
+              <p class="verify-result">
+                If they match exactly, your file is authentic and unmodified.
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  {/if}
 </section>
 
