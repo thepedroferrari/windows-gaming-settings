@@ -14,12 +14,27 @@
     getTotalCount,
     setOptimizations,
     setView,
+    setCpu,
+    setGpu,
+    setDnsProvider,
+    setPeripherals,
+    setMonitorSoftware,
+    setSelection,
+    setActivePreset,
   } from '$lib/state.svelte'
   import { VIEW_MODES, OPTIMIZATION_KEYS } from '$lib/types'
   import { getRecommendedPreset } from '$lib/presets'
   import { safeParseCatalog, isParseSuccess, formatZodErrors } from './schemas'
   import type { SoftwareCatalog } from '$lib/types'
   import { getDefaultOptimizations } from '$lib/optimizations'
+  import {
+    hasShareHash,
+    getShareHash,
+    decodeShareURL,
+    clearShareHash,
+    type DecodedBuild,
+  } from '$lib/share'
+  import type { PackageKey } from '$lib/types'
 
   /** LUDICROUS optimization keys for danger zone detection */
   const LUDICROUS_KEYS = [
@@ -49,6 +64,8 @@
   import PreviewModal from './components/PreviewModal.svelte'
   import AuditPanel from './components/AuditPanel.svelte'
   import SRAnnounce from './components/SRAnnounce.svelte'
+  import Toast from './components/Toast.svelte'
+  import { showToast } from '$lib/toast.svelte'
 
 
   let loading = $state(true)
@@ -59,6 +76,9 @@
   let totalCount = $derived(getTotalCount())
   let recommendedPreset = $derived(getRecommendedPreset(app.activePreset))
   let activeView = $derived(app.view)
+
+  /** Track if we loaded from a shared URL */
+  let loadedFromShare = $state(false)
 
   /** Check if any LUDICROUS optimizations are selected */
   let hasLudicrousSelected = $derived(
@@ -173,9 +193,11 @@
       const catalog = await loadCatalog()
       setSoftware(catalog)
 
-
-      const defaults = getDefaultOptimizations()
-      setOptimizations(defaults)
+      // Only apply defaults if we didn't load from a share URL
+      if (!loadedFromShare) {
+        const defaults = getDefaultOptimizations()
+        setOptimizations(defaults)
+      }
     } catch (e) {
       // RTFB-501: User-friendly errors + cache fallback
       const cached = getCachedCatalog()
@@ -217,8 +239,11 @@
         // Apply cached catalog if available
         if (cached) {
           setSoftware(cached)
-          const defaults = getDefaultOptimizations()
-          setOptimizations(defaults)
+          // Only apply defaults if we didn't load from a share URL
+          if (!loadedFromShare) {
+            const defaults = getDefaultOptimizations()
+            setOptimizations(defaults)
+          }
         }
       } else {
         error = 'Unknown error loading catalog.'
@@ -230,7 +255,60 @@
     }
   }
 
+  /**
+   * Apply a decoded shared build to app state
+   */
+  function applySharedBuild(build: DecodedBuild): void {
+    if (build.cpu) setCpu(build.cpu)
+    if (build.gpu) setGpu(build.gpu)
+    if (build.dnsProvider) setDnsProvider(build.dnsProvider)
+    if (build.peripherals.length > 0) setPeripherals(build.peripherals)
+    if (build.monitorSoftware.length > 0) setMonitorSoftware(build.monitorSoftware)
+    if (build.optimizations.length > 0) setOptimizations(build.optimizations)
+    if (build.packages.length > 0) setSelection(build.packages)
+    if (build.preset) setActivePreset(build.preset)
+
+    loadedFromShare = true
+  }
+
+  /**
+   * Try to load state from URL share hash
+   */
+  function tryLoadFromShareURL(): void {
+    if (!hasShareHash()) return
+
+    const hash = getShareHash()
+    if (!hash) return
+
+    const result = decodeShareURL(hash)
+
+    if (result.success) {
+      applySharedBuild(result.build)
+
+      // Clear the hash from URL (clean address bar)
+      clearShareHash()
+
+      // Show appropriate toast
+      if (result.build.skippedCount > 0) {
+        showToast(
+          `Build loaded! ${result.build.skippedCount} setting(s) no longer available.`,
+          'warning',
+          6000
+        )
+      } else {
+        showToast('Build loaded from shared link!', 'success')
+      }
+    } else {
+      showToast(result.error, 'error', 6000)
+      clearShareHash()
+    }
+  }
+
   onMount(() => {
+    // First try to load from share URL
+    tryLoadFromShareURL()
+
+    // Then load catalog (may override defaults but shared state takes precedence)
     void hydrateCatalog()
   })
 </script>
@@ -359,5 +437,6 @@
 
 <PreviewModal />
 <AuditPanel />
+<Toast />
 
 

@@ -26,9 +26,19 @@
   import Summary from "./Summary.svelte";
   import PreflightChecks from "./PreflightChecks.svelte";
   import ProfileActions from "./ProfileActions.svelte";
+  import ShareModal from "./ShareModal.svelte";
 
   let checksum = $state("");
   let copied = $state(false);
+  let shareModalOpen = $state(false);
+
+  function openShareModal() {
+    shareModalOpen = true;
+  }
+
+  function closeShareModal() {
+    shareModalOpen = false;
+  }
 
 
   $effect(() => {
@@ -181,6 +191,28 @@
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
         </svg>
         Verify Script
+      </button>
+
+      <button
+        type="button"
+        class="btn-share"
+        title="Share your build configuration"
+        onclick={openShareModal}
+      >
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+        </svg>
+        Share Build
       </button>
     </div>
 
@@ -350,4 +382,6 @@
     </section>
   {/if}
 </section>
+
+<ShareModal open={shareModalOpen} onclose={closeShareModal} />
 

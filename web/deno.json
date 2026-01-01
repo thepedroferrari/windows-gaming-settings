@@ -34,6 +34,7 @@
     "@sveltejs/vite-plugin-svelte": "npm:@sveltejs/vite-plugin-svelte@^4",
     "svelte-check": "npm:svelte-check@^4",
     "autoprefixer": "npm:autoprefixer@^10.4.20",
-    "postcss": "npm:postcss@^8.4.49"
+    "postcss": "npm:postcss@^8.4.49",
+    "lz-string": "npm:lz-string@^1.5.0"
   }
 }
