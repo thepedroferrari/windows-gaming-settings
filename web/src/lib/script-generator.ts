@@ -264,13 +264,23 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
 
   if (selected.has('restore_point')) {
     lines.push('Write-Step "Pre-flight: System Restore Point"')
-    lines.push('try {')
+    lines.push('$recentRestorePoint = $null')
     lines.push(
-      '    Checkpoint-Computer -Description "Before RockTune" -RestorePointType MODIFY_SETTINGS -EA Stop',
+      'try { $recentRestorePoint = Get-ComputerRestorePoint -EA Stop | Sort-Object CreationTime -Descending | Select-Object -First 1 } catch { $recentRestorePoint = $null }',
     )
-    lines.push('    Write-OK "Restore point created"')
-    lines.push('} catch {')
-    lines.push('    Write-Fail "Could not create restore point: $($_.Exception.Message)"')
+    lines.push(
+      'if ($recentRestorePoint -and $recentRestorePoint.CreationTime -gt (Get-Date).AddMinutes(-1440)) {',
+    )
+    lines.push('    Write-Warn "Restore point already created within last 24 hours (skipped)"')
+    lines.push('} else {')
+    lines.push('    try {')
+    lines.push(
+      '        Checkpoint-Computer -Description "Before RockTune" -RestorePointType MODIFY_SETTINGS -EA Stop -WarningAction SilentlyContinue',
+    )
+    lines.push('        Write-OK "Restore point created"')
+    lines.push('    } catch {')
+    lines.push('        Write-Warn "Could not create restore point: $($_.Exception.Message)"')
+    lines.push('    }')
     lines.push('}')
     lines.push('')
   }
@@ -843,18 +853,22 @@ function generatePowerOpts(selected: Set<string>): string[] {
 
   if (selected.has('ultimate_perf')) {
     lines.push('# Enable Ultimate Performance power plan')
-    lines.push('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>$null')
-    lines.push('$plans = powercfg -list | Select-String "Ultimate Performance"')
+    lines.push('powercfg /duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 >$null 2>&1')
+    lines.push('$planOutput = powercfg /list 2>&1')
+    lines.push('$plans = $planOutput | Select-String "Ultimate Performance"')
     lines.push('if ($plans) {')
-    lines.push('    $guid = $plans.Line -replace ".*([a-f0-9-]{36}).*", \'$1\'')
-    lines.push('    powercfg -setactive $guid 2>$null')
+    lines.push('    $guidMatch = [regex]::Match($plans.Line, "([A-Fa-f0-9-]{36})")')
+    lines.push('    if ($guidMatch.Success) {')
+    lines.push('        $guid = $guidMatch.Value')
+    lines.push('        powercfg /setactive $guid 2>&1 | Out-Null')
     lines.push(
-      '    if ($LASTEXITCODE -eq 0) { Write-OK "Ultimate Performance enabled" } else { Write-Warn "Could not activate Ultimate Performance" }',
+      '        if ($LASTEXITCODE -eq 0) { Write-OK "Ultimate Performance enabled" } else { Write-Warn "Could not activate Ultimate Performance" }',
     )
+    lines.push('    } else { Write-Warn "Could not parse Ultimate Performance GUID" }')
     lines.push('} else { Write-Warn "Ultimate Performance plan not available" }')
   } else if (selected.has('power_plan')) {
     lines.push('# Set High Performance power plan')
-    lines.push('powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2>$null')
+    lines.push('powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2>&1 | Out-Null')
     lines.push(
       'if ($LASTEXITCODE -eq 0) { Write-OK "High Performance power plan enabled" } else { Write-Warn "High Performance plan not available" }',
     )
@@ -871,35 +885,39 @@ function generatePowerOpts(selected: Set<string>): string[] {
   if (selected.has('pcie_power')) {
     lines.push('# Disable PCIe link state power management')
     lines.push(
-      'powercfg /setacvalueindex scheme_current sub_pciexpress ee12f906-d166-476a-8f3a-af931b6e9d31 0 2>$null',
+      'powercfg /setacvalueindex scheme_current sub_pciexpress ee12f906-d166-476a-8f3a-af931b6e9d31 0 2>&1 | Out-Null',
     )
     lines.push('if ($LASTEXITCODE -eq 0) {')
-    lines.push('    powercfg /setactive scheme_current 2>$null')
+    lines.push('    powercfg /setactive scheme_current 2>&1 | Out-Null')
     lines.push('    Write-OK "PCIe power saving disabled"')
     lines.push('} else { Write-Warn "PCIe power setting not supported" }')
   }
 
   if (selected.has('core_parking')) {
     lines.push('# Disable Core Parking')
-    lines.push('powercfg /setacvalueindex scheme_current sub_processor CPMINCORES 100 2>$null')
+    lines.push(
+      'powercfg /setacvalueindex scheme_current sub_processor CPMINCORES 100 2>&1 | Out-Null',
+    )
     lines.push('if ($LASTEXITCODE -eq 0) {')
-    lines.push('    powercfg /setactive scheme_current 2>$null')
+    lines.push('    powercfg /setactive scheme_current 2>&1 | Out-Null')
     lines.push('    Write-OK "Core parking disabled"')
     lines.push('} else { Write-Warn "Core parking setting not supported" }')
   }
 
   if (selected.has('min_processor_state')) {
     lines.push('# Set minimum processor state to 5%')
-    lines.push('powercfg /setacvalueindex scheme_current sub_processor PROCTHROTTLEMIN 5 2>$null')
+    lines.push(
+      'powercfg /setacvalueindex scheme_current sub_processor PROCTHROTTLEMIN 5 2>&1 | Out-Null',
+    )
     lines.push('if ($LASTEXITCODE -eq 0) {')
-    lines.push('    powercfg /setactive scheme_current 2>$null')
+    lines.push('    powercfg /setactive scheme_current 2>&1 | Out-Null')
     lines.push('    Write-OK "Min processor state set to 5%"')
     lines.push('} else { Write-Warn "Min processor state setting not supported" }')
   }
 
   if (selected.has('hibernation_disable')) {
     lines.push('# Disable Hibernation')
-    lines.push('powercfg /hibernate off 2>$null')
+    lines.push('powercfg /hibernate off 2>&1 | Out-Null')
     lines.push(
       'if ($LASTEXITCODE -eq 0) { Write-OK "Hibernation disabled" } else { Write-Warn "Could not disable hibernation" }',
     )
