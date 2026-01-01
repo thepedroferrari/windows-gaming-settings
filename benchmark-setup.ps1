@@ -168,27 +168,52 @@ function Show-RockTuneFinalChecklist {
     #>
     Write-Section "ROCKTUNE Benchmark Steps"
 
-    Write-Host "  ____   ___   ____ _  __ _______ _   _ _   _ _____" -ForegroundColor Cyan
-    Write-Host " |  _ \ / _ \ / ___| |/ /|_   _| | | | | \ | | ____|" -ForegroundColor Cyan
-    Write-Host " | |_) | | | | |   | ' /   | | | | | | |  \| |  _|" -ForegroundColor Cyan
-    Write-Host " |  _ <| |_| | |___| . \   | | | |_| | | |\  | |___" -ForegroundColor Cyan
-    Write-Host " |_| \_\\___/ \____|_|\_\  |_|  \___/|_|_| \_|_____|" -ForegroundColor Cyan
-
-    $useTwoColumns = $false
     $consoleWidth = 0
     try {
         $consoleWidth = $Host.UI.RawUI.WindowSize.Width
-        if ($consoleWidth -ge 120) {
-            $useTwoColumns = $true
-        }
     } catch {
-        $useTwoColumns = $false
+        $consoleWidth = 0
     }
 
-    if ($useTwoColumns) {
-        Write-Note "Checklist layout: two columns (wide console detected)."
-    } else {
-        Write-Note "Checklist layout: single column."
+    function Get-LeftPad {
+        param(
+            [Parameter(Mandatory=$true)]
+            [int]$Width,
+
+            [Parameter(Mandatory=$true)]
+            [int]$MaxLineLength
+        )
+
+        if ($Width -le 0 -or $MaxLineLength -le 0) {
+            return ""
+        }
+
+        $pad = [math]::Floor(($Width - $MaxLineLength) / 2)
+        if ($pad -lt 0) {
+            $pad = 0
+        }
+
+        return (" " * $pad)
+    }
+
+    $bannerLines = @(
+        "  ____   ___   ____ _  __ _______ _   _ _   _ _____",
+        " |  _ \ / _ \ / ___| |/ /|_   _| | | | | \ | | ____|",
+        " | |_) | | | | |   | ' /   | | | | | | |  \| |  _|",
+        " |  _ <| |_| | |___| . \   | | | |_| | | |\  | |___",
+        " |_| \_\\___/ \____|_|\_\  |_|  \___/|_|_| \_|_____|"
+    )
+
+    $bannerMax = ($bannerLines | Measure-Object -Property Length -Maximum).Maximum
+    $bannerPad = Get-LeftPad -Width $consoleWidth -MaxLineLength $bannerMax
+
+    foreach ($line in $bannerLines) {
+        Write-Host ($bannerPad + $line) -ForegroundColor Cyan
+    }
+
+    $useTwoColumns = $false
+    if ($consoleWidth -ge 120) {
+        $useTwoColumns = $true
     }
 
     $sections = @(
@@ -282,6 +307,8 @@ function Show-RockTuneFinalChecklist {
         return $lines
     }
 
+    $lineItems = @()
+
     if ($useTwoColumns) {
         $leftWidth = 58
         for ($i = 0; $i -lt $sections.Count; $i += 2) {
@@ -302,19 +329,29 @@ function Show-RockTuneFinalChecklist {
                     $rightText = $right[$lineIndex]
                 }
 
-                Write-Host ($leftText.PadRight($leftWidth) + $rightText) -ForegroundColor White
+                $lineItems += ($leftText.PadRight($leftWidth) + $rightText)
             }
 
-            Write-Host ""
+            $lineItems += ""
         }
     } else {
         foreach ($section in $sections) {
-            Write-Host ""
-            Write-Host "== $($section.Title) ==" -ForegroundColor Yellow
+            $lineItems += ""
+            $lineItems += "== $($section.Title) =="
             foreach ($line in $section.Lines) {
-                Write-Host $line -ForegroundColor White
+                $lineItems += $line
             }
         }
+    }
+
+    if ($lineItems.Count -gt 0 -and $lineItems[0] -eq "") {
+        $lineItems = $lineItems[1..($lineItems.Count - 1)]
+    }
+
+    $maxLineLength = ($lineItems | Measure-Object -Property Length -Maximum).Maximum
+    $checklistPad = Get-LeftPad -Width $consoleWidth -MaxLineLength $maxLineLength
+    foreach ($line in $lineItems) {
+        Write-Host ($checklistPad + $line) -ForegroundColor White
     }
 }
 
@@ -726,7 +763,7 @@ function Resolve-ExecutablePath {
     #>
     param(
         [Parameter(Mandatory=$true)]
-        [string]$ExeName,
+        [string[]]$ExeNames,
 
         [Parameter(Mandatory=$true)]
         [string[]]$DefaultCandidates,
@@ -762,29 +799,33 @@ function Resolve-ExecutablePath {
             return $wingetLocation
         }
 
-        $wingetExe = Join-Path $wingetLocation $ExeName
-        if (Test-Path $wingetExe) {
-            return $wingetExe
-        }
+        foreach ($exeName in $ExeNames) {
+            $wingetExe = Join-Path $wingetLocation $exeName
+            if (Test-Path $wingetExe) {
+                return $wingetExe
+            }
 
-        $wingetBinExe = Join-Path (Join-Path $wingetLocation "bin") $ExeName
-        if (Test-Path $wingetBinExe) {
-            return $wingetBinExe
+            $wingetBinExe = Join-Path (Join-Path $wingetLocation "bin") $exeName
+            if (Test-Path $wingetBinExe) {
+                return $wingetBinExe
+            }
         }
     }
 
     # 3) Check install locations reported in the registry.
     $registryLocations = Get-RegistryInstallLocations -DisplayNamePattern $RegistryNamePattern
     foreach ($location in $registryLocations) {
-        $exePath = Join-Path $location $ExeName
-        if (Test-Path $exePath) {
-            return $exePath
-        }
+        foreach ($exeName in $ExeNames) {
+            $exePath = Join-Path $location $exeName
+            if (Test-Path $exePath) {
+                return $exePath
+            }
 
-        # Some installers put binaries in a subfolder like "bin".
-        $binExePath = Join-Path (Join-Path $location "bin") $ExeName
-        if (Test-Path $binExePath) {
-            return $binExePath
+            # Some installers put binaries in a subfolder like "bin".
+            $binExePath = Join-Path (Join-Path $location "bin") $exeName
+            if (Test-Path $binExePath) {
+                return $binExePath
+            }
         }
     }
 
@@ -793,10 +834,12 @@ function Resolve-ExecutablePath {
     foreach ($location in $registryLocations) {
         if (Test-Path $location) {
             try {
-                $found = Get-ChildItem -Path $location -Recurse -Filter $ExeName -ErrorAction SilentlyContinue |
-                    Select-Object -First 1
-                if ($found) {
-                    return $found.FullName
+                foreach ($exeName in $ExeNames) {
+                    $found = Get-ChildItem -Path $location -Recurse -Filter $exeName -ErrorAction SilentlyContinue |
+                        Select-Object -First 1
+                    if ($found) {
+                        return $found.FullName
+                    }
                 }
             } catch {
                 # Ignore access errors.
@@ -832,7 +875,7 @@ $packages = @(
         Id = "CXWorld.CapFrameX"
         Name = "CapFrameX"
         Purpose = "Captures frametimes and computes avg FPS, 1% low, and 0.1% low."
-        ExeName = "CapFrameX.exe"
+        ExeNames = @("CapFrameX.exe")
         RegistryPattern = "*CapFrameX*"
         DefaultPaths = @(
             "C:\Program Files\CapFrameX\CapFrameX.exe",
@@ -851,7 +894,7 @@ $packages = @(
         Id = "Unigine.SuperpositionBenchmark"
         Name = "Unigine Superposition"
         Purpose = "Repeatable GPU benchmark for consistent before/after comparisons."
-        ExeName = "Superposition.exe"
+        ExeNames = @("Superposition.exe")
         RegistryPattern = "*Superposition*"
         DefaultPaths = @(
             "C:\Program Files\Unigine\Superposition\Superposition.exe",
@@ -869,10 +912,11 @@ $packages = @(
         Id = "Resplendence.LatencyMon"
         Name = "LatencyMon"
         Purpose = "Detects DPC/ISR latency spikes that can cause stutter or audio crackle."
-        ExeName = "LatencyMon.exe"
+        ExeNames = @("LatencyMon.exe", "LatMon.exe")
         RegistryPattern = "*LatencyMon*"
         DefaultPaths = @(
             "C:\Program Files\LatencyMon\LatencyMon.exe",
+            "C:\Program Files\LatencyMon\LatMon.exe",
             "C:\Program Files (x86)\LatencyMon\LatencyMon.exe"
         )
         Configure = @(
@@ -925,7 +969,7 @@ try {
 
     Write-Section "Locate Executables"
     foreach ($package in $packages) {
-        $path = Resolve-ExecutablePath -ExeName $package.ExeName `
+        $path = Resolve-ExecutablePath -ExeNames $package.ExeNames `
             -DefaultCandidates $package.DefaultPaths `
             -RegistryNamePattern $package.RegistryPattern `
             -PackageId $package.Id
