@@ -557,6 +557,17 @@
     background: color-mix(in oklch, var(--placard-red) 5%, transparent);
   }
 
+  .placard-opt-cell label:focus-within,
+  .placard-opt-cell label:has(:focus-visible) {
+    outline: 3px solid var(--placard-red);
+    outline-offset: 2px;
+    border-color: var(--placard-red);
+    background: color-mix(in oklch, var(--placard-red) 8%, transparent);
+    box-shadow:
+      0 0 0 4px color-mix(in oklch, var(--placard-red) 20%, transparent),
+      0 0 20px var(--placard-glow);
+  }
+
   .placard-opt-cell label.selected {
     border-color: white;
     background: color-mix(in oklch, var(--placard-red) 15%, transparent);
@@ -1171,5 +1182,39 @@
   .btn-caution:focus-visible {
     outline: 2px solid var(--caution);
     outline-offset: 2px;
+  }
+
+  /* RTFB-401: Focus indicators for all optimization checkboxes (keyboard navigation) */
+  .upgrades-grid label:focus-within,
+  .upgrades-grid label:has(:focus-visible) {
+    --focus-color: var(--accent);
+    --focus-glow: oklch(0.7 0.2 195 / 0.4);
+
+    outline: 3px solid var(--focus-color);
+    outline-offset: 2px;
+    border-color: var(--focus-color);
+    background: color-mix(in oklch, var(--focus-color) 8%, var(--bg-primary));
+    box-shadow:
+      0 0 0 4px color-mix(in oklch, var(--focus-color) 20%, transparent),
+      0 0 20px var(--focus-glow),
+      inset 0 0 20px color-mix(in oklch, var(--focus-color) 10%, transparent);
+  }
+
+  .tier-safe-field label:focus-within,
+  .tier-safe-field label:has(:focus-visible) {
+    --focus-color: oklch(0.75 0.15 175);
+    --focus-glow: oklch(0.75 0.15 175 / 0.4);
+  }
+
+  .tier-caution-field label:focus-within,
+  .tier-caution-field label:has(:focus-visible) {
+    --focus-color: oklch(0.82 0.15 85);
+    --focus-glow: oklch(0.82 0.15 85 / 0.4);
+  }
+
+  .tier-risky-field label:focus-within,
+  .tier-risky-field label:has(:focus-visible) {
+    --focus-color: oklch(0.72 0.18 10);
+    --focus-glow: oklch(0.72 0.18 10 / 0.4);
   }
 }
