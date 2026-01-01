@@ -185,6 +185,9 @@
   }
 
   @media (max-width: 768px) {
+    .step {
+      padding: var(--space-md) var(--space-xs);
+    }
 
     .upgrades-grid,
     .core-grid,

@@ -2,16 +2,14 @@
   @scope (.audit-panel) {
     :scope {
       position: fixed;
-      inset-inline-end: -480px;
+      inset-inline-end: -520px;
       inset-block-start: 50%;
       transform: translateY(-50%);
       inline-size: 520px;
       max-block-size: 76vh;
-      background: linear-gradient(
-        135deg,
-        color-mix(in oklch, oklch(0.12 0.02 285) 95%, transparent) 0%,
-        color-mix(in oklch, oklch(0.1 0.02 285) 98%, transparent) 100%
-      );
+      background: linear-gradient(135deg,
+          color-mix(in oklch, oklch(0.12 0.02 285) 95%, transparent) 0%,
+          color-mix(in oklch, oklch(0.1 0.02 285) 98%, transparent) 100%);
       backdrop-filter: blur(20px);
       border: 1px solid color-mix(in oklch, var(--cyber-yellow) 20%, var(--glass-border));
       border-inline-end: none;
@@ -28,13 +26,16 @@
       overflow: visible;
       opacity: 0;
       pointer-events: none;
+
       &.open {
         inset-inline-end: 0;
       }
+
       &.visible {
         opacity: 1;
         pointer-events: auto;
       }
+
       &::before {
         content: "";
         position: absolute;
@@ -46,6 +47,7 @@
         z-index: 10;
       }
     }
+
     .audit-toggle {
       position: absolute;
       inset-inline-start: 0;
@@ -63,37 +65,41 @@
       align-items: center;
       justify-content: center;
       transition: all var(--duration-normal);
+
       &:hover {
         background: color-mix(in oklch, var(--cyber-yellow) 10%, var(--bg-tertiary));
         color: var(--cyber-yellow);
         box-shadow: -4px 0 20px color-mix(in oklch, var(--cyber-yellow) 25%, transparent);
       }
+
       & svg {
         inline-size: var(--icon-lg);
         block-size: var(--icon-lg);
         transition: transform var(--duration-slow);
       }
+
       :scope.open & svg {
         transform: rotate(180deg);
       }
     }
+
     .audit-content {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
+
     .audit-header {
       padding: var(--space-md) var(--space-lg);
       border-block-end: 1px solid color-mix(in oklch, var(--cyber-yellow) 15%, var(--border));
-      background: linear-gradient(
-        90deg,
-        color-mix(in oklch, var(--cyber-yellow) 8%, transparent) 0%,
-        transparent 60%
-      );
+      background: linear-gradient(90deg,
+          color-mix(in oklch, var(--cyber-yellow) 8%, transparent) 0%,
+          transparent 60%);
       position: relative;
+
       &::before {
-        content: "\25E2"; 
+        content: "\25E2";
         position: absolute;
         inset-inline-start: var(--space-sm);
         inset-block-start: 50%;
@@ -102,6 +108,7 @@
         color: var(--cyber-yellow);
         opacity: 0.5;
       }
+
       & h3 {
         font-family: var(--font-display);
         margin: 0;
@@ -114,10 +121,12 @@
         text-shadow: var(--glow-sm) var(--cyber-yellow-glow);
       }
     }
+
     .hint {
       font-size: var(--text-sm);
       color: var(--text-hint);
     }
+
     .code {
       flex: 1;
       margin: 0;
@@ -130,6 +139,7 @@
       background: var(--bg-primary);
       white-space: pre;
     }
+
     .stats {
       display: flex;
       justify-content: space-between;
@@ -140,6 +150,7 @@
       background: var(--bg-tertiary);
     }
   }
+
   @scope (.error-banner) {
     :scope {
       position: fixed;
@@ -151,28 +162,25 @@
       align-items: center;
       gap: var(--space-md);
       padding: var(--space-md) var(--space-lg);
-      background: linear-gradient(
-        135deg,
-        color-mix(in oklch, var(--risky) 18%, var(--bg-secondary)) 0%,
-        color-mix(in oklch, var(--risky) 10%, var(--bg-secondary)) 100%
-      );
+      background: linear-gradient(135deg,
+          color-mix(in oklch, var(--risky) 18%, var(--bg-secondary)) 0%,
+          color-mix(in oklch, var(--risky) 10%, var(--bg-secondary)) 100%);
       border: 1px solid color-mix(in oklch, var(--risky) 50%, transparent);
       border-block-start: 3px solid var(--risky);
-      clip-path: polygon(
-        0 0,
-        100% 0,
-        100% calc(100% - 12px),
-        calc(100% - 12px) 100%,
-        12px 100%,
-        0 calc(100% - 12px)
-      );
+      clip-path: polygon(0 0,
+          100% 0,
+          100% calc(100% - 12px),
+          calc(100% - 12px) 100%,
+          12px 100%,
+          0 calc(100% - 12px));
       backdrop-filter: blur(16px);
       box-shadow:
         0 4px 30px color-mix(in oklch, var(--risky) 25%, transparent),
         0 0 60px color-mix(in oklch, var(--risky) 10%, transparent);
       animation: slideDown var(--duration-slow) var(--ease-out-expo);
+
       &::before {
-        content: "\25E2 ALERT"; 
+        content: "\25E2 ALERT";
         position: absolute;
         inset-block-start: -1px;
         inset-inline-start: 0;
@@ -185,16 +193,19 @@
         padding: 0.15rem 0.5rem;
         clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 100%, 0 100%);
       }
+
       &[hidden] {
         display: none;
       }
     }
+
     .icon {
       inline-size: var(--icon-lg);
       block-size: var(--icon-lg);
       color: var(--risky);
       flex-shrink: 0;
     }
+
     .message {
       font-size: var(--text-sm);
       font-family: var(--font-mono);
@@ -202,19 +213,25 @@
       letter-spacing: 0.02em;
     }
   }
+
   @keyframes alertPulse {
-    0%, 100% {
+
+    0%,
+    100% {
       filter: drop-shadow(0 0 4px transparent);
     }
+
     50% {
       filter: drop-shadow(0 0 8px color-mix(in oklch, var(--risky) 60%, transparent));
     }
   }
+
   @keyframes slideDown {
     from {
       transform: translateX(-50%) translateY(-100%);
       opacity: 0;
     }
+
     to {
       transform: translateX(-50%) translateY(0);
       opacity: 1;

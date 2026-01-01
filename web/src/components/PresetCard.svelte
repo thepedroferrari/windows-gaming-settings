@@ -270,16 +270,15 @@
       </div>
 
       <div class="preset-card__body">
-        {#if bestFor}
-          <div class="preset-card__best-for">
-            <span class="best-for-label">Best for</span>
-            <span class="best-for-value">{bestFor}</span>
-          </div>
-        {/if}
-
-        {#if description}
-          <p class="preset-card__desc">{description}</p>
-        {/if}
+        <div class="preset-card__info">
+          {#if bestFor}
+            <span class="info-label">Best for</span>
+            <span class="info-audience">{bestFor}</span>
+          {/if}
+          {#if description}
+            <p class="info-desc">{description}</p>
+          {/if}
+        </div>
       </div>
 
       
