@@ -2,6 +2,12 @@
   @scope (.preflight-section) {
     :scope {
       margin-block-end: var(--space-lg);
+      position: relative;
+      border-radius: var(--radius-md);
+      transition: box-shadow var(--duration-fast) ease;
+      &:hover {
+        box-shadow: 0 0 0 2px color-mix(in oklch, var(--cyber-yellow) 5%, transparent);
+      }
     }
     .title {
       display: flex;
@@ -23,6 +29,8 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     }
     .card {
+      display: flex;
+      flex-direction: column;
       padding: var(--space-md);
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -63,6 +71,8 @@
       display: inline-flex;
       align-items: center;
       gap: var(--space-xs);
+      margin-top: auto;
+      align-self: flex-end;
       padding: var(--space-sm) var(--space-md);
       font-family: var(--font-mono);
       font-size: var(--text-base);

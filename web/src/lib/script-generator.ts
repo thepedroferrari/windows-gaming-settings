@@ -196,7 +196,7 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
   lines.push(`    Core: ${hardware.cpu} + ${hardware.gpu}`)
   lines.push(`    Build: ${__BUILD_COMMIT__} (${__BUILD_DATE__})`)
   lines.push(
-    `    Source: https://github.com/thepedroferrari/windows-gaming-settings/tree/${__BUILD_COMMIT__}`,
+    `    Source: https://github.com/thepedroferrari/rocktune/tree/${__BUILD_COMMIT__}`,
   )
   if (hasLudicrous) {
     lines.push('')
@@ -623,7 +623,7 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
     lines.push('# Keep it running during gameplay for smooth frame pacing.')
     lines.push('#')
     lines.push(
-      '# Download: https://github.com/thepedroferrari/windows-gaming-settings/blob/master/timer-tool.ps1',
+      '# Download: https://github.com/thepedroferrari/rocktune/blob/master/timer-tool.ps1',
     )
     lines.push('#')
     lines.push('# Usage:')
@@ -640,7 +640,7 @@ function generatePerformanceOpts(selected: Set<string>, hardware: HardwareProfil
       'Write-Host "      Download and run timer-tool.ps1 before gaming" -ForegroundColor Yellow',
     )
     lines.push(
-      'Write-Host "      https://github.com/thepedroferrari/windows-gaming-settings" -ForegroundColor Cyan',
+      'Write-Host "      https://github.com/thepedroferrari/rocktune" -ForegroundColor Cyan',
     )
     lines.push('Write-Host ""')
   }

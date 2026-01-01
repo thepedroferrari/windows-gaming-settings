@@ -8,66 +8,68 @@
    * - GitHub link
    */
 
-  import { onMount } from 'svelte'
+  import { onMount } from "svelte";
 
   interface NavLink {
-    href: string
-    label: string
-    step: number
+    href: string;
+    label: string;
+    step: number;
   }
 
   const NAV_LINKS: NavLink[] = [
-    { href: '#quick-start', label: 'Presets', step: 0 },
-    { href: '#hardware', label: 'Hardware', step: 1 },
-    { href: '#peripherals', label: 'Peripherals', step: 2 },
-    { href: '#optimizations', label: 'Tweaks', step: 3 },
-    { href: '#software', label: 'Software', step: 4 },
-    { href: '#generate', label: 'Forge', step: 5 },
-    { href: '#manual-guide', label: 'Guide', step: 6 },
-  ]
+    { href: "#quick-start", label: "Presets", step: 0 },
+    { href: "#hardware", label: "Hardware", step: 1 },
+    { href: "#peripherals", label: "Peripherals", step: 2 },
+    { href: "#optimizations", label: "Tweaks", step: 3 },
+    { href: "#software", label: "Software", step: 4 },
+    { href: "#generate", label: "Forge", step: 5 },
+    { href: "#manual-guide", label: "Guide", step: 6 },
+  ];
 
-  let activeStep = $state(0)
+  let activeStep = $state(0);
 
   onMount(() => {
     // Set up intersection observer for active section tracking
     const sections = NAV_LINKS.map((link) => {
-      const id = link.href.replace('#', '')
-      return document.getElementById(id)
-    }).filter((section): section is HTMLElement => section instanceof HTMLElement)
+      const id = link.href.replace("#", "");
+      return document.getElementById(id);
+    }).filter(
+      (section): section is HTMLElement => section instanceof HTMLElement,
+    );
 
-    if (sections.length === 0) return
+    if (sections.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting && entry.target instanceof HTMLElement) {
-            const index = sections.indexOf(entry.target)
+            const index = sections.indexOf(entry.target);
             if (index !== -1) {
-              activeStep = index
+              activeStep = index;
             }
           }
         }
       },
       {
         threshold: 0.3,
-        rootMargin: '-80px 0px -50% 0px',
+        rootMargin: "-80px 0px -50% 0px",
       },
-    )
+    );
 
-    sections.forEach((section) => observer.observe(section))
+    sections.forEach((section) => observer.observe(section));
 
     return () => {
-      sections.forEach((section) => observer.unobserve(section))
-    }
-  })
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  });
 
   function handleClick(event: MouseEvent, link: NavLink) {
     // Smooth scroll to section
-    const target = document.querySelector(link.href)
+    const target = document.querySelector(link.href);
     if (target) {
-      event.preventDefault()
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      activeStep = link.step
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      activeStep = link.step;
     }
   }
 </script>
@@ -93,12 +95,14 @@
   </div>
 
   <div class="nav-actions">
-    <a
-      href="#generate"
-      class="download-link"
-      title="Jump to download section"
-    >
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <a href="#generate" class="download-link" title="Jump to download section">
+      <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
         <polyline points="7 10 12 15 17 10" />
         <line x1="12" y1="15" x2="12" y2="3" />
@@ -107,7 +111,7 @@
     </a>
 
     <a
-      href="https://github.com/thepedroferrari/windows-gaming-settings/tree/{__BUILD_COMMIT__}"
+      href="https://github.com/thepedroferrari/rocktune/tree/{__BUILD_COMMIT__}"
       target="_blank"
       rel="noopener"
       class="badge"

@@ -129,8 +129,8 @@ See [DRIVER-LINKS.md](DRIVER-LINKS.md) for driver downloads and BIOS settings.
 
 ```powershell
 # Clone repository
-git clone https://github.com/thepedroferrari/windows-gaming-settings.git
-cd windows-gaming-settings
+git clone https://github.com/thepedroferrari/rocktune.git
+cd rocktune
 
 # Run as Administrator
 .\gaming-pc-setup.ps1

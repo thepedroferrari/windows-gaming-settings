@@ -5,7 +5,7 @@
    @import './src/styles/layout.css' layer(layout);
    @import './src/styles/buttons.css' layer(components);
    @import './src/components/cyber-toggle/cyber-toggle.styles.css' layer(components);
-   @import './src/components/holographic-header/holographic-header.styles.css' layer(components);
+   /* holographic-header.styles.css removed - styles now scoped in HeroSection.svelte */
    @import './src/components/software-card/software-card.styles.css' layer(components);
    @import './src/components/software-grid/software-grid.styles.css' layer(components);
    @import './src/components/summary/summary.styles.css' layer(components);

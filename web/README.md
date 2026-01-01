@@ -243,7 +243,7 @@ See [LICENSE](../LICENSE) in the project root.
 
 ## 🔗 Links
 
-- **Repository**: https://github.com/thepedroferrari/windows-gaming-settings
+- **Repository**: https://github.com/thepedroferrari/rocktune
 - **Main Script**: See `gaming-pc-setup.ps1` in project root
 - **Documentation**: See `README.md` in project root
 
