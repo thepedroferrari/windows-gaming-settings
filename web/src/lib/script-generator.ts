@@ -105,6 +105,10 @@ export type ScriptGeneratorOptions = {
 
 const DEFAULT_DNS_PROVIDER = 'cloudflare'
 
+function escapePsDoubleQuoted(value: string): string {
+  return value.replace(/`/g, '``').replace(/"/g, '`"').replace(/\$/g, '`$').replace(/\r?\n/g, ' ')
+}
+
 /** ASCII banner for script header */
 const ASCII_BANNER = `
 @'
@@ -327,9 +331,11 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
       .sort((a, b) => a.pkg.name.localeCompare(b.pkg.name))
 
     for (const entry of sorted) {
-      lines.push(`    Write-Host "  Installing ${entry.pkg.name}..." -NoNewline`)
+      const packageName = escapePsDoubleQuoted(entry.pkg.name)
+      const packageId = escapePsDoubleQuoted(entry.pkg.id)
+      lines.push(`    Write-Host "  Installing ${packageName}..." -NoNewline`)
       lines.push(
-        `    winget install --id "${entry.pkg.id}" --silent --accept-package-agreements --accept-source-agreements 2>$null`,
+        `    winget install --id "${packageId}" --silent --accept-package-agreements --accept-source-agreements 2>$null`,
       )
       lines.push('    if ($LASTEXITCODE -eq 0) { Write-OK "" } else { Write-Fail "" }')
     }
@@ -906,11 +912,12 @@ function generateNetworkOpts(selected: Set<string>, dnsProvider: string): string
       adguard: ['94.140.14.14', '94.140.15.15'],
     }
     const [primary, secondary] = dnsServers[dnsProvider] || dnsServers.cloudflare
-    lines.push(`# Set DNS to ${dnsProvider}`)
+    const dnsLabel = escapePsDoubleQuoted(dnsProvider)
+    lines.push(`# Set DNS to ${dnsLabel}`)
     lines.push(
       `Get-NetAdapter | Where-Object {$_.Status -eq "Up"} | Set-DnsClientServerAddress -ServerAddresses "${primary}","${secondary}"`,
     )
-    lines.push(`Write-OK "DNS set to ${dnsProvider} (${primary}, ${secondary})"`)
+    lines.push(`Write-OK "DNS set to ${dnsLabel} (${primary}, ${secondary})"`)
   }
 
   if (selected.has('nagle') || selected.has('tcp_optimizer')) {
