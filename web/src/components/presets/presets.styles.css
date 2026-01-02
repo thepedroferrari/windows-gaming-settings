@@ -105,10 +105,12 @@
   }
 
   .presets-scroll-container {
+    --shadow-bleed: 130px;
     container-type: inline-size;
     container-name: presets;
     inline-size: 100%;
-    padding: var(--space-sm) 0 var(--space-lg);
+    padding-block: calc(var(--space-sm) + var(--shadow-bleed)) calc(var(--space-lg) + var(--shadow-bleed));
+    margin-block: calc(var(--shadow-bleed) * -1);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }

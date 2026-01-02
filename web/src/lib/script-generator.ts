@@ -67,18 +67,6 @@ const NEXT_STEPS_BY_PRESET: Record<PresetType, readonly string[]> = {
   ],
 }
 
-/** Competitive games for Task Scheduler auto-timer */
-const COMPETITIVE_GAMES = [
-  { name: 'CS2', process: 'cs2' },
-  { name: 'Valorant', process: 'VALORANT-Win64-Shipping' },
-  { name: 'Fortnite', process: 'FortniteClient-Win64-Shipping' },
-  { name: 'Apex Legends', process: 'r5apex' },
-  { name: 'League of Legends', process: 'League of Legends' },
-  { name: 'Dota 2', process: 'dota2' },
-  { name: 'Overwatch 2', process: 'Overwatch' },
-  { name: 'Rainbow Six Siege', process: 'RainbowSix' },
-] as const
-
 /** Embedded timer tool code (from timer-tool.ps1) */
 const TIMER_TOOL_CODE = `
 # ══════════════════════════════════════════════════════════════════════════════
@@ -168,94 +156,6 @@ function Start-TimerLoop {
     }
 }
 
-function Install-GameTimerTask {
-    Write-Host ""
-    Write-Host "  === GAME AUTO-TIMER SETUP ===" -ForegroundColor Cyan
-    Write-Host "  Select games to auto-enable 0.5ms timer when launched:" -ForegroundColor Yellow
-    Write-Host ""
-
-    $games = @(
-${COMPETITIVE_GAMES.map((g, i) => `        @{ Name = "${g.name}"; Process = "${g.process}" }`).join(',\n')}
-    )
-
-    for ($i = 0; $i -lt $games.Length; $i++) {
-        Write-Host "    [$($i+1)] $($games[$i].Name)" -ForegroundColor White
-    }
-    Write-Host "    [A] All games" -ForegroundColor Cyan
-    Write-Host "    [X] Cancel" -ForegroundColor DarkGray
-    Write-Host ""
-
-    $choice = Read-Host "  Select"
-
-    if ($choice -eq "X" -or $choice -eq "x") {
-        Write-Host "  Cancelled." -ForegroundColor Yellow
-        return
-    }
-
-    $selectedGames = @()
-    if ($choice -eq "A" -or $choice -eq "a") {
-        $selectedGames = $games
-    } else {
-        $indices = $choice -split "," | ForEach-Object { [int]$_.Trim() - 1 }
-        foreach ($idx in $indices) {
-            if ($idx -ge 0 -and $idx -lt $games.Length) {
-                $selectedGames += $games[$idx]
-            }
-        }
-    }
-
-    if ($selectedGames.Length -eq 0) {
-        Write-Host "  No valid games selected." -ForegroundColor Yellow
-        return
-    }
-
-    # Create a script that will be triggered by Task Scheduler
-    $timerScriptPath = "$env:USERPROFILE\\RockTune-TimerTool.ps1"
-
-    # Write the timer script
-    $timerScript = @'
-param([string]$GameProcess)
-# RockTune Timer Tool - Auto-launched for game
-Add-Type @"
-using System; using System.Runtime.InteropServices;
-public class TR {
-    [DllImport("ntdll.dll")] public static extern uint NtSetTimerResolution(uint d, bool s, out uint c);
-    [DllImport("ntdll.dll")] public static extern uint NtQueryTimerResolution(out uint min, out uint max, out uint cur);
-}
-"@
-$c = [uint32]0; [TR]::NtSetTimerResolution(5000, $true, [ref]$c)
-while ((Get-Process -Name $GameProcess -EA SilentlyContinue)) { Start-Sleep -Seconds 5 }
-'@
-
-    Set-Content -Path $timerScriptPath -Value $timerScript -Force
-    Write-Host "  Timer script saved to: $timerScriptPath" -ForegroundColor Green
-
-    foreach ($game in $selectedGames) {
-        $taskName = "RockTune-Timer-$($game.Name -replace ' ','')"
-
-        # Remove existing task if present
-        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-
-        # Create trigger for when game starts
-        # Note: Event-based triggers require a bit more setup
-        $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowStyle Hidden -ExecutionPolicy Bypass -File \`"$timerScriptPath\`" -GameProcess \`"$($game.Process)\`""
-        $trigger = New-ScheduledTaskTrigger -AtLogOn
-        $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-        $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Highest
-
-        try {
-            Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
-            Write-Host "  [OK] Task created for $($game.Name)" -ForegroundColor Green
-        } catch {
-            Write-Host "  [FAIL] Could not create task for $($game.Name): $_" -ForegroundColor Red
-        }
-    }
-
-    Write-Host ""
-    Write-Host "  Note: Tasks are set to run at logon. For event-based triggers," -ForegroundColor Yellow
-    Write-Host "  open Task Scheduler and modify the trigger to 'On an event'." -ForegroundColor Yellow
-    Write-Host ""
-}
 `
 
 /**
@@ -431,69 +331,72 @@ function generateLaunchMenu(): string[] {
   lines.push('# ══════════════════════════════════════════════════════════════════════════════')
   lines.push('')
   lines.push('function Show-RockTuneMenu {')
-  lines.push('    Clear-Host')
-  lines.push('    Write-Banner')
-  lines.push('    Write-Host ""')
+  lines.push('    while ($true) {')
+  lines.push('        Clear-Host')
+  lines.push('        Write-Banner')
+  lines.push('        Write-Host ""')
   lines.push(
-    '    Write-Host "  ╔════════════════════════════════════════════════════════════════╗" -ForegroundColor Magenta',
+    '        Write-Host "  ╔════════════════════════════════════════════════════════════════╗" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ║                    ROCKTUNE LOADOUT                            ║" -ForegroundColor Magenta',
+    '        Write-Host "  ║                    ROCKTUNE LOADOUT                            ║" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ╠════════════════════════════════════════════════════════════════╣" -ForegroundColor Magenta',
+    '        Write-Host "  ╠════════════════════════════════════════════════════════════════╣" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
+    '        Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ║  [1] Apply Optimizations                                       ║" -ForegroundColor White',
+    '        Write-Host "  ║  [1] Apply Optimizations                                       ║" -ForegroundColor White',
   )
   lines.push(
-    '    Write-Host "  ║      Run system optimizations and install software             ║" -ForegroundColor DarkGray',
+    '        Write-Host "  ║      Run system optimizations and install software             ║" -ForegroundColor DarkGray',
   )
   lines.push(
-    '    Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
+    '        Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ║  [2] Run Timer Tool (0.5ms)                                    ║" -ForegroundColor White',
+    '        Write-Host "  ║  [2] Run Timer Tool (0.5ms)                                    ║" -ForegroundColor White',
   )
   lines.push(
-    '    Write-Host "  ║      Keep running for smooth frame pacing during games         ║" -ForegroundColor DarkGray',
+    '        Write-Host "  ║      Keep running for smooth frame pacing during games         ║" -ForegroundColor DarkGray',
   )
   lines.push(
-    '    Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
+    '        Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ║  [3] Both (Apply + Timer)                                      ║" -ForegroundColor White',
+    '        Write-Host "  ║  [3] Both (Apply + Timer)                                      ║" -ForegroundColor White',
   )
   lines.push(
-    '    Write-Host "  ║      Apply optimizations, then start timer tool                ║" -ForegroundColor DarkGray',
+    '        Write-Host "  ║      Apply optimizations, then start timer tool                ║" -ForegroundColor DarkGray',
   )
   lines.push(
-    '    Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
+    '        Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ║  [4] Setup Game Auto-Timer (Task Scheduler)                    ║" -ForegroundColor White',
+    '        Write-Host "  ║  [Q] Quit                                                      ║" -ForegroundColor DarkGray',
   )
   lines.push(
-    '    Write-Host "  ║      Configure timer to auto-start with competitive games      ║" -ForegroundColor DarkGray',
+    '        Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
   )
   lines.push(
-    '    Write-Host "  ║                                                                ║" -ForegroundColor Magenta',
+    '        Write-Host "  ╚════════════════════════════════════════════════════════════════╝" -ForegroundColor Magenta',
   )
-  lines.push(
-    '    Write-Host "  ╚════════════════════════════════════════════════════════════════╝" -ForegroundColor Magenta',
-  )
-  lines.push('    Write-Host ""')
-  lines.push('    $choice = Read-Host "  Select option (1-4)"')
+  lines.push('        Write-Host ""')
+  lines.push('        $choice = Read-Host "  Select option (1-3, Q to quit)"')
   lines.push('')
-  lines.push('    switch ($choice) {')
-  lines.push('        "1" { Invoke-RockTuneOptimizations }')
-  lines.push('        "2" { Start-TimerLoop }')
-  lines.push('        "3" { Invoke-RockTuneOptimizations; Start-TimerLoop }')
-  lines.push('        "4" { Install-GameTimerTask }')
-  lines.push('        default { Write-Host "Invalid option. Exiting." -ForegroundColor Yellow }')
+  lines.push('        switch ($choice.ToUpper()) {')
+  lines.push('            "1" { Invoke-RockTuneOptimizations; break }')
+  lines.push('            "2" { Start-TimerLoop; break }')
+  lines.push('            "3" { Invoke-RockTuneOptimizations; Start-TimerLoop; break }')
+  lines.push('            "Q" { Write-Host "  Exiting." -ForegroundColor Yellow; return }')
+  lines.push('            default {')
+  lines.push('                Write-Host ""')
+  lines.push('                Write-Host "  Invalid option. Press any key to try again..." -ForegroundColor Red')
+  lines.push('                try { $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") } catch { }')
+  lines.push('            }')
+  lines.push('        }')
   lines.push('    }')
   lines.push('}')
   lines.push('')
@@ -574,10 +477,12 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
     optimizations,
     packages: allPackagesArray,
   }
-  lines.push(`$Config = @'`)
-  lines.push(JSON.stringify(config, null, 2))
-  lines.push(`'@`)
-  lines.push(`$Config = $Config | ConvertFrom-Json`)
+  // Base64 encode config to prevent injection from apostrophes in CPU/GPU names
+  const configJson = JSON.stringify(config)
+  const base64Config = btoa(unescape(encodeURIComponent(configJson)))
+  lines.push(
+    `$Config = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("${base64Config}")) | ConvertFrom-Json`,
+  )
   lines.push('')
 
   lines.push(HELPER_FUNCTIONS.trim())
@@ -726,12 +631,12 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
       lines.push(
         `${indent}    $installOutput = winget install --id "${packageId}" --silent --accept-package-agreements --accept-source-agreements 2>&1`,
       )
+      // Use exit codes only for reliable detection (works on non-English Windows)
+      // Exit code 0 = success, -1978335189 (0x8A150019) = already installed
       lines.push(`${indent}    if ($LASTEXITCODE -eq 0) { Write-OK "" }`)
+      lines.push(`${indent}    elseif ($LASTEXITCODE -eq -1978335189) { Write-OK "Already installed" }`)
       lines.push(
-        `${indent}    elseif ($installOutput -match "No available upgrade found|No newer package versions are available|already installed") { Write-OK "Already installed" }`,
-      )
-      lines.push(
-        `${indent}    else { Write-Fail ""; $installOutput | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray } }`,
+        `${indent}    else { Write-Fail "Exit code: $LASTEXITCODE"; $installOutput | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray } }`,
       )
     }
 
