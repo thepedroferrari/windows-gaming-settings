@@ -1649,65 +1649,6 @@
        z-index: 1;
      }
 
-     .btn-secondary {
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       gap: var(--space-sm);
-       flex: 1;
-       padding: var(--space-md) var(--space-lg);
-       background: linear-gradient(135deg,
-           var(--bg-tertiary) 0%,
-           color-mix(in oklch, var(--bg-card) 80%, transparent) 100%);
-       border: 1px solid var(--border-light);
-       border-radius: 0;
-       clip-path: var(--clip-cyber-sm);
-       color: var(--text-secondary);
-       font-family: var(--font-ui);
-       font-size: 0.9rem;
-       font-weight: 600;
-       cursor: pointer;
-       transition: all 0.2s var(--ease-out-expo);
-       position: relative;
-
-       &::before {
-         content: '';
-         position: absolute;
-         top: 0;
-         left: 0;
-         width: 2px;
-         height: 100%;
-         background: var(--cyber-yellow);
-         opacity: 0;
-         transition: opacity 0.2s;
-       }
-
-       &:hover {
-         background: linear-gradient(135deg,
-             var(--bg-card-hover) 0%,
-             color-mix(in oklch, var(--cyber-yellow) 6%, var(--bg-card)) 100%);
-         border-color: color-mix(in oklch, var(--cyber-yellow) 50%, var(--border-light));
-         color: var(--text-primary);
-         box-shadow: 0 0 18px color-mix(in oklch, var(--cyber-yellow) 15%, transparent);
-
-         &::before {
-           opacity: 1;
-         }
-       }
-
-       & .btn-icon {
-         width: 16px;
-         height: 16px;
-         flex-shrink: 0;
-       }
-
-       &.small {
-         padding: 0.35rem 0.6rem;
-         clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-         font-size: 0.78rem;
-       }
-     }
-
      .preview-modal {
        position: fixed;
        top: 50%;

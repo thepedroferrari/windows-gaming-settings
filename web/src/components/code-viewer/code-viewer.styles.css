@@ -2,55 +2,23 @@
   @scope (.code-viewer) {
     :scope {
       --cv-accent: var(--cyber-yellow);
-      --cv-accent-glow: var(--cyber-yellow-glow);
       --cv-accent-dim: var(--cyber-yellow-dim);
       --cv-transition: var(--duration-fast) ease;
-      --cv-glow: 0 0 12px color-mix(in oklch, var(--cv-accent) 25%, transparent);
       display: flex;
       flex-direction: column;
       gap: var(--space-sm);
       position: relative;
       overflow: hidden;
       padding: var(--space-sm);
-      background:
-        radial-gradient(
-          ellipse 120% 140% at 20% 20%,
-          color-mix(in oklch, var(--cv-accent) 10%, transparent),
-          transparent 55%
-        ),
-        radial-gradient(
-          ellipse 140% 160% at 80% 0%,
-          var(--accent-15),
-          transparent 60%
-        ),
-        linear-gradient(
-          135deg,
-          color-mix(in oklch, oklch(0.1 0.02 285) 96%, transparent),
-          color-mix(in oklch, oklch(0.08 0.02 285) 98%, transparent)
-        );
-      border: 1px solid color-mix(in oklch, var(--cv-accent) 20%, var(--glass-border));
-      border-inline-start-width: 3px;
-      border-inline-start-color: var(--cv-accent);
-      clip-path: var(--clip-cyber-sm);
-      backdrop-filter: blur(16px);
-      box-shadow:
-        var(--shadow-xl),
-        0 0 30px color-mix(in oklch, var(--cv-accent) 8%, transparent),
-        inset 0 1px 0 var(--white-5);
-      &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          120deg,
-          var(--white-5),
-          transparent 50%,
-          oklch(1 0 0 / 0.04)
-        );
-        pointer-events: none;
-        mix-blend-mode: screen;
-      }
+      background: linear-gradient(180deg,
+          oklch(0.12 0.02 285) 0%,
+          oklch(0.1 0.02 285) 100%);
+      border: 1px solid var(--border);
+      border-inline-start-width: 2px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
     }
+
     .toolbar {
       display: flex;
       align-items: center;
@@ -58,63 +26,59 @@
       position: relative;
       z-index: 1;
     }
+
     .tab {
       padding-block: 0.35rem;
       padding-inline: 0.75rem;
       border: 1px solid var(--border-light);
-      background: var(--white-5);
-      color: var(--text-primary);
+      background: transparent;
+      color: var(--text-secondary);
       font-family: var(--font-mono);
       font-size: var(--text-sm);
       letter-spacing: 0.03em;
-      clip-path: var(--clip-cyber-xs);
-      backdrop-filter: blur(6px);
+      border-radius: var(--radius-xs);
       cursor: pointer;
       transition: var(--cv-transition);
-      transition-property: color, border-color, background, transform, box-shadow;
+      transition-property: color, border-color, background;
+
       &:hover {
         border-color: var(--cv-accent);
         color: var(--cv-accent);
-        transform: translateY(-1px);
-        box-shadow: var(--cv-glow);
       }
+
       &.active {
-        background: linear-gradient(
-          135deg,
-          color-mix(in oklch, var(--cv-accent) 25%, transparent),
-          color-mix(in oklch, var(--cv-accent) 15%, transparent)
-        );
+        background: color-mix(in oklch, var(--cv-accent) 12%, transparent);
         border-color: var(--cv-accent);
         color: var(--cv-accent);
-        text-shadow: var(--glow-sm) var(--cv-accent-glow);
-        box-shadow:
-          0 0 20px color-mix(in oklch, var(--cv-accent) 30%, transparent),
-          inset 0 0 10px color-mix(in oklch, var(--cv-accent) 10%, transparent);
       }
     }
+
     .pill {
       margin-inline-start: auto;
       padding-block: 0.2rem;
-      padding-inline: 0.6rem;
-      background: color-mix(in oklch, var(--cv-accent) 8%, transparent);
-      border: 1px solid color-mix(in oklch, var(--cv-accent) 20%, transparent);
+      padding-inline: 0.5rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--cv-accent-dim);
+      color: var(--text-hint);
       letter-spacing: var(--tracking-wide);
       text-transform: uppercase;
-      clip-path: var(--clip-cyber-2xs);
     }
+
     .nav {
       display: flex;
       align-items: center;
       gap: 0.35rem;
       margin-inline-start: auto;
       margin-inline-end: var(--space-xs);
+
       &[hidden] {
         display: none;
       }
     }
+
     .nav-btn {
       --size: 24px;
       display: grid;
@@ -123,27 +87,29 @@
       block-size: var(--size);
       padding: 0;
       border: 1px solid var(--border);
-      background: var(--white-5);
+      background: transparent;
       color: var(--text-secondary);
-      clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+      border-radius: var(--radius-xs);
       cursor: pointer;
       transition: var(--cv-transition);
-      transition-property: color, border-color, background, box-shadow;
+      transition-property: color, border-color, background;
+
       & svg {
         inline-size: var(--icon-xs);
         block-size: var(--icon-xs);
       }
+
       &:hover:not(:disabled) {
-        background: color-mix(in oklch, var(--cv-accent) 15%, transparent);
         border-color: var(--cv-accent);
         color: var(--cv-accent);
-        box-shadow: 0 0 8px color-mix(in oklch, var(--cv-accent) 25%, transparent);
       }
+
       &:disabled {
         opacity: 0.3;
         cursor: not-allowed;
       }
     }
+
     .nav-count {
       min-inline-size: 32px;
       font-size: var(--text-xs);
@@ -151,15 +117,16 @@
       color: var(--text-secondary);
       text-align: center;
     }
+
     .body {
       position: relative;
       min-block-size: 260px;
       border: 1px solid var(--border);
       background: var(--bg-primary);
-      clip-path: var(--clip-cyber-md);
+      border-radius: var(--radius-sm);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.04);
     }
+
     .pane {
       display: none;
       margin: 0;
@@ -171,10 +138,12 @@
       line-height: var(--leading-relaxed);
       color: var(--text-secondary);
       white-space: pre;
+
       &.active {
         display: block;
       }
     }
+
     .edit {
       inline-size: 100%;
       block-size: 100%;
@@ -189,47 +158,54 @@
       font-size: var(--text-sm);
       line-height: var(--leading-relaxed);
     }
+
     .diff {
       white-space: pre-wrap;
       background:
-        radial-gradient(
-          ellipse 140% 120% at 20% 30%,
+        radial-gradient(ellipse 140% 120% at 20% 30%,
           var(--accent-10),
-          transparent 45%
-        ),
+          transparent 45%),
         var(--bg-primary);
     }
+
     .line {
       display: grid;
       grid-template-columns: 44px 44px 1fr;
       gap: var(--space-xs);
       padding-block: 2px;
       align-items: start;
+
       &.diff-focus {
         background: var(--accent-15);
         box-shadow: inset 0 0 0 1px var(--accent-40);
       }
     }
+
     .ln {
       font-size: var(--text-xs);
       color: var(--text-hint);
       text-align: end;
       user-select: none;
     }
+
     .code {
       white-space: pre-wrap;
     }
+
     .diff-added {
       background: color-mix(in oklch, oklch(0.65 0.2 145) 8%, transparent);
       border-inline-start: 2px solid color-mix(in oklch, oklch(0.65 0.2 145) 65%, transparent);
     }
+
     .diff-removed {
       background: var(--risky-bg);
       border-inline-start: 2px solid color-mix(in oklch, var(--risky) 65%, transparent);
     }
+
     .diff-unchanged {
       border-inline-start: 2px solid transparent;
     }
+
     .footer {
       display: flex;
       align-items: center;
@@ -240,65 +216,75 @@
       position: relative;
       z-index: 1;
     }
+
     .stats {
       display: flex;
       align-items: center;
       gap: var(--space-sm);
     }
+
     .actions {
       display: flex;
       align-items: center;
       gap: var(--space-xs);
     }
+
     .actions .btn-secondary {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: var(--space-xs);
-      padding: var(--space-sm) var(--space-lg);
-      font-family: var(--font-display);
-      font-size: var(--text-md);
-      font-weight: 600;
-      letter-spacing: var(--tracking-wide);
+      padding: var(--space-sm) var(--space-md);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
       color: var(--text-secondary);
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      clip-path: var(--clip-cyber-sm);
+      background: transparent;
+      border: none;
       cursor: pointer;
-      transition: var(--cv-transition);
-      transition-property: color, background, border-color, box-shadow;
+      transition: color var(--cv-transition);
+
       &:hover {
-        background: color-mix(in oklch, var(--cv-accent) 15%, transparent);
-        border-color: var(--cv-accent);
         color: var(--cv-accent);
-        box-shadow: var(--glow-sm) color-mix(in oklch, var(--cv-accent) 25%, transparent);
       }
     }
+
     .actions .download-btn {
       position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: var(--space-sm);
-      padding: var(--space-md) var(--space-xl);
+      padding: var(--space-sm) var(--space-lg);
       font-family: var(--font-display);
-      font-size: var(--text-lg);
+      font-size: var(--text-base);
       font-weight: 700;
       letter-spacing: var(--tracking-wide);
-      color: var(--bg-primary);
-      background: linear-gradient(135deg, var(--cyber-yellow), var(--accent));
+      text-transform: uppercase;
+      color: oklch(0.15 0.02 102);
+      background: linear-gradient(135deg,
+          oklch(0.92 0.18 102) 0%,
+          oklch(0.85 0.16 102) 100%);
       border: none;
-      clip-path: var(--clip-cyber-sm);
+      border-radius: var(--radius-sm);
       cursor: pointer;
       overflow: hidden;
+      box-shadow:
+        0 0 0 1px oklch(0.95 0.2 102 / 0.6),
+        0 2px 12px oklch(0.85 0.18 102 / 0.35);
       transition: var(--transition-smooth);
       transition-property: transform, box-shadow;
+
       &:hover {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         box-shadow:
-          0 4px 20px var(--cyber-yellow-40),
-          0 0 30px var(--cyber-yellow-20);
+          0 0 0 2px oklch(0.95 0.2 102),
+          0 4px 20px oklch(0.85 0.18 102 / 0.5);
       }
+
+      &:active {
+        transform: translateY(0) scale(0.98);
+      }
+
       & .text {
         display: flex;
         align-items: center;
@@ -306,26 +292,6 @@
         position: relative;
         z-index: 1;
       }
-      & .shimmer {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(
-          90deg,
-          transparent 0%,
-          var(--white-20) 50%,
-          transparent 100%
-        );
-        transform: translateX(-100%);
-      }
-    }
-  }
-  @keyframes cvShimmerSlide {
-    0%, 100% {
-      transform: translateX(-100%);
-    }
-    50% {
-      transform: translateX(100%);
     }
   }
 }

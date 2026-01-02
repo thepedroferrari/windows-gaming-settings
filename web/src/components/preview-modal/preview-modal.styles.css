@@ -1,9 +1,6 @@
 @layer components {
   @scope (.preview-modal) {
     :scope {
-      --pm-clip: var(--clip-cyber-md);
-      --pm-clip-sm: var(--clip-cyber-xs);
-      --pm-clip-xs: var(--clip-cyber-2xs);
       position: fixed;
       inset-block-start: 50%;
       inset-inline-start: 50%;
@@ -13,16 +10,17 @@
       padding: 0;
       margin: 0;
       border: 1px solid var(--border);
-      clip-path: var(--pm-clip);
+      border-radius: var(--radius-md);
       background: var(--bg-card);
       color: var(--text-primary);
       overflow: hidden;
       flex-direction: column;
+      box-shadow: var(--shadow-2xl);
       &[open] {
         display: flex;
       }
       &::backdrop {
-        background: var(--black-75);
+        background: oklch(0 0 0 / 0.7);
         backdrop-filter: blur(4px);
       }
     }
@@ -32,20 +30,15 @@
       justify-content: space-between;
       padding-block: var(--space-sm);
       padding-inline: var(--space-md);
-      border-block-end: 1px solid color-mix(in oklch, var(--cyber-yellow) 25%, var(--border));
-      background: linear-gradient(
-        180deg,
-        color-mix(in oklch, var(--cyber-yellow) 8%, var(--bg-header)) 0%,
-        var(--bg-header) 100%
-      );
+      border-block-end: 1px solid var(--border);
+      background: var(--bg-header);
       & h3 {
         margin: 0;
         font-family: var(--font-display);
         font-size: var(--text-sm);
         font-weight: 700;
         letter-spacing: var(--tracking-wider);
-        color: var(--cyber-yellow);
-        text-shadow: var(--glow-sm) var(--cyber-yellow-glow);
+        color: var(--text-primary);
       }
     }
     .header-icon {
@@ -59,21 +52,19 @@
       block-size: 28px;
       padding: 0;
       border: 1px solid var(--border);
-      background: var(--white-3);
+      background: transparent;
       color: var(--text-secondary);
       cursor: pointer;
-      clip-path: var(--pm-clip-sm);
+      border-radius: var(--radius-xs);
       transition: var(--transition-quick);
-      transition-property: color, background, border-color, box-shadow;
+      transition-property: color, border-color;
       & svg {
         inline-size: var(--icon-xs);
         block-size: var(--icon-xs);
       }
       &:hover {
-        background: color-mix(in oklch, var(--risky) 15%, transparent);
-        border-color: var(--risky);
-        color: var(--risky);
-        box-shadow: var(--glow-sm) color-mix(in oklch, var(--risky) 30%, transparent);
+        border-color: var(--text-primary);
+        color: var(--text-primary);
       }
     }
     .body {
@@ -90,30 +81,27 @@
       padding-inline: var(--space-md);
       font-size: var(--text-sm);
       color: var(--text-secondary);
-      background: var(--black-80);
+      background: var(--bg-tertiary);
       border-block-start: 1px solid var(--border);
-      & code,
-      & .run-step {
+      & kbd {
         display: inline-flex;
         align-items: center;
-        padding-block: 0.25rem;
-        padding-inline: 0.6rem;
-        background: color-mix(in oklch, var(--cyber-yellow) 12%, transparent);
-        border: 1px solid color-mix(in oklch, var(--cyber-yellow) 40%, transparent);
-        clip-path: var(--pm-clip-xs);
+        padding-block: 0.2rem;
+        padding-inline: 0.5rem;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xs);
         font-family: var(--font-mono);
         font-size: var(--text-sm);
-        font-weight: 600;
-        color: var(--cyber-yellow);
+        color: var(--text-primary);
       }
     }
     .label {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-    .arrow {
       color: var(--text-secondary);
       font-weight: 500;
+    }
+    .arrow {
+      color: var(--text-hint);
     }
   }
 }
