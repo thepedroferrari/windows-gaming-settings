@@ -1919,6 +1919,22 @@
          }
        }
 
+       &.tt-right {
+         transform: translateX(-6px);
+
+         &.tt-visible {
+           transform: translateX(0);
+         }
+       }
+
+       &.tt-left {
+         transform: translateX(6px);
+
+         &.tt-visible {
+           transform: translateX(0);
+         }
+       }
+
        &.tt-rich {
          p {
            margin: 0 0 0.5em;
