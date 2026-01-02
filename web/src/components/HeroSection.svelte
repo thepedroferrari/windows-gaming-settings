@@ -28,6 +28,7 @@
     return {
       id,
       label: meta.label.toUpperCase(),
+      rarity: meta.rarity,
       isDefault: id === "gamer",
     };
   });
@@ -232,6 +233,7 @@
             type="button"
             class="profile-badge"
             class:profile-badge--default={badge.isDefault}
+            data-rarity={badge.rarity}
             onclick={() => selectAndScroll(badge.id)}
             onmousemove={handleBadgeMouseMove}
             onmouseleave={handleBadgeMouseLeave}
@@ -525,13 +527,17 @@
   }
 
   .profile-badge {
+    /* Rarity color variables - matched to card colors */
+    --rarity-color: oklch(0.55 0.03 102);
+    --rarity-glow: oklch(0.55 0.03 102 / 0.4);
+
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
     padding: var(--space-xs) var(--space-sm);
     background: none;
     border: none;
-    color: oklch(0.55 0.03 102);
+    color: var(--rarity-color);
     font-family: var(--font-display);
     font-size: 1.1rem;
     font-weight: 700;
@@ -546,6 +552,27 @@
       transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
+  /* Rarity-specific colors - high saturation for neon punch */
+  .profile-badge[data-rarity="legendary"] {
+    --rarity-color: oklch(0.82 0.18 85);
+    --rarity-glow: oklch(0.85 0.2 85 / 0.6);
+  }
+
+  .profile-badge[data-rarity="epic"] {
+    --rarity-color: oklch(0.72 0.24 300);
+    --rarity-glow: oklch(0.75 0.26 300 / 0.6);
+  }
+
+  .profile-badge[data-rarity="rare"] {
+    --rarity-color: oklch(0.8 0.18 220);
+    --rarity-glow: oklch(0.82 0.2 220 / 0.6);
+  }
+
+  .profile-badge[data-rarity="uncommon"] {
+    --rarity-color: oklch(0.78 0.2 155);
+    --rarity-glow: oklch(0.8 0.22 155 / 0.6);
+  }
+
   .profile-badge:not(:first-child)::before {
     content: "";
     width: 1px;
@@ -554,24 +581,29 @@
     background: linear-gradient(
       180deg,
       transparent 0%,
-      oklch(0.55 0.04 102 / 0.4) 20%,
-      oklch(0.62 0.06 102 / 0.55) 50%,
-      oklch(0.55 0.04 102 / 0.4) 80%,
+      oklch(0.4 0.02 285 / 0.5) 20%,
+      oklch(0.5 0.02 285 / 0.6) 50%,
+      oklch(0.4 0.02 285 / 0.5) 80%,
       transparent 100%
     );
-    box-shadow: 0 0 4px oklch(0.6 0.08 102 / 0.25);
+    box-shadow: 0 0 4px oklch(0.5 0.02 285 / 0.2);
   }
 
   .profile-badge:hover {
-    color: oklch(0.9 0.16 102);
-    text-shadow: 0 0 20px oklch(0.85 0.18 102 / 0.6);
+    text-shadow: 0 0 20px var(--rarity-glow);
+    filter: brightness(1.2);
   }
 
+  /* Default badge gets enhanced glow */
   .profile-badge--default {
-    color: oklch(0.92 0.18 102);
     text-shadow:
-      0 0 24px oklch(0.85 0.18 102 / 0.7),
-      0 0 40px oklch(0.85 0.18 102 / 0.3);
+      0 0 20px var(--rarity-glow),
+      0 0 40px var(--rarity-glow);
+    filter: brightness(1.15);
+  }
+
+  .profile-badge--default:hover {
+    filter: brightness(1.3);
   }
 
   .profile-badge:active {
@@ -929,12 +961,25 @@
       --fold-cyan: oklch(0.9 0.2 195);
     }
 
-    .profile-badge {
-      color: oklch(0.7 0.06 102);
+    /* Increase rarity color brightness for high contrast */
+    .profile-badge[data-rarity="legendary"] {
+      --rarity-color: oklch(0.85 0.16 85);
+    }
+
+    .profile-badge[data-rarity="epic"] {
+      --rarity-color: oklch(0.78 0.2 300);
+    }
+
+    .profile-badge[data-rarity="rare"] {
+      --rarity-color: oklch(0.85 0.16 220);
+    }
+
+    .profile-badge[data-rarity="uncommon"] {
+      --rarity-color: oklch(0.8 0.16 160);
     }
 
     .profile-badge--default {
-      color: oklch(0.98 0.2 102);
+      filter: brightness(1.25);
     }
   }
 </style>
