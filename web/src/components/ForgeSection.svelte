@@ -176,25 +176,6 @@
 
       <button
         type="button"
-        class="btn-verify"
-        title="Download verification script to check if optimizations were applied"
-        onclick={handleDownloadVerify}
-      >
-        <svg
-          class="icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M9 11l3 3L22 4" />
-          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-        </svg>
-        Verify Script
-      </button>
-
-      <button
-        type="button"
         class="btn-share"
         title="Share your build configuration"
         onclick={openShareModal}
@@ -313,13 +294,46 @@
         <div class="hash-panel">
           <span class="hash-panel__label">File Hash</span>
           <code class="hash-panel__value" title={checksum}>{checksum}</code>
-          <button
-            type="button"
-            class="hash-panel__btn"
-            title={copied ? "Copied!" : "Copy SHA-256 hash"}
-            onclick={handleCopyHash}
-          >
-            {#if copied}
+          <div class="hash-panel__actions">
+            <button
+              type="button"
+              class="hash-panel__btn"
+              title={copied ? "Copied!" : "Copy SHA-256 hash"}
+              onclick={handleCopyHash}
+            >
+              {#if copied}
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+                Copied
+              {:else}
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path
+                    d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                  />
+                </svg>
+                Copy Hash
+              {/if}
+            </button>
+            <button
+              type="button"
+              class="hash-panel__btn hash-panel__btn--verify"
+              title="Download verification script to check if optimizations were applied"
+              onclick={handleDownloadVerify}
+            >
               <svg
                 class="icon"
                 viewBox="0 0 24 24"
@@ -327,25 +341,12 @@
                 stroke="currentColor"
                 stroke-width="2"
               >
-                <path d="m9 12 2 2 4-4" />
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
               </svg>
-              Copied
-            {:else}
-              <svg
-                class="icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="9" y="9" width="13" height="13" rx="2" />
-                <path
-                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-                />
-              </svg>
-              Copy Hash
-            {/if}
-          </button>
+              Verify Script
+            </button>
+          </div>
         </div>
 
         <div class="verify-instructions">

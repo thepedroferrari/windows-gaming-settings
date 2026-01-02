@@ -46,6 +46,13 @@ deno task build
   [headers.values]
     Cache-Control = "no-store"
 
+# One-liner execution script for shared loadouts
+[[headers]]
+  for = "/run.ps1"
+  [headers.values]
+    Cache-Control = "no-store"
+    Content-Type = "text/plain; charset=utf-8"
+
 # Security headers
 [[headers]]
   for = "/*"

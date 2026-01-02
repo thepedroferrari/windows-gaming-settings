@@ -523,3 +523,123 @@ export function generateTextSummary(build: BuildToEncode): string {
 
   return lines.join('\n')
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Compact URL Encoding for PowerShell One-Liner
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Encode build state into compact query parameters for PowerShell one-liner
+ *
+ * Format: c=1&g=1&d=1&o=1,2,3&s=steam,discord&p=1,2&m=1
+ *
+ * This format can be parsed natively by PowerShell without LZ-string decompression.
+ * LUDICROUS optimizations are filtered out for security.
+ *
+ * @param build - Current build state
+ * @returns Query string (without leading ?)
+ */
+export function encodeCompactURL(build: BuildToEncode): string {
+  const params = new URLSearchParams()
+
+  // Hardware profile
+  if (build.cpu) {
+    params.set('c', String(CPU_VALUE_TO_ID[build.cpu]))
+  }
+  if (build.gpu) {
+    params.set('g', String(GPU_VALUE_TO_ID[build.gpu]))
+  }
+  if (build.dnsProvider) {
+    params.set('d', String(DNS_VALUE_TO_ID[build.dnsProvider]))
+  }
+
+  // Peripherals (comma-separated IDs)
+  if (build.peripherals.length > 0) {
+    const ids = build.peripherals.map((p) => PERIPHERAL_VALUE_TO_ID[p]).filter(Boolean)
+    if (ids.length > 0) {
+      params.set('p', ids.join(','))
+    }
+  }
+
+  // Monitor software (comma-separated IDs)
+  if (build.monitorSoftware.length > 0) {
+    const ids = build.monitorSoftware.map((m) => MONITOR_VALUE_TO_ID[m]).filter(Boolean)
+    if (ids.length > 0) {
+      params.set('m', ids.join(','))
+    }
+  }
+
+  // Optimizations (comma-separated IDs, LUDICROUS filtered)
+  if (build.optimizations.length > 0) {
+    const { safe } = filterBlockedOptimizations(build.optimizations)
+    if (safe.length > 0) {
+      const ids = safe.map((o) => OPT_VALUE_TO_ID[o]).filter((id) => id !== undefined)
+      if (ids.length > 0) {
+        params.set('o', ids.join(','))
+      }
+    }
+  }
+
+  // Packages (comma-separated keys - strings, not IDs)
+  if (build.packages.length > 0) {
+    params.set('s', build.packages.join(','))
+  }
+
+  return params.toString()
+}
+
+/**
+ * Result of generating a one-liner command
+ */
+export interface OneLinerResult {
+  /** Full PowerShell command: irm "url" | iex */
+  command: string
+  /** Just the URL portion */
+  url: string
+  /** URL length in characters */
+  urlLength: number
+  /** True if URL exceeds safe length */
+  urlTooLong: boolean
+  /** Number of LUDICROUS optimizations excluded */
+  blockedCount: number
+}
+
+/**
+ * Generate PowerShell one-liner command for direct execution
+ *
+ * @example
+ * irm "https://rocktune.pedroferrari.com/run.ps1?c=1&g=1&o=1,2,10" | iex
+ *
+ * @param build - Current build state
+ * @returns OneLinerResult with command and metadata
+ */
+export function getOneLinerWithMeta(build: BuildToEncode): OneLinerResult {
+  const { blockedCount } = filterBlockedOptimizations(build.optimizations)
+  const queryString = encodeCompactURL(build)
+
+  // Build URL
+  const baseURL =
+    typeof window !== 'undefined' ? window.location.origin : 'https://rocktune.pedroferrari.com'
+  const url = queryString ? `${baseURL}/run.ps1?${queryString}` : `${baseURL}/run.ps1`
+
+  // Build command
+  const command = `irm "${url}" | iex`
+
+  return {
+    command,
+    url,
+    urlLength: url.length,
+    urlTooLong: url.length > URL_LENGTH_WARNING_THRESHOLD,
+    blockedCount,
+  }
+}
+
+/**
+ * Generate PowerShell one-liner command (simple version)
+ *
+ * @param build - Current build state
+ * @returns PowerShell command string
+ */
+export function getOneLinerCommand(build: BuildToEncode): string {
+  return getOneLinerWithMeta(build).command
+}

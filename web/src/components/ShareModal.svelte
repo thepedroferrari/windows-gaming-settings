@@ -12,8 +12,10 @@
   import {
     getFullShareURLWithMeta,
     generateTextSummary,
+    getOneLinerWithMeta,
     type BuildToEncode,
     type EncodeResult,
+    type OneLinerResult,
   } from '$lib/share'
   import { copyToClipboard } from '$lib/checksum'
   import { showToast } from '$lib/toast.svelte'
@@ -27,7 +29,8 @@
 
   let urlCopied = $state(false)
   let textCopied = $state(false)
-  let activeTab = $state<'url' | 'text'>('url')
+  let oneLinerCopied = $state(false)
+  let activeTab = $state<'url' | 'oneliner' | 'text'>('url')
 
   // Build current state for encoding
   let currentBuild = $derived<BuildToEncode>({
@@ -46,6 +49,10 @@
   let shareURL = $derived(shareResult.url)
   let textSummary = $derived(generateTextSummary(currentBuild))
 
+  // Get one-liner command for PowerShell execution
+  let oneLinerResult = $derived<OneLinerResult>(getOneLinerWithMeta(currentBuild))
+  let oneLinerCommand = $derived(oneLinerResult.command)
+
   // Svelte 5: Auto-reset copied states with proper cleanup
   $effect(() => {
     if (!urlCopied) return
@@ -56,6 +63,12 @@
   $effect(() => {
     if (!textCopied) return
     const timer = setTimeout(() => (textCopied = false), 2000)
+    return () => clearTimeout(timer)
+  })
+
+  $effect(() => {
+    if (!oneLinerCopied) return
+    const timer = setTimeout(() => (oneLinerCopied = false), 2000)
     return () => clearTimeout(timer)
   })
 
@@ -72,6 +85,14 @@
     if (success) {
       textCopied = true
       showToast('Text summary copied!', 'success')
+    }
+  }
+
+  async function handleCopyOneLiner() {
+    const success = await copyToClipboard(oneLinerCommand)
+    if (success) {
+      oneLinerCopied = true
+      showToast('One-liner command copied!', 'success')
     }
   }
 
@@ -150,6 +171,20 @@
           type="button"
           role="tab"
           class="share-tab"
+          class:active={activeTab === 'oneliner'}
+          aria-selected={activeTab === 'oneliner'}
+          onclick={() => (activeTab = 'oneliner')}
+        >
+          <svg class="share-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5" />
+            <line x1="12" y1="19" x2="20" y2="19" />
+          </svg>
+          One-Liner
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="share-tab"
           class:active={activeTab === 'text'}
           aria-selected={activeTab === 'text'}
           onclick={() => (activeTab = 'text')}
@@ -223,6 +258,59 @@
             {:else}
               <p class="share-panel__hint">
                 Works on Discord, Reddit, Twitter, and anywhere else you can paste a link.
+              </p>
+            {/if}
+          </div>
+        {:else if activeTab === 'oneliner'}
+          <div class="share-panel" role="tabpanel">
+            <p class="share-panel__desc">
+              Run directly in PowerShell (Admin) on a fresh Windows install — no browser needed.
+            </p>
+            <div class="share-oneliner-box">
+              <pre class="share-oneliner-code">{oneLinerCommand}</pre>
+              <button
+                type="button"
+                class="share-oneliner-copy"
+                class:copied={oneLinerCopied}
+                onclick={handleCopyOneLiner}
+              >
+                {#if oneLinerCopied}
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  Copied!
+                {:else}
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  Copy Command
+                {/if}
+              </button>
+            </div>
+            {#if oneLinerResult.blockedCount > 0}
+              <div class="share-panel__security-notice">
+                <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>
+                  {oneLinerResult.blockedCount} dangerous optimization{oneLinerResult.blockedCount > 1 ? 's' : ''} excluded for security.
+                </span>
+              </div>
+            {/if}
+            {#if oneLinerResult.urlTooLong}
+              <p class="share-panel__warning">
+                <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                URL is {oneLinerResult.urlLength} chars — reduce selections if command fails.
+              </p>
+            {:else}
+              <p class="share-panel__hint">
+                Paste in Admin PowerShell to apply your loadout instantly.
               </p>
             {/if}
           </div>
@@ -496,6 +584,58 @@
     width: 16px;
     height: 16px;
     margin-top: 1px;
+  }
+
+  .share-oneliner-box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+  }
+
+  .share-oneliner-code {
+    padding: var(--space-md);
+    margin: 0;
+    background: oklch(0.08 0.01 250);
+    border: 1px solid oklch(0.25 0.03 250);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: oklch(0.85 0.15 145);
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+
+  .share-oneliner-copy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    background: oklch(0.6 0.18 145);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: oklch(0.1 0.02 145);
+    cursor: pointer;
+    transition: background-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .share-oneliner-copy:hover {
+    background: oklch(0.65 0.18 145);
+  }
+
+  .share-oneliner-copy.copied {
+    background: oklch(0.6 0.18 145);
+  }
+
+  .share-oneliner-copy .icon {
+    width: 16px;
+    height: 16px;
   }
 
   .share-text-box {
