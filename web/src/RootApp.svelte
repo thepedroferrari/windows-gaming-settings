@@ -386,15 +386,77 @@
     <PresetSection />
   </section>
 
+  <nav class="wizard-nav" aria-label="Continue to Hardware">
+    <a
+      href="#hardware"
+      class="wizard-next-btn"
+      onclick={(e) => {
+        e.preventDefault();
+        document.getElementById('hardware')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }}
+    >
+      <span class="wizard-next-text">Next: Hardware</span>
+      <svg class="wizard-next-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </a>
+  </nav>
+
   <HardwareSection />
 
+  <nav class="wizard-nav" aria-label="Continue to Peripherals">
+    <a
+      href="#peripherals"
+      class="wizard-next-btn"
+      onclick={(e) => {
+        e.preventDefault();
+        document.getElementById('peripherals')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }}
+    >
+      <span class="wizard-next-text">Next: Peripherals</span>
+      <svg class="wizard-next-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </a>
+  </nav>
 
-    <PeripheralsSection />
+  <PeripheralsSection />
 
+  <nav class="wizard-nav" aria-label="Continue to Tweaks">
+    <a
+      href="#optimizations"
+      class="wizard-next-btn"
+      onclick={(e) => {
+        e.preventDefault();
+        document.getElementById('optimizations')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }}
+    >
+      <span class="wizard-next-text">Next: Tweaks</span>
+      <svg class="wizard-next-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </a>
+  </nav>
 
-    <OptimizationsSection />
+  <OptimizationsSection />
 
-    <section id="software" class="step step--arsenal">
+  <nav class="wizard-nav" aria-label="Continue to Arsenal">
+    <a
+      href="#software"
+      class="wizard-next-btn"
+      onclick={(e) => {
+        e.preventDefault();
+        document.getElementById('software')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }}
+    >
+      <span class="wizard-next-text">Next: Arsenal</span>
+      <svg class="wizard-next-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </a>
+  </nav>
+
+  <section id="software" class="step step--arsenal">
     <header class="step-banner">
       <div class="step-banner__marker">4</div>
       <div class="step-banner__content">
@@ -446,25 +508,24 @@
     {:else}
       <Filters {recommendedPreset} />
       <SoftwareGrid />
-
-      <!-- RTFB-301: Wizard Next button -->
-      <div class="wizard-next-container">
-        <a
-          href="#generate"
-          class="wizard-next-btn"
-          onclick={(e) => {
-            e.preventDefault();
-            document.getElementById('generate')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }}
-        >
-          <span class="wizard-next-text">Next: Forge Script</span>
-          <svg class="wizard-next-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </a>
-      </div>
     {/if}
-    </section>
+  </section>
+
+  <nav class="wizard-nav" aria-label="Continue to Forge">
+    <a
+      href="#generate"
+      class="wizard-next-btn"
+      onclick={(e) => {
+        e.preventDefault();
+        document.getElementById('generate')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }}
+    >
+      <span class="wizard-next-text">Next: Forge Script</span>
+      <svg class="wizard-next-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </a>
+  </nav>
 
   <ForgeSection />
 

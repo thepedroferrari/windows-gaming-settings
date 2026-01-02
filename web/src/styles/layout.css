@@ -15,7 +15,8 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .step:last-child {
+  .step:last-child,
+  .step:has(+ .wizard-nav) {
     border-bottom: none;
   }
 

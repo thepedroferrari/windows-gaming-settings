@@ -1,5 +1,6 @@
 @layer overrides {
   @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -9,22 +10,26 @@
       scroll-behavior: auto;
     }
   }
+
   #quick-start.step {
     position: relative;
-    padding: var(--space-xl) 0;
+    padding: var(--space-2xl) 0;
     margin-top: var(--space-sm);
     border-radius: 0;
     clip-path: none;
     overflow: visible;
   }
+
   #quick-start.step::before,
   #quick-start.step::after {
     content: none;
   }
+
   #quick-start.step>* {
     position: relative;
     z-index: 1;
   }
+
   #quick-start.step .step-desc {
     position: relative;
     padding-left: 0;
@@ -39,6 +44,7 @@
     margin-right: auto;
     margin-bottom: var(--space-md);
   }
+
   #quick-start.step .step-desc::before {
     content: "";
     position: absolute;
@@ -53,6 +59,7 @@
     transform: translateX(-50%) skewX(-25deg);
     box-shadow: 0 0 8px var(--neon-cyan-glow);
   }
+
   #quick-start.step h2 {
     isolation: isolate;
     font-family: var(--font-display);
@@ -69,13 +76,16 @@
       0 0 24px color-mix(in oklch, var(--accent) 20%, transparent);
     text-wrap: balance;
   }
+
   @media (max-width: 900px) {
     #quick-start.step {
       padding: var(--space-lg) 0;
     }
+
     #quick-start.step h2 {
       letter-spacing: 0.1em;
     }
+
     #quick-start.step .step-desc {
       font-size: 0.82rem;
       letter-spacing: 0.08em;

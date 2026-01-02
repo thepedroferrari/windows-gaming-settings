@@ -29,7 +29,7 @@
     { href: "#optimizations", label: "Tweaks", step: 3 },
     { href: "#software", label: "Software", step: 4 },
     { href: "#generate", label: "Forge", step: 5 },
-    { href: "#manual-guide", label: "Guide", step: 6 },
+    { href: "#guide", label: "Guide", step: 6 },
   ];
 
   let activeStep = $state(0);
@@ -92,13 +92,17 @@
   }
 </script>
 
-<nav class="unified-nav" class:menu-open={menuOpen} aria-label="Main navigation">
+<nav
+  class="unified-nav"
+  class:menu-open={menuOpen}
+  aria-label="Main navigation"
+>
   <!-- RockTune logo/wordmark -->
   <button
     type="button"
     class="nav-brand"
     aria-label="RockTune - Back to top"
-    onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+    onclick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
   >
     <svg class="brand-icon" viewBox="0 0 24 24" fill="currentColor">
       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -126,9 +130,15 @@
     type="button"
     class="btn-share btn-share--desktop"
     title="Share your build configuration"
-    onclick={() => shareModalOpen = true}
+    onclick={() => (shareModalOpen = true)}
   >
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <svg
+      class="icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
       <circle cx="18" cy="5" r="3" />
       <circle cx="6" cy="12" r="3" />
       <circle cx="18" cy="19" r="3" />
@@ -149,12 +159,16 @@
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
-    <span class="sr-only">{menuOpen ? 'Close' : 'Open'} menu</span>
+    <span class="sr-only">{menuOpen ? "Close" : "Open"} menu</span>
   </button>
 
   <!-- Mobile: Dropdown menu -->
   {#if menuOpen}
-    <div class="mobile-menu" id="mobile-menu" transition:slide={{ duration: 200 }}>
+    <div
+      class="mobile-menu"
+      id="mobile-menu"
+      transition:slide={{ duration: 200 }}
+    >
       {#each NAV_LINKS as link (link.step)}
         <a
           href={link.href}
@@ -167,7 +181,13 @@
       {/each}
       <hr class="mobile-divider" />
       <button type="button" class="mobile-share" onclick={handleMobileShare}>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <circle cx="18" cy="5" r="3" />
           <circle cx="6" cy="12" r="3" />
           <circle cx="18" cy="19" r="3" />
@@ -194,6 +214,4 @@
   {/if}
 </nav>
 
-<ShareModal open={shareModalOpen} onclose={() => shareModalOpen = false} />
-
-
+<ShareModal open={shareModalOpen} onclose={() => (shareModalOpen = false)} />

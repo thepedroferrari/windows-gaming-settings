@@ -85,19 +85,3 @@
   </div>
 {/if}
 
-<!-- RTFB-301: Wizard Next button -->
-<div class="wizard-next-container">
-  <a
-    href="#hardware"
-    class="wizard-next-btn"
-    onclick={(e) => {
-      e.preventDefault();
-      document.getElementById('hardware')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }}
-  >
-    <span class="wizard-next-text">Next: Hardware</span>
-    <svg class="wizard-next-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  </a>
-</div>
