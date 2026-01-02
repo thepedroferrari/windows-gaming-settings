@@ -153,33 +153,65 @@ function formatInline(text: string): string {
 
 /**
  * Position the tooltip relative to the trigger element
+ * Opens to the RIGHT for left-side triggers, LEFT for right-side triggers
  */
 function positionTooltip(tooltip: HTMLElement, trigger: HTMLElement): void {
   const triggerRect = trigger.getBoundingClientRect()
   const tooltipRect = tooltip.getBoundingClientRect()
   const viewportWidth = window.innerWidth
   const viewportHeight = window.innerHeight
+  const padding = 16
 
-  let top = triggerRect.bottom + config.offset
-  let left = triggerRect.left
+  // Determine if trigger is on left or right half of viewport
+  const triggerCenter = triggerRect.left + triggerRect.width / 2
+  const isOnLeftSide = triggerCenter < viewportWidth / 2
 
-  const centeredLeft = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2
+  // Clear previous positioning classes
+  tooltip.classList.remove('tt-above', 'tt-left', 'tt-right')
 
-  if (centeredLeft >= 16 && centeredLeft + tooltipRect.width <= viewportWidth - 16) {
-    left = centeredLeft
-  } else if (left + tooltipRect.width > viewportWidth - 16) {
-    left = triggerRect.right - tooltipRect.width
-  }
+  let top: number
+  let left: number
 
-  if (left < 16) {
-    left = 16
-  }
-
-  if (top + tooltipRect.height > viewportHeight - 16) {
-    top = triggerRect.top - tooltipRect.height - config.offset
-    tooltip.classList.add('tt-above')
+  if (isOnLeftSide) {
+    // Trigger on LEFT → tooltip opens to the RIGHT
+    left = triggerRect.right + config.offset
+    tooltip.classList.add('tt-right')
   } else {
-    tooltip.classList.remove('tt-above')
+    // Trigger on RIGHT → tooltip opens to the LEFT
+    left = triggerRect.left - tooltipRect.width - config.offset
+    tooltip.classList.add('tt-left')
+  }
+
+  // Vertically center tooltip relative to trigger
+  top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2
+
+  // Keep within viewport bounds (vertical)
+  if (top < padding) {
+    top = padding
+  } else if (top + tooltipRect.height > viewportHeight - padding) {
+    top = viewportHeight - tooltipRect.height - padding
+  }
+
+  // Fallback: if tooltip doesn't fit horizontally, position below instead
+  if (left < padding || left + tooltipRect.width > viewportWidth - padding) {
+    tooltip.classList.remove('tt-left', 'tt-right')
+    left = triggerRect.left
+    top = triggerRect.bottom + config.offset
+
+    // Center horizontally if possible
+    const centeredLeft = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2
+    if (centeredLeft >= padding && centeredLeft + tooltipRect.width <= viewportWidth - padding) {
+      left = centeredLeft
+    } else if (left + tooltipRect.width > viewportWidth - padding) {
+      left = triggerRect.right - tooltipRect.width
+    }
+    if (left < padding) left = padding
+
+    // If overflows bottom, position above
+    if (top + tooltipRect.height > viewportHeight - padding) {
+      top = triggerRect.top - tooltipRect.height - config.offset
+      tooltip.classList.add('tt-above')
+    }
   }
 
   tooltip.style.top = `${top + window.scrollY}px`
