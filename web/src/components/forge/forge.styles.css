@@ -65,6 +65,8 @@
         linear-gradient(180deg,
           oklch(0.15 0.03 102 / 0.95) 0%,
           oklch(0.12 0.02 102 / 0.85) 100%);
+      background-size: 200px 200px, 100% 100%, 100% 100%;
+      background-repeat: repeat, no-repeat, no-repeat;
       background-blend-mode: overlay, normal, normal;
       border: 2px solid oklch(0.85 0.18 102 / 0.6);
       border-radius: var(--radius-sm);
@@ -594,6 +596,8 @@
         linear-gradient(180deg,
           oklch(0.15 0.025 160) 0%,
           oklch(0.12 0.015 160) 100%);
+      background-size: 200px 200px, 100% 100%, 100% 100%;
+      background-repeat: repeat, no-repeat, no-repeat;
       background-blend-mode: overlay, normal, normal;
       border: 1px solid oklch(0.55 0.12 160 / 0.5);
       border-radius: var(--radius-sm);
@@ -1113,9 +1117,9 @@
   /* Benchmarking Tips Section */
   .benchmark-tips {
     margin-block-start: var(--space-lg);
-    border: 1px solid oklch(0.5 0.12 195 / 0.3);
+    border: 1px solid oklch(0.3 0 0 / 0.4);
     border-radius: var(--radius-xs);
-    background: oklch(0.1 0.01 195);
+    background: oklch(0.12 0 0 / 0.5);
   }
 
   .benchmark-tips__summary {
@@ -1124,7 +1128,7 @@
     font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: var(--tracking-wide);
-    color: oklch(0.7 0.12 195);
+    color: oklch(0.55 0 0);
     cursor: pointer;
     user-select: none;
     list-style: none;
@@ -1135,8 +1139,8 @@
     transition-property: color, background;
 
     &:hover {
-      color: oklch(0.8 0.14 195);
-      background: oklch(0.5 0.12 195 / 0.08);
+      color: oklch(0.65 0 0);
+      background: oklch(0.2 0 0 / 0.3);
     }
 
     &::marker {
@@ -1163,17 +1167,17 @@
 
   .benchmark-tips__content {
     padding: var(--space-md);
-    border-block-start: 1px solid oklch(0.5 0.12 195 / 0.2);
+    border-block-start: 1px solid oklch(0.3 0 0 / 0.3);
   }
 
   .benchmark-tips__intro {
     margin: 0 0 var(--space-md);
     font-size: var(--text-sm);
-    color: oklch(0.75 0 0);
+    color: oklch(0.6 0 0);
     line-height: 1.5;
 
     em {
-      color: oklch(0.8 0.12 195);
+      color: oklch(0.7 0 0);
       font-style: normal;
     }
   }
@@ -1189,7 +1193,7 @@
     display: flex;
     gap: var(--space-md);
     padding: var(--space-sm);
-    background: oklch(0.5 0.08 195 / 0.05);
+    background: oklch(0.15 0 0 / 0.3);
     border-radius: var(--radius-xs);
   }
 
@@ -1202,9 +1206,9 @@
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     font-weight: 700;
-    color: oklch(0.8 0.12 195);
-    background: oklch(0.5 0.12 195 / 0.15);
-    border: 1px solid oklch(0.5 0.12 195 / 0.3);
+    color: oklch(0.6 0 0);
+    background: oklch(0.2 0 0 / 0.4);
+    border: 1px solid oklch(0.3 0 0 / 0.4);
     border-radius: var(--radius-xs);
     flex-shrink: 0;
   }
@@ -1215,14 +1219,14 @@
     strong {
       display: block;
       font-size: var(--text-sm);
-      color: oklch(0.85 0.1 195);
+      color: oklch(0.65 0 0);
       margin-block-end: 2px;
     }
 
     p {
       margin: 0;
       font-size: var(--text-xs);
-      color: oklch(0.65 0 0);
+      color: oklch(0.55 0 0);
       line-height: 1.4;
     }
   }
@@ -1233,12 +1237,12 @@
     align-items: center;
     gap: var(--space-sm);
     padding-block-start: var(--space-md);
-    border-block-start: 1px solid oklch(0.5 0.12 195 / 0.2);
+    border-block-start: 1px solid oklch(0.3 0 0 / 0.3);
   }
 
   .benchmark-tools__label {
     font-size: var(--text-xs);
-    color: oklch(0.55 0 0);
+    color: oklch(0.5 0 0);
   }
 
   .benchmark-tool {
@@ -1246,17 +1250,17 @@
     font-size: var(--text-xs);
     font-weight: 500;
     padding: 4px 8px;
-    background: oklch(0.5 0.12 195 / 0.1);
-    border: 1px solid oklch(0.5 0.12 195 / 0.3);
+    background: oklch(0.18 0 0 / 0.4);
+    border: 1px solid oklch(0.3 0 0 / 0.4);
     border-radius: var(--radius-xs);
-    color: oklch(0.7 0.12 195);
+    color: oklch(0.55 0 0);
     text-decoration: none;
     transition: all var(--transition-fast);
 
     &:hover {
-      background: oklch(0.5 0.12 195 / 0.2);
-      border-color: oklch(0.6 0.12 195 / 0.5);
-      color: oklch(0.85 0.12 195);
+      background: oklch(0.22 0 0 / 0.5);
+      border-color: oklch(0.4 0 0 / 0.5);
+      color: oklch(0.7 0 0);
     }
   }
 

@@ -607,3 +607,224 @@ export function getOneLinerWithMeta(build: BuildToEncode): OneLinerResult {
 export function getOneLinerCommand(build: BuildToEncode): string {
   return getOneLinerWithMeta(build).command
 }
+
+/**
+ * Platform-specific share text formats
+ */
+export interface PlatformShareText {
+  twitter: string
+  reddit: string
+  discord: string
+}
+
+/**
+ * Human-readable labels for CPU types
+ */
+const CPU_LABELS: Record<string, string> = {
+  amd_x3d: 'AMD X3D',
+  amd: 'AMD',
+  intel: 'Intel',
+}
+
+/**
+ * Human-readable labels for GPU types
+ */
+const GPU_LABELS: Record<string, string> = {
+  nvidia: 'NVIDIA',
+  amd: 'AMD',
+  intel: 'Intel',
+}
+
+/**
+ * Human-readable labels for preset types
+ */
+const PRESET_LABELS: Record<string, string> = {
+  benchmarker: 'Benchmarker',
+  pro_gamer: 'Pro Gamer',
+  streamer: 'Streamer',
+  gamer: 'Gamer',
+}
+
+/**
+ * Generate Twitter-optimized share text (280 char limit)
+ * Format: Short, punchy, with hashtags
+ */
+export function generateTwitterText(build: BuildToEncode): string {
+  const url = getFullShareURL(build)
+  const parts: string[] = []
+
+  // Hardware (compact)
+  const hw = [CPU_LABELS[build.cpu] || build.cpu, GPU_LABELS[build.gpu] || build.gpu]
+    .filter(Boolean)
+    .join(' + ')
+  if (hw) parts.push(hw)
+
+  // Preset badge
+  if (build.preset) {
+    parts.push(`[${PRESET_LABELS[build.preset] || build.preset}]`)
+  }
+
+  // Stats
+  const stats: string[] = []
+  if (build.optimizations.length > 0) stats.push(`${build.optimizations.length} tweaks`)
+  if (build.packages.length > 0) stats.push(`${build.packages.length} apps`)
+  if (stats.length > 0) parts.push(stats.join(', '))
+
+  const tagline = 'My Windows gaming loadout'
+  const hashtags = '#RockTune #WindowsGaming'
+
+  // Build message, respecting 280 char limit minus URL length
+  // Twitter counts URLs as 23 chars regardless of actual length
+  const maxTextLength = 280 - 23 - 2 // URL + space + buffer
+  let text = `${tagline} (${parts.join(' · ')})`
+
+  if (text.length + hashtags.length + 1 <= maxTextLength) {
+    text = `${text} ${hashtags}`
+  }
+
+  if (text.length > maxTextLength) {
+    text = text.slice(0, maxTextLength - 3) + '...'
+  }
+
+  return `${text}\n${url}`
+}
+
+/**
+ * Generate Reddit-optimized share text (Markdown format)
+ * Format: Table with specs, code block for command
+ */
+export function generateRedditText(build: BuildToEncode): string {
+  const url = getFullShareURL(build)
+  const lines: string[] = []
+
+  // Title
+  const presetLabel = build.preset ? ` [${PRESET_LABELS[build.preset] || build.preset}]` : ''
+  lines.push(`## My RockTune Build${presetLabel}`)
+  lines.push('')
+
+  // Specs table
+  lines.push('| Setting | Value |')
+  lines.push('|---------|-------|')
+
+  if (build.cpu) {
+    lines.push(`| CPU | ${CPU_LABELS[build.cpu] || build.cpu} |`)
+  }
+  if (build.gpu) {
+    lines.push(`| GPU | ${GPU_LABELS[build.gpu] || build.gpu} |`)
+  }
+  if (build.dnsProvider) {
+    lines.push(`| DNS | ${build.dnsProvider.charAt(0).toUpperCase() + build.dnsProvider.slice(1)} |`)
+  }
+  if (build.optimizations.length > 0) {
+    lines.push(`| Optimizations | ${build.optimizations.length} enabled |`)
+  }
+  if (build.packages.length > 0) {
+    lines.push(`| Software | ${build.packages.length} packages |`)
+  }
+  if (build.peripherals.length > 0) {
+    lines.push(
+      `| Peripherals | ${build.peripherals.map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(', ')} |`
+    )
+  }
+
+  lines.push('')
+  lines.push(`**Import link:** ${url}`)
+  lines.push('')
+  lines.push('---')
+  lines.push('*Built with [RockTune](https://rocktune.pedroferrari.com) — Windows gaming loadout builder*')
+
+  return lines.join('\n')
+}
+
+/**
+ * Generate Discord-optimized share text
+ * Format: Embed-friendly with code blocks
+ */
+export function generateDiscordText(build: BuildToEncode): string {
+  const url = getFullShareURL(build)
+  const lines: string[] = []
+
+  // Header with preset
+  const presetLabel = build.preset ? ` · ${PRESET_LABELS[build.preset] || build.preset}` : ''
+  lines.push(`**RockTune Build**${presetLabel}`)
+
+  // Hardware line
+  const hw = [CPU_LABELS[build.cpu] || build.cpu, GPU_LABELS[build.gpu] || build.gpu]
+    .filter(Boolean)
+    .join(' + ')
+  if (hw) lines.push(`> ${hw}`)
+
+  // Stats
+  const stats: string[] = []
+  if (build.optimizations.length > 0) stats.push(`${build.optimizations.length} optimizations`)
+  if (build.packages.length > 0) stats.push(`${build.packages.length} packages`)
+  if (stats.length > 0) lines.push(`> ${stats.join(' · ')}`)
+
+  lines.push('')
+  lines.push(url)
+
+  return lines.join('\n')
+}
+
+/**
+ * Generate all platform-specific share texts
+ */
+export function generatePlatformTexts(build: BuildToEncode): PlatformShareText {
+  return {
+    twitter: generateTwitterText(build),
+    reddit: generateRedditText(build),
+    discord: generateDiscordText(build),
+  }
+}
+
+/**
+ * Build summary for preview card
+ */
+export interface BuildSummary {
+  cpu: string
+  gpu: string
+  preset: string | null
+  optimizationCount: number
+  packageCount: number
+  peripheralCount: number
+}
+
+/**
+ * Generate build summary for preview card
+ */
+export function getBuildSummary(build: BuildToEncode): BuildSummary {
+  return {
+    cpu: CPU_LABELS[build.cpu] || build.cpu || 'Not set',
+    gpu: GPU_LABELS[build.gpu] || build.gpu || 'Not set',
+    preset: build.preset ? (PRESET_LABELS[build.preset] || build.preset) : null,
+    optimizationCount: build.optimizations.length,
+    packageCount: build.packages.length,
+    peripheralCount: build.peripherals.length,
+  }
+}
+
+/**
+ * Social share URL generators
+ */
+export interface SocialShareURLs {
+  twitter: string
+  reddit: string
+  linkedin: string
+}
+
+/**
+ * Generate social media share URLs
+ */
+export function getSocialShareURLs(build: BuildToEncode): SocialShareURLs {
+  const shareURL = getFullShareURL(build)
+  const twitterText = generateTwitterText(build).replace(`\n${shareURL}`, '') // Remove URL from text, Twitter adds it
+
+  const presetLabel = build.preset ? ` [${PRESET_LABELS[build.preset] || build.preset}]` : ''
+  const title = `My RockTune Windows Gaming Loadout${presetLabel}`
+
+  return {
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareURL)}`,
+    reddit: `https://reddit.com/submit?url=${encodeURIComponent(shareURL)}&title=${encodeURIComponent(title)}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareURL)}`,
+  }
+}
