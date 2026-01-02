@@ -54,18 +54,26 @@
 
     const observer = new IntersectionObserver(
       (entries) => {
+        let topSection: { index: number; top: number } | null = null;
+
         for (const entry of entries) {
           if (entry.isIntersecting && entry.target instanceof HTMLElement) {
             const index = sections.indexOf(entry.target);
-            if (index !== -1) {
-              activeStep = index;
+            const top = entry.boundingClientRect.top;
+
+            if (index !== -1 && (topSection === null || top < topSection.top)) {
+              topSection = { index, top };
             }
           }
         }
+
+        if (topSection !== null) {
+          activeStep = topSection.index;
+        }
       },
       {
-        threshold: 0.3,
-        rootMargin: "-80px 0px -50% 0px",
+        threshold: 0.1,
+        rootMargin: "-80px 0px -20% 0px",
       },
     );
 
