@@ -462,10 +462,6 @@
     cursor: pointer;
   }
 
-  .proof-chip--static {
-    cursor: default;
-  }
-
   .chip-icon {
     width: 14px;
     height: 14px;
@@ -599,19 +595,6 @@
     color: var(--fold-ink-muted);
     margin: var(--space-sm) 0 0;
     animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
-  }
-
-  .trust-line a {
-    color: var(--fold-cyan);
-    text-decoration: none;
-    transition:
-      color 0.15s ease,
-      text-shadow 0.15s ease;
-  }
-
-  .trust-line a:hover {
-    color: var(--fold-accent);
-    text-shadow: 0 0 10px var(--fold-accent-glow);
   }
 
   .hero-card {

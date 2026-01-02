@@ -3,7 +3,7 @@
     :scope {
       --nav-height: 44px;
       --nav-height-mobile: 40px;
-      
+
       --nav-accent: oklch(0.85 0.18 102);
       --nav-accent-dim: oklch(0.75 0.14 102);
       --nav-accent-glow: oklch(0.85 0.18 102 / 0.4);
@@ -20,12 +20,9 @@
       align-items: center;
       justify-content: space-between;
       block-size: var(--nav-height);
-      padding-inline: var(--space-lg);
-      background: linear-gradient(
-        180deg,
-        color-mix(in oklch, oklch(0.08 0.02 102) 98%, transparent) 0%,
-        color-mix(in oklch, oklch(0.06 0.015 102) 95%, transparent) 100%
-      );
+      background: linear-gradient(180deg,
+          color-mix(in oklch, oklch(0.08 0.02 102) 98%, transparent) 0%,
+          color-mix(in oklch, oklch(0.06 0.015 102) 95%, transparent) 100%);
       backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
       border-block-end: 1px solid color-mix(in oklch, var(--nav-accent) 35%, var(--border));
       box-shadow:
@@ -33,7 +30,7 @@
         inset 0 -1px 0 var(--white-5);
     }
 
-    
+
     .nav-brand {
       display: flex;
       align-items: center;
@@ -52,9 +49,11 @@
       cursor: pointer;
       transition: all var(--nav-transition);
       flex-shrink: 0;
+
       &:hover {
         color: oklch(0.95 0.18 102);
         text-shadow: 0 0 16px oklch(0.85 0.18 102 / 0.7);
+
         .brand-icon {
           filter: drop-shadow(0 0 10px oklch(0.85 0.18 102 / 0.8));
           transform: scale(1.05);
@@ -71,12 +70,12 @@
     }
 
     .brand-text {
-      @media (width <= 480px) {
-        display: none;
+      @media (width <=480px) {
+        font-size: var(--text-sm);
       }
     }
 
-    
+
     .links {
       display: flex;
       align-items: center;
@@ -87,7 +86,7 @@
     }
 
     .links--desktop {
-      @media (width <= 768px) {
+      @media (width <=768px) {
         display: none;
       }
     }
@@ -112,11 +111,13 @@
       transition-property: color, background, border-color, box-shadow, text-shadow;
       white-space: nowrap;
       position: relative;
+
       &:hover {
         color: oklch(0.92 0.14 102);
         background: oklch(0.85 0.18 102 / 0.15);
         border-color: oklch(0.85 0.18 102 / 0.4);
       }
+
       &[aria-current="true"],
       &.active {
         background: linear-gradient(135deg, oklch(0.92 0.18 102) 0%, oklch(0.85 0.16 102) 100%);
@@ -127,6 +128,7 @@
           inset 0 1px 0 var(--white-15);
         text-shadow: none;
         font-weight: 700;
+
         &::after {
           content: "";
           position: absolute;
@@ -138,7 +140,7 @@
       }
     }
 
-    
+
     .btn-share {
       display: inline-flex;
       align-items: center;
@@ -156,11 +158,13 @@
       clip-path: var(--nav-clip);
       cursor: pointer;
       transition: all var(--transition-smooth);
+
       .icon {
         inline-size: var(--icon-xs);
         block-size: var(--icon-xs);
         flex-shrink: 0;
       }
+
       &:hover {
         color: oklch(0.95 0.14 102);
         background: oklch(0.85 0.18 102 / 0.25);
@@ -171,12 +175,12 @@
     }
 
     .btn-share--desktop {
-      @media (width <= 768px) {
+      @media (width <=768px) {
         display: none;
       }
     }
 
-    
+
     .nav-toggle {
       display: none;
       flex-direction: column;
@@ -191,11 +195,13 @@
       clip-path: var(--nav-clip-xs);
       cursor: pointer;
       transition: all var(--nav-transition);
+
       &:hover {
         background: oklch(0.85 0.18 102 / 0.2);
         border-color: oklch(0.85 0.18 102 / 0.6);
       }
-      @media (width <= 768px) {
+
+      @media (width <=768px) {
         display: flex;
       }
     }
@@ -210,22 +216,25 @@
       transform-origin: center;
     }
 
-    
+
     .nav-toggle[aria-expanded="true"] {
       background: oklch(0.85 0.18 102 / 0.2);
+
       .hamburger-line:nth-child(1) {
         transform: rotate(45deg) translate(5px, 5px);
       }
+
       .hamburger-line:nth-child(2) {
         opacity: 0;
         transform: scaleX(0);
       }
+
       .hamburger-line:nth-child(3) {
         transform: rotate(-45deg) translate(5px, -5px);
       }
     }
 
-    
+
     .sr-only {
       position: absolute;
       inline-size: 1px;
@@ -238,17 +247,15 @@
       border: 0;
     }
 
-    
+
     .mobile-menu {
       position: absolute;
       inset-block-start: 100%;
       inset-inline: 0;
       padding: var(--space-md);
-      background: linear-gradient(
-        180deg,
-        oklch(0.1 0.02 102 / 0.98) 0%,
-        oklch(0.08 0.015 102 / 0.98) 100%
-      );
+      background: linear-gradient(180deg,
+          oklch(0.1 0.02 102 / 0.98) 0%,
+          oklch(0.08 0.015 102 / 0.98) 100%);
       backdrop-filter: blur(var(--glass-blur));
       border-block-end: 2px solid oklch(0.85 0.18 102 / 0.5);
       box-shadow:
@@ -271,10 +278,12 @@
       background: transparent;
       border-radius: var(--radius-xs);
       transition: all var(--nav-transition);
+
       &:hover {
         background: oklch(0.85 0.18 102 / 0.15);
         color: oklch(0.92 0.14 102);
       }
+
       &.active {
         background: linear-gradient(135deg, oklch(0.92 0.18 102) 0%, oklch(0.85 0.16 102) 100%);
         color: oklch(0.12 0.02 102);
@@ -307,10 +316,12 @@
       border-radius: var(--radius-xs);
       cursor: pointer;
       transition: all var(--nav-transition);
+
       .icon {
         inline-size: 16px;
         block-size: 16px;
       }
+
       &:hover {
         background: oklch(0.85 0.18 102 / 0.2);
         border-color: oklch(0.85 0.18 102 / 0.5);
@@ -329,33 +340,36 @@
       color: oklch(0.6 0.06 102);
       text-decoration: none;
       transition: all var(--nav-transition);
+
       .icon {
         inline-size: 14px;
         block-size: 14px;
         fill: currentColor;
       }
+
       &:hover {
         color: oklch(0.75 0.08 102);
       }
     }
   }
 
-  
+
   body:has(.unified-nav) {
     padding-block-start: 44px;
   }
 
-  
-  @media (width <= 768px) {
+
+  @media (width <=768px) {
     .unified-nav {
       padding-inline: var(--space-md);
     }
   }
 
-  @media (width <= 480px) {
+  @media (width <=480px) {
     .unified-nav {
       block-size: 40px;
     }
+
     body:has(.unified-nav) {
       padding-block-start: 40px;
     }
