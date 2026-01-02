@@ -22,25 +22,30 @@
 #>
 
 # ════════════════════════════════════════════════════════════════════════════
-# PARSE URL FROM INVOCATION
+# PARSE CONFIGURATION
 # ════════════════════════════════════════════════════════════════════════════
+# Configuration is passed via $env:RT environment variable as query string format
+# Example: $env:RT='c=1&g=1&o=1,2,3&s=steam'; irm url | iex
 
-$invokedLine = $MyInvocation.Line
-$urlMatch = [regex]::Match($invokedLine, 'irm\s+[''"]?([^''"|\s]+)')
-if (-not $urlMatch.Success) {
-    Write-Host "ERROR: Could not parse URL from invocation." -ForegroundColor Red
-    Write-Host "Usage: irm `"https://rocktune.pedroferrari.com/run.ps1?c=1&g=1&o=1,2,3`" | iex" -ForegroundColor Yellow
+$configString = $env:RT
+if (-not $configString) {
+    Write-Host ""
+    Write-Host "  ERROR: No configuration found." -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  Usage:" -ForegroundColor Yellow
+    Write-Host '  $env:RT="c=1&g=1&o=1,2,3&s=steam"; irm https://rocktune.pedroferrari.com/run.ps1 | iex' -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "  Get your one-liner at: https://rocktune.pedroferrari.com" -ForegroundColor Gray
+    Write-Host ""
     exit 1
 }
-$url = $urlMatch.Groups[1].Value
 
-# Parse query string
+# Parse the config string as query parameters
 try {
-    $uri = [System.Uri]$url
     Add-Type -AssemblyName System.Web
-    $query = [System.Web.HttpUtility]::ParseQueryString($uri.Query)
+    $query = [System.Web.HttpUtility]::ParseQueryString($configString)
 } catch {
-    Write-Host "ERROR: Invalid URL format." -ForegroundColor Red
+    Write-Host "ERROR: Invalid configuration format." -ForegroundColor Red
     exit 1
 }
 
@@ -52,6 +57,9 @@ $peripheralIds = if ($query['p']) { $query['p'] -split ',' } else { @() }
 $monitorIds = if ($query['m']) { $query['m'] -split ',' } else { @() }
 $optIds = if ($query['o']) { $query['o'] -split ',' } else { @() }
 $pkgKeys = if ($query['s']) { $query['s'] -split ',' } else { @() }
+
+# Clear the env var after reading (security)
+$env:RT = $null
 
 # ════════════════════════════════════════════════════════════════════════════
 # ID MAPPINGS (from share-registry.ts)
