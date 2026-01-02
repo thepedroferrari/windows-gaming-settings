@@ -13,7 +13,6 @@
    @import './src/components/drivers/drivers.styles.css' layer(components);
    @import './src/components/presets/presets.styles.css' layer(components);
    @import './src/components/code-viewer/code-viewer.styles.css' layer(components);
-   @import './src/components/audit/audit.styles.css' layer(components);
    @import './src/components/profiles/profiles.styles.css' layer(components);
    @import './src/components/optimizations/optimizations.styles.css' layer(components);
    @import './src/components/unified-nav/unified-nav.styles.css' layer(components);

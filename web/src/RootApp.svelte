@@ -63,7 +63,6 @@
 
 
   import PreviewModal from './components/PreviewModal.svelte'
-  import AuditPanel from './components/AuditPanel.svelte'
   import SRAnnounce from './components/SRAnnounce.svelte'
   import Toast from './components/Toast.svelte'
   import { showToast } from '$lib/toast.svelte'
@@ -517,7 +516,6 @@
 
 
 <PreviewModal />
-<AuditPanel />
 <Toast />
 
 

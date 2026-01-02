@@ -57,8 +57,6 @@ export interface ScriptState {
 export interface UIState {
   /** Whether preview modal is open */
   previewModalOpen: boolean
-  /** Whether audit panel is open */
-  auditPanelOpen: boolean
   /** Whether wizard mode is active */
   wizardMode: boolean
   /** Whether user has acknowledged LUDICROUS tier risks */
@@ -106,7 +104,6 @@ const DEFAULT_SCRIPT: ScriptState = {
 /** Default UI state */
 const DEFAULT_UI: UIState = {
   previewModalOpen: false,
-  auditPanelOpen: false,
   wizardMode: false,
   ludicrousAcknowledged: false,
   restorePointAcknowledged: false,
@@ -456,13 +453,6 @@ export function openPreviewModal(): void {
  */
 export function closePreviewModal(): void {
   app.ui.previewModalOpen = false
-}
-
-/**
- * Toggle the audit panel
- */
-export function toggleAuditPanel(): void {
-  app.ui.auditPanelOpen = !app.ui.auditPanelOpen
 }
 
 /**
