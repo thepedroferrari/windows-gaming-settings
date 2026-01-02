@@ -40,7 +40,6 @@
     shareModalOpen = false;
   }
 
-
   $effect(() => {
     const script = app.script.edited ?? generateCurrentScript();
     if (script.trim()) {
@@ -57,7 +56,6 @@
   }
 
   function handleDownload() {
-
     const script = app.script.edited ?? generateCurrentScript();
     if (!script.trim()) return;
     downloadText(script, SCRIPT_FILENAME);
@@ -65,7 +63,6 @@
   }
 
   function handleDownloadVerify() {
-
     const selection: SelectionState = {
       hardware: app.hardware,
       optimizations: Array.from(app.optimizations),
@@ -96,7 +93,13 @@
     <div class="step-banner__actions">
       {#if app.script.downloaded}
         <output class="status-badge--downloaded">
-          <svg class="status-icon--downloaded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            class="status-icon--downloaded"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="m9 12 2 2 4-4" />
           </svg>
           <span class="status-text--downloaded">DOWNLOADED</span>
@@ -116,21 +119,44 @@
   <ProfileActions />
 
   <section class="transparency-zone" id="download">
-
     <span class="corner corner--tl"></span>
     <span class="corner corner--tr"></span>
     <span class="corner corner--bl"></span>
     <span class="corner corner--br"></span>
 
-
-    <p class="manifesto">
+    <!-- Section headline -->
+    <h3 class="zone-headline">
       Unlike typical optimizers, this is a PowerShell script you can read.
-      <span class="manifesto-emphasis"
-        >No installer. No bundled crapware. Just code.</span
-      >
-    </p>
+    </h3>
 
+    <!-- HERO CTA: Download button -->
+    <button
+      type="button"
+      class="btn-forge"
+      title="Download the generated PowerShell script"
+      onclick={handleDownload}
+    >
+      <span class="text">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Download Loadout
+      </span>
+      <span class="scanlines"></span>
+    </button>
 
+    <!-- Tagline beneath download -->
+    <p class="zone-tagline">No installer. No bundled crapware. Just code.</p>
+
+    <!-- Secondary actions -->
     <div class="actions">
       <button
         type="button"
@@ -148,30 +174,7 @@
           <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
           <circle cx="12" cy="12" r="3" />
         </svg>
-        Preview Script
-      </button>
-
-      <button
-        type="button"
-        class="btn-forge"
-        title="Download the generated PowerShell script"
-        onclick={handleDownload}
-      >
-        <span class="text">
-          <svg
-            class="icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          Download
-        </span>
-        <span class="scanlines"></span>
+        Preview
       </button>
 
       <button
@@ -193,11 +196,11 @@
           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
           <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
         </svg>
-        Share Build
+        Share
       </button>
     </div>
 
-
+    <!-- Trust indicators with provenance -->
     <div class="trust-strip">
       <span class="trust-item">
         <svg
@@ -253,24 +256,26 @@
         </svg>
         Self-Contained
       </span>
-    </div>
-
-    <footer class="provenance">
+      <span class="trust-divider">·</span>
       <a
         href="https://github.com/thepedroferrari/rocktune/tree/{__BUILD_COMMIT__}"
         target="_blank"
         rel="noopener"
-        class="provenance-link"
+        class="trust-item trust-item--provenance"
       >
-        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+        <svg
+          class="trust-icon"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="none"
+        >
           <path
             d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
           />
         </svg>
-        <span class="provenance-commit">{__BUILD_COMMIT__}</span>
-        <span class="provenance-date">{__BUILD_DATE__}</span>
+        {__BUILD_COMMIT__} · {__BUILD_DATE__}
       </a>
-    </footer>
+    </div>
   </section>
 
   {#if checksum}
@@ -287,7 +292,6 @@
           <path d="m9 12 2 2 4-4" />
         </svg>
         <h3 class="verification-hud__title">SHA-256 CHECKSUM</h3>
-        <span class="verification-hud__badge">optional</span>
       </header>
 
       <div class="verification-hud__content">
@@ -342,7 +346,9 @@
                 stroke-width="2"
               >
                 <path d="M9 11l3 3L22 4" />
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                <path
+                  d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                />
               </svg>
               Verify Script
             </button>
@@ -351,9 +357,12 @@
 
         <div class="verify-instructions">
           <details class="verify-details">
-            <summary class="verify-summary">How to verify (for the curious)</summary>
+            <summary class="verify-summary">How to verify</summary>
             <div class="verify-steps">
-              <p class="verify-intro">Security folks and IT pros: here's how to double-check the file hash.</p>
+              <p class="verify-intro">
+                Security folks and IT pros: here's how to double-check the file
+                hash.
+              </p>
               <div class="verify-step">
                 <span class="verify-step__num">1</span>
                 <div class="verify-step__content">
@@ -373,9 +382,7 @@
                   <code class="verify-step__expected">{checksum}</code>
                 </div>
               </div>
-              <p class="verify-result">
-                Match? You're good to go.
-              </p>
+              <p class="verify-result">Match? You're good to go.</p>
             </div>
           </details>
         </div>
@@ -385,4 +392,3 @@
 </section>
 
 <ShareModal open={shareModalOpen} onclose={closeShareModal} />
-
