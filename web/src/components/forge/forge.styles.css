@@ -81,6 +81,7 @@
         "headline"
         "cta"
         "tagline"
+        "troubleshoot"
         "secondary"
         "trust";
       gap: var(--space-md);
@@ -114,9 +115,38 @@
       letter-spacing: var(--tracking-wide);
       text-transform: uppercase;
       text-align: center;
-      
-      
+
+
       color: oklch(0.82 0.14 102);
+    }
+
+    .troubleshoot-link {
+      grid-area: troubleshoot;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      background: transparent;
+      border: none;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--text-3);
+      cursor: pointer;
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: var(--accent);
+      }
+
+      .icon {
+        width: 0.875rem;
+        height: 0.875rem;
+        transition: transform 0.15s ease;
+      }
+
+      &:hover .icon {
+        transform: translateX(2px);
+      }
     }
 
     @keyframes downloadZonePulse {

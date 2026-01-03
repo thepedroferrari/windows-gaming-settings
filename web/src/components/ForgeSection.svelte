@@ -29,10 +29,12 @@
   import PreflightChecks from "./PreflightChecks.svelte";
   import ProfileActions from "./ProfileActions.svelte";
   import ShareModal from "./ShareModal.svelte";
+  import TroubleshootModal from "./TroubleshootModal.svelte";
 
   let checksum = $state("");
   let copied = $state(false);
   let shareModalOpen = $state(false);
+  let troubleshootModalOpen = $state(false);
 
   function openShareModal() {
     shareModalOpen = true;
@@ -168,6 +170,19 @@
 
     <!-- Tagline beneath download -->
     <p class="zone-tagline">No installer. No bundled crapware. Just code.</p>
+
+    <!-- Troubleshoot link -->
+    <button
+      type="button"
+      class="troubleshoot-link"
+      onclick={() => (troubleshootModalOpen = true)}
+    >
+      Having trouble running the script?
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
+    </button>
 
     <!-- Secondary actions -->
     <div class="actions">
@@ -455,3 +470,4 @@
 </section>
 
 <ShareModal open={shareModalOpen} onclose={closeShareModal} />
+<TroubleshootModal open={troubleshootModalOpen} onclose={() => (troubleshootModalOpen = false)} />
