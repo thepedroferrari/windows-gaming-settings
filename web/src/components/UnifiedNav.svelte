@@ -119,19 +119,21 @@
   </button>
 
   <!-- Desktop: inline links -->
-  <div class="links links--desktop">
+  <ul class="links links--desktop" role="list">
     {#each NAV_LINKS as link (link.step)}
-      <a
-        href={link.href}
-        class="nav-link"
-        class:active={activeStep === link.step}
-        data-step={link.step}
-        onclick={(e) => handleClick(e, link)}
-      >
-        {link.label}
-      </a>
+      <li>
+        <a
+          href={link.href}
+          class="nav-link"
+          class:active={activeStep === link.step}
+          data-step={link.step}
+          onclick={(e) => handleClick(e, link)}
+        >
+          {link.label}
+        </a>
+      </li>
     {/each}
-  </div>
+  </ul>
 
   <!-- Desktop: Share button -->
   <button
@@ -177,16 +179,20 @@
       id="mobile-menu"
       transition:slide={{ duration: 200 }}
     >
-      {#each NAV_LINKS as link (link.step)}
-        <a
-          href={link.href}
-          class="mobile-link"
-          class:active={activeStep === link.step}
-          onclick={(e) => handleClick(e, link)}
-        >
-          {link.label}
-        </a>
-      {/each}
+      <ul class="mobile-links" role="list">
+        {#each NAV_LINKS as link (link.step)}
+          <li>
+            <a
+              href={link.href}
+              class="mobile-link"
+              class:active={activeStep === link.step}
+              onclick={(e) => handleClick(e, link)}
+            >
+              {link.label}
+            </a>
+          </li>
+        {/each}
+      </ul>
       <hr class="mobile-divider" />
       <button type="button" class="mobile-share" onclick={handleMobileShare}>
         <svg

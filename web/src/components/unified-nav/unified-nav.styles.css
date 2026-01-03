@@ -78,12 +78,19 @@
 
 
     .links {
+      list-style: none;
+      margin: 0;
+      padding: 3px;
+
       display: flex;
       align-items: center;
       gap: 2px;
-      padding: 3px;
       background: var(--black-20);
       clip-path: var(--nav-clip);
+
+      & li {
+        display: contents;
+      }
     }
 
     .links--desktop {
@@ -265,6 +272,19 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
+    }
+
+    .mobile-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      & li {
+        display: contents;
+      }
     }
 
     .mobile-link {

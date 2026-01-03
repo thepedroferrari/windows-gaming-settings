@@ -33,6 +33,7 @@
 
   let { open, onclose }: Props = $props();
 
+  let dialogRef: HTMLDialogElement;
   let urlCopied = $state(false);
   let oneLinerCopied = $state(false);
   let benchmarkCopied = $state(false);
@@ -83,6 +84,16 @@
   let canWebShare = $state(false);
   $effect(() => {
     canWebShare = typeof navigator !== "undefined" && !!navigator.share;
+  });
+
+  // Control dialog open/close via native methods
+  $effect(() => {
+    if (!dialogRef) return;
+    if (open && !dialogRef.open) {
+      dialogRef.showModal();
+    } else if (!open && dialogRef.open) {
+      dialogRef.close();
+    }
   });
 
   $effect(() => {
@@ -158,35 +169,26 @@
   }
 
   function handleBackdropClick(e: MouseEvent) {
-    if (e.target === e.currentTarget) {
+    // Close when clicking the dialog backdrop (not the modal content)
+    if (e.target === dialogRef) {
       onclose();
     }
   }
 
-  $effect(() => {
-    if (!open) return;
-
-    function handleKeydown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        onclose();
-      }
-    }
-
-    window.addEventListener("keydown", handleKeydown);
-    return () => window.removeEventListener("keydown", handleKeydown);
-  });
+  // Handle native dialog close event (Escape key)
+  function handleDialogClose() {
+    onclose();
+  }
 </script>
 
-{#if open}
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div
-    class="share-modal-backdrop"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="share-modal-title"
-    tabindex="-1"
-    onclick={handleBackdropClick}
-  >
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<dialog
+  bind:this={dialogRef}
+  class="share-modal-backdrop"
+  aria-labelledby="share-modal-title"
+  onclick={handleBackdropClick}
+  onclose={handleDialogClose}
+>
     <div class="share-modal">
       <header class="share-modal__header">
         <h2 id="share-modal-title" class="share-modal__title">
@@ -785,21 +787,35 @@
         </p>
       </footer>
     </div>
-  </div>
-{/if}
+</dialog>
 
 <style>
   .share-modal-backdrop {
+    /* Reset dialog defaults */
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: var(--space-md);
+    background: transparent;
+    margin: 0;
+  }
+
+  /* Only apply layout when dialog is open */
+  .share-modal-backdrop[open] {
     position: fixed;
     inset: 0;
     z-index: 9000;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-md);
+    animation: fade-in 0.2s ease-out;
+  }
+
+  .share-modal-backdrop::backdrop {
     background: oklch(0 0 0 / 0.8);
     backdrop-filter: blur(4px);
-    animation: fade-in 0.2s ease-out;
   }
 
   @keyframes fade-in {
@@ -890,17 +906,19 @@
     align-items: center;
     gap: var(--space-xs);
     padding: var(--space-xs) var(--space-sm);
-    background: none;
-    border: 1px solid transparent;
+    background: oklch(0.18 0.02 250);
+    border: 1px solid oklch(0.28 0.03 250);
     border-radius: var(--radius-sm);
     font-size: var(--text-sm);
-    color: var(--text-muted);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .share-tab:hover {
-    color: var(--text-secondary);
+    color: var(--text-primary);
+    background: oklch(0.22 0.03 250);
+    border-color: oklch(0.35 0.04 250);
   }
 
   .share-tab.active {

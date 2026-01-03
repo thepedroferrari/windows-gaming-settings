@@ -12,12 +12,9 @@
 
   let { key, pkg, selected, onToggle, overlayPosition = 'right' }: Props = $props()
 
-  
-  let ariaLabel = $derived(
-    `${pkg.name}: ${pkg.desc ?? pkg.category}. Press Enter or Space to ${selected ? 'remove from' : 'add to'} selection.`
-  )
+  // Unique ID for checkbox-label association
+  let inputId = $derived(`pkg-${key}`)
 
-  
   type LogoType = 'sprite' | 'cdn' | 'emoji' | 'fallback'
   let logoType: LogoType = $derived.by(() => {
     if (pkg.icon) {
@@ -36,15 +33,8 @@
   let iconFailed = $state(false)
   let isHovered = $state(false)
 
-  function handleClick() {
+  function handleChange() {
     onToggle(key)
-  }
-
-  function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      onToggle(key)
-    }
   }
 
   function handleImageError() {
@@ -67,46 +57,51 @@
   data-key={key}
   data-category={pkg.category}
   data-overlay-position={overlayPosition === 'left' ? 'left' : undefined}
-  tabindex="0"
-  role="switch"
-  aria-checked={selected}
-  aria-label={ariaLabel}
-  onclick={handleClick}
-  onkeydown={handleKeydown}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
 >
-  
-  <figure class="logo">
-    {#if logoType === 'sprite'}
-      <svg class="sprite-icon" role="img" aria-label={`${pkg.name} icon`}>
-        <use href="icons/sprite.svg#{spriteId}"></use>
-      </svg>
-    {:else if logoType === 'cdn'}
-      {#if iconFailed}
-        <svg class="sprite-icon fallback-icon" viewBox="0 0 48 48" role="img" aria-label="Fallback icon">
-          <use href="icons/sprite.svg#fallback"></use>
+  <!-- Hidden checkbox for semantic toggle -->
+  <input
+    type="checkbox"
+    id={inputId}
+    checked={selected}
+    onchange={handleChange}
+    class="sr-only"
+    aria-describedby="{inputId}-desc"
+  />
+
+  <!-- Label wraps entire card for click-to-toggle -->
+  <label for={inputId} class="card-label">
+    <figure class="logo">
+      {#if logoType === 'sprite'}
+        <svg class="sprite-icon" role="img" aria-label={`${pkg.name} icon`}>
+          <use href="icons/sprite.svg#{spriteId}"></use>
         </svg>
+      {:else if logoType === 'cdn'}
+        {#if iconFailed}
+          <svg class="sprite-icon fallback-icon" viewBox="0 0 48 48" role="img" aria-label="Fallback icon">
+            <use href="icons/sprite.svg#fallback"></use>
+          </svg>
+        {:else}
+          <img
+            src={cdnUrl}
+            alt={`${pkg.name} logo`}
+            loading="lazy"
+            onerror={handleImageError}
+          />
+        {/if}
+      {:else if logoType === 'emoji'}
+        <span class="emoji-icon" role="img" aria-label={`${pkg.name} icon`}>{pkg.emoji}</span>
       {:else}
-        <img
-          src={cdnUrl}
-          alt={`${pkg.name} logo`}
-          loading="lazy"
-          onerror={handleImageError}
-        />
+        {@html getCategoryIcon(pkg.category)}
       {/if}
-    {:else if logoType === 'emoji'}
-      <span class="emoji-icon" role="img" aria-label={`${pkg.name} icon`}>{pkg.emoji}</span>
-    {:else}
-      {@html getCategoryIcon(pkg.category)}
-    {/if}
-  </figure>
+    </figure>
 
-  
-  <span class="name">{pkg.name}</span>
+    <span class="name">{pkg.name}</span>
+    <span id="{inputId}-desc" class="sr-only">{pkg.desc ?? pkg.category}</span>
 
-  
-  <div class="card-overlay">
+    <!-- Overlay inside label - clicking it toggles the checkbox -->
+    <div class="card-overlay">
     
     <div class="overlay-card">
       <figure class="overlay-logo">
@@ -153,7 +148,7 @@
         class="overlay-action"
         class:overlay-action--add={!selected}
         class:overlay-action--remove={selected}
-        onclick={(e) => { e.stopPropagation(); handleClick(); }}
+        onclick={(e) => { e.stopPropagation(); e.preventDefault(); handleChange(); }}
         type="button"
       >
         {#if selected}
@@ -170,8 +165,8 @@
       </button>
     </div>
   </div>
+  </label>
 
-  
   <span class="list-desc">{pkg.desc ?? ''}</span>
   <span class="list-category">{pkg.category}</span>
 </div>

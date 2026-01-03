@@ -183,41 +183,41 @@
           <span class="panel-title">WHAT YOU GET</span>
         </header>
 
-        <div class="stats-list">
+        <dl class="stats-list">
           <div class="stat-line">
-            <span class="stat-label">Network lag</span>
-            <span class="stat-dots"></span>
-            <span class="stat-value">OPTIMIZED</span>
+            <dt class="stat-label">Network lag</dt>
+            <span class="stat-dots" aria-hidden="true"></span>
+            <dd class="stat-value">OPTIMIZED</dd>
           </div>
           <div class="stat-line">
-            <span class="stat-label">Background noise</span>
-            <span class="stat-dots"></span>
-            <span class="stat-value">REDUCED</span>
+            <dt class="stat-label">Background noise</dt>
+            <span class="stat-dots" aria-hidden="true"></span>
+            <dd class="stat-value">REDUCED</dd>
           </div>
           <div class="stat-line">
-            <span class="stat-label">Windows tracking</span>
-            <span class="stat-dots"></span>
-            <span class="stat-value">BLOCKED</span>
+            <dt class="stat-label">Windows tracking</dt>
+            <span class="stat-dots" aria-hidden="true"></span>
+            <dd class="stat-value">BLOCKED</dd>
           </div>
 
-          <div class="stat-divider"></div>
+          <div class="stat-divider" role="presentation"></div>
 
           <div class="stat-line stat-line--highlight">
-            <span class="stat-label">Micro-stutters</span>
-            <span class="stat-dots"></span>
-            <span class="stat-value stat-value--accent">MINIMIZED</span>
+            <dt class="stat-label">Micro-stutters</dt>
+            <span class="stat-dots" aria-hidden="true"></span>
+            <dd class="stat-value stat-value--accent">MINIMIZED</dd>
           </div>
           <div class="stat-line stat-line--highlight">
-            <span class="stat-label">Frame times</span>
-            <span class="stat-dots"></span>
-            <span class="stat-value stat-value--accent">SMOOTHER</span>
+            <dt class="stat-label">Frame times</dt>
+            <span class="stat-dots" aria-hidden="true"></span>
+            <dd class="stat-value stat-value--accent">SMOOTHER</dd>
           </div>
           <div class="stat-line stat-line--highlight">
-            <span class="stat-label">Input delay</span>
-            <span class="stat-dots"></span>
-            <span class="stat-value stat-value--accent">FASTER</span>
+            <dt class="stat-label">Input delay</dt>
+            <span class="stat-dots" aria-hidden="true"></span>
+            <dd class="stat-value stat-value--accent">FASTER</dd>
           </div>
-        </div>
+        </dl>
 
         <footer class="panel-footer">
           <p class="trust-line">Free · Open source · Reversible · Secure</p>
