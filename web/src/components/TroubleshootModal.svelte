@@ -392,7 +392,7 @@ powershell -Command "Start-Process powershell -ArgumentList '-ExecutionPolicy By
 
   .code-input::selection {
     background: var(--accent);
-    color: var(--surface-1);
+    color: #000;
   }
 
   /* Copy button - big and obvious */
