@@ -41,6 +41,47 @@
   }
 </script>
 
+{#snippet renderIcon(isOverlay: boolean)}
+  {#if logoType === 'sprite'}
+    <svg
+      class="sprite-icon"
+      role="img"
+      aria-label={isOverlay ? undefined : `${pkg.name} icon`}
+      aria-hidden={isOverlay ? 'true' : undefined}
+    >
+      <use href="icons/sprite.svg#{spriteId}"></use>
+    </svg>
+  {:else if logoType === 'cdn'}
+    {#if iconFailed}
+      <svg
+        class="sprite-icon fallback-icon"
+        viewBox="0 0 48 48"
+        role="img"
+        aria-label={isOverlay ? undefined : 'Fallback icon'}
+        aria-hidden={isOverlay ? 'true' : undefined}
+      >
+        <use href="icons/sprite.svg#fallback"></use>
+      </svg>
+    {:else}
+      <img
+        src={cdnUrl}
+        alt={isOverlay ? '' : `${pkg.name} logo`}
+        loading="lazy"
+        onerror={isOverlay ? undefined : handleImageError}
+      />
+    {/if}
+  {:else if logoType === 'emoji'}
+    <span
+      class="emoji-icon"
+      role="img"
+      aria-label={isOverlay ? undefined : `${pkg.name} icon`}
+      aria-hidden={isOverlay ? 'true' : undefined}
+    >{pkg.emoji}</span>
+  {:else}
+    {@html getCategoryIcon(pkg.category)}
+  {/if}
+{/snippet}
+
 <div
   class="software-card"
   class:selected
@@ -61,28 +102,7 @@
   <!-- Label wraps entire card for click-to-toggle -->
   <label for={inputId} class="card-label">
     <figure class="logo">
-      {#if logoType === 'sprite'}
-        <svg class="sprite-icon" role="img" aria-label={`${pkg.name} icon`}>
-          <use href="icons/sprite.svg#{spriteId}"></use>
-        </svg>
-      {:else if logoType === 'cdn'}
-        {#if iconFailed}
-          <svg class="sprite-icon fallback-icon" viewBox="0 0 48 48" role="img" aria-label="Fallback icon">
-            <use href="icons/sprite.svg#fallback"></use>
-          </svg>
-        {:else}
-          <img
-            src={cdnUrl}
-            alt={`${pkg.name} logo`}
-            loading="lazy"
-            onerror={handleImageError}
-          />
-        {/if}
-      {:else if logoType === 'emoji'}
-        <span class="emoji-icon" role="img" aria-label={`${pkg.name} icon`}>{pkg.emoji}</span>
-      {:else}
-        {@html getCategoryIcon(pkg.category)}
-      {/if}
+      {@render renderIcon(false)}
     </figure>
 
     <span class="name">{pkg.name}</span>
@@ -93,23 +113,7 @@
     
     <div class="overlay-card">
       <figure class="overlay-logo">
-        {#if logoType === 'sprite'}
-          <svg class="sprite-icon" role="img" aria-hidden="true">
-            <use href="icons/sprite.svg#{spriteId}"></use>
-          </svg>
-        {:else if logoType === 'cdn'}
-          {#if iconFailed}
-            <svg class="sprite-icon fallback-icon" viewBox="0 0 48 48" role="img" aria-hidden="true">
-              <use href="icons/sprite.svg#fallback"></use>
-            </svg>
-          {:else}
-            <img src={cdnUrl} alt="" loading="lazy" />
-          {/if}
-        {:else if logoType === 'emoji'}
-          <span class="emoji-icon" aria-hidden="true">{pkg.emoji}</span>
-        {:else}
-          {@html getCategoryIcon(pkg.category)}
-        {/if}
+        {@render renderIcon(true)}
       </figure>
       <span class="overlay-name">{pkg.name}</span>
     </div>
