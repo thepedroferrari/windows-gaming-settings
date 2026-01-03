@@ -5,7 +5,7 @@
  * with proper error handling and feedback.
  */
 
-import type { CommandOptConfig, PowerCfgOptConfig, NetworkAdapterOptConfig } from './types'
+import type { CommandOptConfig, NetworkAdapterOptConfig, PowerCfgOptConfig } from './types'
 import { TIER_PREFIXES } from './types'
 
 /**
@@ -39,7 +39,9 @@ export function generateCommandOpt(config: CommandOptConfig): string[] {
         lines.push(`    Add-RebootReason "${config.rebootReason}"`)
       }
       lines.push('} else {')
-      lines.push(`    Write-Fail "${config.failMessage ?? config.successMessage + ' failed'}: $result"`)
+      lines.push(
+        `    Write-Fail "${config.failMessage ?? `${config.successMessage} failed`}: $result"`,
+      )
       lines.push('}')
     }
   } else {
@@ -107,9 +109,7 @@ export function generateNetworkAdapterOpt(config: NetworkAdapterOptConfig): stri
   lines.push(
     `if ($adapterCount -gt 0) { Write-OK "${config.successMessage.replace('$count', '$adapterCount')}" }`,
   )
-  lines.push(
-    `else { Write-Warn "${config.fallbackMessage ?? 'No adapters affected'}" }`,
-  )
+  lines.push(`else { Write-Warn "${config.fallbackMessage ?? 'No adapters affected'}" }`)
 
   return lines
 }
