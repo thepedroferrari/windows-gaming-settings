@@ -1,0 +1,82 @@
+/**
+ * Icon Component Styles
+ *
+ * Provides size and variant classes for the Icon component.
+ * Uses CSS custom properties from the design system.
+ */
+
+@layer components {
+  .icon {
+    /* Base sizing using custom property for flexibility */
+    display: inline-block;
+    inline-size: var(--_icon-size, 20px);
+    block-size: var(--_icon-size, 20px);
+    flex-shrink: 0;
+
+    /* Smooth color transitions */
+    transition: color var(--duration-fast, 150ms) ease;
+
+    /* Ensure SVG inherits color properly */
+    & use {
+      color: inherit;
+    }
+  }
+
+  /* ===== Size Variants ===== */
+  .icon--xs {
+    --_icon-size: 12px;
+  }
+
+  .icon--sm {
+    --_icon-size: 16px;
+  }
+
+  .icon--md {
+    --_icon-size: 20px;
+  }
+
+  .icon--lg {
+    --_icon-size: 24px;
+  }
+
+  .icon--xl {
+    --_icon-size: 32px;
+  }
+
+  /* ===== Color Variants ===== */
+
+  /* Default: secondary text color */
+  .icon--default {
+    color: var(--text-secondary);
+  }
+
+  /* Accent: brand/primary color */
+  .icon--accent {
+    color: var(--accent);
+  }
+
+  /* Success: safe/positive actions */
+  .icon--success {
+    color: var(--safe);
+  }
+
+  /* Warning: caution states */
+  .icon--warning {
+    color: var(--caution);
+  }
+
+  /* Danger: error/destructive actions */
+  .icon--danger {
+    color: var(--risky);
+  }
+
+  /* Muted: subtle/disabled state */
+  .icon--muted {
+    color: var(--text-hint);
+  }
+
+  /* Inherit: use parent's currentColor (default) */
+  .icon--inherit {
+    color: inherit;
+  }
+}
