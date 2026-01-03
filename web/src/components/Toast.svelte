@@ -7,21 +7,17 @@
    */
 
   import { getToasts, dismissToast, type ToastMessage } from '$lib/toast.svelte'
+  import Icon from './ui/Icon.svelte'
+  import type { IconName } from '$lib/icons'
 
   let toasts = $derived(getToasts())
 
-  function getIcon(type: ToastMessage['type']): string {
-    switch (type) {
-      case 'success':
-        return '<path d="m9 12 2 2 4-4" /><circle cx="12" cy="12" r="10" />'
-      case 'warning':
-        return '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />'
-      case 'error':
-        return '<circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" />'
-      case 'info':
-      default:
-        return '<circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />'
-    }
+  /** Map toast types to icon names */
+  const TOAST_ICONS: Record<ToastMessage['type'], IconName> = {
+    success: 'success',
+    warning: 'warning',
+    error: 'error',
+    info: 'info',
   }
 </script>
 
@@ -32,16 +28,7 @@
         class="toast toast--{toast.type}"
         role="alert"
       >
-        <svg
-          class="toast__icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          aria-hidden="true"
-        >
-          {@html getIcon(toast.type)}
-        </svg>
+        <Icon name={TOAST_ICONS[toast.type]} size="md" class="toast__icon" />
         <span class="toast__message">{toast.message}</span>
         <button
           type="button"
@@ -49,10 +36,7 @@
           onclick={() => dismissToast(toast.id)}
           aria-label="Dismiss"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+          <Icon name="close" size="sm" />
         </button>
       </div>
     {/each}
@@ -128,8 +112,6 @@
 
   .toast__icon {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
     margin-top: 2px;
   }
 
@@ -154,11 +136,6 @@
   .toast__dismiss:hover {
     color: var(--text-primary);
     background: oklch(1 0 0 / 0.1);
-  }
-
-  .toast__dismiss svg {
-    width: 16px;
-    height: 16px;
   }
 
   @media (max-width: 640px) {
