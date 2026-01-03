@@ -32,7 +32,7 @@ export function getToasts(): ToastMessage[] {
 export function showToast(
   message: string,
   type: ToastMessage['type'] = 'info',
-  duration = 5000
+  duration = 5000,
 ): void {
   const id = nextId++
   toasts = [...toasts, { id, type, message, duration }]
