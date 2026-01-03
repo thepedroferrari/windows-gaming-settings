@@ -75,6 +75,7 @@
       preset: app.activePreset,
       includeTimer: app.buildOptions.includeTimer,
       includeManualSteps: app.buildOptions.includeManualSteps,
+      createBackup: app.buildOptions.createBackup,
     };
     const script = buildVerificationScript(selection);
     downloadText(script, "rocktune-verify.ps1");
