@@ -295,7 +295,7 @@ export const OPT_ID_TO_VALUE: Record<number, OptimizationKey | null> = {
 export const OPT_VALUE_TO_ID: Record<OptimizationKey, number> = Object.fromEntries(
   Object.entries(OPT_ID_TO_VALUE)
     .filter(([_, value]) => value !== null)
-    .map(([id, value]) => [value, Number(id)])
+    .map(([id, value]) => [value, Number(id)]),
 ) as Record<OptimizationKey, number>
 
 /**
