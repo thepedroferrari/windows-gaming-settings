@@ -94,8 +94,12 @@ export function generateServicePatternOpt(
   const tierPrefix = TIER_PREFIXES[tier]
 
   lines.push(`# ${tierPrefix} ${description}`)
-  lines.push(`Get-Service | Where-Object {$_.Name -like "${pattern}"} | Stop-Service -Force -EA SilentlyContinue`)
-  lines.push(`Get-Service | Where-Object {$_.Name -like "${pattern}"} | Set-Service -StartupType Disabled -EA SilentlyContinue`)
+  lines.push(
+    `Get-Service | Where-Object {$_.Name -like "${pattern}"} | Stop-Service -Force -EA SilentlyContinue`,
+  )
+  lines.push(
+    `Get-Service | Where-Object {$_.Name -like "${pattern}"} | Set-Service -StartupType Disabled -EA SilentlyContinue`,
+  )
   lines.push(`Write-OK "${successMessage}"`)
 
   return lines
