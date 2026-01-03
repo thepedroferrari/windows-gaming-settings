@@ -7,7 +7,7 @@
 /**
  * All available icon names in the UI sprite
  */
-export const ICON_NAMES = [
+const ICON_NAMES = [
   // Actions
   'check',
   'close',
@@ -66,33 +66,15 @@ export const ICON_NAMES = [
 export type IconName = (typeof ICON_NAMES)[number]
 
 /**
- * Type guard for valid icon names
- */
-export function isIconName(value: unknown): value is IconName {
-  return typeof value === 'string' && ICON_NAMES.includes(value as IconName)
-}
-
-/**
  * Icon size presets
  */
-export const ICON_SIZES = ['xs', 'sm', 'md', 'lg', 'xl'] as const
+const ICON_SIZES = ['xs', 'sm', 'md', 'lg', 'xl'] as const
 export type IconSize = (typeof ICON_SIZES)[number]
-
-/**
- * Size values in pixels
- */
-export const ICON_SIZE_VALUES: Record<IconSize, number> = {
-  xs: 12,
-  sm: 16,
-  md: 20,
-  lg: 24,
-  xl: 32,
-}
 
 /**
  * Icon color variants
  */
-export const ICON_VARIANTS = [
+const ICON_VARIANTS = [
   'default',
   'accent',
   'success',

@@ -82,32 +82,16 @@
     border-color: oklch(0.7 0.2 145 / 0.5);
   }
 
-  .toast--success .toast__icon {
-    color: oklch(0.7 0.2 145);
-  }
-
   .toast--warning {
     border-color: oklch(0.8 0.15 85 / 0.5);
-  }
-
-  .toast--warning .toast__icon {
-    color: oklch(0.8 0.15 85);
   }
 
   .toast--error {
     border-color: oklch(0.65 0.25 25 / 0.5);
   }
 
-  .toast--error .toast__icon {
-    color: oklch(0.65 0.25 25);
-  }
-
   .toast--info {
     border-color: oklch(0.7 0.15 250 / 0.5);
-  }
-
-  .toast--info .toast__icon {
-    color: oklch(0.7 0.15 250);
   }
 
   .toast__icon {
