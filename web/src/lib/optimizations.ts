@@ -9,12 +9,16 @@ import type { StructuredTooltip } from '../utils/tooltips'
 import type {
   BreakingChange,
   EffectivenessRank,
-  EvidenceLevel,
   OptimizationEvidence,
   OptimizationKey,
   OptimizationTier,
 } from './types'
-import { EFFECTIVENESS_RANKS, EVIDENCE_LEVELS, OPTIMIZATION_KEYS, OPTIMIZATION_TIERS } from './types'
+import {
+  EFFECTIVENESS_RANKS,
+  EVIDENCE_LEVELS,
+  OPTIMIZATION_KEYS,
+  OPTIMIZATION_TIERS,
+} from './types'
 
 /** Optimization category for grouping in UI */
 export type OptimizationCategory =
@@ -854,7 +858,9 @@ const CAUTION_OPTIMIZATIONS: readonly OptimizationDef[] = [
     rank: EFFECTIVENESS_RANKS.C,
     evidence: {
       level: EVIDENCE_LEVELS.MEDIUM,
-      sources: ['https://www.overclock.net/threads/message-signaled-based-interrupt-msi-discussion-for-nvidia-gpus.1805762/'],
+      sources: [
+        'https://www.overclock.net/threads/message-signaled-based-interrupt-msi-discussion-for-nvidia-gpus.1805762/',
+      ],
       note: 'System-dependent; use LatencyMon to verify DPC reduction',
     },
   },
