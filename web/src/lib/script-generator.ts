@@ -655,6 +655,12 @@ export function buildScript(selection: SelectionState, options: ScriptGeneratorO
     lines.push('')
     lines.push('function Invoke-RockTuneOptimizations {')
     lines.push('    Clear-Host')
+    lines.push('    # Reset counters for fresh run (fixes 15→30→45 bug on restart)')
+    lines.push('    $script:StepCount = 0')
+    lines.push('    $script:SuccessCount = 0')
+    lines.push('    $script:FailCount = 0')
+    lines.push('    $script:WarningCount = 0')
+    lines.push('    $script:ScanResults = @()')
     lines.push(`    $script:StepTotal = ${stepCount}`)
     lines.push('    Write-Banner')
     lines.push('    Write-Host ""')
@@ -1321,6 +1327,56 @@ function generatePreflightScan(
     lines.push(
       'else { Add-ScanResult "Exclusive mode priority" "Normal" "Low latency" "CHANGE" }',
     )
+  }
+
+  // === FALLBACK: Show all selected optimizations that don't have explicit scan checks ===
+  // This ensures users see ALL their selected optimizations in the pre-flight table
+  const SCANNED_KEYS = new Set([
+    'mouse_accel',
+    'keyboard_response',
+    'fastboot',
+    'end_task',
+    'notifications_off',
+    'storage_sense',
+    'input_buffer',
+    'gamedvr',
+    'game_bar',
+    'hags',
+    'fso_disable',
+    'hpet',
+    'multiplane_overlay',
+    'core_isolation_off',
+    'spectre_meltdown_off',
+    'dep_off',
+    'native_nvme',
+    'smt_disable',
+    'ultimate_perf', // power_ultimate in scan
+    'usb_power',
+    'pcie_power',
+    'nagle',
+    'network_throttling', // throttle_index in scan
+    'teredo_disable', // network_teredo in scan
+    'privacy_tier1', // ads_off in scan
+    'privacy_tier2', // telemetry_min in scan
+    'services_search_off',
+    'sysmain_disable', // services_superfetch in scan
+    'privacy_tier3', // services_xbox_off in scan
+    'audio_enhancements',
+    'audio_exclusive',
+  ])
+
+  // Add fallback entries for optimizations without explicit scans
+  const unscannedKeys = [...selected].filter((key) => !SCANNED_KEYS.has(key))
+  if (unscannedKeys.length > 0) {
+    lines.push('')
+    lines.push('# === Additional selected optimizations (no pre-check available) ===')
+    for (const key of unscannedKeys) {
+      const opt = OPTIMIZATIONS.find((o) => o.key === key)
+      if (opt) {
+        const tierBadge = opt.tier.toUpperCase()
+        lines.push(`Add-ScanResult "[${tierBadge}] ${opt.label}" "—" "Will apply" "PENDING"`)
+      }
+    }
   }
 
   lines.push('')
