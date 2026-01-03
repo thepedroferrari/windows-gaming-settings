@@ -1,12 +1,43 @@
 /**
  * Stable ID Registry for Shareable Build URLs
  *
+ * ═══════════════════════════════════════════════════════════════════════════
  * CRITICAL RULES - READ BEFORE MODIFYING:
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
  * 1. IDs are PERMANENT - once assigned, they NEVER change meaning
  * 2. Never reuse an ID for a different value
- * 3. To deprecate: set value to null (decoder will skip it)
+ * 3. To deprecate: set value to null AND add entry to DEPRECATED_OPT_IDS
+ *    a) In OPT_ID_TO_VALUE: set `45: null,`
+ *    b) In DEPRECATED_OPT_IDS: add `{ id: 45, was: 'old_feature', removed: '2025-01-03' }`
+ *    The audit script validates both are in sync.
  * 4. To rename: update the value string, keep the same ID
- * 5. New values get the next sequential ID
+ * 5. NEW IDs: Always use next sequential ID (run: deno task share:audit)
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * ID ASSIGNMENT (since 2025):
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * IDs are purely SEQUENTIAL - tier-based ranges are LEGACY organization only.
+ * New optimizations get the next available ID regardless of tier.
+ *
+ * To find next ID:
+ *   cd web && deno task share:audit
+ *
+ * This will output: "Next available ID: 104" (or current max + 1)
+ *
+ * LEGACY NOTE (for context only - DO NOT use ranges for new IDs):
+ * - IDs 1-49 were originally SAFE tier
+ * - IDs 50-79 were originally CAUTION tier
+ * - IDs 80-99 were originally RISKY tier
+ * - IDs 100+ were originally LUDICROUS tier
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SYNC REQUIREMENT:
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * After modifying this file, also update:
+ * - web/public/run.ps1 ($OPT_DESCRIPTIONS and $OPT_FUNCTIONS)
  *
  * This registry enables backward-compatible shareable URLs.
  * Old URLs will always decode correctly (with graceful degradation).
@@ -23,6 +54,37 @@ import type {
 } from './types'
 
 export const SHARE_SCHEMA_VERSION = 1
+
+/**
+ * Deprecated ID Registry - CODE-ENFORCED, NOT COMMENTS
+ *
+ * When deprecating an optimization:
+ * 1. Set ID to `null` in OPT_ID_TO_VALUE
+ * 2. Add entry here with the ID, what it was, and when it was removed
+ *
+ * The audit script validates:
+ * - All null entries in OPT_ID_TO_VALUE exist here
+ * - No ID in this list is ever reused
+ *
+ * This ensures deprecation history survives minification/refactoring.
+ */
+export const DEPRECATED_OPT_IDS: ReadonlyArray<{
+  readonly id: number
+  readonly was: string
+  readonly removed: string // ISO date YYYY-MM-DD
+  readonly reason?: string
+}> = [
+  // Example (uncomment when first deprecation happens):
+  // { id: 45, was: 'old_feature', removed: '2025-01-03', reason: 'No longer needed on Win11 24H2' },
+]
+
+/**
+ * Set of all deprecated IDs for quick lookup
+ * Used by audit script to prevent reuse
+ */
+export const DEPRECATED_OPT_ID_SET: ReadonlySet<number> = new Set(
+  DEPRECATED_OPT_IDS.map((d) => d.id),
+)
 
 /**
  * CPU type stable IDs
@@ -131,11 +193,14 @@ export const PRESET_VALUE_TO_ID: Record<PresetType, number> = {
 /**
  * Optimization stable IDs
  *
- * This is the largest registry (~70+ entries).
- * Organized by tier for readability, but IDs are assigned sequentially.
+ * This is the largest registry (82+ entries).
+ *
+ * IMPORTANT: IDs are organized below by LEGACY tier ranges for historical
+ * context only. New IDs should use the next sequential number regardless
+ * of tier. Run `deno task share:audit` to find the next available ID.
  */
 export const OPT_ID_TO_VALUE: Record<number, OptimizationKey | null> = {
-  // SAFE tier (1-40)
+  // ═══ LEGACY SAFE RANGE (1-49) ═══
   1: 'pagefile',
   2: 'fastboot',
   3: 'timer',
@@ -182,7 +247,7 @@ export const OPT_ID_TO_VALUE: Record<number, OptimizationKey | null> = {
   44: 'filesystem_perf',
   45: 'dwm_perf',
 
-  // CAUTION tier (50-70)
+  // ═══ LEGACY CAUTION RANGE (50-79) ═══
   50: 'msi_mode',
   51: 'hpet',
   52: 'game_bar',
@@ -207,7 +272,7 @@ export const OPT_ID_TO_VALUE: Record<number, OptimizationKey | null> = {
   71: 'power_throttle_off',
   72: 'priority_boost_off',
 
-  // RISKY tier (80-90)
+  // ═══ LEGACY RISKY RANGE (80-99) ═══
   80: 'privacy_tier1',
   81: 'privacy_tier2',
   82: 'privacy_tier3',
@@ -219,7 +284,8 @@ export const OPT_ID_TO_VALUE: Record<number, OptimizationKey | null> = {
   88: 'audio_exclusive',
   89: 'tcp_optimizer',
 
-  // LUDICROUS tier (100-110)
+  // ═══ LEGACY LUDICROUS RANGE (100+) ═══
+  // NOTE: These are blocked from share URLs for security
   100: 'spectre_meltdown_off',
   101: 'core_isolation_off',
   102: 'kernel_mitigations_off',

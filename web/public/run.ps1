@@ -62,7 +62,18 @@ $pkgKeys = if ($query['s']) { $query['s'] -split ',' } else { @() }
 $env:RT = $null
 
 # ════════════════════════════════════════════════════════════════════════════
-# ID MAPPINGS (from share-registry.ts)
+# ID MAPPINGS - MUST STAY IN SYNC with web/src/lib/share-registry.ts
+# ════════════════════════════════════════════════════════════════════════════
+#
+# To find next available ID:
+#   cd web && deno task share:audit
+#
+# When adding a new optimization:
+# 1. Add to share-registry.ts with next sequential ID
+# 2. Add entry to $OPT_DESCRIPTIONS below
+# 3. Add entry to $OPT_FUNCTIONS below
+# 4. Run: cd web && deno task share:audit (verify passes)
+#
 # ════════════════════════════════════════════════════════════════════════════
 
 $CPU_MAP = @{ '1'='amd_x3d'; '2'='amd'; '3'='intel' }
