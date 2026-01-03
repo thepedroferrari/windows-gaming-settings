@@ -1578,9 +1578,590 @@ function generatePreflightScan(selected: Set<string>, _hardware: HardwareProfile
     lines.push('else { Add-ScanResult "Exclusive mode priority" "Normal" "Low latency" "CHANGE" }')
   }
 
+  // === NEW SYSTEM DETECTIONS ===
+  if (selected.has('game_mode')) {
+    lines.push('# Scan: Game Mode')
+    lines.push('$val = Get-RegValue "HKCU:\\Software\\Microsoft\\GameBar" "AutoGameModeEnabled"')
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[SAFE] Game Mode On" "Enabled" "Enabled" "OK" }',
+    )
+    lines.push('else { Add-ScanResult "[SAFE] Game Mode On" "Disabled" "Enabled" "CHANGE" }')
+  }
+
+  if (selected.has('display_perf')) {
+    lines.push('# Scan: Visual Performance')
+    lines.push(
+      '$val = Get-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects" "VisualFXSetting"',
+    )
+    lines.push(
+      'if ($val -eq 2) { Add-ScanResult "[SAFE] Visual Performance" "Performance" "Performance" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Visual Performance" "Appearance" "Performance" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('classic_menu')) {
+    lines.push('# Scan: Classic Context Menu')
+    lines.push(
+      '$val = Test-Path "HKCU:\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32"',
+    )
+    lines.push(
+      'if ($val) { Add-ScanResult "[SAFE] Classic Context Menu" "Classic" "Classic" "OK" }',
+    )
+    lines.push('else { Add-ScanResult "[SAFE] Classic Context Menu" "Modern" "Classic" "CHANGE" }')
+  }
+
+  if (selected.has('explorer_speed')) {
+    lines.push('# Scan: Explorer Speed')
+    lines.push(
+      '$val = Get-RegValue "HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell" "FolderType"',
+    )
+    lines.push(
+      'if ($val -eq "NotSpecified") { Add-ScanResult "[SAFE] Explorer Speed" "Optimized" "Optimized" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Explorer Speed" "Auto-detect" "Optimized" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('accessibility_shortcuts')) {
+    lines.push('# Scan: Accessibility Shortcuts')
+    lines.push(
+      '$sticky = Get-RegValue "HKCU:\\Control Panel\\Accessibility\\StickyKeys" "Flags"',
+    )
+    lines.push(
+      'if ($sticky -eq "506") { Add-ScanResult "[SAFE] Disable Accessibility Shortcuts" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Disable Accessibility Shortcuts" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('filesystem_perf')) {
+    lines.push('# Scan: Filesystem Performance')
+    lines.push('$lastAccess = (fsutil behavior query disablelastaccess 2>$null) -match "1$"')
+    lines.push(
+      'if ($lastAccess) { Add-ScanResult "[SAFE] Filesystem Performance" "Optimized" "Optimized" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Filesystem Performance" "Default" "Optimized" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('dwm_perf')) {
+    lines.push('# Scan: DWM Performance')
+    lines.push('$val = Get-RegValue "HKCU:\\Software\\Microsoft\\Windows\\DWM" "EnableAeroPeek"')
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[SAFE] DWM Performance" "Optimized" "Optimized" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] DWM Performance" "Default" "Optimized" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('ps7_telemetry')) {
+    lines.push('# Scan: PowerShell 7 Telemetry')
+    lines.push(
+      '$val = [Environment]::GetEnvironmentVariable("POWERSHELL_TELEMETRY_OPTOUT", "Machine")',
+    )
+    lines.push(
+      'if ($val -eq "1") { Add-ScanResult "[SAFE] PowerShell 7 Telemetry" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] PowerShell 7 Telemetry" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('explorer_cleanup')) {
+    lines.push('# Scan: Explorer Cleanup')
+    lines.push(
+      '$gallery = Test-Path "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}"',
+    )
+    lines.push(
+      'if (-not $gallery) { Add-ScanResult "[SAFE] Explorer Cleanup" "Cleaned" "Cleaned" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Explorer Cleanup" "Default" "Cleaned" "CHANGE" }',
+    )
+  }
+
+  // === NEW CAUTION SYSTEM DETECTIONS ===
+  if (selected.has('mmcss_gaming')) {
+    lines.push('# Scan: MMCSS Gaming')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games" "GPU Priority"',
+    )
+    lines.push(
+      'if ($val -eq 8) { Add-ScanResult "[CAUTION] MMCSS Gaming" "GPU=8" "GPU=8" "OK" }',
+    )
+    lines.push('else { Add-ScanResult "[CAUTION] MMCSS Gaming" "Default" "GPU=8" "CHANGE" }')
+  }
+
+  if (selected.has('scheduler_opt')) {
+    lines.push('# Scan: Scheduler Optimization')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" "Win32PrioritySeparation"',
+    )
+    lines.push(
+      'if ($val -eq 26) { Add-ScanResult "[CAUTION] Scheduler Optimization" "26" "26" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] Scheduler Optimization" "$val" "26" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('timer_registry')) {
+    lines.push('# Scan: Timer Registry')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel" "GlobalTimerResolutionRequests"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[CAUTION] Timer Registry" "Enabled" "Enabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] Timer Registry" "Default" "Enabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('memory_gaming')) {
+    lines.push('# Scan: Memory Gaming Mode')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" "DisablePagingExecutive"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[CAUTION] Memory Gaming Mode" "Enabled" "Enabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] Memory Gaming Mode" "Default" "Enabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('priority_boost_off')) {
+    lines.push('# Scan: Priority Boost Off')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" "Win32PriorityBoost"',
+    )
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[CAUTION] Priority Boost Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] Priority Boost Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('wpbt_disable')) {
+    lines.push('# Scan: WPBT Disable')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager" "DisableWpbtExecution"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[CAUTION] WPBT Disable" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] WPBT Disable" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('process_mitigation')) {
+    lines.push('# Scan: Process Mitigations')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel" "KernelShadowStacksForceDisabled"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[CAUTION] Process Mitigations" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] Process Mitigations" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  // === NEW POWER DETECTIONS ===
+  if (selected.has('power_plan')) {
+    lines.push('# Scan: Power Plan')
+    lines.push('$plan = powercfg /getactivescheme 2>$null')
+    lines.push(
+      'if ($plan -match "Balanced\\+|Gaming") { Add-ScanResult "[SAFE] Balanced+ Power Plan" "Active" "Active" "OK" }',
+    )
+    lines.push(
+      'elseif ($plan -match "High performance") { Add-ScanResult "[SAFE] Balanced+ Power Plan" "High Perf" "Balanced+" "CHANGE" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Balanced+ Power Plan" "Other" "Balanced+" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('usb_suspend')) {
+    lines.push('# Scan: USB Hub Suspend Off')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\USB\\DisableSelectiveSuspend" "DisableSelectiveSuspend"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[SAFE] USB Hub Suspend Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] USB Hub Suspend Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('min_processor_state')) {
+    lines.push('# Scan: Min Processor State')
+    lines.push(
+      '$val = (powercfg /query scheme_current sub_processor PROCTHROTTLEMIN 2>$null | Select-String "Current AC" -Context 0,1)',
+    )
+    lines.push(
+      'if ($val -match "0x00000005") { Add-ScanResult "[SAFE] Min Processor State 5%" "5%" "5%" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Min Processor State 5%" "(check powercfg)" "5%" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('hibernation_disable')) {
+    lines.push('# Scan: Hibernation')
+    lines.push('$hiberfil = Test-Path "$env:SystemDrive\\hiberfil.sys"')
+    lines.push(
+      'if (-not $hiberfil) { Add-ScanResult "[SAFE] Hibernation Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Hibernation Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('core_parking')) {
+    lines.push('# Scan: Core Parking')
+    lines.push(
+      '$val = (powercfg /query scheme_current sub_processor CPMINCORES 2>$null | Select-String "Current AC" -Context 0,1)',
+    )
+    lines.push(
+      'if ($val -match "0x00000064") { Add-ScanResult "[CAUTION] Core Parking Off" "100%" "100%" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] Core Parking Off" "(check powercfg)" "100%" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('power_throttle_off')) {
+    lines.push('# Scan: Power Throttling')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling" "PowerThrottlingOff"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[CAUTION] Power Throttling Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] Power Throttling Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  // === NEW NETWORK DETECTIONS ===
+  if (selected.has('dns')) {
+    lines.push('# Scan: Custom DNS')
+    lines.push(
+      '$dns = (Get-DnsClientServerAddress -AddressFamily IPv4 -EA SilentlyContinue | Where-Object {$_.ServerAddresses} | Select-Object -First 1).ServerAddresses',
+    )
+    lines.push('$customDNS = @("1.1.1.1","8.8.8.8","9.9.9.9","208.67.222.222","94.140.14.14")')
+    lines.push(
+      'if ($dns -and ($customDNS -contains $dns[0])) { Add-ScanResult "[SAFE] Custom DNS" "$($dns[0])" "Custom" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Custom DNS" "ISP Default" "Custom" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('rss_enable')) {
+    lines.push('# Scan: RSS Enable')
+    lines.push('$rss = Get-NetAdapterRss -EA SilentlyContinue | Where-Object {$_.Enabled}')
+    lines.push('if ($rss) { Add-ScanResult "[SAFE] RSS Enable" "Enabled" "Enabled" "OK" }')
+    lines.push('else { Add-ScanResult "[SAFE] RSS Enable" "Disabled" "Enabled" "CHANGE" }')
+  }
+
+  if (selected.has('adapter_power')) {
+    lines.push('# Scan: Adapter Power')
+    lines.push('Add-ScanResult "[SAFE] Adapter Power Off" "(per-adapter)" "Disabled" "CHANGE"')
+  }
+
+  if (selected.has('qos_gaming')) {
+    lines.push('# Scan: QoS Gaming')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched" "NonBestEffortLimit"',
+    )
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[CAUTION] QoS Gaming" "Configured" "Configured" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[CAUTION] QoS Gaming" "Default" "Configured" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('rsc_disable')) {
+    lines.push('# Scan: RSC Disable')
+    lines.push(
+      '$rsc = Get-NetAdapterRsc -EA SilentlyContinue | Where-Object {$_.IPv4Enabled -or $_.IPv6Enabled}',
+    )
+    lines.push(
+      'if (-not $rsc) { Add-ScanResult "[CAUTION] RSC Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push('else { Add-ScanResult "[CAUTION] RSC Off" "Enabled" "Disabled" "CHANGE" }')
+  }
+
+  if (selected.has('ipv4_prefer')) {
+    lines.push('# Scan: IPv4 Prefer')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters" "DisabledComponents"',
+    )
+    lines.push(
+      'if ($val -eq 32) { Add-ScanResult "[RISKY] Prefer IPv4" "IPv4 preferred" "IPv4 preferred" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[RISKY] Prefer IPv4" "Default" "IPv4 preferred" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('tcp_optimizer')) {
+    lines.push('# Scan: TCP Optimizer')
+    lines.push('Add-ScanResult "[RISKY] TCP Optimizer" "(per-adapter)" "Tuned" "CHANGE"')
+  }
+
+  // === NEW PRIVACY DETECTIONS ===
+  if (selected.has('background_apps')) {
+    lines.push('# Scan: Background Apps')
+    lines.push(
+      '$val = Get-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" "GlobalUserDisabled"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[SAFE] Background Apps" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Background Apps" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('edge_debloat')) {
+    lines.push('# Scan: Edge Debloat')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge" "EdgeShoppingAssistantEnabled"',
+    )
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[SAFE] Edge Debloat" "Debloated" "Debloated" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Edge Debloat" "Default" "Debloated" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('copilot_disable')) {
+    lines.push('# Scan: Copilot Disable')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot"',
+    )
+    lines.push(
+      'if ($val -eq 1) { Add-ScanResult "[SAFE] Disable Copilot" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Disable Copilot" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('delivery_opt')) {
+    lines.push('# Scan: Delivery Optimization')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config" "DODownloadMode"',
+    )
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[SAFE] Delivery Optimization Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Delivery Optimization Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('wer_disable')) {
+    lines.push('# Scan: Error Reporting')
+    lines.push('$svc = Get-Service WerSvc -EA SilentlyContinue')
+    lines.push(
+      'if ($svc -and $svc.StartType -eq "Disabled") { Add-ScanResult "[SAFE] Error Reporting Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'elseif ($svc) { Add-ScanResult "[SAFE] Error Reporting Off" "$($svc.StartType)" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('wifi_sense')) {
+    lines.push('# Scan: WiFi Sense')
+    lines.push(
+      '$val = Get-RegValue "HKLM:\\SOFTWARE\\Microsoft\\WcmSvc\\wifinetworkmanager\\config" "AutoConnectAllowedOEM"',
+    )
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[SAFE] WiFi Sense Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] WiFi Sense Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('spotlight_disable')) {
+    lines.push('# Scan: Spotlight')
+    lines.push(
+      '$val = Get-RegValue "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "RotatingLockScreenEnabled"',
+    )
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[SAFE] Spotlight Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Spotlight Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('feedback_disable')) {
+    lines.push('# Scan: Feedback')
+    lines.push('$val = Get-RegValue "HKCU:\\Software\\Microsoft\\Siuf\\Rules" "NumberOfSIUFInPeriod"')
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[SAFE] Feedback Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Feedback Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('clipboard_sync')) {
+    lines.push('# Scan: Clipboard Sync')
+    lines.push(
+      '$val = Get-RegValue "HKCU:\\Software\\Microsoft\\Clipboard" "EnableClipboardHistory"',
+    )
+    lines.push(
+      'if ($val -eq 0) { Add-ScanResult "[SAFE] Clipboard Sync Off" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Clipboard Sync Off" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('razer_block')) {
+    lines.push('# Scan: Razer Block')
+    lines.push(
+      '$razer = Get-Service -Name "Razer*" -EA SilentlyContinue | Where-Object {$_.StartType -ne "Disabled"}',
+    )
+    lines.push(
+      'if (-not $razer) { Add-ScanResult "[SAFE] Block Razer Services" "Blocked" "Blocked" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Block Razer Services" "Running" "Blocked" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('bloatware')) {
+    lines.push('# Scan: Bloatware')
+    lines.push('$bloat = Get-AppxPackage -AllUsers "Microsoft.BingNews" -EA SilentlyContinue')
+    lines.push(
+      'if (-not $bloat) { Add-ScanResult "[RISKY] Remove Bloatware" "Removed" "Removed" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[RISKY] Remove Bloatware" "Present" "Removed" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('services_trim')) {
+    lines.push('# Scan: Services Trim')
+    lines.push('$diag = Get-Service DiagTrack -EA SilentlyContinue')
+    lines.push(
+      'if ($diag -and $diag.StartType -eq "Manual") { Add-ScanResult "[CAUTION] Trim Services" "Trimmed" "Trimmed" "OK" }',
+    )
+    lines.push(
+      'elseif ($diag) { Add-ScanResult "[CAUTION] Trim Services" "$($diag.StartType)" "Manual" "CHANGE" }',
+    )
+  }
+
+  // === NEW AUDIO DETECTIONS ===
+  if (selected.has('audio_communications')) {
+    lines.push('# Scan: Volume Ducking')
+    lines.push(
+      '$val = Get-RegValue "HKCU:\\Software\\Microsoft\\Multimedia\\Audio" "UserDuckingPreference"',
+    )
+    lines.push(
+      'if ($val -eq 3) { Add-ScanResult "[SAFE] No Volume Ducking" "Disabled" "Disabled" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] No Volume Ducking" "Enabled" "Disabled" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('audio_system_sounds')) {
+    lines.push('# Scan: System Sounds')
+    lines.push('$val = Get-RegValue "HKCU:\\AppEvents\\Schemes" "(Default)"')
+    lines.push(
+      'if ($val -eq ".None") { Add-ScanResult "[SAFE] Mute System Sounds" "Muted" "Muted" "OK" }',
+    )
+    lines.push(
+      'else { Add-ScanResult "[SAFE] Mute System Sounds" "Default" "Muted" "CHANGE" }',
+    )
+  }
+
+  // === NEW ACTION-BASED DETECTIONS ===
+  if (selected.has('timer')) {
+    lines.push('# Scan: Timer Tool (manual)')
+    lines.push(
+      'Add-ScanResult "[SAFE] Timer Resolution Tool" "(manual step)" "timer-tool.ps1" "PENDING"',
+    )
+  }
+
+  if (selected.has('restore_point')) {
+    lines.push('# Scan: Restore Point (action)')
+    lines.push('Add-ScanResult "[SAFE] Restore Point" "—" "Will create" "PENDING"')
+  }
+
+  if (selected.has('temp_purge')) {
+    lines.push('# Scan: Temp Purge (action)')
+    lines.push('Add-ScanResult "[SAFE] Purge Temp Files" "—" "Will purge" "PENDING"')
+  }
+
+  if (selected.has('disk_cleanup')) {
+    lines.push('# Scan: Disk Cleanup (action)')
+    lines.push('Add-ScanResult "[CAUTION] Deep Disk Cleanup" "—" "Will run" "PENDING"')
+  }
+
+  if (selected.has('pagefile')) {
+    lines.push('# Scan: Page File')
+    lines.push('$pf = Get-WmiObject Win32_PageFileSetting -EA SilentlyContinue')
+    lines.push(
+      'if ($pf -and $pf.InitialSize -eq $pf.MaximumSize -and $pf.InitialSize -gt 0) {',
+    )
+    lines.push(
+      '  Add-ScanResult "[SAFE] Fixed Page File" "$($pf.InitialSize)MB fixed" "Fixed" "OK"',
+    )
+    lines.push(
+      '} else { Add-ScanResult "[SAFE] Fixed Page File" "Auto-managed" "Fixed" "CHANGE" }',
+    )
+  }
+
+  if (selected.has('msi_mode')) {
+    lines.push('# Scan: MSI Mode')
+    lines.push(
+      '$gpu = Get-PnpDevice -Class Display | Where-Object {$_.Status -eq "OK"} | Select-Object -First 1',
+    )
+    lines.push('if ($gpu) {')
+    lines.push(
+      '  $msiPath = "HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\$($gpu.InstanceId)\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties"',
+    )
+    lines.push('  $val = Get-RegValue $msiPath "MSISupported"')
+    lines.push(
+      '  if ($val -eq 1) { Add-ScanResult "[CAUTION] MSI Mode" "Enabled" "Enabled" "OK" }',
+    )
+    lines.push(
+      '  else { Add-ScanResult "[CAUTION] MSI Mode" "Disabled" "Enabled" "CHANGE" }',
+    )
+    lines.push('} else { Add-ScanResult "[CAUTION] MSI Mode" "No GPU" "Enabled" "N/A" }')
+  }
+
+  if (selected.has('interrupt_affinity')) {
+    lines.push('# Scan: Interrupt Affinity (per-device)')
+    lines.push('Add-ScanResult "[CAUTION] Interrupt Affinity" "(per-device)" "CPU 0" "CHANGE"')
+  }
+
   // === FALLBACK: Show all selected optimizations that don't have explicit scan checks ===
   // This ensures users see ALL their selected optimizations in the pre-flight table
   const SCANNED_KEYS = new Set([
+    // Original detections
     'mouse_accel',
     'keyboard_response',
     'fastboot',
@@ -1599,19 +2180,75 @@ function generatePreflightScan(selected: Set<string>, _hardware: HardwareProfile
     'dep_off',
     'native_nvme',
     'smt_disable',
-    'ultimate_perf', // power_ultimate in scan
+    'ultimate_perf',
     'usb_power',
     'pcie_power',
     'nagle',
-    'network_throttling', // throttle_index in scan
-    'teredo_disable', // network_teredo in scan
-    'privacy_tier1', // ads_off in scan
-    'privacy_tier2', // telemetry_min in scan
+    'network_throttling',
+    'teredo_disable',
+    'privacy_tier1',
+    'privacy_tier2',
     'services_search_off',
-    'sysmain_disable', // services_superfetch in scan
-    'privacy_tier3', // services_xbox_off in scan
+    'sysmain_disable',
+    'privacy_tier3',
     'audio_enhancements',
     'audio_exclusive',
+    // NEW - System
+    'game_mode',
+    'display_perf',
+    'classic_menu',
+    'explorer_speed',
+    'accessibility_shortcuts',
+    'filesystem_perf',
+    'dwm_perf',
+    'ps7_telemetry',
+    'explorer_cleanup',
+    'mmcss_gaming',
+    'scheduler_opt',
+    'timer_registry',
+    'memory_gaming',
+    'priority_boost_off',
+    'wpbt_disable',
+    'process_mitigation',
+    // NEW - Power
+    'power_plan',
+    'usb_suspend',
+    'min_processor_state',
+    'hibernation_disable',
+    'core_parking',
+    'power_throttle_off',
+    // NEW - Network
+    'dns',
+    'rss_enable',
+    'adapter_power',
+    'qos_gaming',
+    'rsc_disable',
+    'ipv4_prefer',
+    'tcp_optimizer',
+    // NEW - Privacy
+    'background_apps',
+    'edge_debloat',
+    'copilot_disable',
+    'delivery_opt',
+    'wer_disable',
+    'wifi_sense',
+    'spotlight_disable',
+    'feedback_disable',
+    'clipboard_sync',
+    'razer_block',
+    'bloatware',
+    'services_trim',
+    // NEW - Audio
+    'audio_communications',
+    'audio_system_sounds',
+    // NEW - Actions (show with PENDING status)
+    'timer',
+    'restore_point',
+    'temp_purge',
+    'disk_cleanup',
+    'pagefile',
+    'msi_mode',
+    'interrupt_affinity',
   ])
 
   // Add fallback entries for optimizations without explicit scans
