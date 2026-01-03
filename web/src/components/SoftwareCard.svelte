@@ -31,7 +31,6 @@
   }
 
   let iconFailed = $state(false)
-  let isHovered = $state(false)
 
   function handleChange() {
     onToggle(key)
@@ -40,25 +39,14 @@
   function handleImageError() {
     iconFailed = true
   }
-
-  function handleMouseEnter() {
-    isHovered = true
-  }
-
-  function handleMouseLeave() {
-    isHovered = false
-  }
 </script>
 
 <div
   class="software-card"
   class:selected
-  class:hovered={isHovered}
   data-key={key}
   data-category={pkg.category}
   data-overlay-position={overlayPosition === 'left' ? 'left' : undefined}
-  onmouseenter={handleMouseEnter}
-  onmouseleave={handleMouseLeave}
 >
   <!-- Hidden checkbox for semantic toggle -->
   <input
