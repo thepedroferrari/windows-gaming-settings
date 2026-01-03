@@ -8,6 +8,8 @@
     Generates a log file and a post-setup checklist on success.
 .PARAMETER DryRun
     When set, the script prints intended actions and skips all system changes.
+.PARAMETER SkipConfirmation
+    When set, skips the "Apply these optimizations?" prompt for unattended execution.
 .PARAMETER ConfigFile
     Optional path to a JSON configuration file. This parameter is reserved for
     future config wiring and is not consumed by this script today.
@@ -18,6 +20,8 @@
     .\gaming-pc-setup.ps1
 .EXAMPLE
     .\gaming-pc-setup.ps1 -DryRun
+.EXAMPLE
+    .\gaming-pc-setup.ps1 -SkipConfirmation
 .NOTES
     Requires Administrator. Produces `gaming-pc-setup.log` and
     `POST-SETUP-CHECKLIST.txt`. See module files for exact registry/service changes.
@@ -28,6 +32,7 @@
 
 param(
     [switch]$DryRun,
+    [switch]$SkipConfirmation,
     [string]$ConfigFile,
     [string]$Profile
 )
@@ -228,7 +233,7 @@ Write-Host ""
 Write-Host "SmartScreen and Windows Update remain ENABLED (security)" -ForegroundColor Yellow
 Write-Host ""
 
-if (-not $DryRun) {
+if (-not $DryRun -and -not $SkipConfirmation) {
     $confirm = Read-Host "Apply these optimizations? (Y/N)"
     if ($confirm -ne "Y") {
         Write-Log "User cancelled script" "INFO"

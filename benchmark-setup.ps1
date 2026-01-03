@@ -19,6 +19,16 @@
     avoids silently writing unknown settings and keeps the process reproducible.
 
     Run this script in an elevated PowerShell (Run as Administrator).
+
+.PARAMETER ResetConsent
+    Clears the saved install consent cache and re-prompts on next run.
+    Use this if you previously declined installs but now want to allow them.
+
+.PARAMETER AutoAccept
+    Automatically accepts install consent without prompting.
+    Useful for CI/CD pipelines, automated testing, or scripted deployments.
+    This bypasses both the install prompt and the "remember choice" prompt.
+
 .USAGE
     1) Right-click this file and select "Run as administrator".
     2) Let the script install tools via winget if missing.
@@ -35,18 +45,27 @@
     If double-clicking closes the window immediately, run:
       powershell -ExecutionPolicy Bypass -File .\benchmark-setup.ps1
 
+    Unattended/automated execution (skips all prompts):
+      .\benchmark-setup.ps1 -AutoAccept
+
     To clear the saved install consent and re-prompt:
       .\benchmark-setup.ps1 -ResetConsent
+
 .NOTES
     Requires Administrator because winget installation and app installs may
     require elevation on some systems. Also uses the Microsoft Store fallback
     flow if winget is missing.
+
+    Documentation: https://rocktune.pedroferrari.com
+    Source: https://github.com/thepedroferrari/rocktune
+    Issues: https://github.com/thepedroferrari/rocktune/issues
 #>
 #Requires -RunAsAdministrator
 
 [CmdletBinding()]
 param(
-    [switch]$ResetConsent
+    [switch]$ResetConsent,
+    [switch]$AutoAccept
 )
 
 
@@ -475,6 +494,26 @@ function Confirm-InstallConsent {
             Write-Warn "Unable to remove consent cache. You may need to delete it manually."
         }
         $script:ResetConsent = $false
+    }
+
+    # -------------------------------------------------------------------------
+    # AUTO-ACCEPT MODE
+    # -------------------------------------------------------------------------
+    # When -AutoAccept is specified, we skip all interactive prompts and
+    # automatically grant install consent. This is useful for:
+    #   - CI/CD pipelines where no human is present to answer prompts
+    #   - Automated testing environments
+    #   - Scripted deployments where you've already reviewed the tools
+    #
+    # The auto-accept does NOT save to the consent cache - it only affects
+    # the current execution. If you want to permanently allow installs without
+    # prompts, run once interactively and choose "Y" to remember.
+    #
+    # Usage: .\benchmark-setup.ps1 -AutoAccept
+    # -------------------------------------------------------------------------
+    if ($script:AutoAccept) {
+        Write-Ok "Auto-accept mode: installs are allowed."
+        return $true
     }
 
     $cached = Get-ConsentCache
