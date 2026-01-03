@@ -47,12 +47,11 @@
 
   
   $effect(() => {
-    if (message) {
-      const timeout = setTimeout(() => {
-        message = ''
-      }, 1000)
-      return () => clearTimeout(timeout)
-    }
+    if (!message) return
+    const timeout = setTimeout(() => {
+      message = ''
+    }, 1000)
+    return () => clearTimeout(timeout)
   })
 </script>
 
