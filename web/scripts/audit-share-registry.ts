@@ -15,8 +15,8 @@
  */
 
 import {
-  DEPRECATED_OPT_IDS,
   DEPRECATED_OPT_ID_SET,
+  DEPRECATED_OPT_IDS,
   OPT_ID_TO_VALUE,
   OPT_VALUE_TO_ID,
 } from '../src/lib/share-registry.ts'
@@ -107,11 +107,7 @@ function audit(): Issue[] {
 
   for (const id of nullIds) {
     if (!DEPRECATED_OPT_ID_SET.has(id)) {
-      pushIssue(
-        issues,
-        'error',
-        `Tombstoned ID ${id} is missing from DEPRECATED_OPT_IDS registry`,
-      )
+      pushIssue(issues, 'error', `Tombstoned ID ${id} is missing from DEPRECATED_OPT_IDS registry`)
     }
   }
 
@@ -155,7 +151,11 @@ function audit(): Issue[] {
     .map(([id]) => id)
     .sort((a, b) => Number(a) - Number(b))
 
-  pushIssue(issues, 'info', `Total IDs: ${allIds.length} (${activeCount} active, ${tombstoneCount} tombstoned)`)
+  pushIssue(
+    issues,
+    'info',
+    `Total IDs: ${allIds.length} (${activeCount} active, ${tombstoneCount} tombstoned)`,
+  )
   pushIssue(issues, 'info', `Next available ID: ${maxId + 1}`)
 
   if (tombstoneIds.length > 0) {
