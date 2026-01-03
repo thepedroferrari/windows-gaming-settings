@@ -339,6 +339,11 @@ function Set-Reg-Verified {
         else { Write-Warn "$Label (expected $Value, got $after)" }
     } else { Write-Fail "$Label" }
 }
+function Disable-Task {
+    param([string]$TaskPath)
+    try { Disable-ScheduledTask -TaskName $TaskPath -EA SilentlyContinue | Out-Null; return $true }
+    catch { return $false }
+}
 
 # --- Pre-flight scan ---
 $script:ScanResults = @()
@@ -1996,23 +2001,110 @@ function generatePrivacyOpts(selected: Set<string>): string[] {
   if (selected.has('privacy_tier1')) {
     lines.push('# [SAFE] Privacy Tier 1 - ads and personalization')
     lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo" "DisabledByGroupPolicy" 1',
+    )
+    lines.push(
       'Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" "Enabled" 0',
     )
     lines.push(
-      'Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy" "TailoredExperiencesWithDiagnosticDataEnabled" 0',
+      'Set-Reg "HKCU:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent" "DisableTailoredExperiencesWithDiagnosticData" 1',
     )
     lines.push('Write-OK "Advertising ID and tailored experiences disabled"')
   }
 
   if (selected.has('privacy_tier2')) {
     lines.push('# [CAUTION] Privacy Tier 2 - telemetry and tracking')
+    lines.push('')
+    lines.push('# Disable telemetry scheduled tasks')
+    lines.push('$telemetryTasks = @(')
+    lines.push('    "Microsoft\\Windows\\Autochk\\Proxy",')
+    lines.push(
+      '    "Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator",',
+    )
+    lines.push(
+      '    "Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip",',
+    )
+    lines.push(
+      '    "Microsoft\\Windows\\DiskDiagnostic\\Microsoft-Windows-DiskDiagnosticDataCollector",',
+    )
+    lines.push('    "Microsoft\\Windows\\Feedback\\Siuf\\DmClient",')
+    lines.push('    "Microsoft\\Windows\\Feedback\\Siuf\\DmClientOnScenarioDownload",')
+    lines.push('    "Microsoft\\Windows\\Windows Error Reporting\\QueueReporting",')
+    lines.push('    "Microsoft\\Windows\\Application Experience\\MareBackup",')
+    lines.push('    "Microsoft\\Windows\\Application Experience\\StartupAppTask",')
+    lines.push('    "Microsoft\\Windows\\Application Experience\\PcaPatchDbTask"')
+    lines.push(')')
+    lines.push('foreach ($task in $telemetryTasks) { Disable-Task $task }')
+    lines.push('')
+    lines.push('# AllowTelemetry at both policy paths')
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection" "AllowTelemetry" 0',
+    )
     lines.push(
       'Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "AllowTelemetry" 0',
     )
+    lines.push('')
+    lines.push('# ContentDeliveryManager (content suggestions, pre-installed apps)')
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "ContentDeliveryAllowed" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "OemPreInstalledAppsEnabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "PreInstalledAppsEnabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "PreInstalledAppsEverEnabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "SilentInstalledAppsEnabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "SubscribedContent-338387Enabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "SubscribedContent-338388Enabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "SubscribedContent-338389Enabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "SubscribedContent-353698Enabled" 0',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0',
+    )
+    lines.push('')
+    lines.push('# Feedback, advertising, error reporting')
+    lines.push('Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Siuf\\Rules" "NumberOfSIUFInPeriod" 0')
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" "DoNotShowFeedbackNotifications" 1',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent" "DisableTailoredExperiencesWithDiagnosticData" 1',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo" "DisabledByGroupPolicy" 1',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting" "Disabled" 1',
+    )
+    lines.push('')
+    lines.push('# Delivery Optimization P2P at both paths')
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config" "DODownloadMode" 0',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization" "DODownloadMode" 0',
+    )
+    lines.push('')
+    lines.push('# Disable start menu tracking')
     lines.push(
       'Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" "Start_TrackProgs" 0',
     )
-    lines.push('Write-OK "Telemetry minimized"')
+    lines.push('')
+    lines.push('Write-OK "Telemetry minimized (tasks + registry)"')
   }
 
   if (selected.has('background_apps')) {
@@ -2024,17 +2116,44 @@ function generatePrivacyOpts(selected: Set<string>): string[] {
   }
 
   if (selected.has('copilot_disable')) {
-    lines.push('# [SAFE] Disable Copilot')
+    lines.push('# [CAUTION] Disable Copilot (registry + AppX removal)')
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1',
+    )
     lines.push(
       'Set-Reg "HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1',
     )
-    lines.push('Write-OK "Copilot disabled"')
+    lines.push(
+      'Set-Reg "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" "ShowCopilotButton" 0',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\Shell\\Copilot" "IsCopilotAvailable" 0',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\Shell\\Copilot" "CopilotDisabledReason" "IsEnabledForGeographicRegionFailed" "String"',
+    )
+    lines.push(
+      'Set-Reg "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsCopilot" "AllowCopilotRuntime" 0',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\Shell Extensions\\Blocked" "{CB3B0003-8088-4EDE-8769-8B354AB2FF8C}" "" "String"',
+    )
+    lines.push(
+      'Set-Reg "HKLM:\\SOFTWARE\\Microsoft\\Windows\\Shell\\Copilot\\BingChat" "IsUserEligible" 0',
+    )
+    lines.push(
+      'Get-AppxPackage -AllUsers *Copilot* -EA SilentlyContinue | Remove-AppxPackage -AllUsers -EA SilentlyContinue',
+    )
+    lines.push(
+      'Get-AppxPackage -AllUsers Microsoft.MicrosoftOfficeHub -EA SilentlyContinue | Remove-AppxPackage -AllUsers -EA SilentlyContinue',
+    )
+    lines.push('Write-OK "Copilot disabled and removed"')
   }
 
   if (selected.has('bloatware')) {
     lines.push('# [CAUTION] Remove bloatware apps')
     lines.push(
-      '$bloatApps = @("Microsoft.BingNews", "Microsoft.GetHelp", "Microsoft.Getstarted", "Microsoft.MicrosoftSolitaireCollection", "Microsoft.People", "Microsoft.PowerAutomateDesktop", "Microsoft.Todos", "Microsoft.WindowsAlarms", "Microsoft.WindowsFeedbackHub", "Microsoft.WindowsMaps", "Microsoft.WindowsSoundRecorder", "Microsoft.YourPhone", "Microsoft.ZuneMusic", "Microsoft.ZuneVideo", "Clipchamp.Clipchamp", "Microsoft.549981C3F5F10")',
+      '$bloatApps = @("Microsoft.BingNews", "Microsoft.GetHelp", "Microsoft.Getstarted", "Microsoft.MicrosoftSolitaireCollection", "Microsoft.People", "Microsoft.PowerAutomateDesktop", "Microsoft.Todos", "Microsoft.WindowsAlarms", "Microsoft.WindowsFeedbackHub", "Microsoft.WindowsMaps", "Microsoft.WindowsSoundRecorder", "Microsoft.YourPhone", "Microsoft.ZuneMusic", "Microsoft.ZuneVideo", "Clipchamp.Clipchamp", "Microsoft.549981C3F5F10", "*Copilot*", "Microsoft.Windows.Ai.Copilot.Provider", "Microsoft.MicrosoftOfficeHub")',
     )
     lines.push('$removedCount = 0')
     lines.push('foreach ($app in $bloatApps) {')
@@ -2440,7 +2559,7 @@ export function buildVerificationScript(selection: SelectionState): string {
 
   if (selected.has('copilot_disable')) {
     lines.push(
-      'if (Test-RegValue "HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1) { Write-Pass "Copilot disabled" } else { Write-Fail "Copilot NOT disabled" }',
+      'if (Test-RegValue "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1) { Write-Pass "Copilot disabled" } else { Write-Fail "Copilot NOT disabled" }',
     )
   }
 
