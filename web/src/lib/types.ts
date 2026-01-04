@@ -336,6 +336,7 @@ const SAFE_OPTIMIZATIONS = {
   INPUT_BUFFER: 'input_buffer',
   FILESYSTEM_PERF: 'filesystem_perf',
   DWM_PERF: 'dwm_perf',
+  BACKGROUND_POLLING: 'background_polling',
 } as const
 
 const CAUTION_OPTIMIZATIONS = {
@@ -366,9 +367,14 @@ const CAUTION_OPTIMIZATIONS = {
   MEMORY_GAMING: 'memory_gaming',
   POWER_THROTTLE_OFF: 'power_throttle_off',
   PRIORITY_BOOST_OFF: 'priority_boost_off',
+
+  // FR33THY: GPU-specific optimizations
+  AMD_ULPS_DISABLE: 'amd_ulps_disable',
 } as const
 
 const RISKY_OPTIMIZATIONS = {
+  // FR33THY: Force NVIDIA GPU to maximum P0 power state
+  NVIDIA_P0_STATE: 'nvidia_p0_state',
   PRIVACY_TIER1: 'privacy_tier1',
   PRIVACY_TIER2: 'privacy_tier2',
   PRIVACY_TIER3: 'privacy_tier3',
@@ -380,6 +386,9 @@ const RISKY_OPTIMIZATIONS = {
   SMT_DISABLE: 'smt_disable',
   AUDIO_EXCLUSIVE: 'audio_exclusive',
   TCP_OPTIMIZER: 'tcp_optimizer',
+
+  // FR33THY: Network binding strip - disables unnecessary protocols
+  NETWORK_BINDING_STRIP: 'network_binding_strip',
 } as const
 
 const LUDICROUS_OPTIMIZATIONS = {
