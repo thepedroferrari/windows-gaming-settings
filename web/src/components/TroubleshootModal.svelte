@@ -20,6 +20,8 @@
 
   let { open, onclose }: Props = $props();
 
+  let debunkingExpanded = $state(false);
+
   let copiedStates = $state({
     quickest: false,
     unblock: false,
@@ -172,6 +174,104 @@ powershell -Command "Start-Process powershell -ArgumentList '-ExecutionPolicy By
       <p class="card__hint">
         Double-click alternative. Put in same folder as the .ps1
       </p>
+    </article>
+
+    <article class="card card--warning">
+      <button
+        type="button"
+        class="debunking-toggle"
+        onclick={() => (debunkingExpanded = !debunkingExpanded)}
+        aria-expanded={debunkingExpanded}
+      >
+        <svg
+          class="debunking-toggle__icon"
+          class:expanded={debunkingExpanded}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+        <span class="debunking-toggle__title">WHAT NOT TO DO</span>
+        <span class="debunking-toggle__badge">EXPERT CONSENSUS</span>
+      </button>
+
+      {#if debunkingExpanded}
+        <div class="debunking-content">
+          <p class="debunking-intro">
+            Based on FR33THY, Blur Busters, and Battle(non)sense research. These
+            tweaks are either <strong>placebo</strong> or
+            <strong>actively harmful</strong> on modern systems.
+          </p>
+
+          <div class="debunking-section">
+            <h4 class="debunking-section__title">NEVER TOUCH</h4>
+            <ul class="debunking-list">
+              <li>
+                <code>bcdedit useplatformclock</code> — Not used for game timing,
+                can break system timers
+              </li>
+              <li>
+                <code>bcdedit disabledynamictick</code> — Increases power consumption,
+                minimal gaming benefit
+              </li>
+              <li>
+                <code>bcdedit tscsyncpolicy</code> — Debugging tool, not for gaming
+                optimization
+              </li>
+            </ul>
+          </div>
+
+          <div class="debunking-section">
+            <h4 class="debunking-section__title">AVOID (USUALLY HARMFUL)</h4>
+            <ul class="debunking-list">
+              <li>
+                <strong>Disable SMT/Hyperthreading</strong> — Hurts 1% lows; modern
+                schedulers handle it correctly
+              </li>
+              <li>
+                <strong>Interrupt affinity tweaks</strong> — Risky, can cause system
+                instability
+              </li>
+              <li>
+                <strong>MSI mode via registry</strong> — Only safe if device explicitly
+                supports it
+              </li>
+              <li>
+                <strong>Raise dwm.exe priority</strong> — Causes mouse acceleration
+                issues
+              </li>
+              <li>
+                <strong>Network adapter priority: High</strong> — Causes in-game
+                desync
+              </li>
+            </ul>
+          </div>
+
+          <div class="debunking-section">
+            <h4 class="debunking-section__title">SKIP (NO REAL BENEFIT)</h4>
+            <ul class="debunking-list">
+              <li>
+                <strong>Custom Windows ISOs</strong> — Security risks outweigh minimal
+                gains
+              </li>
+              <li>
+                <strong>LatencyMon obsession</strong> — Only diagnoses driver issues,
+                not real gaming latency
+              </li>
+              <li>
+                <strong>Spread Spectrum disable</strong> — Zero measurable gaming
+                impact
+              </li>
+            </ul>
+          </div>
+
+          <p class="debunking-quote">
+            "The less you tweak, the more stability you have." — Blur Busters
+          </p>
+        </div>
+      {/if}
     </article>
   </div>
 </Modal>
@@ -387,7 +487,133 @@ powershell -Command "Start-Process powershell -ArgumentList '-ExecutionPolicy By
     height: 1.25rem;
   }
 
-  /* Mobile adjustments */
+  .card--warning {
+    border-color: var(--warning, oklch(0.75 0.15 85));
+    border-left-color: var(--warning, oklch(0.75 0.15 85));
+    background: linear-gradient(
+      135deg,
+      oklch(0.75 0.15 85 / 0.06) 0%,
+      var(--surface-2) 50%
+    );
+    padding: 0;
+  }
+
+  .debunking-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: var(--space-lg);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .debunking-toggle:hover {
+    background: oklch(0.75 0.15 85 / 0.04);
+  }
+
+  .debunking-toggle__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--warning, oklch(0.75 0.15 85));
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .debunking-toggle__icon.expanded {
+    transform: rotate(180deg);
+  }
+
+  .debunking-toggle__title {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--warning, oklch(0.75 0.15 85));
+    text-transform: uppercase;
+  }
+
+  .debunking-toggle__badge {
+    margin-inline-start: auto;
+    padding: 0.15rem 0.5rem;
+    background: oklch(0.75 0.15 85 / 0.15);
+    border: 1px solid oklch(0.75 0.15 85 / 0.3);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--warning, oklch(0.75 0.15 85));
+    text-transform: uppercase;
+  }
+
+  .debunking-content {
+    padding: 0 var(--space-lg) var(--space-lg);
+    border-top: 1px solid oklch(0.75 0.15 85 / 0.2);
+  }
+
+  .debunking-intro {
+    margin: var(--space-md) 0;
+    font-size: 0.875rem;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  .debunking-intro strong {
+    color: var(--warning, oklch(0.75 0.15 85));
+  }
+
+  .debunking-section {
+    margin-block: var(--space-md);
+  }
+
+  .debunking-section__title {
+    margin: 0 0 var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-1);
+    text-transform: uppercase;
+  }
+
+  .debunking-list {
+    margin: 0;
+    padding-inline-start: var(--space-lg);
+    font-size: 0.8rem;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  .debunking-list li {
+    margin-block: var(--space-xs);
+  }
+
+  .debunking-list code {
+    padding: 0.1rem 0.35rem;
+    background: oklch(0.2 0 0);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--warning, oklch(0.75 0.15 85));
+  }
+
+  .debunking-list strong {
+    color: var(--text-1);
+    font-weight: 600;
+  }
+
+  .debunking-quote {
+    margin: var(--space-lg) 0 0;
+    padding: var(--space-md);
+    background: oklch(0.15 0.02 285);
+    border-inline-start: 3px solid var(--accent);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-2);
+  }
+
   @media (max-width: 640px) {
     :global(.troubleshoot-modal) {
       --_clip: polygon(
@@ -422,6 +648,22 @@ powershell -Command "Start-Process powershell -ArgumentList '-ExecutionPolicy By
       width: 100%;
       text-align: center;
       padding: var(--space-sm);
+    }
+
+    .debunking-toggle {
+      padding: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .debunking-toggle__badge {
+      margin-inline-start: 0;
+      margin-block-start: var(--space-xs);
+      order: 3;
+      width: 100%;
+    }
+
+    .debunking-content {
+      padding: 0 var(--space-md) var(--space-md);
     }
   }
 </style>
