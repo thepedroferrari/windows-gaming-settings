@@ -713,6 +713,41 @@ function Disable-MouseAcceleration {
 }
 
 
+function Set-BackgroundPollingUnlock {
+    <#
+    .SYNOPSIS
+        Unlocks full mouse polling rate in background windows.
+    .DESCRIPTION
+        FR33THY optimization - removes Windows throttling of mouse input
+        when windows are in background, improving alt-tab responsiveness.
+    .PARAMETER Enable
+        When true, unlocks background polling.
+    .OUTPUTS
+        None.
+    #>
+    param(
+        [bool]$Enable = $true
+    )
+
+    if (-not $Enable) {
+        Write-Log "Background polling unlock: skipped" "INFO"
+        return
+    }
+
+    try {
+        $mousePath = "HKCU:\Control Panel\Mouse"
+        Backup-RegistryKey -Path $mousePath
+
+        # FR33THY: RawMouseThrottleEnabled=0 removes background mouse throttling
+        Set-RegistryValue -Path $mousePath -Name "RawMouseThrottleEnabled" -Value 0 -Type "DWORD"
+
+        Write-Log "Background mouse polling unlocked (full rate in background windows)" "SUCCESS"
+    } catch {
+        Write-Log "Error unlocking background polling: $_" "ERROR"
+    }
+}
+
+
 function Set-KeyboardResponse {
     <#
     .SYNOPSIS
@@ -1002,6 +1037,7 @@ Export-ModuleMember -Function @(
     'Enable-TaskbarEndTask',
     'Remove-ExplorerClutter',
     'Disable-MouseAcceleration',
+    'Set-BackgroundPollingUnlock',
     'Set-KeyboardResponse',
     'Disable-USBSelectiveSuspend',
     'Set-AudioExclusiveMode',
