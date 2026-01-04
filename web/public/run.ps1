@@ -22,6 +22,19 @@
 #>
 
 # ════════════════════════════════════════════════════════════════════════════
+# OS DETECTION
+# ════════════════════════════════════════════════════════════════════════════
+
+$script:WinBuild = [int](Get-CimInstance Win32_OperatingSystem).BuildNumber
+$script:IsWin11 = $script:WinBuild -ge 22000
+$script:IsWin11_24H2 = $script:WinBuild -ge 26100
+$script:WinVersion = if ($script:IsWin11) { "Windows 11" } else { "Windows 10" }
+
+# IDs that only work on Windows 11
+$script:Win11OnlyIds = @('18', '21', '22')  # Classic menu, End Task, Explorer cleanup
+$script:Win11_24H2OnlyIds = @('86')  # Native NVMe
+
+# ════════════════════════════════════════════════════════════════════════════
 # PARSE CONFIGURATION
 # ════════════════════════════════════════════════════════════════════════════
 # Configuration is passed via $env:RT environment variable as query string format
@@ -433,6 +446,12 @@ $OPT_DESCRIPTIONS = @{
     '87' = @{ name='SMT'; tier='RISKY'; desc='Disable SMT/Hyperthreading (physical cores only)' }
     '88' = @{ name='Audio Exclusive'; tier='RISKY'; desc='Configure audio for exclusive mode apps' }
     '89' = @{ name='TCP Optimizer'; tier='RISKY'; desc='Apply TCP optimizations for gaming' }
+
+    # FR33THY Phase (104+)
+    '104' = @{ name='Background Polling'; tier='SAFE'; desc='Unlock full mouse polling rate in background windows' }
+    '105' = @{ name='AMD ULPS'; tier='CAUTION'; desc='Disable AMD Ultra Low Power State (prevents downclock stutters)' }
+    '106' = @{ name='NVIDIA P0 State'; tier='RISKY'; desc='Force GPU to max clocks (increases heat/power!)' }
+    '107' = @{ name='Network Binding Strip'; tier='RISKY'; desc='Remove IPv6/sharing bindings (breaks file sharing!)' }
 }
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -544,19 +563,34 @@ $OPT_FUNCTIONS = @{
     }
     '17' = { # restore_point
         $recentRestorePoint = $null
-        try { $recentRestorePoint = Get-ComputerRestorePoint -EA Stop | Sort-Object CreationTime -Descending | Select-Object -First 1 } catch { $recentRestorePoint = $null }
-        if ($recentRestorePoint -and $recentRestorePoint.CreationTime -gt (Get-Date).AddMinutes(-1440)) {
-            Write-Warn "Restore point already created within last 24 hours (skipped)"
+        # Check if System Protection is enabled first
+        $srEnabled = $false
+        try {
+            $sr = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" -Name "RPSessionInterval" -EA SilentlyContinue
+            $srEnabled = ($null -ne $sr -and $sr.RPSessionInterval -ne 0)
+        } catch { }
+
+        if (-not $srEnabled) {
+            Write-Warn "System Restore disabled (enable in System Protection to create restore points)"
         } else {
-            try {
-                Checkpoint-Computer -Description "Before RockTune" -RestorePointType MODIFY_SETTINGS -EA Stop -WarningAction SilentlyContinue
-                Write-OK "Restore point created"
-            } catch {
-                Write-Warn "Could not create restore point: $($_.Exception.Message)"
+            try { $recentRestorePoint = Get-ComputerRestorePoint -EA Stop | Sort-Object CreationTime -Descending | Select-Object -First 1 } catch { $recentRestorePoint = $null }
+            if ($recentRestorePoint -and $recentRestorePoint.CreationTime -gt (Get-Date).AddMinutes(-1440)) {
+                Write-Warn "Restore point already created within last 24 hours (skipped)"
+            } else {
+                try {
+                    Checkpoint-Computer -Description "Before RockTune" -RestorePointType MODIFY_SETTINGS -EA Stop -WarningAction SilentlyContinue
+                    Write-OK "Restore point created"
+                } catch {
+                    Write-Warn "Could not create restore point (System Restore may be disabled)"
+                }
             }
         }
     }
     '18' = { # classic_menu
+        if (-not $script:IsWin11) {
+            Write-Warn "Classic context menu is a Windows 11 feature (Win10 already has it)"
+            return
+        }
         $clsid = "{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}"
         $path = "HKCU:\Software\Classes\CLSID\$clsid\InprocServer32"
         if (-not (Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
@@ -572,9 +606,17 @@ $OPT_FUNCTIONS = @{
         Write-OK "Visual effects set to performance"
     }
     '21' = { # end_task
+        if (-not $script:IsWin11) {
+            Write-Warn "End Task in taskbar is a Windows 11 feature"
+            return
+        }
         if (Set-Reg "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings" "TaskbarEndTask" 1 -PassThru) { Write-OK "End Task enabled in taskbar" }
     }
     '22' = { # explorer_cleanup
+        if (-not $script:IsWin11) {
+            Write-Warn "Explorer Home/Gallery are Windows 11 features (Win10 doesn't have them)"
+            return
+        }
         Remove-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}" -Force -EA SilentlyContinue
         Remove-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}" -Force -EA SilentlyContinue
         Write-OK "Explorer clutter removed"
@@ -883,6 +925,66 @@ $OPT_FUNCTIONS = @{
         Write-OK "TCP optimizer applied"
     }
 
+    # FR33THY Phase (104+)
+    '104' = { # background_polling
+        if (Set-Reg "HKCU:\Control Panel\Mouse" "RawMouseThrottleEnabled" 0 -PassThru) {
+            Write-OK "Background mouse polling unlocked (full rate in background windows)"
+        }
+    }
+    '105' = { # amd_ulps_disable
+        $gpuPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}"
+        $foundAmd = $false
+        Get-ChildItem $gpuPath -EA SilentlyContinue | ForEach-Object {
+            try {
+                $desc = Get-ItemPropertyValue $_.PSPath "DriverDesc" -EA SilentlyContinue
+                if ($desc -match "AMD|Radeon") {
+                    $foundAmd = $true
+                    Set-Reg $_.PSPath "EnableUlps" 0
+                    Set-Reg $_.PSPath "EnableUlps_NA" 0
+                }
+            } catch {}
+        }
+        if ($foundAmd) { Write-OK "AMD ULPS disabled (no more downclock stutters)" }
+        else { Write-Warn "No AMD GPU found, ULPS skip" }
+    }
+    '106' = { # nvidia_p0_state
+        $gpuPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}"
+        $foundNv = $false
+        Get-ChildItem $gpuPath -EA SilentlyContinue | ForEach-Object {
+            try {
+                $desc = Get-ItemPropertyValue $_.PSPath "DriverDesc" -EA SilentlyContinue
+                if ($desc -match "NVIDIA|GeForce") {
+                    $foundNv = $true
+                    Set-Reg $_.PSPath "DisableDynamicPstate" 1
+                }
+            } catch {}
+        }
+        if ($foundNv) {
+            Write-OK "NVIDIA P0 state forced (constant max clocks)"
+            Write-Warn "GPU will run hotter - monitor temperatures!"
+        }
+        else { Write-Warn "No NVIDIA GPU found, P0 skip" }
+    }
+    '107' = { # network_binding_strip
+        Write-Warn "Stripping network bindings (breaks file/printer sharing!)"
+        $bindings = @("ms_lldp","ms_lltdio","ms_implat","ms_rspndr","ms_tcpip6","ms_server","ms_msclient","ms_pacer")
+        $adapters = Get-NetAdapter | Where-Object {$_.Status -eq "Up"}
+        $count = 0
+        foreach ($adapter in $adapters) {
+            foreach ($binding in $bindings) {
+                try {
+                    $current = Get-NetAdapterBinding -Name $adapter.Name -ComponentID $binding -EA Stop
+                    if ($current.Enabled) {
+                        Disable-NetAdapterBinding -Name $adapter.Name -ComponentID $binding -EA Stop
+                        $count++
+                    }
+                } catch {}
+            }
+        }
+        if ($count -gt 0) { Write-OK "Stripped $count network bindings (IPv4 only mode)" }
+        else { Write-Warn "No bindings modified (may already be stripped)" }
+    }
+
     # NOTE: LUDICROUS tier (100-103) intentionally NOT included for security
     # IDs 100, 101, 102, 103 would disable critical security mitigations
 }
@@ -911,9 +1013,16 @@ $cpu = (Get-CimInstance Win32_Processor).Name
 $gpu = (Get-CimInstance Win32_VideoController | Where-Object {$_.Status -eq "OK"} | Select-Object -First 1).Name
 $ram = [math]::Round((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1GB)
 Write-Host "  System:" -ForegroundColor White
+Write-Host "    OS:  $script:WinVersion (Build $script:WinBuild)" -ForegroundColor $(if ($script:IsWin11) { "Gray" } else { "Yellow" })
 Write-Host "    CPU: $cpu" -ForegroundColor Gray
 Write-Host "    GPU: $gpu" -ForegroundColor Gray
 Write-Host "    RAM: ${ram}GB" -ForegroundColor Gray
+
+# Win10 compatibility notice
+if (-not $script:IsWin11) {
+    Write-Host ""
+    Write-Host "  ⚠ Windows 10 detected - some Win11-only options will be skipped" -ForegroundColor Yellow
+}
 Write-Host ""
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -1066,6 +1175,22 @@ if ($optIds.Count -gt 0) {
                     else { $current = "ON"; $target = "OFF"; $status = "CHANGE" }
                 } catch { }
             }
+            '104' { # background_polling
+                try {
+                    $val = Get-ItemProperty "HKCU:\Control Panel\Mouse" -Name "RawMouseThrottleEnabled" -EA SilentlyContinue
+                    if ($val.RawMouseThrottleEnabled -eq 0) { $current = "Unlocked"; $status = "OK" }
+                    else { $current = "Throttled"; $target = "Unlocked"; $status = "CHANGE" }
+                } catch { }
+            }
+            '105' { # amd_ulps_disable
+                $current = "Check GPU"; $target = "Disabled"; $status = "PENDING"
+            }
+            '106' { # nvidia_p0_state
+                $current = "Check GPU"; $target = "P0 Forced"; $status = "PENDING"
+            }
+            '107' { # network_binding_strip
+                $current = "Multiple"; $target = "IPv4 Only"; $status = "PENDING"
+            }
             '7' { # dns - special handling
                 if ($dnsId -and $DNS_MAP[$dnsId]) {
                     $dns = $DNS_MAP[$dnsId]
@@ -1202,6 +1327,24 @@ if ($optIds.Count -gt 0) {
 
         if (-not $OPT_FUNCTIONS.ContainsKey($id)) {
             Write-Warn "Unknown optimization ID: $id (skipped)"
+            continue
+        }
+
+        # Skip Win11-only features on Win10
+        if (-not $script:IsWin11 -and $id -in $script:Win11OnlyIds) {
+            $info = $OPT_DESCRIPTIONS[$id]
+            $name = if ($info) { $info.name } else { $id }
+            Write-Host "  [SKIP] $name (requires Windows 11)" -ForegroundColor DarkGray
+            $skippedIds += $id
+            continue
+        }
+
+        # Skip Win11 24H2+ features on older builds
+        if (-not $script:IsWin11_24H2 -and $id -in $script:Win11_24H2OnlyIds) {
+            $info = $OPT_DESCRIPTIONS[$id]
+            $name = if ($info) { $info.name } else { $id }
+            Write-Host "  [SKIP] $name (requires Windows 11 24H2+)" -ForegroundColor DarkGray
+            $skippedIds += $id
             continue
         }
 
